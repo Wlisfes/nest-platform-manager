@@ -11,21 +11,112 @@ export default defineComponent({
         })
 
         return () => (
-            <n-element class="login-element h-full p-24">
-                <n-form size="large" ref={formRef} model={form.value} rules={state.rules} disabled={state.loading} show-label={false}>
-                    <n-form-item path="email">
-                        <n-input
-                            class="n-deep-style"
-                            maxlength={32}
-                            type="text"
-                            placeholder="请输入登录账号"
-                            v-model:value={form.value.email}
-                            input-props={{ autocomplete: 'on' }}
-                            //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
-                            //v-slots={{ prefix: () => <n-icon size={22} component={<Iv-AuUser />}></n-icon> }}
-                        ></n-input>
-                    </n-form-item>
-                </n-form>
+            <n-element class="login-element h-full p-24 flex justify-center items-center">
+                <n-card
+                    class="w-full h-full max-w-520 max-h-520 p-24"
+                    style={{ boxShadow: 'var(--box-shadow-1)' }}
+                    content-class="p-0 flex flex-col justify-center"
+                >
+                    <n-form
+                        class="w-full max-w-375 m-auto select-none"
+                        size="large"
+                        ref={formRef}
+                        model={form.value}
+                        rules={state.rules}
+                        disabled={state.loading}
+                        show-label={false}
+                    >
+                        <n-h2 class="text-28 font-500 text-center">
+                            <n-text depth={2}>欢迎登录白玉京</n-text>
+                        </n-h2>
+                        <n-form-item path="email">
+                            <n-input
+                                maxlength={32}
+                                type="text"
+                                placeholder="请输入登录账号"
+                                v-model:value={form.value.email}
+                                input-props={{ autocomplete: 'on' }}
+                                //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-user />}></n-icon> }}
+                            ></n-input>
+                        </n-form-item>
+                        <n-form-item path="password">
+                            <n-input
+                                class="n-deep-style"
+                                maxlength={32}
+                                placeholder="请输入登录密码"
+                                //type={scope.loading ? 'text' : 'password'}
+                                input-props={{ autocomplete: 'new-password' }}
+                                style={{ '--input-password-right': '46px' }}
+                                v-model:value={form.value.password}
+                                //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                v-slots={{
+                                    prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
+                                    suffix: () => (
+                                        <n-button
+                                            text
+                                            focusable={false}
+                                            //disabled={loading.value}
+                                            //onClick={(evt: Event) => done({ loading: !scope.loading })}
+                                        >
+                                            <n-icon
+                                                color="var(--text-color-3)"
+                                                size={22}
+                                                component={<local-naive-eye />}
+                                                //component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
+                                            ></n-icon>
+                                        </n-button>
+                                    )
+                                }}
+                            ></n-input>
+                        </n-form-item>
+                        <n-form-item path="code">
+                            <n-space class="w-full" wrap-item={false}>
+                                <n-input
+                                    class="n-deep-style"
+                                    type="text"
+                                    placeholder="验证码"
+                                    maxlength={4}
+                                    style={{ flex: 1 }}
+                                    v-model:value={form.value.code}
+                                    //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                    v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
+                                ></n-input>
+                            </n-space>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-button
+                                class="w-full"
+                                type="info"
+                                focusable={false}
+                                //disabled={loading.value}
+                                //loading={loading.value}
+                                //onClick={onSubmit}
+                            >
+                                立即登录
+                            </n-button>
+                        </n-form-item>
+                        <n-space class="w-full" wrap-item={false} justify="space-between">
+                            <n-button text focusable={false}>
+                                忘记密码
+                            </n-button>
+                            <n-button text focusable={false}>
+                                注册账号
+                            </n-button>
+                        </n-space>
+                        <n-space size={32} wrap-item={false} justify="center" align="center" style={{ marginTop: '24px' }}>
+                            <n-button text focusable={false}>
+                                <n-icon size={44} component={<local-naive-github />}></n-icon>
+                            </n-button>
+                            <n-button text focusable={false}>
+                                <n-icon size={24} component={<local-naive-specor />}></n-icon>
+                            </n-button>
+                            <n-button text focusable={false}>
+                                <n-icon size={44} component={<local-naive-google />}></n-icon>
+                            </n-button>
+                        </n-space>
+                    </n-form>
+                </n-card>
             </n-element>
         )
     }

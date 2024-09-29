@@ -37,7 +37,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                     NaiveUiResolver(),
                     IconsResolver({
                         prefix: false,
-                        enabledCollections: ['local', 'ep']
+                        enabledCollections: ['local']
                     })
                 ]
             }),

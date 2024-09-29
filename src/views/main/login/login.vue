@@ -12,6 +12,7 @@ export default defineComponent({
 
         return () => (
             <n-element class="login-element h-full p-24 flex justify-center items-center">
+                <layout-stripe></layout-stripe>
                 <n-card
                     class="w-full h-full max-w-520 max-h-520 p-24"
                     style={{ boxShadow: 'var(--box-shadow-1)' }}
@@ -27,7 +28,7 @@ export default defineComponent({
                         show-label={false}
                     >
                         <n-h2 class="text-28 font-500 text-center">
-                            <n-text depth={2}>欢迎登录白玉京</n-text>
+                            <n-text depth={2}>欢迎登录剑气长城</n-text>
                         </n-h2>
                         <n-form-item path="email">
                             <n-input

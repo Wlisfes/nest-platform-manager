@@ -28,7 +28,7 @@ export default defineComponent({
                         show-label={false}
                     >
                         <n-h2 class="text-28 font-500 text-center">
-                            <n-text depth={2}>欢迎登录剑气长城</n-text>
+                            <n-text depth={2}>欢迎登录</n-text>
                         </n-h2>
                         <n-form-item path="email">
                             <n-input
@@ -42,34 +42,40 @@ export default defineComponent({
                             ></n-input>
                         </n-form-item>
                         <n-form-item path="password">
-                            <n-input
-                                class="n-deep-style"
-                                maxlength={32}
-                                placeholder="请输入登录密码"
-                                //type={scope.loading ? 'text' : 'password'}
-                                input-props={{ autocomplete: 'new-password' }}
-                                style={{ '--input-password-right': '46px' }}
-                                v-model:value={form.value.password}
-                                //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
-                                v-slots={{
-                                    prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
-                                    suffix: () => (
-                                        <n-button
-                                            text
-                                            focusable={false}
-                                            //disabled={loading.value}
-                                            //onClick={(evt: Event) => done({ loading: !scope.loading })}
+                            <common-state>
+                                {{
+                                    default: (data: Omix<{ loading: boolean }>, done: Function) => (
+                                        <n-input
+                                            class="n-deep-style"
+                                            maxlength={32}
+                                            placeholder="请输入登录密码"
+                                            type={data.loading ? 'text' : 'password'}
+                                            input-props={{ autocomplete: 'new-password' }}
+                                            style={{ '--input-password-right': '46px' }}
+                                            v-model:value={form.value.password}
+                                            //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                         >
-                                            <n-icon
-                                                color="var(--text-color-3)"
-                                                size={22}
-                                                component={<local-naive-eye />}
-                                                //component={scope.loading ? <Iv-BsEyc /> : <Iv-BsEye />}
-                                            ></n-icon>
-                                        </n-button>
+                                            {{
+                                                prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
+                                                suffix: () => (
+                                                    <n-button
+                                                        text
+                                                        focusable={false}
+                                                        disabled={state.loading}
+                                                        onClick={(evt: Event) => done({ loading: !data.loading })}
+                                                    >
+                                                        <n-icon
+                                                            color="var(--text-color-3)"
+                                                            size={22}
+                                                            component={data.loading ? <local-naive-eys /> : <local-naive-eye />}
+                                                        ></n-icon>
+                                                    </n-button>
+                                                )
+                                            }}
+                                        </n-input>
                                     )
                                 }}
-                            ></n-input>
+                            </common-state>
                         </n-form-item>
                         <n-form-item path="code">
                             <n-space class="w-full" wrap-item={false}>

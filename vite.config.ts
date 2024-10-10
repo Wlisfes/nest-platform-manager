@@ -54,7 +54,14 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         server: {
             hmr: true,
             port: 4680,
-            host: '0.0.0.0'
+            host: '0.0.0.0',
+            proxy: {
+                [`/api/account`]: {
+                    target: `http://localhost:4080`,
+                    ws: true,
+                    changeOrigin: true
+                }
+            }
         }
     }
 })

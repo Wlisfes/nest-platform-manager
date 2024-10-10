@@ -1,6 +1,7 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
+import { defineComponent } from 'vue'
 import { useForm } from '@/hooks/hook-form'
+import { fetchRefresh } from '@/components/common/common.instance'
 
 export default defineComponent({
     name: 'MainLogin',
@@ -46,11 +47,10 @@ export default defineComponent({
                                 {{
                                     default: (data: Omix<{ loading: boolean }>, done: Function) => (
                                         <n-input
-                                            class="n-deep-style"
                                             maxlength={32}
                                             placeholder="请输入登录密码"
                                             type={data.loading ? 'text' : 'password'}
-                                            input-props={{ autocomplete: 'new-password' }}
+                                            input-props={{ autocomplete: 'password' }}
                                             style={{ '--input-password-right': '46px' }}
                                             v-model:value={form.value.password}
                                             //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
@@ -78,18 +78,17 @@ export default defineComponent({
                             </common-state>
                         </n-form-item>
                         <n-form-item path="code">
-                            <n-space class="w-full" wrap-item={false}>
+                            <n-flex class="w-full">
                                 <n-input
-                                    class="n-deep-style"
+                                    class="flex-1"
                                     type="text"
                                     placeholder="验证码"
                                     maxlength={4}
-                                    style={{ flex: 1 }}
                                     v-model:value={form.value.code}
-                                    //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                     v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
                                 ></n-input>
-                            </n-space>
+                                <common-codex></common-codex>
+                            </n-flex>
                         </n-form-item>
                         <n-form-item>
                             <n-button
@@ -103,15 +102,15 @@ export default defineComponent({
                                 立即登录
                             </n-button>
                         </n-form-item>
-                        <n-space class="w-full" wrap-item={false} justify="space-between">
+                        <n-flex class="w-full" justify="space-between">
                             <n-button text focusable={false}>
                                 忘记密码
                             </n-button>
                             <n-button text focusable={false}>
                                 注册账号
                             </n-button>
-                        </n-space>
-                        <n-space size={32} wrap-item={false} justify="center" align="center" style={{ marginTop: '24px' }}>
+                        </n-flex>
+                        <n-flex size={32} wrap-item={false} justify="center" align="center" style={{ marginTop: '24px' }}>
                             <n-button text focusable={false}>
                                 <n-icon size={44} component={<local-naive-github />}></n-icon>
                             </n-button>
@@ -121,7 +120,7 @@ export default defineComponent({
                             <n-button text focusable={false}>
                                 <n-icon size={44} component={<local-naive-google />}></n-icon>
                             </n-button>
-                        </n-space>
+                        </n-flex>
                     </n-form>
                 </n-card>
             </n-element>

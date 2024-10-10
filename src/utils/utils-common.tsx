@@ -25,7 +25,7 @@ export function divineWherer<T>(where: boolean, value: T, defaultValue?: T): T {
 }
 
 /**延时方法**/
-export function divineDelay(delay = 100, handler?: Function) {
+export function fetchDelay(delay = 100, handler?: Function) {
     return new Promise(resolve => {
         const timeout = setTimeout(() => {
             handler?.()

@@ -1,7 +1,7 @@
 import { ref, toRefs } from 'vue'
 import { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
-import { divineDelay, divineHandler } from '@/utils/utils-common'
+import { fetchDelay, divineHandler } from '@/utils/utils-common'
 
 export interface ScopeOption<T> {
     initialize?: boolean
@@ -57,7 +57,7 @@ export function useForm<T extends Omix>(option: ScopeOption<T>) {
 
     /**滚动到第一个报错表单选项**/
     async function divineFormScrollbar() {
-        await divineDelay(0)
+        await fetchDelay(0)
         return await divineHandler(Boolean(formRef.value), {
             handler: async () => {
                 const element = formRef.value!.$el.querySelector('.el-form-item__error')

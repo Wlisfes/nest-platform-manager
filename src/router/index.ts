@@ -20,8 +20,6 @@ export enum APP_SKYLINE {
 export type RouteOption = ReturnType<typeof useRoute>
 export type RouteComponentOption = Omix<{ Component: Omix<DefineComponent>; route: RouteOption }>
 
-export const routes = []
-
 export function createRoutes() {
     return concat([], mainRoutes)
 }
@@ -209,9 +207,11 @@ export const router = createRouter({
 //     ]
 // })
 
-export function setupRouter(app: App<Element>) {
+export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boolean }>) {
     app.use(router)
-    setupGuardRouter(router)
+    if (option.interceptor) {
+        setupGuardRouter(router)
+    }
 }
 
 /**路由守卫**/

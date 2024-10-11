@@ -1,6 +1,8 @@
 import { App, DefineComponent } from 'vue'
 import { createRouter, createWebHistory, Router, useRoute } from 'vue-router'
+import type { RouteLocationNormalized as ToRoute, RouteLocationNormalizedLoaded as FromRoute, NavigationGuardNext } from 'vue-router'
 import { useConfiger } from '@/store'
+import { getToken, delCompose, EnumRoute } from '@/utils/utils-cookie'
 import LayoutContainer from '@/components/layouts/layout-container.vue'
 import LayoutRefresh from '@/components/layouts/layout-refresh.vue'
 import LayoutRouter from '@/components/layouts/layout-router.vue'
@@ -214,14 +216,34 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
     }
 }
 
+/**存在token验证**/
+export async function fetchAuthRoute(to: ToRoute, from: FromRoute, next: NavigationGuardNext) {
+    if (to.meta.AUTH) {
+    }
+}
+
+/**不存在token验证**/
+export async function fetchNoneRoute(to: ToRoute, from: FromRoute, next: NavigationGuardNext) {
+    if (to.meta.AUTH === EnumRoute.AUTH) {
+        return next({ path: `/login`, replace: true })
+    } else if (to.meta.AUTH === EnumRoute.AUTH_NONE) {
+        return next()
+    }
+    console.log('1111')
+    return next()
+}
+
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
     const { setAfterRouter } = useConfiger()
 
     router.beforeEach(async (to, from, next) => {
         window.$loadingBar.start()
-
-        return next()
+        if (getToken()) {
+            return await fetchAuthRoute(to, from, next)
+        } else {
+            return await fetchNoneRoute(to, from, next)
+        }
     })
 
     router.afterEach(async (to, from) => {

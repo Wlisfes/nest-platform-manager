@@ -1,5 +1,10 @@
 import JsCookie from 'js-cookie'
 
+export enum EnumRoute {
+    AUTH = 'AUTH',
+    AUTH_NONE = 'AUTH_NONE'
+}
+
 export enum EnumCookie {
     APP_TOKEN = 'APP_NEST_TOKEN',
     APP_TOKEN_SECRET = 'APP_NEST_TOKEN_SECRET',

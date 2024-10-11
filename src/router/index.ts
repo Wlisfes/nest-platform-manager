@@ -2,7 +2,7 @@ import { App, DefineComponent } from 'vue'
 import { createRouter, createWebHistory, Router, useRoute } from 'vue-router'
 import type { RouteLocationNormalized as ToRoute, RouteLocationNormalizedLoaded as FromRoute, NavigationGuardNext } from 'vue-router'
 import { useConfiger } from '@/store'
-import { getToken, delCompose, EnumRoute } from '@/utils/utils-cookie'
+import { getToken, delCompose, APP_AUTH } from '@/utils/utils-cookie'
 import LayoutContainer from '@/components/layouts/layout-container.vue'
 import LayoutRefresh from '@/components/layouts/layout-refresh.vue'
 import LayoutRouter from '@/components/layouts/layout-router.vue'
@@ -224,12 +224,11 @@ export async function fetchAuthRoute(to: ToRoute, from: FromRoute, next: Navigat
 
 /**不存在token验证**/
 export async function fetchNoneRoute(to: ToRoute, from: FromRoute, next: NavigationGuardNext) {
-    if (to.meta.AUTH === EnumRoute.AUTH) {
+    if (to.meta.AUTH === APP_AUTH.AUTH) {
         return next({ path: `/login`, replace: true })
-    } else if (to.meta.AUTH === EnumRoute.AUTH_NONE) {
+    } else if (to.meta.AUTH === APP_AUTH.AUTH_NONE) {
         return next()
     }
-    console.log('1111')
     return next()
 }
 

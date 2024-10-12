@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { useForm } from '@/hooks/hook-form'
 import { enter } from '@/utils/utils-common'
+import { setCompose } from '@/utils/utils-cookie'
 import { router } from '@/router'
 import { fetchRefresh } from '@/components/common/common.instance'
 import * as Service from '@/api/instance.service'
@@ -32,13 +33,19 @@ export default defineComponent({
                     })
                 }
                 try {
-                    const { data, message } = await Service.httpAuthMember({
+                    const { data } = await Service.httpAuthMember({
                         code: form.value.code,
                         jobNumber: form.value.jobNumber,
                         password: window.btoa(encodeURIComponent(form.value.password))
                     })
-                    return router.push('/')
-                } catch (err) {}
+                    return await setCompose(data).then(() => {
+                        return router.push({ path: '/', replace: true })
+                    })
+                } catch (err) {
+                    return await fetchRefresh(300).then(() => {
+                        return setState({ loading: false })
+                    })
+                }
             })
         }
 
@@ -119,7 +126,7 @@ export default defineComponent({
                                     onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                     v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
                                 ></n-input>
-                                <common-codex></common-codex>
+                                <common-codex disabled={state.loading}></common-codex>
                             </n-flex>
                         </n-form-item>
                         <n-form-item>
@@ -169,5 +176,29 @@ export default defineComponent({
     background-image: url('@/assets/images/nest-element-login.jpg');
     background-repeat: no-repeat;
     background-size: cover;
+    :deep(.n-input) {
+        --n-padding-left: 0;
+        --n-padding-right: 0;
+        --input-password-right: 14px;
+        .n-input__prefix {
+            position: absolute;
+            z-index: 1;
+            height: 100%;
+            margin: 0;
+            left: 14px;
+        }
+        .n-input__suffix {
+            position: absolute;
+            z-index: 1;
+            height: 100%;
+            margin: 0;
+            right: 14px;
+        }
+        .n-input__placeholder,
+        .n-input__input-el {
+            padding-right: var(--input-password-right);
+            padding-left: 46px;
+        }
+    }
 }
 </style>

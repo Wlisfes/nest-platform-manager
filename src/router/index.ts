@@ -218,8 +218,12 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
 
 /**存在token验证**/
 export async function fetchAuthRoute(to: ToRoute, from: FromRoute, next: NavigationGuardNext) {
-    if (to.meta.AUTH) {
+    if (to.meta.AUTH === APP_AUTH.AUTH_NONE) {
+        return next({ path: '/', replace: true })
+    } else if (to.meta.AUTH === APP_AUTH.AUTH) {
+        return next()
     }
+    return next()
 }
 
 /**不存在token验证**/

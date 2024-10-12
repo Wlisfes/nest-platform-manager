@@ -20,7 +20,7 @@ export function enter(e: KeyboardEvent, handler?: Function) {
 }
 
 /**根据条件返回不同参数**/
-export function divineWherer<T>(where: boolean, value: T, defaultValue?: T): T {
+export function fetchWhere<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T
 }
 
@@ -36,7 +36,7 @@ export function fetchDelay(delay = 100, handler?: Function) {
 }
 
 /**条件函数执行**/
-export async function divineHandler<T>(where: boolean | Function, scope: Omix<{ handler: Function; failure?: Function }>): Promise<T> {
+export async function fetchHandler<T>(where: boolean | Function, scope: Omix<{ handler: Function; failure?: Function }>): Promise<T> {
     if (typeof where === 'function') {
         where = await where()
     }
@@ -48,12 +48,12 @@ export async function divineHandler<T>(where: boolean | Function, scope: Omix<{ 
 }
 
 /**参数组合函数**/
-export async function divineParameter<T>(data: T) {
+export async function fetchParameter<T>(data: T) {
     return data
 }
 
 /**字节转换文字输出**/
-export function divineBytefor(byte: number, dec: number = 2) {
+export function fetchByte(byte: number, dec: number = 2) {
     if (byte === 0) return 'Byte'
     const k = 1024
     const dm = dec < 0 ? 0 : dec

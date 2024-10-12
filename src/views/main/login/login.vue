@@ -1,15 +1,46 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useForm } from '@/hooks/hook-form'
+import { enter } from '@/utils/utils-common'
+import { router } from '@/router'
 import { fetchRefresh } from '@/components/common/common.instance'
+import * as Service from '@/api/instance.service'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'MainLogin',
     setup(props) {
-        const { formRef, form, state } = useForm({
-            form: {},
-            rules: {}
+        const { formRef, form, state, setState, fetchValidate } = useForm({
+            form: {
+                jobNumber: '',
+                password: '',
+                code: ''
+            },
+            rules: {
+                jobNumber: { required: true, trigger: 'blur', min: 4, max: 4, message: '请输入4位工号' },
+                password: { required: true, trigger: 'blur', min: 6, max: 18, message: '请输入6~18位登录密码' },
+                code: { required: true, trigger: 'blur', message: '请输入验证码' }
+            }
         })
+
+        async function onSubmit() {
+            await setState({ loading: true })
+            return await fetchValidate().then(async valid => {
+                if (!valid) {
+                    return await fetchRefresh(300).then(() => {
+                        return setState({ loading: false })
+                    })
+                }
+                try {
+                    const { data, message } = await Service.httpAuthMember({
+                        code: form.value.code,
+                        jobNumber: form.value.jobNumber,
+                        password: window.btoa(encodeURIComponent(form.value.password))
+                    })
+                    return router.push('/')
+                } catch (err) {}
+            })
+        }
 
         return () => (
             <n-element class="login-element h-full p-24 flex justify-center items-center">
@@ -31,14 +62,14 @@ export default defineComponent({
                         <n-h2 class="text-28 font-500 text-center">
                             <n-text depth={2}>欢迎登录</n-text>
                         </n-h2>
-                        <n-form-item path="email">
+                        <n-form-item path="jobNumber">
                             <n-input
                                 maxlength={32}
                                 type="text"
                                 placeholder="请输入登录账号"
-                                v-model:value={form.value.email}
+                                v-model:value={form.value.jobNumber}
                                 input-props={{ autocomplete: 'on' }}
-                                //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                 v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-user />}></n-icon> }}
                             ></n-input>
                         </n-form-item>
@@ -53,7 +84,7 @@ export default defineComponent({
                                             input-props={{ autocomplete: 'password' }}
                                             style={{ '--input-password-right': '46px' }}
                                             v-model:value={form.value.password}
-                                            //onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                            onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                         >
                                             {{
                                                 prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
@@ -85,6 +116,7 @@ export default defineComponent({
                                     placeholder="验证码"
                                     maxlength={4}
                                     v-model:value={form.value.code}
+                                    onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                     v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
                                 ></n-input>
                                 <common-codex></common-codex>
@@ -95,9 +127,9 @@ export default defineComponent({
                                 class="w-full"
                                 type="info"
                                 focusable={false}
-                                //disabled={loading.value}
-                                //loading={loading.value}
-                                //onClick={onSubmit}
+                                disabled={state.loading}
+                                loading={state.loading}
+                                onClick={onSubmit}
                             >
                                 立即登录
                             </n-button>

@@ -1,7 +1,7 @@
 import { ref, toRefs } from 'vue'
 import { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
-import { fetchDelay, divineHandler } from '@/utils/utils-common'
+import { fetchDelay, fetchHandler } from '@/utils/utils-common'
 
 export interface ScopeOption<T> {
     initialize?: boolean
@@ -19,8 +19,8 @@ export function useForm<T extends Omix>(option: ScopeOption<T>) {
     const { state, setState } = useState({
         initialize: option.initialize ?? true,
         disabled: option.disabled ?? false,
-        visible: option.visible,
-        loading: option.loading,
+        visible: option.visible ?? false,
+        loading: option.loading ?? false,
         rules: option.rules ?? {}
     })
 
@@ -29,7 +29,7 @@ export function useForm<T extends Omix>(option: ScopeOption<T>) {
     }
 
     /**验证表单**/
-    function divineFormValidater(formatter?: (e: Omix<FormItemRule>) => boolean): Promise<any> {
+    function fetchValidate(formatter?: (e: Omix<FormItemRule>) => boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             if (!formRef.value) {
                 return reject('不存在formRef实例')
@@ -46,7 +46,7 @@ export function useForm<T extends Omix>(option: ScopeOption<T>) {
     }
 
     /**重置表单校验结果**/
-    function divineFormRestore() {
+    function divineRestore() {
         return new Promise((resolve, reject) => {
             if (!formRef.value) {
                 return reject('不存在formRef实例')
@@ -56,15 +56,12 @@ export function useForm<T extends Omix>(option: ScopeOption<T>) {
     }
 
     /**滚动到第一个报错表单选项**/
-    async function divineFormScrollbar() {
+    async function fetchScrollbar() {
         await fetchDelay(0)
-        return await divineHandler(Boolean(formRef.value), {
+        return await fetchHandler(Boolean(formRef.value), {
             handler: async () => {
                 const element = formRef.value!.$el.querySelector('.el-form-item__error')
-                return element!.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                })
+                return element!.scrollIntoView({ behavior: 'smooth', block: 'center' })
             }
         })
     }
@@ -76,8 +73,8 @@ export function useForm<T extends Omix>(option: ScopeOption<T>) {
         ...toRefs(state),
         setState,
         setForm,
-        divineFormValidater,
-        divineFormRestore,
-        divineFormScrollbar
+        fetchValidate,
+        divineRestore,
+        fetchScrollbar
     }
 }

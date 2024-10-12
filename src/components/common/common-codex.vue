@@ -6,7 +6,8 @@ import { fetchDelay } from '@/utils/utils-common'
 const observer = Observer()
 const COMMON_CODEX_REPEAT = Symbol('COMMON_CODEX_REPEAT')
 
-export async function fetchRefresh() {
+export async function fetchRefresh(delay: number = 0) {
+    await fetchDelay(delay)
     return observer.emit(COMMON_CODEX_REPEAT)
 }
 

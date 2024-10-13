@@ -17,7 +17,7 @@ export default defineComponent({
                 { title: '菜单类型', key: 'type' },
                 { title: '状态', key: 'state' },
                 { title: '排序', key: 'sort' },
-                { title: '是否可见', key: 'show' },
+                { title: '是否显示', key: 'show' },
                 { title: '修改人', key: 'staffName' },
                 { title: '修改时间', key: 'updateTime' }
             ]

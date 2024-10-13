@@ -1,16 +1,15 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useForm } from '@/hooks/hook-form'
 import { enter } from '@/utils/utils-common'
 import { setCompose } from '@/utils/utils-cookie'
 import { router } from '@/router'
-import { fetchRefresh } from '@/components/common/common.instance'
 import * as Service from '@/api/instance.service'
-import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'MainLogin',
     setup(props) {
+        const codexRef = ref<any>()
         const { formRef, form, state, setState, fetchValidate } = useForm({
             form: {
                 jobNumber: '',
@@ -28,7 +27,7 @@ export default defineComponent({
             await setState({ loading: true })
             return await fetchValidate().then(async valid => {
                 if (!valid) {
-                    return await fetchRefresh(300).then(() => {
+                    return await codexRef.value.fetchRefresh(300).then(() => {
                         return setState({ loading: false })
                     })
                 }
@@ -42,7 +41,7 @@ export default defineComponent({
                         return router.push({ path: '/', replace: true })
                     })
                 } catch (err) {
-                    return await fetchRefresh(300).then(() => {
+                    return await codexRef.value.fetchRefresh(300).then(() => {
                         return setState({ loading: false })
                     })
                 }
@@ -126,7 +125,7 @@ export default defineComponent({
                                     onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                     v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
                                 ></n-input>
-                                <common-codex disabled={state.loading}></common-codex>
+                                <common-codex ref={codexRef} disabled={state.loading}></common-codex>
                             </n-flex>
                         </n-form-item>
                         <n-form-item>

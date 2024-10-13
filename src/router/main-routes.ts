@@ -1,18 +1,31 @@
 import { RouteRecordRaw } from 'vue-router'
-import { APP_AUTH } from '@/utils/utils-cookie'
-import Login from '@/views/main/login/login.vue'
+import { concat } from 'lodash'
+import { APP_NEST } from '@/utils/utils-cookie'
+import { crmRoutes } from '@/router/crm-routes'
+import { systemRoutes } from '@/router/system-routes'
+
+export const childRoutes: Array<Omix<RouteRecordRaw>> = concat(crmRoutes, systemRoutes, [
+    {
+        path: '/manager',
+        name: 'Manager',
+        meta: { title: '工作台', AUTH: APP_NEST.AUTH },
+        component: () => import('@/views/main/manager/manager.vue')
+    }
+])
 
 export const mainRoutes: Array<Omix<RouteRecordRaw>> = [
     {
         path: '/login',
-        name: Login.name,
-        meta: { AUTH: APP_AUTH.AUTH_NONE },
-        component: Login
+        name: 'Login',
+        meta: { AUTH: APP_NEST.AUTH_NONE },
+        component: () => import('@/views/main/login/login.vue')
     },
     {
         path: '/',
-        name: 'Home',
-        meta: { AUTH: APP_AUTH.AUTH },
-        component: () => import('@/views/main/home/home.vue')
+        redirect: '/manager',
+        name: 'LayoutContainer',
+        meta: { AUTH: APP_NEST.AUTH },
+        component: () => import('@/components/layouts/layout-container.vue'),
+        children: childRoutes
     }
 ]

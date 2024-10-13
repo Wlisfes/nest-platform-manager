@@ -1,6 +1,6 @@
 import JsCookie from 'js-cookie'
 
-export enum APP_AUTH {
+export enum APP_NEST {
     AUTH = 'AUTH',
     AUTH_NONE = 'AUTH_NONE'
 }

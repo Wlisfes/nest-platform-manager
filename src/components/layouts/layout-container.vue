@@ -1,11 +1,10 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, KeepAlive } from 'vue'
 import { RouterView, RouterLink } from 'vue-router'
-import { KeepAliveComponent } from 'vue3-keep-alive-component'
 import { useState } from '@/hooks/hook-state'
 import { useManager } from '@/hooks/hook-manager'
 import { useConfiger, useStore } from '@/store'
-import { APP_SKYLINE, RouteComponentOption, router } from '@/router'
+import { APP_SKYLINE, router } from '@/router'
 
 export default defineComponent({
     name: 'LayoutContainer',
@@ -33,23 +32,28 @@ export default defineComponent({
         return () => (
             <n-layout class="h-full" content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <n-layout-header class="h-50 p-inline-20 flex items-center" bordered>
-                    <n-menu
+                    {/* <n-menu
                         mode="horizontal"
                         key-field="iframeName"
                         responsive
                         options={state.menuOptions}
                         v-model:value={activeName.value}
                         render-label={fetchNavigateRender}
-                    ></n-menu>
+                    ></n-menu> */}
                     <n-button onClick={() => fetchRefreshCurrentRouter({ fullPath: router.currentRoute.value.fullPath })}>刷新</n-button>
                 </n-layout-header>
-                <RouterView
-                    v-slots={{
-                        default: ({ Component, route }: RouteComponentOption) => {
-                            return <KeepAliveComponent exclude={['LayoutRefresh']} component={Component}></KeepAliveComponent>
-                        }
-                    }}
-                ></RouterView>
+                <n-layout class="flex-1" has-sider content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    <n-layout-sider show-trigger="bar" collapse-mode="width" bordered width={280} collapsed-width={60}></n-layout-sider>
+                    <n-layout content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                        <n-layout-content
+                            class="flex-1 overflow-hidden"
+                            native-scrollbar={false}
+                            scrollbar-props={{ size: 100, trigger: 'none', xScrollable: true }}
+                        >
+                            <RouterView></RouterView>
+                        </n-layout-content>
+                    </n-layout>
+                </n-layout>
             </n-layout>
         )
     }

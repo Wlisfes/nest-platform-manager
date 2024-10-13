@@ -2,7 +2,7 @@ import { App, DefineComponent } from 'vue'
 import { createRouter, createWebHistory, Router, useRoute } from 'vue-router'
 import type { RouteLocationNormalized as ToRoute, RouteLocationNormalizedLoaded as FromRoute, NavigationGuardNext } from 'vue-router'
 import { useConfiger } from '@/store'
-import { getToken, delCompose, APP_AUTH } from '@/utils/utils-cookie'
+import { getToken, delCompose, APP_NEST } from '@/utils/utils-cookie'
 import LayoutContainer from '@/components/layouts/layout-container.vue'
 import LayoutRefresh from '@/components/layouts/layout-refresh.vue'
 import LayoutRouter from '@/components/layouts/layout-router.vue'
@@ -10,7 +10,6 @@ import LayoutCrmContainer from '@/components/layouts/layout-crm-container.vue'
 import LayoutSrmContainer from '@/components/layouts/layout-srm-container.vue'
 import LayoutSysContainer from '@/components/layouts/layout-sys-container.vue'
 import { mainRoutes } from '@/router/main-routes'
-import { concat } from 'lodash'
 
 export enum APP_SKYLINE {
     Manager = 'manager-platform',
@@ -22,13 +21,9 @@ export enum APP_SKYLINE {
 export type RouteOption = ReturnType<typeof useRoute>
 export type RouteComponentOption = Omix<{ Component: Omix<DefineComponent>; route: RouteOption }>
 
-export function createRoutes() {
-    return concat([], mainRoutes)
-}
-
 export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    routes: createRoutes()
+    routes: mainRoutes
 })
 // export const router = createRouter({
 //     history: createWebHistory(import.meta.env.BASE_URL),
@@ -218,9 +213,9 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
 
 /**存在token验证**/
 export async function fetchAuthRoute(to: ToRoute, from: FromRoute, next: NavigationGuardNext) {
-    if (to.meta.AUTH === APP_AUTH.AUTH_NONE) {
+    if (to.meta.AUTH === APP_NEST.AUTH_NONE) {
         return next({ path: '/', replace: true })
-    } else if (to.meta.AUTH === APP_AUTH.AUTH) {
+    } else if (to.meta.AUTH === APP_NEST.AUTH) {
         return next()
     }
     return next()
@@ -228,9 +223,9 @@ export async function fetchAuthRoute(to: ToRoute, from: FromRoute, next: Navigat
 
 /**不存在token验证**/
 export async function fetchNoneRoute(to: ToRoute, from: FromRoute, next: NavigationGuardNext) {
-    if (to.meta.AUTH === APP_AUTH.AUTH) {
+    if (to.meta.AUTH === APP_NEST.AUTH) {
         return next({ path: `/login`, replace: true })
-    } else if (to.meta.AUTH === APP_AUTH.AUTH_NONE) {
+    } else if (to.meta.AUTH === APP_NEST.AUTH_NONE) {
         return next()
     }
     return next()

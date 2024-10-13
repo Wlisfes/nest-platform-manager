@@ -5,7 +5,7 @@ import { router, RouteOption, APP_SKYLINE } from '@/router'
 
 export interface ConfigState {
     theme: 'light' | 'dark'
-
+    primaryColor: string
     activeName: string
     currentRoute: string
     include: Array<string>
@@ -15,6 +15,7 @@ export interface ConfigState {
 export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
     const { state, setState } = useState<ConfigState>({
         theme: 'light',
+        primaryColor: '#24B89E',
         activeName: APP_SKYLINE.Manager,
         currentRoute: '/manager',
         include: [],

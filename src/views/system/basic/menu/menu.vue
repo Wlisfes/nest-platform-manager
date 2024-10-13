@@ -53,7 +53,7 @@ export default defineComponent({
                     <n-card class="flex-1" content-class="p-0! flex flex-col overflow-hidden">
                         <div class="flex items-center gap-12 p-inline-12 p-block-6">
                             <n-h4 class="m-0 flex-1 line-height-34">菜单列表</n-h4>
-                            <n-button type="info" onClick={fetchCreateDialogSystemMenu}>
+                            <n-button type="primary" focusable={false} onClick={fetchCreateDialogSystemMenu}>
                                 新增
                             </n-button>
                         </div>

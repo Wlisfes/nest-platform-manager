@@ -16,30 +16,33 @@ export default defineComponent({
                 { label: '工作台', key: '/manager', iframeName: APP_SKYLINE.Manager },
                 { label: '销售管理', key: '/crm', iframeName: APP_SKYLINE.Crm },
                 { label: '采购管理', key: '/srm', iframeName: APP_SKYLINE.Srm },
-                { label: '综合设置', key: '/sys', iframeName: APP_SKYLINE.Sys }
+                { label: '综合设置', key: '/system/basic/menu', iframeName: APP_SKYLINE.Sys }
             ]
         })
 
         /**渲染导航组件**/
         function fetchNavigateRender(item: Omix<{ key: string; label: string }>) {
-            return (
-                <RouterLink to={item.key}>
-                    <span class="text-16">{item.label}</span>
-                </RouterLink>
-            )
+            if (item.key === '/system/basic/menu') {
+                return (
+                    <RouterLink to={item.key}>
+                        <span class="text-16">{item.label}</span>
+                    </RouterLink>
+                )
+            }
+            return <span class="text-16">{item.label}</span>
         }
 
         return () => (
             <n-layout class="h-full" content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 <n-layout-header class="h-50 p-inline-20 flex items-center" bordered>
-                    {/* <n-menu
+                    <n-menu
                         mode="horizontal"
                         key-field="iframeName"
                         responsive
                         options={state.menuOptions}
                         v-model:value={activeName.value}
                         render-label={fetchNavigateRender}
-                    ></n-menu> */}
+                    ></n-menu>
                     <n-button onClick={() => fetchRefreshCurrentRouter({ fullPath: router.currentRoute.value.fullPath })}>刷新</n-button>
                 </n-layout-header>
                 <n-layout class="flex-1" has-sider content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -47,6 +50,7 @@ export default defineComponent({
                     <n-layout content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         <n-layout-content
                             class="flex-1 overflow-hidden"
+                            content-class="min-h-full flex flex-col"
                             native-scrollbar={false}
                             scrollbar-props={{ size: 100, trigger: 'none', xScrollable: true }}
                         >

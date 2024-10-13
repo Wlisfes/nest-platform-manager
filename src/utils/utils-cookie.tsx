@@ -15,7 +15,7 @@ export enum APP_COOKIE {
 export async function setCookie(key: keyof typeof APP_COOKIE, data: any, expires: number = 0) {
     if (expires && expires > 0) {
         return JsCookie.set(key, JSON.stringify(data), {
-            expires
+            expires: new Date(Date.now() + expires * 1000)
         })
     }
     return JsCookie.set(key, JSON.stringify(data))
@@ -35,7 +35,9 @@ export async function delCookie(key: keyof typeof APP_COOKIE) {
 }
 
 export async function setToken(token: string, expires: number) {
-    return JsCookie.set(APP_COOKIE.APP_TOKEN, token, { expires })
+    return JsCookie.set(APP_COOKIE.APP_TOKEN, token, {
+        expires: new Date(Date.now() + expires * 1000)
+    })
 }
 
 export function getToken(defaultValue?: string) {

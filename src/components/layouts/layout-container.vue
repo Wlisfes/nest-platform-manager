@@ -3,6 +3,7 @@ import { defineComponent, KeepAlive } from 'vue'
 import { RouterView, RouterLink } from 'vue-router'
 import { useState } from '@/hooks/hook-state'
 import { useManager } from '@/hooks/hook-manager'
+import { useProvider } from '@/hooks/hook-provider'
 import { useConfiger, useStore } from '@/store'
 import { APP_SKYLINE, router } from '@/router'
 
@@ -10,6 +11,7 @@ export default defineComponent({
     name: 'LayoutContainer',
     setup(props) {
         const { activeName } = useStore(useConfiger)
+        const { theme, fetchThemeUpdate } = useProvider()
         const { fetchRefreshCurrentRouter } = useManager()
         const { state } = useState({
             menuOptions: [
@@ -44,6 +46,7 @@ export default defineComponent({
                         render-label={fetchNavigateRender}
                     ></n-menu>
                     <n-button onClick={() => fetchRefreshCurrentRouter({ fullPath: router.currentRoute.value.fullPath })}>刷新</n-button>
+                    <n-button onClick={() => fetchThemeUpdate(theme.value === 'dark' ? 'light' : 'dark')}>{theme.value}</n-button>
                 </n-layout-header>
                 <n-layout class="flex-1" has-sider content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                     <n-layout-sider show-trigger="bar" collapse-mode="width" bordered width={280} collapsed-width={60}></n-layout-sider>

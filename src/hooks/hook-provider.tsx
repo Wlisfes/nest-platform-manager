@@ -2,10 +2,12 @@ import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useConfiger, useStore } from '@/store'
 
-export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {}
+export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
+    '--app-back-color': string
+}
 
 export function useProvider() {
-    const { theme } = useStore(useConfiger)
+    const { theme, fetchThemeUpdate } = useStore(useConfiger)
     const vars = useThemeVars() as ComputedRef<CustomThemeCommonVars>
 
     /**主题反转**/
@@ -17,11 +19,17 @@ export function useProvider() {
     })
 
     const lightThemeOverrides = computed<GlobalThemeOverrides & { common: Partial<CustomThemeCommonVars> }>(() => ({
-        common: {}
+        common: {
+            '--app-back-color': '#eef1f5'
+        },
+        Scrollbar: { width: '7px', height: '7px' }
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides & { common: Partial<CustomThemeCommonVars> }>(() => ({
-        common: {}
+        common: {
+            '--app-back-color': '#101014'
+        },
+        Scrollbar: { width: '7px', height: '7px' }
     }))
 
-    return { theme, themeStyle, themeOverrides, vars, inverted }
+    return { theme, themeStyle, themeOverrides, vars, inverted, fetchThemeUpdate }
 }

@@ -5,6 +5,9 @@ import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'LayoutConfigProvider',
+    props: {
+        globalStyle: { type: Boolean, default: false }
+    },
     setup(props, { slots }) {
         const { themeStyle, themeOverrides } = useProvider()
 
@@ -17,10 +20,13 @@ export default defineComponent({
                 theme={themeStyle.value}
                 theme-overrides={themeOverrides.value}
             >
+                {props.globalStyle && <n-global-style />}
                 <n-loading-bar-provider>
                     <n-dialog-provider>
                         <n-notification-provider max={3}>
-                            <n-message-provider>{{ default: slots.default }}</n-message-provider>
+                            <n-message-provider>
+                                <n-element class="w-full h-full overflow-hidden">{{ default: slots.default }}</n-element>
+                            </n-message-provider>
                         </n-notification-provider>
                     </n-dialog-provider>
                 </n-loading-bar-provider>

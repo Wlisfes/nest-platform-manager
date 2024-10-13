@@ -29,6 +29,10 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
         ]
     })
 
+    async function fetchThemeUpdate(theme: ConfigState['theme']) {
+        return await setState({ theme })
+    }
+
     async function fetchDelInclude(name: string) {
         return await setState({ include: state.include.filter(keyName => keyName !== name) })
     }
@@ -72,5 +76,5 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
         })
     }
 
-    return { ...toRefs(state), setState, setAfterRouter, fetchCloseRouter, fetchSetInclude, fetchDelInclude }
+    return { ...toRefs(state), setState, fetchThemeUpdate, setAfterRouter, fetchCloseRouter, fetchSetInclude, fetchDelInclude }
 })

@@ -6,5 +6,6 @@ import presetAttributify from '@unocss/preset-attributify'
 
 export default defineConfig({
     presets: [presetUno(), presetAttributify(), presetTagify(), presetRemToPx({ baseFontSize: 4 })],
-    rules: []
+    rules: [],
+    shortcuts: [{ 'border-divider': 'border border-solid border-[var(--divider-color)]' }]
 })

@@ -5,7 +5,7 @@ export default defineComponent({
     name: 'App',
     setup() {
         return () => (
-            <layout-config-provider>
+            <layout-config-provider global-style>
                 <layout-config-mount>
                     <router-view />
                 </layout-config-mount>

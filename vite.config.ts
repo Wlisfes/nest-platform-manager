@@ -60,6 +60,11 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                     target: `http://localhost:4080`,
                     ws: true,
                     changeOrigin: true
+                },
+                [`/api/system`]: {
+                    target: `http://localhost:4070`,
+                    ws: true,
+                    changeOrigin: true
                 }
             }
         }

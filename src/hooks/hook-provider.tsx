@@ -42,7 +42,7 @@ export function useProvider() {
             primaryColorSuppl: primaryColor.value,
             '--app-back-color': '#eef1f5'
         },
-        Scrollbar: { width: '7px', height: '7px' }
+        Scrollbar: { width: '6px', height: '6px' }
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides & { common: Partial<CustomThemeCommonVars> }>(() => ({
         common: {
@@ -52,7 +52,7 @@ export function useProvider() {
             primaryColorSuppl: primaryColor.value,
             '--app-back-color': '#101014'
         },
-        Scrollbar: { width: '7px', height: '7px' }
+        Scrollbar: { width: '6px', height: '6px' }
     }))
 
     return { theme, themeStyle, themeOverrides, vars, inverted, fetchThemeUpdate }

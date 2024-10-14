@@ -1,7 +1,7 @@
 <script lang="tsx">
-import { defineComponent, onMounted, Fragment, PropType } from 'vue'
+import { defineComponent, ref, onMounted, Fragment, PropType } from 'vue'
 import { useForm } from '@/hooks/hook-form'
-import { stop, prevent } from '@/utils/utils-common'
+import { stop, prevent, fetchHandler } from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
@@ -38,13 +38,39 @@ export default defineComponent({
                 path: { required: true, trigger: 'blur', message: '请输入菜单路径' }
             }
         })
+        const pidOption = ref<Array<env.RestTreeRouter>>([])
 
         onMounted(async () => {
             await setState({ visible: true })
             // return await divineHandler(Boolean(props.uid), {
             //     handler: fetchUserSender
             // })
+
+            Service.httpColumnTreeRouter().then(({ data }) => {
+                pidOption.value = deteteTreeNode(data.list)
+            })
+            return await fetchHandler(props.command === 'UPDATE', {
+                handler: fetchResolveRouter
+            })
         })
+
+        /**菜单详情**/
+        async function fetchResolveRouter() {
+            try {
+                const { data } = await Service.httpResolveRouter({ sid: String(props.sid) })
+                console.log(data)
+            } catch (err) {}
+        }
+
+        function deteteTreeNode(data: Array<env.RestTreeRouter>) {
+            data.forEach((node: Omix) => {
+                if (node.children && node.children.length > 0) {
+                    return deteteTreeNode(node.children)
+                }
+                return delete node.children
+            })
+            return data
+        }
 
         /**新增、编辑菜单**/
         async function fetchSaveRouter(option: env.BodySaveRouter) {
@@ -126,17 +152,18 @@ export default defineComponent({
                         </n-grid-item>
                         <n-grid-item span={1}>
                             <n-form-item label="父级菜单" path="pid">
-                                <n-input placeholder="输入姓名" />
+                                <n-cascader
+                                    v-model:value={form.value.pid}
+                                    options={pidOption.value}
+                                    label-field="name"
+                                    value-field="sid"
+                                    placeholder="请选择父级菜单"
+                                ></n-cascader>
                             </n-form-item>
                         </n-grid-item>
                         <n-grid-item span={1}>
                             <n-form-item label="版本号" path="version">
                                 <n-input v-model:value={form.value.version} placeholder="请输入版本号" />
-                            </n-form-item>
-                        </n-grid-item>
-                        <n-grid-item span={1}>
-                            <n-form-item label="排序" path="sort">
-                                <n-input v-model:value={form.value.sort} placeholder="请输入排序" />
                             </n-form-item>
                         </n-grid-item>
                         <n-grid-item span={1}>
@@ -149,6 +176,11 @@ export default defineComponent({
                                         { label: '禁用', value: 'disable', type: 'error' }
                                     ]}
                                 ></n-select>
+                            </n-form-item>
+                        </n-grid-item>
+                        <n-grid-item span={1}>
+                            <n-form-item label="排序" path="sort">
+                                <n-input v-model:value={form.value.sort} placeholder="请输入排序" />
                             </n-form-item>
                         </n-grid-item>
                         {form.value.type === 'router' && (

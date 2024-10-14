@@ -1,27 +1,44 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { fetchDialogSystemMenu } from '@/components/system/hooks'
+import * as Service from '@/api/instance.service'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'BasicMenu',
     setup(props, ctx) {
         const { state, setState } = useState({
             pattern: '',
+            total: 0,
+            dataSource: [] as Array<env.BodySaveRouter>,
             columns: [
-                { title: '菜单ID', key: 'sid' },
-                { title: '菜单名称', key: 'name' },
-                { title: '图标', key: 'icon' },
-                { title: '父级ID', key: 'pid' },
-                { title: '菜单路径', key: 'path' },
-                { title: '菜单类型', key: 'type' },
-                { title: '状态', key: 'state' },
-                { title: '排序', key: 'sort' },
-                { title: '是否显示', key: 'show' },
-                { title: '修改人', key: 'staffName' },
-                { title: '修改时间', key: 'updateTime' }
+                { type: 'selection' },
+                { title: '菜单ID', key: 'sid', width: 120 },
+                { title: '父级ID', key: 'pid', width: 120 },
+                { title: '图标', key: 'icon', width: 100 },
+                { title: '菜单名称', key: 'name', minWidth: 200 },
+                { title: '菜单路径', key: 'path', minWidth: 260 },
+                { title: '菜单类型', key: 'type', minWidth: 100 },
+                { title: '状态', key: 'state', width: 100 },
+                { title: '排序', key: 'sort', width: 100 },
+                { title: '是否显示', key: 'show', width: 120 },
+                { title: '修改人', key: 'staffName', minWidth: 120 },
+                { title: '修改时间', key: 'updateTime', width: 170 }
             ]
         })
+
+        onMounted(() => {
+            fetchColumnRouter()
+        })
+
+        /**菜单列表**/
+        async function fetchColumnRouter() {
+            try {
+                const { data } = await Service.httpColumnRouter()
+                return await setState({ dataSource: data.list, total: data.total })
+            } catch (err) {}
+        }
 
         /**新增菜单**/
         async function fetchCreateDialogSystemMenu() {
@@ -59,7 +76,12 @@ export default defineComponent({
                         </div>
                         <n-divider class="m-0!"></n-divider>
                         <div class="flex-1 overflow-hidden p-12">
-                            <n-data-table size="small" columns={state.columns}></n-data-table>
+                            <n-data-table
+                                size="small"
+                                row-key={(row: Omix) => row.keyId}
+                                columns={state.columns}
+                                data={state.dataSource}
+                            ></n-data-table>
                         </div>
                     </n-card>
                 </div>

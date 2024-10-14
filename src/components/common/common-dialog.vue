@@ -17,7 +17,7 @@ export default defineComponent({
     setup(props, { emit, slots }) {
         const maxHeight = computed(() => {
             const scale = (props.height > 90 ? 90 : props.height) / 100
-            return window.innerHeight * scale - (60 + (props.action ? 74 : 24)) + 'px'
+            return window.innerHeight * scale - (60 + (props.action ? 82 : 24)) + 'px'
         })
 
         return () => (
@@ -34,9 +34,9 @@ export default defineComponent({
                 on-after-enter={(el: HTMLElement) => createTransfer(el)}
                 v-slots={{
                     action: () => (
-                        <div class="flex-1 p-inline-24 p-be-24 overflow-hidden">
+                        <div class={{ 'flex-1 p-inline-24 p-be-24 overflow-hidden': true, 'p-bs-24': props.action }}>
                             {props.action && (
-                                <n-flex class="p-bs-15" size="large" justify={props.actionJustify}>
+                                <n-flex size="large" justify={props.actionJustify}>
                                     <n-button class="min-w-80" onClick={() => emit('close')}>
                                         {props.cancelText}
                                     </n-button>

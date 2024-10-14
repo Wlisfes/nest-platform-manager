@@ -1,13 +1,19 @@
 <script lang="tsx">
-import { defineComponent, onMounted, Fragment } from 'vue'
+import { defineComponent, onMounted, Fragment, PropType } from 'vue'
 import { useForm } from '@/hooks/hook-form'
 import { stop, prevent } from '@/utils/utils-common'
+import * as Service from '@/api/instance.service'
+import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
     name: 'SystemDialogBasicMenu',
     emits: ['close', 'submit'],
+    props: {
+        sid: { type: String },
+        command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' }
+    },
     setup(props, { emit }) {
-        const { formRef, state, form, rules, setForm, setState } = useForm({
+        const { formRef, state, form, rules, setForm, setState, fetchValidate } = useForm({
             form: {
                 type: 'router',
                 name: '',
@@ -21,7 +27,16 @@ export default defineComponent({
                 path: undefined,
                 active: undefined
             },
-            rules: {}
+            rules: {
+                type: { required: true, trigger: 'blur', message: '请选择菜单类型' },
+                name: { required: true, trigger: 'blur', message: '请输入菜单名称' },
+                version: { required: true, trigger: 'blur', message: '请输入版本号' },
+                sort: { required: true, trigger: 'blur', message: '请输入排序' },
+                state: { required: true, trigger: 'blur', message: '请选择状态' },
+                show: { required: true, type: 'number', trigger: 'blur', message: '请选择是否显示' },
+                instance: { required: true, trigger: 'blur', message: '请输入唯一标识' },
+                path: { required: true, trigger: 'blur', message: '请输入菜单路径' }
+            }
         })
 
         onMounted(async () => {
@@ -31,6 +46,49 @@ export default defineComponent({
             // })
         })
 
+        /**新增、编辑菜单**/
+        async function fetchSaveRouter(option: env.BodySaveRouter) {
+            if (props.command === 'CREATE') {
+                return await Service.httpCreateRouter(option).then(async ({ message }) => {
+                    console.log(message)
+                })
+            } else if (props.command === 'UPDATE') {
+                return await Service.httpUpdateRouter(option).then(async ({ message }) => {
+                    console.log(message)
+                })
+            }
+        }
+
+        async function onSubmit() {
+            await setState({ loading: true })
+            return await fetchValidate().then(async valid => {
+                if (!valid) {
+                    return setState({ loading: false })
+                }
+                try {
+                    const option = {
+                        sid: props.sid,
+                        show: Boolean(form.value.show),
+                        name: form.value.name,
+                        instance: form.value.instance,
+                        version: form.value.version,
+                        sort: form.value.sort as never as number,
+                        state: form.value.state,
+                        type: form.value.type,
+                        path: form.value.path,
+                        icon: form.value.icon,
+                        pid: form.value.pid,
+                        active: form.value.active
+                    }
+                    return await fetchSaveRouter(option).then(async () => {
+                        return await setState({ visible: false })
+                    })
+                } catch (err) {
+                    return setState({ loading: false })
+                }
+            })
+        }
+
         return () => (
             <common-dialog
                 title="新增菜单"
@@ -38,8 +96,16 @@ export default defineComponent({
                 v-model:show={state.visible}
                 on-after-leave={() => emit('close')}
                 onClose={() => setState({ visible: false })}
+                onSubmit={onSubmit}
             >
-                <n-form class="p-inline-24" label-placement="top" ref={formRef} model={form.value} rules={rules.value}>
+                <n-form
+                    class="p-inline-24"
+                    label-placement="top"
+                    require-mark-placement="left"
+                    ref={formRef}
+                    model={form.value}
+                    rules={rules.value}
+                >
                     <n-grid x-gap={20} cols={2}>
                         <n-grid-item span={1}>
                             <n-form-item label="菜单类型" path="type">

@@ -1,7 +1,8 @@
 <script lang="tsx">
 import { defineComponent, ref, onMounted, Fragment, PropType } from 'vue'
 import { useForm } from '@/hooks/hook-form'
-import { stop, prevent, fetchHandler } from '@/utils/utils-common'
+import { useSelecter } from '@/hooks/hook-selecter'
+import { stop, prevent, fetchHandler, fetchTreeChildren } from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
@@ -38,19 +39,15 @@ export default defineComponent({
                 path: { required: true, trigger: 'blur', message: '请输入菜单路径' }
             }
         })
-        const pidOption = ref<Array<env.RestTreeRouter>>([])
+
+        const treeOption = useSelecter(() => Service.httpColumnTreeRouter(), {
+            transform: data => fetchTreeChildren(data)
+        })
 
         onMounted(async () => {
-            await setState({ visible: true })
-            // return await divineHandler(Boolean(props.uid), {
-            //     handler: fetchUserSender
-            // })
-
-            Service.httpColumnTreeRouter().then(({ data }) => {
-                pidOption.value = deteteTreeNode(data.list)
-            })
-            return await fetchHandler(props.command === 'UPDATE', {
-                handler: fetchResolveRouter
+            return await setState({ visible: true }).then(async () => {
+                await fetchHandler(props.command === 'UPDATE', { handler: fetchResolveRouter })
+                // return await setState({ initialize: false })
             })
         })
 
@@ -60,16 +57,6 @@ export default defineComponent({
                 const { data } = await Service.httpResolveRouter({ sid: String(props.sid) })
                 console.log(data)
             } catch (err) {}
-        }
-
-        function deteteTreeNode(data: Array<env.RestTreeRouter>) {
-            data.forEach((node: Omix) => {
-                if (node.children && node.children.length > 0) {
-                    return deteteTreeNode(node.children)
-                }
-                return delete node.children
-            })
-            return data
         }
 
         /**新增、编辑菜单**/
@@ -120,6 +107,9 @@ export default defineComponent({
                 title="新增菜单"
                 width="840px"
                 v-model:show={state.visible}
+                initialize={state.initialize}
+                loading={state.loading}
+                opacity={0}
                 on-after-leave={() => emit('close')}
                 onClose={() => setState({ visible: false })}
                 onSubmit={onSubmit}
@@ -154,7 +144,7 @@ export default defineComponent({
                             <n-form-item label="父级菜单" path="pid">
                                 <n-cascader
                                     v-model:value={form.value.pid}
-                                    options={pidOption.value}
+                                    options={treeOption.dataSource.value}
                                     label-field="name"
                                     value-field="sid"
                                     placeholder="请选择父级菜单"

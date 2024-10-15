@@ -7,8 +7,11 @@ export default defineComponent({
     emits: ['close', 'submit'],
     props: {
         width: { type: String, default: '640px' },
-        height: { type: Number, default: 90 },
+        height: { type: Number, default: 85 },
+        opacity: { type: Number, default: 0.5 },
+        initialize: { type: Boolean, default: true },
         visible: { type: Boolean, default: false },
+        loading: { type: Boolean, default: false },
         action: { type: Boolean, default: true },
         actionJustify: { type: String, default: 'center' },
         cancelText: { type: String, default: '取消' },
@@ -37,10 +40,17 @@ export default defineComponent({
                         <div class={{ 'flex-1 p-inline-24 p-be-24 overflow-hidden': true, 'p-bs-24': props.action }}>
                             {props.action && (
                                 <n-flex size="large" justify={props.actionJustify}>
-                                    <n-button class="min-w-80" onClick={() => emit('close')}>
+                                    <n-button class="min-w-80" focusable={false} onClick={() => emit('close')}>
                                         {props.cancelText}
                                     </n-button>
-                                    <n-button class="min-w-80" type="primary" onClick={() => emit('submit')}>
+                                    <n-button
+                                        class="min-w-80"
+                                        type="primary"
+                                        focusable={false}
+                                        disabled={props.loading || props.initialize}
+                                        loading={props.loading}
+                                        onClick={() => emit('submit')}
+                                    >
                                         {props.confirmText}
                                     </n-button>
                                 </n-flex>
@@ -48,9 +58,11 @@ export default defineComponent({
                         </div>
                     ),
                     default: () => (
-                        <n-scrollbar trigger="none" style={{ maxHeight: maxHeight.value }}>
-                            {slots}
-                        </n-scrollbar>
+                        <n-spin size="large" style={{ '--n-opacity-spinning': props.opacity }} show={props.initialize}>
+                            <n-scrollbar trigger="none" style={{ maxHeight: maxHeight.value }}>
+                                {slots}
+                            </n-scrollbar>
+                        </n-spin>
                     )
                 }}
             ></n-modal>

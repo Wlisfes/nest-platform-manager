@@ -61,3 +61,14 @@ export function fetchByte(byte: number, dec: number = 2) {
     const i = Math.floor(Math.log(byte) / Math.log(k))
     return parseFloat((byte / Math.pow(k, i)).toFixed(dm)) + sizes[i]
 }
+
+/**移除空数据children字段**/
+export function fetchTreeChildren(data: Array<Omix>) {
+    data.forEach((node: Omix) => {
+        if (node.children && node.children.length > 0) {
+            return fetchTreeChildren(node.children)
+        }
+        return delete node.children
+    })
+    return data
+}

@@ -6,7 +6,7 @@ import * as Service from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'SystemDialogBasicMenu',
+    name: 'SystemDialogBasicRouter',
     emits: ['close', 'submit'],
     props: {
         sid: { type: String },

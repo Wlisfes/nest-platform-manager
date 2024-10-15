@@ -14,7 +14,7 @@ export interface ComponentResolver extends EventComponent {
     app: App<Element>
 }
 
-export type Props<T> = Omix<T> & {
+export type CompProps<T> = Omix<T> & {
     onClose?: (e: Omix<EventComponent>) => void | any | Promise<any>
     onSubmit?: (e: Omix<EventComponent>) => void | any | Promise<any>
 }

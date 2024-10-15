@@ -1,12 +1,12 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
-import { fetchDialogSystemMenu } from '@/components/system/hooks'
+import { fetchDialogSystemRouter } from '@/components/system/hooks'
 import * as Service from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
 export default defineComponent({
-    name: 'BasicMenu',
+    name: 'BasicRouter',
     setup(props, ctx) {
         const { state, setState } = useState({
             pattern: '',
@@ -41,8 +41,8 @@ export default defineComponent({
         }
 
         /**新增菜单**/
-        async function fetchCreateDialogSystemMenu() {
-            return await fetchDialogSystemMenu({
+        async function fetchCreateDialogSystemRouter() {
+            return await fetchDialogSystemRouter({
                 onClose: evt => evt.unmount(),
                 onSubmit: async evt => {
                     console.log(evt)
@@ -70,7 +70,7 @@ export default defineComponent({
                     <n-card class="flex-1" content-class="p-0! flex flex-col overflow-hidden">
                         <div class="flex items-center gap-12 p-inline-12 p-block-6">
                             <n-h4 class="m-0 flex-1 line-height-34">菜单列表</n-h4>
-                            <n-button type="primary" focusable={false} onClick={fetchCreateDialogSystemMenu}>
+                            <n-button type="primary" focusable={false} onClick={fetchCreateDialogSystemRouter}>
                                 新增
                             </n-button>
                         </div>

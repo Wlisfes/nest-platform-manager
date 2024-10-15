@@ -9,7 +9,7 @@ export interface EventComponent extends Omix {
     unmount: (delay?: number) => Promise<Omix<any>>
 }
 
-export interface ComponentResolver extends EventComponent {
+export interface RestComponent extends EventComponent {
     element: HTMLElement
     app: App<Element>
 }
@@ -20,7 +20,7 @@ export type CompProps<T> = Omix<T> & {
 }
 
 /**创建组件实例**/
-export async function createComponent<T extends Omix>(Component: Parameters<typeof createApp>['0'], props: T): Promise<ComponentResolver> {
+export async function createComponent<T extends Omix>(Component: Parameters<typeof createApp>['0'], props: T): Promise<RestComponent> {
     const element = document.createElement('div')
     const app = createApp(<layout-config-provider>{createVNode(Component, { ...props, onSubmit, onClose })}</layout-config-provider>)
 
@@ -40,6 +40,7 @@ export async function createComponent<T extends Omix>(Component: Parameters<type
     /**组件关闭事件**/
     async function onClose(scope: Omix) {
         return await fetchHandler(Boolean(props.onClose), {
+            failure: unmount,
             handler: () => {
                 return props.onClose!({ ...scope, unmount })
             }

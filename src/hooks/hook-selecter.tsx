@@ -28,8 +28,8 @@ export interface SetOption<T> extends Partial<SetState> {
 export function useSelecter<T>(request: httpRequest, options: SetOption<T> = {}) {
     const { state, setState } = useState<SetState>({
         keywords: options.keywords ?? '',
-        loading: options.loading ?? false,
-        initialize: options.initialize ?? false,
+        loading: options.loading ?? true,
+        initialize: options.initialize ?? true,
         dataColumn: [],
         dataSource: []
     })
@@ -85,22 +85,12 @@ export function useSelecter<T>(request: httpRequest, options: SetOption<T> = {})
             await setState({ loading: true })
             const { data } = await request(state)
             const list = await fetchTransform(data.list ?? [])
-            return await setState({
-                loading: false,
-                initialize: true,
-                dataSource: list,
-                dataColumn: list.slice(0, 100)
-            }).then(() => {
+            return await setState({ loading: false, initialize: false, dataSource: list, dataColumn: list.slice(0, 100) }).then(() => {
                 options.callback?.(state)
                 return state
             })
         } catch (err) {
-            return await setState({
-                loading: false,
-                initialize: false,
-                dataSource: [],
-                dataColumn: []
-            }).then(() => {
+            return await setState({ loading: false, initialize: false, dataSource: [], dataColumn: [] }).then(() => {
                 options.callback?.(state)
                 return state
             })

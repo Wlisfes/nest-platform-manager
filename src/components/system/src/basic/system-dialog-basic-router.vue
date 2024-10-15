@@ -10,6 +10,7 @@ export default defineComponent({
     name: 'SystemDialogBasicRouter',
     emits: ['close', 'submit'],
     props: {
+        title: { type: String, required: true },
         sid: { type: String },
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' }
     },
@@ -18,21 +19,21 @@ export default defineComponent({
             form: {
                 type: 'router',
                 name: '',
-                pid: undefined,
+                pid: undefined as never as string,
                 version: '',
                 show: 1,
-                sort: undefined,
+                sort: undefined as never as number,
                 state: 'enable',
-                icon: undefined,
+                icon: undefined as never as string,
                 instance: '',
-                path: undefined,
-                active: undefined
+                path: undefined as never as string,
+                active: undefined as never as string
             },
             rules: {
                 type: { required: true, trigger: 'blur', message: '请选择菜单类型' },
                 name: { required: true, trigger: 'blur', message: '请输入菜单名称' },
                 version: { required: true, trigger: 'blur', message: '请输入版本号' },
-                sort: { required: true, trigger: 'blur', message: '请输入排序' },
+                sort: { required: true, type: 'number', trigger: 'blur', message: '请输入排序' },
                 state: { required: true, trigger: 'blur', message: '请选择状态' },
                 show: { required: true, type: 'number', trigger: 'blur', message: '请选择是否显示' },
                 instance: { required: true, trigger: 'blur', message: '请输入唯一标识' },
@@ -40,14 +41,15 @@ export default defineComponent({
             }
         })
 
-        const treeOption = useSelecter(() => Service.httpColumnTreeRouter(), {
+        /**所有菜单树**/
+        const treeOption = useSelecter(() => Service.httpColumnTreeRouter({ type: 'router' }), {
             transform: data => fetchTreeChildren(data)
         })
 
         onMounted(async () => {
             return await setState({ visible: true }).then(async () => {
                 await fetchHandler(props.command === 'UPDATE', { handler: fetchResolveRouter })
-                // return await setState({ initialize: false })
+                return await setState({ initialize: false })
             })
         })
 
@@ -55,7 +57,20 @@ export default defineComponent({
         async function fetchResolveRouter() {
             try {
                 const { data } = await Service.httpResolveRouter({ sid: String(props.sid) })
-                console.log(data)
+                return await setForm({
+                    type: data.type,
+                    name: data.name,
+                    pid: data.pid,
+                    version: data.version,
+                    state: data.state,
+                    sort: data.sort,
+                    show: Number(data.show),
+                    icon: data.icon,
+                    instance: data.instance,
+                    // path: data.path,
+                    path: `/system/basic/router`,
+                    active: data.active
+                })
             } catch (err) {}
         }
 
@@ -104,12 +119,11 @@ export default defineComponent({
 
         return () => (
             <common-dialog
-                title="新增菜单"
                 width="840px"
+                title={props.title}
                 v-model:show={state.visible}
                 initialize={state.initialize}
                 loading={state.loading}
-                opacity={0}
                 on-after-leave={() => emit('close')}
                 onClose={() => setState({ visible: false })}
                 onSubmit={onSubmit}
@@ -121,6 +135,7 @@ export default defineComponent({
                     ref={formRef}
                     model={form.value}
                     rules={rules.value}
+                    disabled={state.initialize || state.loading}
                 >
                     <n-grid x-gap={20} cols={2}>
                         <n-grid-item span={1}>
@@ -170,7 +185,14 @@ export default defineComponent({
                         </n-grid-item>
                         <n-grid-item span={1}>
                             <n-form-item label="排序" path="sort">
-                                <n-input v-model:value={form.value.sort} placeholder="请输入排序" />
+                                <n-input-number
+                                    class="w-full"
+                                    v-model:value={form.value.sort}
+                                    min={0}
+                                    precision={0}
+                                    step={10}
+                                    placeholder="请输入排序"
+                                />
                             </n-form-item>
                         </n-grid-item>
                         {form.value.type === 'router' && (

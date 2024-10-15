@@ -29,10 +29,11 @@ export function httpColumnRouter() {
 }
 
 /**所有菜单树**/
-export function httpColumnTreeRouter() {
+export function httpColumnTreeRouter(data: Omix<{ type?: string }>) {
     return request<RestColumn<env.RestTreeRouter>>({
         url: `/api/system/router/column/tree`,
-        method: 'GET'
+        method: 'POST',
+        data
     })
 }
 

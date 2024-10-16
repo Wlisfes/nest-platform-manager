@@ -7,16 +7,22 @@ import { fetchDialogSystemRouter } from '@/components/system/hooks'
 import * as Service from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
+export interface FormState extends Omix {
+    pattern: string
+    selected: Array<string>
+}
+
 export default defineComponent({
     name: 'BasicRouter',
     setup(props, ctx) {
-        const { state, form, setState } = useService({
-            immediate: true,
+        const { state, form, setForm, setState, fetchRequest } = useService<env.BodySaveRouter, FormState>({
+            immediate: false,
             form: {
-                pattern: ''
+                pattern: '',
+                selected: []
             },
             request: data => {
-                return Service.httpColumnRouter()
+                return Service.httpColumnRouter({ sid: data.selected.at(0) as string })
             },
             columns: [
                 { type: 'selection' },
@@ -37,9 +43,20 @@ export default defineComponent({
         /**所有菜单树**/
         const treeOption = useSelecter(() => Service.httpColumnTreeRouter({}), {
             transform: data => {
-                return fetchTreeChildren(fetchTreeTransfor(data, ({ sid, name, children }) => ({ key: sid, label: name, children })))
+                return fetchTreeChildren(fetchTreeTransfor(data, item => ({ key: item.sid, label: item.name, children: item.children })))
+            },
+            callback: async data => {
+                await setForm({ selected: data.dataSource.slice(0, 1).map(item => item.key) })
+                return await fetchRequest()
             }
         })
+
+        /**左侧菜单树选中变更**/
+        async function fetchUpdateSelected(keys: Array<string>) {
+            return await setForm({ selected: keys }).then(async () => {
+                return await fetchRequest()
+            })
+        }
 
         /**新增菜单**/
         async function fetchCreateDialogSystemRouter() {
@@ -65,13 +82,6 @@ export default defineComponent({
             })
         }
 
-        const override = ({ option }: Omix) => {
-            if (option.children) {
-                return 'toggleExpand'
-            }
-            return 'default'
-        }
-
         return () => (
             <common-container class="flex p-12 gap-12" absolute>
                 <n-card class="w-280 overflow-hidden" content-class="p-0! h-full flex flex-col overflow-hidden">
@@ -84,9 +94,14 @@ export default defineComponent({
                             <div class="p-inline-12">
                                 <n-tree
                                     block-line
-                                    data={treeOption.dataSource.value}
+                                    show-line
+                                    selectable
                                     expand-on-click
+                                    cancelable={false}
+                                    data={treeOption.dataSource.value}
+                                    selected-keys={form.value.selected}
                                     style={{ '--n-node-content-height': '34px' }}
+                                    on-update:selected-keys={fetchUpdateSelected}
                                 ></n-tree>
                             </div>
                         </n-scrollbar>
@@ -109,6 +124,7 @@ export default defineComponent({
                             <n-data-table
                                 size="small"
                                 row-key={(row: Omix) => row.keyId}
+                                loading={state.loading}
                                 columns={state.columns}
                                 data={state.dataSource}
                                 onUpdate:checked-row-keys={(keys: Array<number>, rows: Array<env.BodySaveRouter>) => {

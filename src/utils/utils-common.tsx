@@ -74,12 +74,12 @@ export function fetchTreeChildren(data: Array<Omix>) {
 }
 
 /**字段转换**/
-export function fetchTreeTransfor(data: Array<Omix>, pattern: (e: Omix) => Omix) {
+export function fetchTreeTransfor<T extends Omix>(data: Array<T>, pattern: (e: Omix<T>) => Omix) {
     function fetchTreeNode(item: Omix) {
         if (item.children && item.children.length > 0) {
             item.children = item.children.map((omix: Omix) => fetchTreeNode(omix))
         }
-        return pattern(item)
+        return pattern(item as Omix<T>)
     }
     return data.map(item => fetchTreeNode(item))
 }

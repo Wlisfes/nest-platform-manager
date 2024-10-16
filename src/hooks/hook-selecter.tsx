@@ -21,7 +21,7 @@ export type httpRequest = (state: SetState) => Promise<RestResolver<RestColumn<O
 export interface SetOption<T> extends Partial<SetState> {
     immediate?: boolean
     transform?: (data: Array<SetNode & T>) => Array<Omix> | Promise<Array<Omix>>
-    callback?: (state: SetState) => void | any
+    callback?: (data: SetState) => void | any
 }
 
 /**下拉通用查询接口hook**/

@@ -24,7 +24,7 @@ export const mainRoutes: Array<Omix<RouteRecordRaw>> = [
         path: '/',
         redirect: '/manager',
         name: 'LayoutContainer',
-        meta: { title: 'Nest Platform Manager', AUTH: APP_NEST.AUTH },
+        meta: { title: '骊珠服务平台', AUTH: APP_NEST.AUTH },
         component: () => import('@/components/layouts/layout-container.vue'),
         children: childRoutes
     }

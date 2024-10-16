@@ -5,7 +5,7 @@ export const systemRoutes: Array<Omix<RouteRecordRaw>> = [
     {
         path: '/system/basic/router',
         name: 'BasicRouter',
-        meta: { AUTH: APP_NEST.AUTH },
+        meta: { title: '菜单管理', AUTH: APP_NEST.AUTH },
         component: () => import('@/views/system/basic/router/router.vue')
     }
 ]

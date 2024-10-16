@@ -1,7 +1,7 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
-import { useState } from '@/hooks/hook-state'
+import { defineComponent } from 'vue'
 import { useSelecter } from '@/hooks/hook-selecter'
+import { useService } from '@/hooks/hook-service'
 import { fetchTreeChildren, fetchTreeTransfor } from '@/utils/utils-common'
 import { fetchDialogSystemRouter } from '@/components/system/hooks'
 import * as Service from '@/api/instance.service'
@@ -10,11 +10,14 @@ import * as env from '@/interface/instance.resolver'
 export default defineComponent({
     name: 'BasicRouter',
     setup(props, ctx) {
-        const { state, setState } = useState({
-            pattern: '',
-            total: 0,
-            dataSource: [] as Array<env.BodySaveRouter>,
-            select: [] as Array<env.BodySaveRouter>,
+        const { state, form, setState } = useService({
+            immediate: true,
+            form: {
+                pattern: ''
+            },
+            request: data => {
+                return Service.httpColumnRouter()
+            },
             columns: [
                 { type: 'selection' },
                 { title: '菜单ID', key: 'sid', width: 120 },
@@ -28,32 +31,6 @@ export default defineComponent({
                 { title: '是否显示', key: 'show', width: 120 },
                 { title: '修改人', key: 'staffName', minWidth: 120 },
                 { title: '修改时间', key: 'updateTime', width: 170 }
-            ],
-            options: [
-                {
-                    name: '综合设置',
-                    sid: '27316329671'
-                },
-                {
-                    name: '基本设置',
-                    sid: '36699752155',
-                    children: [
-                        {
-                            name: '菜单管理',
-                            sid: '17821138441',
-                            children: [
-                                {
-                                    name: '新增',
-                                    sid: '13334972334'
-                                },
-                                {
-                                    name: '编辑',
-                                    sid: '36356878633'
-                                }
-                            ]
-                        }
-                    ]
-                }
             ]
         })
 
@@ -63,18 +40,6 @@ export default defineComponent({
                 return fetchTreeChildren(fetchTreeTransfor(data, ({ sid, name, children }) => ({ key: sid, label: name, children })))
             }
         })
-
-        onMounted(() => {
-            fetchColumnRouter()
-        })
-
-        /**菜单列表**/
-        async function fetchColumnRouter() {
-            try {
-                const { data } = await Service.httpColumnRouter()
-                return await setState({ dataSource: data.list, total: data.total })
-            } catch (err) {}
-        }
 
         /**新增菜单**/
         async function fetchCreateDialogSystemRouter() {
@@ -112,7 +77,7 @@ export default defineComponent({
                 <n-card class="w-280 overflow-hidden" content-class="p-0! h-full flex flex-col overflow-hidden">
                     <n-h4 class="m-0 p-12 line-height-20">菜单结构</n-h4>
                     <div class="p-b-12 p-inline-12">
-                        <n-input v-model:value={state.pattern} placeholder="搜索" />
+                        <n-input v-model:value={form.value.pattern} placeholder="搜索" />
                     </div>
                     <div class="flex-1 overflow-hidden p-be-12">
                         <n-scrollbar>

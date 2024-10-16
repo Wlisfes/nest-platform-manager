@@ -234,7 +234,7 @@ export async function fetchNoneRoute(to: ToRoute, from: FromRoute, next: Navigat
 
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
-    const title = useTitle('Nest Platform Manager')
+    const title = useTitle('骊珠服务平台')
     const { setAfterRouter } = useConfiger()
 
     router.beforeEach(async (to, from, next) => {

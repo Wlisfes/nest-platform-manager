@@ -2,6 +2,7 @@ import { App, DefineComponent } from 'vue'
 import { createRouter, createWebHistory, Router, useRoute } from 'vue-router'
 import type { RouteLocationNormalized as ToRoute, RouteLocationNormalizedLoaded as FromRoute, NavigationGuardNext } from 'vue-router'
 import { useConfiger } from '@/store'
+import { useTitle } from '@vueuse/core'
 import { getToken, delCompose, APP_NEST } from '@/utils/utils-cookie'
 import LayoutContainer from '@/components/layouts/layout-container.vue'
 import LayoutRefresh from '@/components/layouts/layout-refresh.vue'
@@ -233,6 +234,7 @@ export async function fetchNoneRoute(to: ToRoute, from: FromRoute, next: Navigat
 
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
+    const title = useTitle('Nest Platform Manager')
     const { setAfterRouter } = useConfiger()
 
     router.beforeEach(async (to, from, next) => {
@@ -245,6 +247,7 @@ export function setupGuardRouter(router: Router) {
     })
 
     router.afterEach(async (to, from) => {
+        title.value = String(to.meta.title)
         if (to.meta.tagRouter ?? true) {
             await setAfterRouter(to)
         }

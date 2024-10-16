@@ -17,14 +17,14 @@ export const mainRoutes: Array<Omix<RouteRecordRaw>> = [
     {
         path: '/login',
         name: 'Login',
-        meta: { AUTH: APP_NEST.AUTH_NONE },
+        meta: { title: '登录', AUTH: APP_NEST.AUTH_NONE },
         component: () => import('@/views/main/login/login.vue')
     },
     {
         path: '/',
         redirect: '/manager',
         name: 'LayoutContainer',
-        meta: { AUTH: APP_NEST.AUTH },
+        meta: { title: 'Nest Platform Manager', AUTH: APP_NEST.AUTH },
         component: () => import('@/components/layouts/layout-container.vue'),
         children: childRoutes
     }

@@ -4,6 +4,7 @@ import { useState } from '@/hooks/hook-state'
 import { RestResolver, RestColumn } from '@/interface/instance.resolver'
 
 export interface SerState<T> extends Omix {
+    cols: string
     initialize: boolean
     loading: boolean
     columns: Array<DataTableColumn>
@@ -26,6 +27,7 @@ export interface SerOption<T, U> extends Omix {
 export function useService<T extends Omix, U extends Omix>(option: SerOption<T, U>) {
     const form = ref<U>(option.form)
     const { state, setState } = useState<SerState<T>>({
+        cols: '1 736:2 1110:3 1480:4 1860:5 2230:6',
         initialize: option.initialize ?? true,
         loading: option.loading ?? true,
         columns: option.columns,

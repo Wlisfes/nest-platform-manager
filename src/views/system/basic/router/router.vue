@@ -108,9 +108,17 @@ export default defineComponent({
                     </div>
                 </n-card>
                 <div class="flex flex-col flex-1 gap-12 overflow-hidden">
-                    <n-card content-class="p-12!">11</n-card>
+                    {/* <n-card content-class="p-12!">
+                        <n-grid cols="4" x-gap={12} y-gap={12} item-responsive>
+                            <n-grid-item>
+                                <n-form-item label-placement="left" label="这是个这是个" show-feedback={false}>
+                                    <n-input placeholder="请输入" />
+                                </n-form-item>
+                            </n-grid-item>
+                        </n-grid>
+                    </n-card> */}
                     <n-card class="flex-1" content-class="p-0! flex flex-col overflow-hidden">
-                        <div class="flex items-center gap-12 p-inline-12 p-block-6">
+                        <div class="flex items-center gap-12 p-12">
                             <n-h4 class="m-0 flex-1 line-height-34">菜单列表</n-h4>
                             <n-button type="primary" focusable={false} onClick={fetchCreateDialogSystemRouter}>
                                 新增

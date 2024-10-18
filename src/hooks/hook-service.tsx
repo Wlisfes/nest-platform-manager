@@ -3,8 +3,15 @@ import { DataTableColumn } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 import { RestResolver, RestColumn } from '@/interface/instance.resolver'
 
+export interface SerCols extends Omix {
+    default: string
+    pattern: string
+    search: string
+    span: string
+}
+
 export interface SerState<T> extends Omix {
-    cols: Omix<{ default: string }>
+    cols: SerCols
     initialize: boolean
     loading: boolean
     columns: Array<DataTableColumn>
@@ -28,7 +35,10 @@ export function useService<T extends Omix, U extends Omix>(option: SerOption<T, 
     const form = ref<U>(option.form)
     const { state, setState } = useState<SerState<T>>({
         cols: {
-            default: '1 736:2 1110:3 1480:4 1860:5 2230:6'
+            default: '1 736:2 1110:3 1480:4 1860:5 2230:6',
+            search: '4 840:8 1110:12 1590:18',
+            span: '4',
+            pattern: '4 840:4 1110:4'
         },
         initialize: option.initialize ?? true,
         loading: option.loading ?? true,

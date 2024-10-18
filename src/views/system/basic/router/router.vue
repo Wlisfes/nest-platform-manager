@@ -88,7 +88,7 @@ export default defineComponent({
 
         return () => (
             <common-container class="flex p-12 gap-12" absolute>
-                <n-card class="w-280 overflow-hidden" content-class="p-0! h-full flex flex-col overflow-hidden">
+                {/* <n-card class="w-280 overflow-hidden" content-class="p-0! h-full flex flex-col overflow-hidden">
                     <n-h4 class="m-0 p-12 line-height-20">菜单结构</n-h4>
                     <div class="p-b-12 p-inline-12">
                         <n-input v-model:value={form.value.pattern} placeholder="搜索" />
@@ -110,19 +110,13 @@ export default defineComponent({
                             </div>
                         </n-scrollbar>
                     </div>
-                </n-card>
+                </n-card> */}
                 <div class="flex flex-col flex-1 gap-12 overflow-hidden">
                     {/* <n-card content-class="p-12!">
-                        <n-grid cols="4" x-gap={12} y-gap={12} item-responsive>
-                            <n-grid-item>
-                                <n-form-item label-placement="left" label="这是个这是个" show-feedback={false}>
-                                    <n-input placeholder="请输入" />
-                                </n-form-item>
-                            </n-grid-item>
-                        </n-grid>
+                        <n-grid cols={state.cols.default} x-gap={12} y-gap={12} item-responsive></n-grid>
                     </n-card> */}
                     <n-card class="flex-1" content-class="p-0! flex flex-col overflow-hidden">
-                        <div class="flex items-center gap-12 p-12">
+                        {/* <div class="flex items-center gap-12 p-12">
                             <n-h4 class="m-0 flex-1 line-height-34">菜单列表</n-h4>
                             <n-button type="primary" focusable={false} onClick={fetchCreateDialogSystemRouter}>
                                 新增
@@ -130,8 +124,8 @@ export default defineComponent({
                             <n-button focusable={false} onClick={fetchUpdateDialogSystemRouter}>
                                 编辑
                             </n-button>
-                        </div>
-                        <n-divider class="m-0!"></n-divider>
+                        </div> */}
+                        {/* <n-divider class="m-0!"></n-divider> */}
                         <div class="flex-1 overflow-hidden p-12">
                             <n-data-table
                                 size="small"

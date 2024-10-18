@@ -1,3 +1,5 @@
+import { isNotEmpty } from 'class-validator'
+
 export function prevent(evt: Event, handler?: Function) {
     evt.preventDefault()
     return handler?.(evt)
@@ -63,8 +65,8 @@ export function fetchByte(byte: number, dec: number = 2) {
 }
 
 /**移除空数据children字段**/
-export function fetchTreeChildren(data: Array<Omix>) {
-    data.forEach((node: Omix) => {
+export function fetchTreeChildren<T extends Omix>(data: Array<T>) {
+    data.forEach((node: T) => {
         if (node.children && node.children.length > 0) {
             return fetchTreeChildren(node.children)
         }
@@ -74,12 +76,18 @@ export function fetchTreeChildren(data: Array<Omix>) {
 }
 
 /**字段转换**/
-export function fetchTreeTransfor<T extends Omix>(data: Array<T>, pattern: (e: Omix<T>) => Omix) {
+export function fetchTreeTransfor<T extends Omix>(
+    data: Array<T>,
+    option: Omix<{ pattern: (e: Omix<T>) => Omix; transform?: (data: Array<T>) => Array<T> }>
+) {
     function fetchTreeNode(item: Omix) {
         if (item.children && item.children.length > 0) {
             item.children = item.children.map((omix: Omix) => fetchTreeNode(omix))
         }
-        return pattern(item as Omix<T>)
+        return option.pattern(item as Omix<T>)
     }
-    return data.map(item => fetchTreeNode(item))
+    if (isNotEmpty(option.transform) && option.transform) {
+        return option.transform(data.map(item => fetchTreeNode(item)) as Array<T>)
+    }
+    return data.map(item => fetchTreeNode(item)) as Array<T>
 }

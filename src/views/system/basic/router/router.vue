@@ -43,7 +43,10 @@ export default defineComponent({
         /**所有菜单树**/
         const treeOption = useSelecter(() => Service.httpColumnTreeRouter({}), {
             transform: data => {
-                return fetchTreeChildren(fetchTreeTransfor(data, item => ({ key: item.sid, label: item.name, children: item.children })))
+                return fetchTreeTransfor(data, {
+                    transform: list => fetchTreeChildren(list),
+                    pattern: item => ({ key: item.sid, label: item.name, children: item.children })
+                })
             },
             callback: async data => {
                 await setForm({ selected: data.dataSource.slice(0, 1).map(item => item.key) })

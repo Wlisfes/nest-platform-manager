@@ -16,6 +16,7 @@ export default defineComponent({
     name: 'BasicRouter',
     setup(props, ctx) {
         const { state, form, setForm, setState, fetchRequest } = useService<env.BodySaveRouter, FormState>({
+            colsCount: 2,
             immediate: false,
             form: {
                 pattern: '',
@@ -88,7 +89,7 @@ export default defineComponent({
 
         return () => (
             <common-container class="flex p-12 gap-12" absolute>
-                <n-card class="w-280 overflow-hidden" content-class="p-0! h-full flex flex-col overflow-hidden">
+                {/* <n-card class="w-280 overflow-hidden" content-class="p-0! h-full flex flex-col overflow-hidden">
                     <n-h4 class="m-0 p-12 line-height-20">菜单结构</n-h4>
                     <div class="p-b-12 p-inline-12">
                         <n-input v-model:value={form.value.pattern} placeholder="搜索" />
@@ -110,17 +111,25 @@ export default defineComponent({
                             </div>
                         </n-scrollbar>
                     </div>
-                </n-card>
+                </n-card> */}
                 <div class="flex flex-col flex-1 gap-12 overflow-hidden">
                     <n-card class="flex-1" content-class="p-0! flex flex-col overflow-hidden">
-                        <common-search-pattern cols-value={state.cols.search} cols-pattern={state.cols.pattern}>
-                            <n-grid-item span={state.cols.span}>
-                                <n-input />
-                            </n-grid-item>
-                            <n-grid-item span={state.cols.span}>
-                                <n-input />
-                            </n-grid-item>
-                        </common-search-pattern>
+                        <common-search-action multiple={false}>
+                            {/* <common-search-column>
+                                <n-date-picker type="datetimerange" clearable default-value={[Date.now(), Date.now()]} />
+                            </common-search-column> */}
+                            <n-form-item-gi label="关联供应商商" show-feedback={false}>
+                                <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
+                            </n-form-item-gi>
+                            <n-form-item-gi label="关联供应商" show-feedback={false}>
+                                <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
+                            </n-form-item-gi>
+                            {Array.from({ length: 50 }, () => (
+                                <n-form-item-gi label="关联供应商" show-feedback={false}>
+                                    <n-input />
+                                </n-form-item-gi>
+                            ))}
+                        </common-search-action>
                         <div class="flex-1 overflow-hidden p-12">
                             <n-data-table
                                 size="small"

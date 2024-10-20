@@ -1,6 +1,7 @@
 <script lang="tsx">
-import { defineComponent, KeepAlive } from 'vue'
-import { RouterView, RouterLink } from 'vue-router'
+import { defineComponent, KeepAlive, onUnmounted, DefineComponent } from 'vue'
+import { RouterView, RouterLink, useRoute } from 'vue-router'
+import { useEventListener } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
 import { useManager } from '@/hooks/hook-manager'
 import { useProvider } from '@/hooks/hook-provider'
@@ -10,7 +11,7 @@ import { APP_SKYLINE, router } from '@/router'
 export default defineComponent({
     name: 'LayoutContainer',
     setup(props) {
-        const { activeName } = useStore(useConfiger)
+        const { activeName, collapsed, device, setState } = useStore(useConfiger)
         const { theme, fetchThemeUpdate } = useProvider()
         const { fetchRefreshCurrentRouter } = useManager()
         const { state } = useState({
@@ -21,6 +22,18 @@ export default defineComponent({
                 { label: '综合设置', key: '/system/basic/router', iframeName: APP_SKYLINE.Sys }
             ]
         })
+
+        onUnmounted(useEventListener(window, 'resize', fetchResize))
+        async function fetchResize() {
+            return await setState({ width: window.innerWidth, height: window.innerHeight }).then(async data => {
+                if (data.width > 1280) {
+                    return await setState({ device: 'PC', collapsed: false })
+                } else if (data.width > 768) {
+                    return await setState({ device: 'IPAD', collapsed: true })
+                }
+                return await setState({ device: 'MOBILE', collapsed: true })
+            })
+        }
 
         /**渲染导航组件**/
         function fetchNavigateRender(item: Omix<{ key: string; label: string }>) {
@@ -49,7 +62,16 @@ export default defineComponent({
                     <n-button onClick={() => fetchThemeUpdate(theme.value === 'dark' ? 'light' : 'dark')}>{theme.value}</n-button>
                 </n-layout-header>
                 <n-layout class="flex-1" has-sider content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <n-layout-sider show-trigger="bar" collapse-mode="width" bordered width={280} collapsed-width={60}></n-layout-sider>
+                    <n-layout-sider
+                        collapse-mode="width"
+                        bordered
+                        width={260}
+                        native-scrollbar={false}
+                        collapsed={collapsed.value}
+                        collapsed-width={device.value === 'MOBILE' ? 0 : 64}
+                        show-trigger={device.value === 'MOBILE' ? false : 'bar'}
+                        on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
+                    ></n-layout-sider>
                     <n-layout content-style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         <n-layout-content
                             class="flex-1 overflow-hidden"
@@ -57,7 +79,16 @@ export default defineComponent({
                             native-scrollbar={false}
                             scrollbar-props={{ size: 100, trigger: 'none', xScrollable: true }}
                         >
-                            <RouterView></RouterView>
+                            <RouterView>
+                                {{
+                                    default: ({
+                                        Component,
+                                        route
+                                    }: Omix<{ Component: DefineComponent; route: ReturnType<typeof useRoute> }>) => (
+                                        <KeepAlive>{Component ? <Component key={route.fullPath} /> : null}</KeepAlive>
+                                    )
+                                }}
+                            </RouterView>
                         </n-layout-content>
                     </n-layout>
                 </n-layout>

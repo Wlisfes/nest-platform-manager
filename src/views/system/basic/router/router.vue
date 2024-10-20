@@ -120,11 +120,8 @@ export default defineComponent({
                             default: (data: Omix<{ width: number }>) => (
                                 <n-element class="flex gap-10">
                                     <n-grid class="flex-1" x-gap={12} cols={state.cols.default}>
-                                        <n-grid-item offset={state.cols.offset}>
-                                            <n-tree-select
-                                                options={treeOption.dataSource.value}
-                                                style={{ '--n-node-content-height': '34px' }}
-                                            ></n-tree-select>
+                                        <n-grid-item offset={state.cols.offset} class="flex justify-end">
+                                            <common-state-button icon={<local-naive-increase />}>新增</common-state-button>
                                         </n-grid-item>
                                     </n-grid>
                                     <common-search-action multiple={false} placeholder="请输入菜单ID、菜单名称、菜单路径、唯一标识">

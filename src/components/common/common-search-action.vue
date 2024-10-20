@@ -21,6 +21,7 @@ export default defineComponent({
     setup(props, { emit, slots }) {
         const instance = ref<PopoverInst>()
         const { state, setState } = useState({
+            pattern: undefined,
             cols: 1,
             width: `${props.itemWidth}px`,
             height: (window.innerHeight - props.distance) * fetchWhere(props.scale > 0.8, 0.8, props.scale) + 'px'
@@ -37,15 +38,14 @@ export default defineComponent({
         /**回车提交**/
         async function fetchKeyup(evt: KeyboardEvent) {
             return enter(evt, async () => {
-                console.log(evt)
+                return emit('submit', { event: 'input-submit', pattern: state.pattern })
             })
         }
 
         /**确定提交**/
         async function fetchSubmit(evt: MouseEvent) {
-            console.log(instance.value)
-
-            instance.value!.setShow(false)
+            await emit('submit', { event: 'submit', pattern: state.pattern })
+            return instance.value!.setShow(false)
         }
 
         return () => (
@@ -71,12 +71,9 @@ export default defineComponent({
                 >
                     {{
                         trigger: () => (
-                            <n-button
-                                focusable={false}
-                                v-slots={{ icon: () => <n-icon size={18} component={<local-naive-filter />}></n-icon> }}
-                            >
+                            <common-state-button icon={<local-naive-filter />}>
                                 <span>筛选</span>
-                            </n-button>
+                            </common-state-button>
                         ),
                         default: () => (
                             <n-element class="flex flex-col">

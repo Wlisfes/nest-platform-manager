@@ -2,16 +2,19 @@
 import { defineComponent, ref, PropType } from 'vue'
 import { FormProps, GridProps, PopoverInst } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
-import { fetchWhere } from '@/utils/utils-common'
+import { fetchWhere, enter } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonSearchAction',
+    emits: ['submit'],
     props: {
         scale: { type: Number, default: 0.8 },
         distance: { type: Number, default: 200 },
+        maxWidth: { type: Number, default: 450 },
         itemWidth: { type: Number, default: 456 },
         multiple: { type: Boolean, default: false },
         placeholder: { type: String },
+        form: { type: Object as PropType<Omix>, default: () => ({}) },
         formProps: { type: Object as PropType<FormProps>, default: () => ({}) },
         gridProps: { type: Object as PropType<GridProps>, default: () => ({}) }
     },
@@ -31,6 +34,13 @@ export default defineComponent({
             return await setState({ cols: 1, width: `${props.itemWidth}px` })
         }
 
+        /**回车提交**/
+        async function fetchKeyup(evt: KeyboardEvent) {
+            return enter(evt, async () => {
+                console.log(evt)
+            })
+        }
+
         /**确定提交**/
         async function fetchSubmit(evt: MouseEvent) {
             console.log(instance.value)
@@ -39,8 +49,18 @@ export default defineComponent({
         }
 
         return () => (
-            <div class="common-search-action flex gap-10">
-                <n-input class="flex-1" placeholder={props.placeholder} />
+            <div class="common-search-action w-full flex gap-10" style={{ maxWidth: props.maxWidth + 'px' }}>
+                <n-input class="flex-1" placeholder={props.placeholder} onKeyup={fetchKeyup}>
+                    {{
+                        prefix: () => (
+                            <n-icon
+                                class="cursor-pointer hover:text-[var(--n-text-color)]"
+                                size={18}
+                                component={<local-naive-search />}
+                            ></n-icon>
+                        )
+                    }}
+                </n-input>
                 <n-popover
                     ref={instance}
                     placement="bottom"

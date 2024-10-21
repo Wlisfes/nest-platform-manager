@@ -93,7 +93,7 @@ export default defineComponent({
         }
 
         return () => (
-            <common-container absolute class="p-12" class-name="flex gap-12" loading>
+            <common-container absolute class="p-12" content-class="flex gap-12" loading={state.initialize}>
                 <div class="w-280 flex flex-col overflow-hidden">
                     <n-h4 class="m-0 line-height-34">菜单结构</n-h4>
                     <div class="flex-1 overflow-hidden p-bs-9">

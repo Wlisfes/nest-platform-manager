@@ -13,7 +13,7 @@ export default defineComponent({
     setup(props, { slots }) {
         return () => (
             <n-element class={{ 'common-container flex flex-col flex-1 overflow-hidden': true, 'is-absolute': props.absolute }}>
-                <n-spin
+                {/* <n-spin
                     size="large"
                     class="flex flex-col flex-1 overflow-hidden"
                     content-class="flex flex-1 flex-col overflow-hidden"
@@ -28,7 +28,7 @@ export default defineComponent({
                     >
                         {slots}
                     </n-card>
-                </n-spin>
+                </n-spin> */}
             </n-element>
         )
     }

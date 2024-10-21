@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, KeepAlive, onUnmounted, DefineComponent } from 'vue'
+import { defineComponent, KeepAlive, onUnmounted, onBeforeMount, DefineComponent } from 'vue'
 import { RouterView, RouterLink, useRoute } from 'vue-router'
 import { useEventListener } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
@@ -11,7 +11,7 @@ import { APP_SKYLINE, router } from '@/router'
 export default defineComponent({
     name: 'LayoutContainer',
     setup(props) {
-        const { activeName, collapsed, device, setState } = useStore(useConfiger)
+        const { activeName, collapsed, device, setState, fetchResize } = useStore(useConfiger)
         const { theme, fetchThemeUpdate } = useProvider()
         const { fetchRefreshCurrentRouter } = useManager()
         const { state } = useState({
@@ -23,17 +23,8 @@ export default defineComponent({
             ]
         })
 
+        fetchResize()
         onUnmounted(useEventListener(window, 'resize', fetchResize))
-        async function fetchResize() {
-            return await setState({ width: window.innerWidth, height: window.innerHeight }).then(async data => {
-                if (data.width > 1280) {
-                    return await setState({ device: 'PC', collapsed: false })
-                } else if (data.width > 768) {
-                    return await setState({ device: 'IPAD', collapsed: true })
-                }
-                return await setState({ device: 'MOBILE', collapsed: true })
-            })
-        }
 
         /**渲染导航组件**/
         function fetchNavigateRender(item: Omix<{ key: string; label: string }>) {

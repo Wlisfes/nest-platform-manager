@@ -40,6 +40,18 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
         ]
     })
 
+    /**监听窗口resizes事件**/
+    async function fetchResize(data: Partial<{ width: number; height: number }> = {}) {
+        return await setState({ width: data.width ?? window.innerWidth, height: data.height ?? window.innerHeight }).then(async data => {
+            if (data.width > 1280) {
+                return await setState({ device: 'PC', collapsed: false })
+            } else if (data.width > 768) {
+                return await setState({ device: 'IPAD', collapsed: true })
+            }
+            return await setState({ device: 'MOBILE', collapsed: true })
+        })
+    }
+
     async function fetchThemeUpdate(theme: ConfigState['theme']) {
         return await setState({ theme })
     }
@@ -87,5 +99,5 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
         })
     }
 
-    return { ...toRefs(state), setState, fetchThemeUpdate, setAfterRouter, fetchCloseRouter, fetchSetInclude, fetchDelInclude }
+    return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate, setAfterRouter, fetchCloseRouter, fetchSetInclude, fetchDelInclude }
 })

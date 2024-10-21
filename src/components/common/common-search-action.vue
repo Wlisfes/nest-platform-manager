@@ -38,13 +38,13 @@ export default defineComponent({
         /**回车提交**/
         async function fetchKeyup(evt: KeyboardEvent) {
             return enter(evt, async () => {
-                return emit('submit', { event: 'input-submit', pattern: state.pattern })
+                return emit('submit', { event: 'input-submit', pattern: state.pattern, form: props.form })
             })
         }
 
         /**确定提交**/
         async function fetchSubmit(evt: MouseEvent) {
-            await emit('submit', { event: 'submit', pattern: state.pattern })
+            await emit('submit', { event: 'submit', pattern: state.pattern, form: props.form })
             return instance.value!.setShow(false)
         }
 
@@ -79,7 +79,10 @@ export default defineComponent({
                             <n-element class="flex flex-col">
                                 <n-h1 class="m-0 text-16 line-height-24 p-inline-16 p-block-10">高级筛选</n-h1>
                                 <n-scrollbar style={{ maxHeight: state.height }}>
-                                    <n-form class="p-inline-16" {...{ labelWidth: 'auto', labelPlacement: 'left', ...props.formProps }}>
+                                    <n-form
+                                        class="p-inline-16"
+                                        {...{ labelWidth: 'auto', labelPlacement: 'left', showFeedback: false, ...props.formProps }}
+                                    >
                                         <n-grid
                                             style={{ width: state.width }}
                                             {...{ xGap: 12, yGap: 12, cols: state.cols, ...props.gridProps }}
@@ -98,6 +101,9 @@ export default defineComponent({
                         )
                     }}
                 </n-popover>
+                <common-state-button>
+                    <span>刷新</span>
+                </common-state-button>
             </div>
         )
     }

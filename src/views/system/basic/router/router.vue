@@ -5,6 +5,7 @@ import { useSelecter } from '@/hooks/hook-selecter'
 import { useService } from '@/hooks/hook-service'
 import { fetchTreeChildren, fetchTreeTransfor } from '@/utils/utils-common'
 import { fetchDialogSystemRouter } from '@/components/system/hooks'
+import { useConfiger, useStore } from '@/store'
 import * as Service from '@/api/instance.service'
 import * as env from '@/interface/instance.resolver'
 
@@ -19,6 +20,7 @@ export default defineComponent({
     name: 'BasicRouter',
     components: { UseElementSize },
     setup(props, ctx) {
+        const { device } = useStore(useConfiger)
         const { state, form, setForm, setState, fetchRequest } = useService<env.BodySaveRouter, FormState>({
             colsCount: 1,
             immediate: false,
@@ -94,24 +96,25 @@ export default defineComponent({
 
         return () => (
             <common-container absolute class="p-12" content-class="flex gap-12" loading={state.initialize}>
-                <div class="w-280 flex flex-col overflow-hidden">
-                    <n-h4 class="m-0 line-height-34">菜单结构</n-h4>
-                    <div class="flex-1 overflow-hidden p-bs-9">
-                        <n-scrollbar>
-                            <n-tree
-                                block-line
-                                show-line
-                                selectable
-                                expand-on-click
-                                cancelable={false}
-                                data={treeOption.dataSource.value}
-                                selected-keys={form.value.selected}
-                                style={{ '--n-node-content-height': '34px' }}
-                                on-update:selected-keys={fetchUpdateSelected}
-                            ></n-tree>
-                        </n-scrollbar>
+                {device.value === 'PC' && (
+                    <div class="w-280 flex flex-col overflow-hidden">
+                        <n-h4 class="m-0 line-height-34">菜单结构</n-h4>
+                        <div class="flex-1 overflow-hidden p-bs-9">
+                            <n-scrollbar>
+                                <n-tree
+                                    block-line
+                                    show-line
+                                    selectable
+                                    expand-on-click
+                                    cancelable={false}
+                                    data={treeOption.dataSource.value}
+                                    selected-keys={form.value.selected}
+                                    on-update:selected-keys={fetchUpdateSelected}
+                                ></n-tree>
+                            </n-scrollbar>
+                        </div>
                     </div>
-                </div>
+                )}
                 <div class="flex flex-col flex-1 overflow-hidden">
                     <div class="flex gap-10 p-be-12 overflow-hidden">
                         <n-grid class="flex-1" x-gap={12} cols={state.cols.default}>
@@ -121,7 +124,17 @@ export default defineComponent({
                                 </common-state-button>
                             </n-grid-item>
                         </n-grid>
-                        <common-search-action multiple={false}></common-search-action>
+                        <common-search-action multiple={false}>
+                            <n-form-item-gi label="父级菜单">
+                                <n-tree-select options={treeOption.dataSource.value}></n-tree-select>
+                            </n-form-item-gi>
+                            <n-form-item-gi label="菜单类型">
+                                <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
+                            </n-form-item-gi>
+                            <n-form-item-gi label="菜单类型">
+                                <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
+                            </n-form-item-gi>
+                        </common-search-action>
                     </div>
                     <n-data-table
                         class="flex-1"

@@ -21,7 +21,7 @@ export function httpUpdateRouter(data: env.BodySaveRouter) {
 }
 
 /**菜单列表**/
-export function httpColumnRouter(data: Omix<{ sid: string }>) {
+export function httpColumnRouter(data: Omix<{ id: string }>) {
     return request<RestColumn<env.BodySaveRouter>>({
         url: `/api/system/router/column`,
         method: 'POST',

@@ -161,7 +161,7 @@ export default defineComponent({
                                     v-model:value={form.value.pid}
                                     options={treeOption.dataSource.value}
                                     label-field="name"
-                                    value-field="sid"
+                                    value-field="id"
                                     placeholder="请选择父级菜单"
                                 ></n-cascader>
                             </n-form-item>

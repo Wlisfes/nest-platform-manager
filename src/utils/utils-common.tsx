@@ -64,6 +64,19 @@ export function fetchByte(byte: number, dec: number = 2) {
     return parseFloat((byte / Math.pow(k, i)).toFixed(dm)) + sizes[i]
 }
 
+/**通用字段转换**/
+export function fetchTreePattern<T extends Omix>(data: Array<T>) {
+    return fetchTreeTransfor(data, {
+        transform: list => fetchTreeChildren(list),
+        pattern: item => ({
+            key: item.id,
+            value: item.id,
+            label: item.name,
+            children: item.children
+        })
+    })
+}
+
 /**移除空数据children字段**/
 export function fetchTreeChildren<T extends Omix>(data: Array<T>) {
     data.forEach((node: T) => {

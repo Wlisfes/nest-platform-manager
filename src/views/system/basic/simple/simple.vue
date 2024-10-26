@@ -17,7 +17,7 @@ export interface FormState extends Omix {
 }
 
 export default defineComponent({
-    name: 'BasicRouter',
+    name: 'BasicSimple',
     components: { UseElementSize },
     setup(props, ctx) {
         const { device } = useStore(useConfiger)
@@ -49,22 +49,6 @@ export default defineComponent({
             ]
         })
 
-        /**所有菜单树**/
-        const treeOption = useSelecter(() => Service.httpColumnTreeRouter({}), {
-            transform: data => fetchTreePattern(data),
-            callback: async data => {
-                await setForm({ selected: data.dataSource.slice(0, 1).map(item => item.key) })
-                return await fetchRequest()
-            }
-        })
-
-        /**左侧菜单树选中变更**/
-        async function fetchUpdateSelected(keys: Array<string>) {
-            return await setForm({ selected: keys }).then(async () => {
-                return await fetchRequest()
-            })
-        }
-
         /**新增菜单**/
         async function fetchCreateDialogSystemRouter() {
             return await fetchDialogSystemRouter({
@@ -90,26 +74,7 @@ export default defineComponent({
         }
 
         return () => (
-            <common-container absolute class="p-12" content-class="flex gap-12" loading={state.initialize}>
-                {device.value === 'PC' && (
-                    <div class="w-280 flex flex-col overflow-hidden">
-                        <n-h4 class="m-0 line-height-34">菜单结构</n-h4>
-                        <div class="flex-1 overflow-hidden p-bs-9">
-                            <n-scrollbar>
-                                <n-tree
-                                    block-line
-                                    show-line
-                                    selectable
-                                    expand-on-click
-                                    cancelable={false}
-                                    data={treeOption.dataSource.value}
-                                    selected-keys={form.value.selected}
-                                    on-update:selected-keys={fetchUpdateSelected}
-                                ></n-tree>
-                            </n-scrollbar>
-                        </div>
-                    </div>
-                )}
+            <common-container absolute class="p-12" loading={state.initialize}>
                 <div class="flex flex-col flex-1 overflow-hidden">
                     <div class="flex gap-10 p-be-12 overflow-hidden">
                         <n-grid class="flex-1" x-gap={12} cols={state.cols.default}>
@@ -120,9 +85,6 @@ export default defineComponent({
                             </n-grid-item>
                         </n-grid>
                         <common-search-action multiple={false}>
-                            <n-form-item-gi label="父级菜单">
-                                <n-tree-select options={treeOption.dataSource.value}></n-tree-select>
-                            </n-form-item-gi>
                             <n-form-item-gi label="菜单类型">
                                 <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
                             </n-form-item-gi>
@@ -142,35 +104,6 @@ export default defineComponent({
                         }}
                     ></n-data-table>
                 </div>
-                {/* <div class="flex flex-col flex-1 gap-12 overflow-hidden">
-                    <n-card class="flex-1" content-class="p-0! flex flex-col overflow-hidden">
-                        <common-search-action multiple={false}>
-                            <n-form-item-gi label="关联供应商商" show-feedback={false}>
-                                <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
-                            </n-form-item-gi>
-                            <n-form-item-gi label="关联供应商" show-feedback={false}>
-                                <n-date-picker type="datetimerange" clearable default-time="13:22:11" />
-                            </n-form-item-gi>
-                            {Array.from({ length: 50 }, () => (
-                                <n-form-item-gi label="关联供应商" show-feedback={false}>
-                                    <n-input />
-                                </n-form-item-gi>
-                            ))}
-                        </common-search-action>
-                        <div class="flex-1 overflow-hidden p-12">
-                            <n-data-table
-                                size="small"
-                                row-key={(row: Omix) => row.keyId}
-                                loading={state.loading}
-                                columns={state.columns}
-                                data={state.dataSource}
-                                onUpdate:checked-row-keys={(keys: Array<number>, rows: Array<env.BodySaveRouter>) => {
-                                    setState({ select: rows })
-                                }}
-                            ></n-data-table>
-                        </div>
-                    </n-card>
-                </div> */}
             </common-container>
         )
     }

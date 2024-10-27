@@ -2,6 +2,7 @@ import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import { router, RouteOption, APP_SKYLINE } from '@/router'
+import { fetchScreenResize } from '@/utils/utils-common'
 
 export interface ConfigState {
     theme: 'light' | 'dark'
@@ -18,13 +19,14 @@ export interface ConfigState {
 }
 
 export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
+    const screen = fetchScreenResize()
     const { state, setState } = useState<ConfigState>({
         theme: 'light',
         primaryColor: '#24B89E',
         width: window.innerWidth,
         height: window.innerHeight,
-        device: 'PC',
-        collapsed: false,
+        device: screen.device,
+        collapsed: screen.collapsed,
 
         activeName: APP_SKYLINE.Manager,
         currentRoute: '/manager',
@@ -43,12 +45,7 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
     /**监听窗口resizes事件**/
     async function fetchResize(data: Partial<{ width: number; height: number }> = {}) {
         return await setState({ width: data.width ?? window.innerWidth, height: data.height ?? window.innerHeight }).then(async data => {
-            if (data.width > 1280) {
-                return await setState({ device: 'PC', collapsed: false })
-            } else if (data.width > 768) {
-                return await setState({ device: 'IPAD', collapsed: true })
-            }
-            return await setState({ device: 'MOBILE', collapsed: true })
+            return await setState(fetchScreenResize({ width: data.width, height: data.height }))
         })
     }
 

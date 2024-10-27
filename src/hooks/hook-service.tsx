@@ -92,12 +92,16 @@ export function useService<T extends Omix, U extends Omix>(option: SerOption<T, 
         }
     }
 
+    /**表格列渲染**/
+    function fetchColumnRender() {}
+
     return {
         form,
         state,
         ...toRefs(state),
         setState,
         setForm,
-        fetchRequest
+        fetchRequest,
+        fetchColumnRender
     }
 }

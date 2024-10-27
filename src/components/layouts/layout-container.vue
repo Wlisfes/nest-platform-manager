@@ -23,12 +23,11 @@ export default defineComponent({
             ]
         })
 
-        fetchResize()
         onUnmounted(useEventListener(window, 'resize', fetchResize))
 
         /**渲染导航组件**/
         function fetchNavigateRender(item: Omix<{ key: string; label: string }>) {
-            if (item.key === '/system/basic/router') {
+            if (item.key === '/system/basic/simple') {
                 return (
                     <RouterLink to={item.key}>
                         <span class="text-16">{item.label}</span>

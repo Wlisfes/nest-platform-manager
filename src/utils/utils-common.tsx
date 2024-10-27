@@ -104,3 +104,16 @@ export function fetchTreeTransfor<T extends Omix>(
     }
     return data.map(item => fetchTreeNode(item)) as Array<T>
 }
+
+/**视口判断**/
+export function fetchScreenResize(
+    data: Partial<{ width: number; height: number }> = {}
+): Omix<{ device: 'PC' | 'IPAD' | 'MOBILE'; collapsed: boolean }> {
+    const width = data.width ?? window.innerWidth
+    if (width > 1280) {
+        return { device: 'PC', collapsed: false }
+    } else if (width > 768) {
+        return { device: 'IPAD', collapsed: true }
+    }
+    return { device: 'MOBILE', collapsed: true }
+}

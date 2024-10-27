@@ -18,19 +18,26 @@ export default defineComponent({
     components: { UseElementSize },
     setup(props, ctx) {
         const { device } = useStore(useConfiger)
-        const { state, form, setForm, setState, fetchRequest } = useService<env.BodySaveRouter, FormState>({
+        const { state, form, setForm, setState, fetchRequest, fetchColumnRender } = useService<env.BodySaveRouter, FormState>({
             request: fetchColumnSimple,
             form: {
                 keyword: ''
             },
             columns: [
-                { title: '字典ID', key: 'id', minWidth: 120 },
-                { title: '字典名称', key: 'name', minWidth: 180 },
-                { title: '字典标识', key: 'stalk', minWidth: 220 },
-                { title: '备注', key: 'comment', minWidth: 220 },
+                { title: '字典ID', key: 'id', width: 120 },
+                { title: '字典名称', key: 'name', minWidth: 160 },
+                { title: '字典标识', key: 'stalk', minWidth: 240 },
+                { title: '备注', key: 'comment', minWidth: 240 },
                 { title: '修改人', key: 'staffName', minWidth: 160 },
-                { title: '更新时间', key: 'updateTime', minWidth: 180 },
-                { title: '操作', key: 'operate', width: 100 }
+                {
+                    title: '更新时间',
+                    key: 'updateTime',
+                    //minWidth: 180,
+                    ellipsis: {
+                        tooltip: true
+                    }
+                },
+                { title: '操作', key: 'operate', align: 'center', width: 120 }
             ]
         })
 
@@ -86,13 +93,15 @@ export default defineComponent({
                         </common-search-action>
                     </div>
                     <div class="flex flex-col flex-1 p-inline-12 p-be-12 overflow-hidden">
-                        <n-data-table
+                        <common-data-table loading={state.loading} columns={state.columns} data={state.dataSource}></common-data-table>
+                        {/* <n-data-table
                             class="flex-1"
                             row-key={(row: Omix) => row.keyId}
                             loading={state.loading}
                             columns={state.columns}
                             data={state.dataSource}
-                        ></n-data-table>
+                            //render-cell={fetchColumnRender}
+                        ></n-data-table> */}
                     </div>
                 </div>
             </common-container>

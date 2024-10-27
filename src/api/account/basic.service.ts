@@ -1,6 +1,41 @@
 import { request } from '@/utils/utils-request'
-import { RestColumn } from '@/interface/instance.resolver'
+import { BodyColumn, RestColumn } from '@/interface/instance.resolver'
 import * as env from '@/interface/instance.resolver'
+
+/**字典类型**/
+export function httpColumnSimpleStalk() {
+    return request({
+        url: `/api/system/simple/stalk`,
+        method: 'POST'
+    })
+}
+
+/**字典列表**/
+export function httpColumnSimple(data: BodyColumn) {
+    return request({
+        url: `/api/system/simple/list`,
+        method: 'POST',
+        data
+    })
+}
+
+/**更新字典**/
+export function httpUpdateSimple(data: Omix) {
+    return request({
+        url: `/api/system/simple/update`,
+        method: 'POST',
+        data
+    })
+}
+
+/**字典详情**/
+export function httpResolveSimple(params: Omix<{ id: number }>) {
+    return request({
+        url: `/api/system/simple/resolve`,
+        method: 'POST',
+        params
+    })
+}
 
 /**新增菜单**/
 export function httpCreateRouter(data: env.BodySaveRouter) {

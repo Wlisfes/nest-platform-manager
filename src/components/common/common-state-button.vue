@@ -18,7 +18,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-button class="common-state-button" style={{ '--n-padding': '0 12px', '--n-icon-margin': '4px' }} focusable={false}>
+            <n-button class="common-state-button" focusable={false}>
                 {{ icon: fetchIconRender, default: slots.default }}
             </n-button>
         )

@@ -8,6 +8,8 @@ export interface SerState<T> extends Omix {
     initialize: boolean
     loading: boolean
     columns: Array<DataTableColumn>
+    offset: number
+    limit: number
     dataSource: Array<T>
     checked: Array<T>
     total: number
@@ -17,7 +19,9 @@ export interface SerOption<T, U> extends Omix {
     immediate?: boolean
     loading?: boolean
     initialize?: boolean
-    colsCount: number
+    colsCount?: number
+    offset?: number
+    limit?: number
     form: Omix<U>
     columns: Array<DataTableColumn>
     request: (form: U, data: SerState<T>) => Promise<RestResolver<RestColumn<T>>>
@@ -44,10 +48,12 @@ export function fetchColsCompute(count: number) {
 export function useService<T extends Omix, U extends Omix>(option: SerOption<T, U>) {
     const form = ref<U>(option.form)
     const { state, setState } = useState<SerState<T>>({
-        cols: fetchColsCompute(option.colsCount),
+        cols: fetchColsCompute(option.colsCount ?? 0),
         initialize: option.initialize ?? true,
         loading: option.loading ?? true,
         columns: option.columns,
+        offset: option.offset ?? 0,
+        limit: option.limit ?? 10,
         dataSource: [],
         checked: [],
         total: 0
@@ -60,6 +66,9 @@ export function useService<T extends Omix, U extends Omix>(option: SerOption<T, 
     async function setForm(value: Partial<Omix<U>> = {}): Promise<Omix<U>> {
         return (form.value = { ...form.value, ...value })
     }
+
+    /**高级筛选提交事件**/
+    async function fetchSubmit() {}
 
     /**接口请求**/
     async function fetchRequest() {

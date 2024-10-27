@@ -7,8 +7,8 @@ export default defineComponent({
         loading: { type: Boolean, default: false },
         opacity: { type: Number, default: 0 },
         absolute: { type: Boolean, default: false },
-        contentClass: { type: String, default: '' },
-        space: { type: Number, default: 12 }
+        contentClass: { type: String, default: 'flex flex-col' },
+        space: { type: Number, default: 0 }
     },
     setup(props, { slots }) {
         return () => (

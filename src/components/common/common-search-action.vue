@@ -1,13 +1,15 @@
 <script lang="tsx">
 import { defineComponent, ref, PropType } from 'vue'
 import { FormProps, GridProps, PopoverInst } from 'naive-ui'
+import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
-import { fetchWhere, enter } from '@/utils/utils-common'
+import { fetchWhere, enter, stop } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonSearchAction',
-    emits: ['submit'],
+    emits: ['submit', 'update:keyword'],
     props: {
+        keyword: { type: String },
         scale: { type: Number, default: 0.8 },
         distance: { type: Number, default: 200 },
         maxWidth: { type: Number, default: 450 },
@@ -20,6 +22,7 @@ export default defineComponent({
     },
     setup(props, { emit, slots }) {
         const instance = ref<PopoverInst>()
+        const { keyword } = useVModels(props, emit)
         const { state, setState } = useState({
             pattern: undefined,
             cols: 1,
@@ -35,28 +38,38 @@ export default defineComponent({
             return await setState({ cols: 1, width: `${props.itemWidth}px` })
         }
 
-        /**回车提交**/
         async function fetchKeyup(evt: KeyboardEvent) {
             return enter(evt, async () => {
-                return emit('submit', { event: 'input-submit', pattern: state.pattern, form: props.form })
+                return await fetchEvent('input-submit')
             })
         }
 
-        /**确定提交**/
+        async function fetchClick(evt: MouseEvent) {
+            return stop(evt, async () => {
+                return await fetchEvent('input-submit')
+            })
+        }
+
+        async function fetchEvent(eventName: 'input-submit' | 'submit' | 'refresh') {
+            return await emit('submit', { event: eventName, pattern: state.pattern, form: props.form })
+        }
+
         async function fetchSubmit(evt: MouseEvent) {
-            await emit('submit', { event: 'submit', pattern: state.pattern, form: props.form })
-            return instance.value!.setShow(false)
+            return await fetchEvent('submit').then(() => {
+                return instance.value!.setShow(false)
+            })
         }
 
         return () => (
             <div class="common-search-action w-full flex gap-10" style={{ maxWidth: props.maxWidth + 'px' }}>
-                <n-input class="flex-1" placeholder={props.placeholder} onKeyup={fetchKeyup}>
+                <n-input class="flex-1" v-model:value={keyword.value} placeholder={props.placeholder} onKeyup={fetchKeyup}>
                     {{
                         prefix: () => (
                             <n-icon
                                 class="cursor-pointer hover:text-[var(--n-text-color)]"
                                 size={18}
                                 component={<local-naive-search />}
+                                onClick={fetchClick}
                             ></n-icon>
                         )
                     }}
@@ -101,9 +114,7 @@ export default defineComponent({
                         )
                     }}
                 </n-popover>
-                <common-state-button>
-                    <span>刷新</span>
-                </common-state-button>
+                {/* <common-state-button circle icon={<local-naive-refresh />} onClick={fetchRefresh}></common-state-button> */}
             </div>
         )
     }

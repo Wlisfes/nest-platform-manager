@@ -1,8 +1,8 @@
-export interface NoticeResolver {
+export type NoticeResolver = Omix & {
     message: string
 }
 
-export interface RestResolver<T = Omix> extends NoticeResolver {
+export type RestResolver<T = Omix> = NoticeResolver & {
     data: T
     code: number
     timestamp: string
@@ -10,7 +10,13 @@ export interface RestResolver<T = Omix> extends NoticeResolver {
     url: string
 }
 
-export interface RestColumn<T = Omix> extends NoticeResolver {
+export type BodyColumn<T = Omix> = Omix<T> & {
+    offset?: number
+    limit?: number
+    keyword?: string
+}
+
+export type RestColumn<T = Omix> = NoticeResolver & {
     page: number
     size: number
     total: number

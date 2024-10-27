@@ -75,7 +75,7 @@ export default defineComponent({
         }
 
         return () => (
-            <common-container absolute class="p-12" loading={state.initialize}>
+            <common-container absolute class="p-12">
                 <div class="h-full flex flex-col flex-1 overflow-hidden">
                     <div class="flex gap-10 p-12 overflow-hidden justify-end">
                         <common-search-action

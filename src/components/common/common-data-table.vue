@@ -49,6 +49,7 @@ export default defineComponent({
                 //flex-height
                 //style={{ height: state.height + 'px' }}
                 //max-height={state.height}
+                style={{ '--n-loading-size': '48px' }}
                 row-key={(row: Omix) => row.id}
                 columns={columns.value}
                 data={props.data}

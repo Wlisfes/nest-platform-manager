@@ -19,7 +19,7 @@ export default defineComponent({
                 { label: '工作台', key: '/manager', iframeName: APP_SKYLINE.Manager },
                 { label: '销售管理', key: '/crm', iframeName: APP_SKYLINE.Crm },
                 { label: '采购管理', key: '/srm', iframeName: APP_SKYLINE.Srm },
-                { label: '综合设置', key: '/system/basic/router', iframeName: APP_SKYLINE.Sys }
+                { label: '综合设置', key: '/system/basic/simple', iframeName: APP_SKYLINE.Sys }
             ]
         })
 

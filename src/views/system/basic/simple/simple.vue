@@ -22,6 +22,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { device } = useStore(useConfiger)
         const { state, form, setForm, setState, fetchRequest } = useService<env.BodySaveRouter, FormState>({
+            initialize: false,
             colsCount: 1,
             immediate: false,
             form: {

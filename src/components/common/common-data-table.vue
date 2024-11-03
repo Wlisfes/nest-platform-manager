@@ -30,11 +30,13 @@ export default defineComponent({
 
         onMounted(async () => {
             await nextTick()
+            console.log(element.value)
             return await setState({ height: element.value.clientHeight ?? 300 })
         })
 
         /**节点渲染**/
         function fetchColumnRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
+            console.log(base)
             if (isEmpty(value)) {
                 return <span>-</span>
             } else if (slots[base.key]) {
@@ -43,20 +45,20 @@ export default defineComponent({
             return <span>{value}</span>
         }
 
+        console.log(minWidth.value)
+
         return () => (
-            <n-data-table
-                class="flex-1 h-full"
-                //flex-height
-                //style={{ height: state.height + 'px' }}
-                //max-height={state.height}
-                style={{ '--n-loading-size': '48px' }}
-                row-key={(row: Omix) => row.id}
-                columns={columns.value}
-                data={props.data}
-                scroll-x={minWidth.value}
-                render-cell={fetchColumnRender}
-                pagination={{ pageSize: 15 }}
-            ></n-data-table>
+            <div class="common-data-table flex-1 h-full">
+                <n-data-table
+                    style={{ '--n-loading-size': '48px', height: state.height + 'px' }}
+                    row-key={(row: Omix) => row.id}
+                    columns={columns.value}
+                    data={props.data}
+                    scroll-x={minWidth.value}
+                    render-cell={fetchColumnRender}
+                    pagination={{ pageSize: 15 }}
+                ></n-data-table>
+            </div>
         )
     }
 })

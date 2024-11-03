@@ -24,20 +24,13 @@ export default defineComponent({
                 keyword: ''
             },
             columns: [
-                { title: '字典ID', key: 'id', width: 120 },
-                { title: '字典名称', key: 'name', minWidth: 160 },
+                { title: '字典ID', key: 'id', width: 100 },
+                { title: '字典名称', key: 'name', minWidth: 140 },
                 { title: '字典标识', key: 'stalk', minWidth: 240 },
                 { title: '备注', key: 'comment', minWidth: 240 },
-                { title: '修改人', key: 'staffName', minWidth: 160 },
-                {
-                    title: '更新时间',
-                    key: 'updateTime',
-                    //minWidth: 180,
-                    ellipsis: {
-                        tooltip: true
-                    }
-                },
-                { title: '操作', key: 'operate', align: 'center', width: 120 }
+                { title: '修改人', key: 'staffName', minWidth: 140 },
+                { title: '更新时间', key: 'updateTime', minWidth: 200 },
+                { title: '操作', key: 'operate', align: 'center', width: 100 }
             ]
         })
 
@@ -92,16 +85,8 @@ export default defineComponent({
                             </n-form-item-gi>
                         </common-search-action>
                     </div>
-                    <div class="flex flex-col flex-1 p-inline-12 p-be-12 overflow-hidden">
+                    <div class="flex-1 p-inline-12 p-be-12 overflow-hidden">
                         <common-data-table loading={state.loading} columns={state.columns} data={state.dataSource}></common-data-table>
-                        {/* <n-data-table
-                            class="flex-1"
-                            row-key={(row: Omix) => row.keyId}
-                            loading={state.loading}
-                            columns={state.columns}
-                            data={state.dataSource}
-                            //render-cell={fetchColumnRender}
-                        ></n-data-table> */}
                     </div>
                 </div>
             </common-container>

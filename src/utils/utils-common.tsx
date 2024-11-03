@@ -1,4 +1,8 @@
 import { isNotEmpty } from 'class-validator'
+import dayjs from 'dayjs'
+
+/**dayjs实例**/
+export const moment = dayjs
 
 export function prevent(evt: Event, handler?: Function) {
     evt.preventDefault()
@@ -112,7 +116,7 @@ export function fetchScreenResize(
     const width = data.width ?? window.innerWidth
     if (width > 1280) {
         return { device: 'PC', collapsed: false }
-    } else if (width > 768) {
+    } else if (width > 860) {
         return { device: 'IPAD', collapsed: true }
     }
     return { device: 'MOBILE', collapsed: true }

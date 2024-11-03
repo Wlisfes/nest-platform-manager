@@ -1,20 +1,22 @@
 import { toRefs, ref } from 'vue'
-import { DataTableColumn } from 'naive-ui'
+import { DataTableBaseColumn } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 import { RestResolver, RestColumn } from '@/interface/instance.resolver'
-
+export interface BaseTableColumn extends Omix, DataTableBaseColumn {
+    dateTime?: boolean
+    dateFormat?: string
+}
 export interface SerState<T> extends Omix {
     cols: Omix<{ default: string; offset: string }>
     initialize: boolean
     loading: boolean
-    columns: Array<DataTableColumn>
+    columns: Array<Omix<BaseTableColumn>>
     offset: number
     limit: number
     dataSource: Array<T>
     checked: Array<T>
     total: number
 }
-
 export interface SerOption<T, U> extends Omix {
     immediate?: boolean
     loading?: boolean
@@ -23,7 +25,7 @@ export interface SerOption<T, U> extends Omix {
     offset?: number
     limit?: number
     form: Omix<U>
-    columns: Array<DataTableColumn>
+    columns: Array<Omix<BaseTableColumn>>
     request: (form: U, data: SerState<T>) => Promise<RestResolver<RestColumn<T>>>
     transform?: (data: RestColumn<T>) => RestColumn<T> | Promise<RestColumn<T>>
     callback?: (form: U, data: SerState<T>) => void | any | Promise<any>
@@ -93,7 +95,9 @@ export function useService<T extends Omix, U extends Omix>(option: SerOption<T, 
     }
 
     /**表格列渲染**/
-    function fetchColumnRender() {}
+    function fetchColumnRender(value: any, data: Omix, base: Omix<BaseTableColumn>) {
+        return <span>{base.width ?? base.minWidth}</span>
+    }
 
     return {
         form,

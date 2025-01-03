@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'Manager',
+    name: 'BaseManager',
     setup(props, ctx) {
         return () => <div>工作台</div>
     }

@@ -1,7 +1,7 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
-import { router, RouteOption, APP_SKYLINE } from '@/router'
+import { router } from '@/router'
 import { fetchScreenResize } from '@/utils/utils-common'
 
 export interface ConfigState {
@@ -12,7 +12,6 @@ export interface ConfigState {
     device: 'PC' | 'IPAD' | 'MOBILE'
     collapsed: boolean
 
-    activeName: string
     currentRoute: string
     include: Array<string>
     dataSource: Array<Omix>
@@ -28,18 +27,9 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
         device: screen.device,
         collapsed: screen.collapsed,
 
-        activeName: APP_SKYLINE.Manager,
         currentRoute: '/manager',
         include: [],
-        dataSource: [
-            {
-                path: '/manager',
-                fullPath: '/manager',
-                name: 'BaseManager',
-                meta: { title: '工作台', iframeName: APP_SKYLINE.Manager },
-                close: false
-            }
-        ]
+        dataSource: []
     })
 
     /**监听窗口resizes事件**/
@@ -79,22 +69,5 @@ export const useConfiger = defineStore('APP_SKYLINE_STORE_CONFIGER', () => {
         })
     }
 
-    async function setAfterRouter(data: Omix<RouteOption>) {
-        if (!state.dataSource.some(item => item.fullPath === data.fullPath)) {
-            await state.dataSource.push({
-                path: data.path,
-                name: data.name,
-                fullPath: data.fullPath,
-                meta: data.meta,
-                close: true
-            })
-        }
-        await fetchSetInclude()
-        return await setState({
-            activeName: data.meta.iframeName as string,
-            currentRoute: data.fullPath
-        })
-    }
-
-    return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate, setAfterRouter, fetchCloseRouter, fetchSetInclude, fetchDelInclude }
+    return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate, fetchCloseRouter, fetchSetInclude, fetchDelInclude }
 })

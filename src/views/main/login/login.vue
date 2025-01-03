@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
+import { useManager, useStore } from '@/store'
 import { useForm } from '@/hooks/hook-form'
 import { enter } from '@/utils/utils-common'
 import { setCompose } from '@/utils/utils-cookie'
@@ -10,6 +11,7 @@ export default defineComponent({
     name: 'BaseAuthorize',
     setup(props) {
         const codexRef = ref<any>()
+        const { fetchCommonBaseResolver } = useStore(useManager)
         const { formRef, form, state, setState, fetchValidater } = useForm({
             form: {
                 account: '',
@@ -36,7 +38,8 @@ export default defineComponent({
                         account: form.value.account,
                         password: window.btoa(encodeURIComponent(form.value.password))
                     }).then(async ({ data }) => {
-                        return await setCompose(data).then(() => {
+                        return await setCompose(data).then(async () => {
+                            await fetchCommonBaseResolver()
                             return router.push({ path: '/', replace: true })
                         })
                     })

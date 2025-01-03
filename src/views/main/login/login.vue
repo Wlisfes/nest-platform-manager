@@ -10,39 +10,39 @@ export default defineComponent({
     name: 'BaseAuthorize',
     setup(props) {
         const codexRef = ref<any>()
-        const { formRef, form, state, setState, fetchValidate } = useForm({
+        const { formRef, form, state, setState, fetchValidater } = useForm({
             form: {
-                jobNumber: '',
+                account: '',
                 password: '',
                 code: ''
             },
             rules: {
-                jobNumber: { required: true, trigger: 'blur', min: 4, max: 4, message: '请输入4位工号' },
+                account: { required: true, trigger: 'blur', message: '请输入登录账号' },
                 password: { required: true, trigger: 'blur', min: 6, max: 18, message: '请输入6~18位登录密码' },
                 code: { required: true, trigger: 'blur', message: '请输入验证码' }
             }
         })
 
         async function onSubmit() {
-            await setState({ loading: true })
-            return await fetchValidate().then(async valid => {
-                if (!valid) {
+            return await fetchValidater().then(async result => {
+                if (!result) {
                     return await codexRef.value.fetchRefresh(300).then(() => {
-                        return setState({ loading: false })
+                        return setState({ loading: false, disabled: false })
                     })
                 }
                 try {
-                    const { data } = await Service.httpAuthMember({
+                    return await Service.httpCommonAuthorize({
                         code: form.value.code,
-                        jobNumber: form.value.jobNumber,
+                        account: form.value.account,
                         password: window.btoa(encodeURIComponent(form.value.password))
-                    })
-                    return await setCompose(data).then(() => {
-                        return router.push({ path: '/', replace: true })
+                    }).then(async ({ data }) => {
+                        return await setCompose(data).then(() => {
+                            return router.push({ path: '/', replace: true })
+                        })
                     })
                 } catch (err) {
                     return await codexRef.value.fetchRefresh(300).then(() => {
-                        return setState({ loading: false })
+                        return setState({ loading: false, disabled: false })
                     })
                 }
             })
@@ -68,12 +68,12 @@ export default defineComponent({
                         <n-h2 class="text-28 font-500 text-center">
                             <n-text depth={2}>欢迎登录</n-text>
                         </n-h2>
-                        <n-form-item path="jobNumber">
+                        <n-form-item path="account">
                             <n-input
                                 maxlength={32}
                                 type="text"
                                 placeholder="请输入登录账号"
-                                v-model:value={form.value.jobNumber}
+                                v-model:value={form.value.account}
                                 input-props={{ autocomplete: 'on' }}
                                 onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                 v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-user />}></n-icon> }}

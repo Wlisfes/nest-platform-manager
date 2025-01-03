@@ -6,8 +6,10 @@ import { fetchDelay } from '@/utils/utils-common'
 export default defineComponent({
     name: 'CommonElementCodex',
     props: {
+        /**是否禁用**/
         disabled: { type: Boolean },
-        baseURL: { type: String, default: '/api/account/member/login/codex' }
+        /**图形验证码地址**/
+        baseURL: { type: String, default: '/api/user/system/codex' }
     },
     setup(props, { expose }) {
         const { state, setState } = useState({ initialize: true, loading: false, baseURL: '' })

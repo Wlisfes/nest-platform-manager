@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'App',
-    setup() {
+    setup(props) {
         return () => (
             <layout-config-provider global-style>
                 <layout-config-mount>

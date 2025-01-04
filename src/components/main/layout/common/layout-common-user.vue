@@ -6,7 +6,7 @@ import { useProvider } from '@/hooks/hook-provider'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
-    name: 'LayoutUser',
+    name: 'LayoutCommonUser',
     setup(props, ctx) {
         const { theme, fetchThemeUpdate } = useProvider()
         const { avatar, uid, nickname, email, account } = useStore(useManager)
@@ -60,17 +60,17 @@ export default defineComponent({
                 <n-element class="flex flex-col overflow-hidden">
                     <div class="flex items-center gap-10 p-16 select-none cursor-pointer border-b border-b-solid border-b-[var(--divider-color)]">
                         <common-image
-                            width={40}
-                            height={40}
+                            width={44}
+                            height={44}
                             preview-disabled
                             class="b-rd-50% block overflow-hidden"
                             src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg"
                         ></common-image>
                         <div class="flex flex-col flex-1">
-                            <n-text depth={1} style={{ fontSize: '16px', lineHeight: '22px' }}>
+                            <n-text depth={1} style={{ fontSize: '16px', lineHeight: '24px' }}>
                                 <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
                             </n-text>
-                            <n-text depth={3} style={{ lineHeight: '18px' }}>
+                            <n-text depth={3} style={{ lineHeight: '20px' }}>
                                 <n-ellipsis tooltip={false}>{`UID：${uid.value}`}</n-ellipsis>
                             </n-text>
                         </div>

@@ -3,7 +3,7 @@ import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonV
 import { useConfiger, useStore } from '@/store'
 
 export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
-    '--app-back-color': string
+    '--common-body-color': string
 }
 
 export function useProvider() {
@@ -40,7 +40,7 @@ export function useProvider() {
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,
             primaryColorSuppl: primaryColor.value,
-            '--app-back-color': '#eef1f5'
+            '--common-body-color': '#eef1f5'
         },
         Scrollbar: { width: '6px', height: '6px' },
         Tree: { nodeHeight: '36px' }
@@ -51,7 +51,7 @@ export function useProvider() {
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,
             primaryColorSuppl: primaryColor.value,
-            '--app-back-color': '#101014'
+            '--common-body-color': 'var(--body-color)'
         },
         Scrollbar: { width: '6px', height: '6px' },
         Tree: { nodeHeight: '36px' }

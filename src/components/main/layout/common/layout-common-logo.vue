@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'LayoutLogo',
+    name: 'LayoutCommonLogo',
     setup(props, ctx) {
         return () => (
             <router-link to="/login" class="flex items-center gap-6 cursor-pointer">

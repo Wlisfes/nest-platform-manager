@@ -10,7 +10,7 @@ export function fetchSetupRouter() {
         {
             path: '/manager',
             name: 'BaseManager',
-            meta: { title: '工作台', AUTH: 'AUTH' },
+            meta: { title: '工作台', AUTH: 'AUTH', menu: false },
             component: () => import('@/views/main/manager/manager.vue')
         }
     ]
@@ -54,17 +54,18 @@ export function setupGuardRouter(router: Router) {
                 return next()
             }
             return await cookie.delCompose().then(() => {
-                return next()
+                return next({ replace: true, path: '/login' })
             })
         } else if (isEmpty(uid.value)) {
             try {
                 await fetchCommonBaseResolver()
             } catch (err) {
                 return await cookie.delCompose().then(() => {
-                    return next()
+                    return next({ replace: true, path: '/login' })
                 })
             }
         }
+
         if (to.meta.AUTH === 'AUTH_NONE') {
             return next({ replace: true, path: '/' })
         } else {

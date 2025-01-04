@@ -1,26 +1,35 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useConfiger, useStore } from '@/store'
 
 export default defineComponent({
     name: 'BaseLayout',
     setup(props, ctx) {
         const { collapsed, device, setState, fetchResize } = useStore(useConfiger)
+        const route = useRoute()
+        const menuCheck = computed(() => route.meta.menu ?? true)
 
         return () => (
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden">
-                <n-layout-header class="h-50 p-inline-20 flex items-center" bordered></n-layout-header>
+                <n-layout-header class="h-60 p-inline-24 flex items-center" bordered>
+                    <layout-logo></layout-logo>
+                    <div class="flex-1">dasda</div>
+                    <layout-user></layout-user>
+                </n-layout-header>
                 <n-layout class="flex-1" has-sider content-class="flex flex-col overflow-hidden">
-                    <n-layout-sider
-                        collapse-mode="width"
-                        bordered
-                        width={260}
-                        native-scrollbar={false}
-                        collapsed={collapsed.value}
-                        collapsed-width={device.value === 'MOBILE' ? 0 : 64}
-                        show-trigger={device.value === 'MOBILE' ? false : 'bar'}
-                        on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
-                    ></n-layout-sider>
+                    {menuCheck.value && (
+                        <n-layout-sider
+                            collapse-mode="width"
+                            bordered
+                            width={260}
+                            native-scrollbar={false}
+                            collapsed={collapsed.value}
+                            collapsed-width={device.value === 'MOBILE' ? 0 : 64}
+                            show-trigger={device.value === 'MOBILE' ? false : 'bar'}
+                            on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
+                        ></n-layout-sider>
+                    )}
                     <n-layout content-class="flex flex-col overflow-hidden">
                         <n-layout-content
                             class="flex-1 overflow-hidden"

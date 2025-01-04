@@ -17,7 +17,7 @@ export const useConfiger = defineStore('APP_STORE_CONFIGER', () => {
     const screen = utils.fetchScreenResize()
     const { state, setState } = useState<ConfigState>({
         theme: 'light',
-        primaryColor: '#24B89E',
+        primaryColor: '#536dfe',
         width: window.innerWidth,
         height: window.innerHeight,
         device: screen.device,

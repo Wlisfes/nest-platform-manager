@@ -437,10 +437,17 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.21.5.tgz#acad351d582d157bb145535db2a6ff53dd514b5c"
   integrity sha512-tQd/1efJuzPC6rCFwEvLtci/xNFcTZknmXs98FYDfGE4wP9ClFV98nyKrzJKVPMhdDnjzLhdUyMX4PsQAPjwIw==
 
-"@iconify-json/ep@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@iconify-json/ep/-/ep-1.2.0.tgz#44f9ca3ee8ed68731bee1fbae6308e2a952048f0"
-  integrity sha512-0PQ0YxrYj373w7zPg/b50sbJUvlOGqb8a9l4DJA32hBM+SmEAPpRZrlz0c8rlA5RbjJF4nYZsrpB9ZzIX55o2A==
+"@iconify-json/fluent@^1.2.11":
+  version "1.2.11"
+  resolved "https://registry.npmmirror.com/@iconify-json/fluent/-/fluent-1.2.11.tgz#ed32784f76df6df30fb3595f02f76e159f86aa74"
+  integrity sha512-cIaUZiNoEFF22tldJOh2mcwk/d6C+kpo5R4xhgLAy6HH61NaY4Lqktje4qK2nqzQqAvYB2NpDjJnmBQw6zUlJw==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/tabler@^1.2.13":
+  version "1.2.13"
+  resolved "https://registry.npmmirror.com/@iconify-json/tabler/-/tabler-1.2.13.tgz#4fc38971b99ea7cba15ca0f2da5162de16ec25f4"
+  integrity sha512-vXnl0db3Q/v1e+lMEGmdrzJeFVyR//20gbUU2HFOrJP08nbz1EGRa8urNS4zL3oEV6Wjgo11AHJLSs628I6swQ==
   dependencies:
     "@iconify/types" "*"
 
@@ -2379,7 +2386,7 @@ vue-demi@>=0.14.10, vue-demi@^0.14.10:
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.14.10.tgz#afc78de3d6f9e11bf78c55e8510ee12814522f04"
   integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==
 
-vue-router@^4.2.4, vue-router@^4.4.3:
+vue-router@^4.4.3:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.4.5.tgz#bdf535e4cf32414ebdea6b4b403593efdb541388"
   integrity sha512-4fKZygS8cH1yCyuabAXGUAsyi1b2/o/OKgu/RUb+znIYOxPRxdkytJEx+0wGcpBE1pX6vUgh5jwWOKRGvuA/7Q==
@@ -2395,15 +2402,7 @@ vue-tsc@^2.0.29:
     "@vue/language-core" "2.1.6"
     semver "^7.5.4"
 
-vue3-keep-alive-component@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/vue3-keep-alive-component/-/vue3-keep-alive-component-1.0.19.tgz#fb1a67cdfea3697f7874cedc75c23e08f24fda20"
-  integrity sha512-IyIswK5c9ocIvNTjuInNH5gXloBVSyCmdFcVsinNiH3E6ptR1HE4ndrOXYBtzXj/z616n+xGvFDSf0rzZY+NBg==
-  dependencies:
-    vue "^3.3.4"
-    vue-router "^4.2.4"
-
-vue@3.5.10, vue@^3.3.4:
+vue@3.5.10:
   version "3.5.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.5.10.tgz#14be9d4655e07be8d5e8295d017815ed14337f96"
   integrity sha512-Vy2kmJwHPlouC/tSnIgXVg03SG+9wSqT1xu1Vehc+ChsXsRd7jLkKgMltVEFOzUdBr3uFwBCG+41LJtfAcBRng==

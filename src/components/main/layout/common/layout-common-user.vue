@@ -1,13 +1,15 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, Fragment } from 'vue'
 import { useManager, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
+import { useProvider } from '@/hooks/hook-provider'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'LayoutUser',
     setup(props, ctx) {
-        const { avatar, nickname, email, account } = useStore(useManager)
+        const { theme, fetchThemeUpdate } = useProvider()
+        const { avatar, uid, nickname, email, account } = useStore(useManager)
         const { state, setState } = useState({ visible: false, delay: false })
 
         /**异步关闭用户信息popover组件**/
@@ -28,11 +30,16 @@ export default defineComponent({
             })
         }
 
+        /**退出登录**/
+        async function fetchCompose() {
+            return await setState({ visible: false })
+        }
+
         return () => (
             <n-popover
                 placement="bottom-end"
                 trigger="click"
-                width={260}
+                width={300}
                 show={state.visible}
                 style={{ padding: 0 }}
                 onClickoutside={fetchClickoutside}
@@ -64,9 +71,43 @@ export default defineComponent({
                                 <n-ellipsis tooltip={false}>{nickname.value}</n-ellipsis>
                             </n-text>
                             <n-text depth={3} style={{ lineHeight: '18px' }}>
-                                <n-ellipsis tooltip={false}>{account.value}</n-ellipsis>
+                                <n-ellipsis tooltip={false}>{`UID：${uid.value}`}</n-ellipsis>
                             </n-text>
                         </div>
+                    </div>
+                    <n-list hoverable clickable show-divider={false} class="p-inline-10 p-block-10 select-none">
+                        <n-list-item style={{ padding: 0 }}>
+                            <div class="h-24 flex items-center gap-10 p-inline-10 p-block-10">
+                                <n-icon size={24} component={<local-nest-settings />}></n-icon>
+                                <n-text>账户设置</n-text>
+                            </div>
+                        </n-list-item>
+                        <n-list-item style={{ padding: 0 }} onClick={() => fetchThemeUpdate(theme.value === 'dark' ? 'light' : 'dark')}>
+                            <div class="h-24 flex items-center gap-10 p-inline-10 p-block-10">
+                                {theme.value === 'dark' ? (
+                                    <Fragment>
+                                        <n-icon size={24} component={<local-nest-light />}></n-icon>
+                                        <n-text>浅色模式</n-text>
+                                    </Fragment>
+                                ) : (
+                                    <Fragment>
+                                        <n-icon size={24} component={<local-nest-dark />}></n-icon>
+                                        <n-text>深色模式</n-text>
+                                    </Fragment>
+                                )}
+                            </div>
+                        </n-list-item>
+                    </n-list>
+                    <div class="p-inline-10 p-block-10 flex flex-col p-bs-0">
+                        <n-button
+                            size="large"
+                            focusable={false}
+                            secondary
+                            render-icon={() => <n-icon size={20} component={<local-nest-exit />}></n-icon>}
+                            onClick={fetchCompose}
+                        >
+                            退出登录
+                        </n-button>
                     </div>
                 </n-element>
             </n-popover>

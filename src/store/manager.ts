@@ -1,4 +1,4 @@
-import { toRefs } from 'vue'
+import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import * as Service from '@/api/instance.service'
@@ -29,5 +29,10 @@ export const useManager = defineStore('APP_STORE_MANAGER', () => {
         })
     }
 
-    return { ...toRefs(state), setState, fetchCommonBaseResolver }
+    return {
+        state: computed(() => state),
+        ...toRefs(state),
+        setState,
+        fetchCommonBaseResolver
+    }
 })

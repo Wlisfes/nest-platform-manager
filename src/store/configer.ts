@@ -31,5 +31,9 @@ export const useConfiger = defineStore('APP_STORE_CONFIGER', () => {
         })
     }
 
-    return { ...toRefs(state), setState, fetchResize }
+    async function fetchThemeUpdate(theme: ConfigState['theme']) {
+        return await setState({ theme })
+    }
+
+    return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate }
 })

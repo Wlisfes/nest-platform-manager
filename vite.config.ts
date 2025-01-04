@@ -33,13 +33,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 extensions: ['vue', 'tsx'],
                 include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/],
                 dirs: ['src/components'],
-                resolvers: [
-                    NaiveUiResolver(),
-                    IconsResolver({
-                        prefix: false,
-                        enabledCollections: ['local', 'tabler']
-                    })
-                ]
+                resolvers: [NaiveUiResolver(), IconsResolver({ prefix: false, enabledCollections: ['local'] })]
             }),
             Icons({
                 scale: 1,

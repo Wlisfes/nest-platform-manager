@@ -14,7 +14,7 @@ export default defineComponent({
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden">
                 <n-layout-header class="h-60 p-inline-24 flex items-center gap-24" bordered>
                     <layout-common-logo></layout-common-logo>
-                    <div class="flex-1"></div>
+                    <layout-common-navigate></layout-common-navigate>
                     <layout-common-user></layout-common-user>
                 </n-layout-header>
                 <n-layout class="flex-1" has-sider content-class="flex flex-col overflow-hidden">

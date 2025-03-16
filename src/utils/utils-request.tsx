@@ -2,7 +2,10 @@ import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getToken } from '@/utils/utils-cookie'
 
 export const request: AxiosRequest = axios.create({
-    timeout: 90000
+    timeout: 90000,
+    headers: {
+        platform: 'manager'
+    }
 })
 
 function inizeNotice(response: AxiosResponse) {
@@ -18,7 +21,6 @@ request.interceptors.request.use(
         if (token) {
             config.headers.Authorization = token
         }
-
         return config
     },
     error => Promise.reject(error)

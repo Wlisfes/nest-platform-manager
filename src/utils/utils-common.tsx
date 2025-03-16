@@ -1,5 +1,6 @@
-import { isNotEmpty } from 'class-validator'
+import { isNotEmpty, isEmpty, isArray, isEmail } from 'class-validator'
 import dayjs from 'dayjs'
+export { isNotEmpty, isEmpty, isArray, isEmail }
 
 /**dayjs实例**/
 export const moment = dayjs

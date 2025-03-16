@@ -11,7 +11,7 @@ export default defineComponent({
     name: 'BaseAuthorize',
     setup(props) {
         const codexRef = ref<any>()
-        const { fetchCommonBaseResolver } = useStore(useManager)
+        const { fetchCommonUserResolver } = useStore(useManager)
         const { formRef, form, state, setState, fetchValidater } = useForm({
             form: {
                 account: '',
@@ -33,13 +33,13 @@ export default defineComponent({
                     })
                 }
                 try {
-                    return await Service.httpCommonAuthorize({
+                    return await Service.httpCommonUserAuthorize({
                         code: form.value.code,
                         account: form.value.account,
                         password: window.btoa(encodeURIComponent(form.value.password))
                     }).then(async ({ data }) => {
                         return await setCompose(data).then(async () => {
-                            await fetchCommonBaseResolver()
+                            await fetchCommonUserResolver()
                             return router.push({ path: '/', replace: true })
                         })
                     })

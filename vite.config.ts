@@ -51,7 +51,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
             host: '0.0.0.0',
             proxy: {
                 [`/api`]: {
-                    target: `http://localhost:4070`,
+                    target: `http://localhost:3000`,
                     ws: true,
                     changeOrigin: true
                 }

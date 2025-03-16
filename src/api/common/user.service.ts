@@ -1,18 +1,18 @@
 import { request } from '@/utils/utils-request'
 
 /**账号登录**/
-export function httpCommonAuthorize(data: Omix) {
+export function httpCommonUserAuthorize(data: Omix) {
     return request({
-        url: `/api/user/token/authorize`,
+        url: `/api/common/user/token/authorize`,
         method: 'POST',
         data
     })
 }
 
 /**获取账号基本信息**/
-export function httpCommonBaseResolver() {
+export function httpCommonUserResolver() {
     return request({
-        url: `/api/user/base/resolver`,
+        url: `/api/common/user/token/resolver`,
         method: 'GET'
     })
 }

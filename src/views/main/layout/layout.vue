@@ -8,28 +8,26 @@ export default defineComponent({
     setup(props, ctx) {
         const { collapsed, device, setState, fetchResize } = useStore(useConfiger)
         const route = useRoute()
-        const menuCheck = computed(() => route.meta.menu ?? true)
 
         return () => (
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden">
-                <n-layout-header class="h-60 p-inline-24 flex items-center gap-24" bordered>
+                <n-layout-header class="h-60 p-inline-24 flex items-center gap-24">
                     <layout-common-logo></layout-common-logo>
                     <layout-common-navigate></layout-common-navigate>
                     <layout-common-user></layout-common-user>
                 </n-layout-header>
                 <n-layout class="flex-1" has-sider content-class="flex flex-col overflow-hidden">
-                    {menuCheck.value && (
-                        <n-layout-sider
-                            collapse-mode="width"
-                            bordered
-                            width={260}
-                            native-scrollbar={false}
-                            collapsed={collapsed.value}
-                            collapsed-width={device.value === 'MOBILE' ? 0 : 64}
-                            show-trigger={device.value === 'MOBILE' ? false : 'bar'}
-                            on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
-                        ></n-layout-sider>
-                    )}
+                    <n-layout-sider
+                        collapse-mode="width"
+                        width={260}
+                        native-scrollbar={false}
+                        collapsed={collapsed.value}
+                        collapsed-width={device.value === 'MOBILE' ? 0 : 64}
+                        show-trigger={device.value === 'MOBILE' ? false : 'bar'}
+                        on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
+                    >
+                        <layout-common-sider></layout-common-sider>
+                    </n-layout-sider>
                     <n-layout content-class="flex flex-col overflow-hidden">
                         <n-layout-content
                             class="flex-1 overflow-hidden"

@@ -53,7 +53,7 @@ export default defineComponent({
 
         return () => (
             <n-element class="login-element h-full p-24 flex justify-center items-center">
-                <layout-stripe></layout-stripe>
+                <layout-common-stripe></layout-common-stripe>
                 <n-card
                     class="w-full h-full max-w-520 max-h-520 p-24"
                     style={{ boxShadow: 'var(--box-shadow-1)' }}

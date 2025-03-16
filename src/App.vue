@@ -5,11 +5,11 @@ export default defineComponent({
     name: 'App',
     setup(props) {
         return () => (
-            <layout-config-provider global-style>
-                <layout-config-mount>
+            <layout-common-provider global-style>
+                <layout-common-mount>
                     <router-view />
-                </layout-config-mount>
-            </layout-config-provider>
+                </layout-common-mount>
+            </layout-common-provider>
         )
     }
 })

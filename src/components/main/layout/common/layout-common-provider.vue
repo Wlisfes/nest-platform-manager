@@ -4,7 +4,7 @@ import { dateZhCN, zhCN } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
-    name: 'LayoutConfigProvider',
+    name: 'LayoutCommonProvider',
     props: {
         globalStyle: { type: Boolean, default: false }
     },

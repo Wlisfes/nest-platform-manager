@@ -21,6 +21,7 @@ export default defineComponent({
 
         return () => (
             <n-menu
+                class="layout-common-sider"
                 accordion
                 root-indent={24}
                 collapsed-width={64}
@@ -28,9 +29,18 @@ export default defineComponent({
                 icon-size={24}
                 value="/manager"
                 options={menuOptions.value}
-                style={{ '--n-font-size': '16px', '--n-item-height': '48px' }}
             ></n-menu>
         )
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.layout-common-sider {
+    --n-font-size: 16px;
+    --n-item-height: 48px;
+    > :deep(.n-menu-item):first-child {
+        margin-top: 0;
+    }
+}
+</style>

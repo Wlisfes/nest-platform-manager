@@ -1,17 +1,15 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent } from 'vue'
 import { useConfiger, useStore } from '@/store'
 
 export default defineComponent({
     name: 'BaseLayout',
     setup(props, ctx) {
         const { collapsed, device, setState, fetchResize } = useStore(useConfiger)
-        const route = useRoute()
 
         return () => (
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden">
-                <n-layout-header class="h-60 p-inline-24 flex items-center gap-24">
+                <n-layout-header class="h-60 p-inline-16 flex items-center gap-24">
                     <layout-common-logo></layout-common-logo>
                     <layout-common-navigate></layout-common-navigate>
                     <layout-common-user></layout-common-user>
@@ -19,7 +17,6 @@ export default defineComponent({
                 <n-layout class="flex-1" has-sider content-class="flex flex-col overflow-hidden">
                     <n-layout-sider
                         collapse-mode="width"
-                        width={260}
                         native-scrollbar={false}
                         collapsed={collapsed.value}
                         collapsed-width={device.value === 'MOBILE' ? 0 : 64}

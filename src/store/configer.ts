@@ -1,7 +1,6 @@
 import { toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
-import { router } from '@/router'
 import * as utils from '@/utils/utils-common'
 
 export interface ConfigState {
@@ -13,27 +12,30 @@ export interface ConfigState {
     collapsed: boolean
 }
 
+/**基础缓存配置实例**/ //prettier-ignore
 export const useConfiger = defineStore('APP_STORE_CONFIGER', () => {
-    const screen = utils.fetchScreenResize()
-    const { state, setState } = useState<ConfigState>({
-        theme: 'light',
-        primaryColor: '#536dfe',
-        width: window.innerWidth,
-        height: window.innerHeight,
-        device: screen.device,
-        collapsed: screen.collapsed
-    })
-
-    /**监听窗口resizes事件**/
-    async function fetchResize(data: Partial<{ width: number; height: number }> = {}) {
-        return await setState({ width: data.width ?? window.innerWidth, height: data.height ?? window.innerHeight }).then(async data => {
-            return await setState(utils.fetchScreenResize({ width: data.width, height: data.height }))
+        const screen = utils.fetchScreenResize()
+        const { state, setState } = useState<ConfigState>({
+            theme: 'light',
+            primaryColor: '#536dfe',
+            width: window.innerWidth,
+            height: window.innerHeight,
+            device: screen.device,
+            collapsed: screen.collapsed
         })
-    }
 
-    async function fetchThemeUpdate(theme: ConfigState['theme']) {
-        return await setState({ theme })
-    }
+        /**监听窗口resizes事件**/
+        async function fetchResize(data: Partial<{ width: number; height: number }> = {}) {
+            return await setState({ width: data.width ?? window.innerWidth, height: data.height ?? window.innerHeight }).then(
+                async data => {
+                    return await setState(utils.fetchScreenResize({ width: data.width, height: data.height }))
+                }
+            )
+        }
 
-    return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate }
-})
+        async function fetchThemeUpdate(theme: ConfigState['theme']) {
+            return await setState({ theme })
+        }
+
+        return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate }
+}, { persist: true })

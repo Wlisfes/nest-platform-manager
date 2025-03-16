@@ -47,8 +47,8 @@ export default defineComponent({
                     trigger: () => (
                         <div class="h-full flex items-center cursor-pointer" onClick={fetchOpenCollapse}>
                             <common-image
-                                width={34}
-                                height={34}
+                                width={36}
+                                height={36}
                                 preview-disabled
                                 class="b-rd-50% block overflow-hidden"
                                 src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg"

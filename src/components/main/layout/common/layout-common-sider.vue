@@ -6,16 +6,16 @@ export default defineComponent({
     setup(props, ctx) {
         const menuOptions = computed(() => {
             return [
-                { label: '工作台', key: '/manager' },
-                { label: '销售管理', key: '/crm' },
-                { label: '采购管理', key: '/srm' },
-                { label: '报价管理', key: '/system/basic/simple' },
-                { label: '财务中心', key: '/srm' },
-                { label: '客服中心', key: '/srm' },
-                { label: '信息查询', key: '/srm' },
-                { label: '报表分析', key: '/srm' },
-                { label: '运营中心', key: '/srm' },
-                { label: '综合设置', key: '/system/basic/simple' }
+                { label: '工作台', key: '/manager', icon: () => <local-nest-compass /> },
+                { label: '销售管理', key: '/crm', icon: () => <local-nest-market /> },
+                { label: '采购管理', key: '/srm', icon: () => <local-nest-stock /> },
+                { label: '报价管理', key: '/system/basic/simple', icon: () => <local-nest-offer /> },
+                { label: '财务中心', key: '/srm', icon: () => <local-nest-finance /> },
+                { label: '客服中心', key: '/srm', icon: () => <local-nest-monit /> },
+                { label: '信息查询', key: '/srm', icon: () => <local-nest-infratsr /> },
+                { label: '报表分析', key: '/srm', icon: () => <local-nest-histogr /> },
+                { label: '运营中心', key: '/srm', icon: () => <local-nest-trade /> },
+                { label: '综合设置', key: '/system/basic/simple', icon: () => <local-nest-settings /> }
             ]
         })
 
@@ -24,8 +24,8 @@ export default defineComponent({
                 accordion
                 root-indent={24}
                 collapsed-width={64}
-                collapsed-icon-size={28}
-                icon-size={28}
+                collapsed-icon-size={24}
+                icon-size={24}
                 value="/manager"
                 options={menuOptions.value}
                 style={{ '--n-font-size': '16px', '--n-item-height': '48px' }}

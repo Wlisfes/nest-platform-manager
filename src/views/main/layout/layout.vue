@@ -27,6 +27,7 @@ export default defineComponent({
                         <layout-common-sider></layout-common-sider>
                     </n-layout-sider>
                     <n-layout content-class="flex flex-col overflow-hidden">
+                        <layout-common-store></layout-common-store>
                         <n-layout-content
                             class="flex-1 overflow-hidden"
                             content-class="min-h-full flex flex-col"

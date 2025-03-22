@@ -37,8 +37,9 @@ export const useConfiger = defineStore(
             )
         }
 
-        async function fetchThemeUpdate(theme: ConfigState['theme']) {
-            return await setState({ theme })
+        /**主题切换**/
+        async function fetchThemeUpdate(theme?: ConfigState['theme']) {
+            return await setState({ theme: theme ?? state.theme === 'light' ? 'dark' : 'light' })
         }
 
         return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate }

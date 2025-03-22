@@ -1,11 +1,21 @@
 <script lang="tsx">
 import { defineComponent, ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useConfiger } from '@/store'
 import { BScroll } from '@/plugins/better-scroll'
 
 export default defineComponent({
     name: 'LayoutCommonStore',
     setup(props, ctx) {
+        const router = useRouter()
+        const configer = useConfiger()
         const element = ref<HTMLElement>()
+
+        async function fetchJumpRouter(data: Omix) {
+            if (data.fullPath !== router.currentRoute.value.fullPath) {
+                return await router.push({ path: data.fullPath })
+            }
+        }
 
         onMounted(fetchInitScrollbar)
         async function fetchInitScrollbar() {
@@ -22,12 +32,16 @@ export default defineComponent({
 
         return () => (
             <common-element bordered={false} class="layout-common-store" class-name="flex gap-10 overflow-hidden">
-                <div ref={element} class="whitespace-nowrap overflow-hidden relative p-be-10 cursor-pointer">
+                <div ref={element} class="flex-1 whitespace-nowrap overflow-hidden relative p-be-10 cursor-pointer">
                     <div class="inline-flex gap-10 element-bscrollbar">
-                        {Array.from({ length: 50 }, (x, index) => (
-                            <div class="select-none inline-flex element-block">
-                                <n-button secondary type="primary">
-                                    资源管理
+                        {configer.menuRouter.map(item => (
+                            <div key={item.fullPath} class="select-none inline-flex element-block">
+                                <n-button
+                                    secondary
+                                    type={item.fullPath === router.currentRoute.value.fullPath ? 'primary' : undefined}
+                                    onClick={() => fetchJumpRouter(item)}
+                                >
+                                    {item.meta.title}
                                 </n-button>
                             </div>
                         ))}

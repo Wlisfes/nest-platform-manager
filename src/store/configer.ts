@@ -11,6 +11,7 @@ export interface ConfigState {
     height: number
     device: 'PC' | 'IPAD' | 'MOBILE'
     collapsed: boolean
+    menuRouter: Array<Omix>
 }
 
 /**基础缓存配置实例**/
@@ -25,7 +26,8 @@ export const useConfiger = defineStore(
             width: window.innerWidth,
             height: window.innerHeight,
             device: screen.device,
-            collapsed: screen.collapsed
+            collapsed: screen.collapsed,
+            menuRouter: []
         })
 
         /**监听窗口resizes事件**/
@@ -42,11 +44,20 @@ export const useConfiger = defineStore(
             return await setState({ theme: theme ?? state.theme === 'light' ? 'dark' : 'light' })
         }
 
+        /**菜单缓存**/
+        async function fetchMenuRouter(data: Omix) {
+            if (!state.menuRouter.some(item => item.fullPath === data.fullPath)) {
+                return state.menuRouter.push(utils.omit(data, ['matched']))
+            }
+            return state.menuRouter
+        }
+
         return {
             ...toRefs(state),
             setState,
             fetchResize,
             fetchThemeUpdate,
+            fetchMenuRouter,
             inverted: computed(() => state.theme === 'dark')
         }
     },

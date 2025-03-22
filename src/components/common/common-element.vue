@@ -8,7 +8,11 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         return () => (
-            <n-card class="common-element" content-class={props.className} content-style={{ padding: '20px' }}>
+            <n-card
+                class="common-element"
+                content-class={`${props.className}`}
+                style={{ '--n-padding-left': '0px', '--n-padding-bottom': '0px' }}
+            >
                 {slots}
             </n-card>
         )

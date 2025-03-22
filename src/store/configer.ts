@@ -1,4 +1,4 @@
-import { toRefs } from 'vue'
+import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks/hook-state'
 import * as utils from '@/utils/utils-common'
@@ -42,7 +42,13 @@ export const useConfiger = defineStore(
             return await setState({ theme: theme ?? state.theme === 'light' ? 'dark' : 'light' })
         }
 
-        return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate }
+        return {
+            ...toRefs(state),
+            setState,
+            fetchResize,
+            fetchThemeUpdate,
+            inverted: computed(() => state.theme === 'dark')
+        }
     },
     { persist: true }
 )

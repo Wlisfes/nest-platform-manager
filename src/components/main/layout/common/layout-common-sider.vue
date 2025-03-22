@@ -1,34 +1,33 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
+import { useManager, useConfiger } from '@/store'
+import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'LayoutCommonSider',
     setup(props, ctx) {
-        const menuOptions = computed(() => {
-            return [
-                { label: '工作台', key: '/manager', icon: () => <local-nest-compass /> },
-                { label: '销售管理', key: '/crm', icon: () => <local-nest-market /> },
-                { label: '采购管理', key: '/srm', icon: () => <local-nest-stock /> },
-                { label: '报价管理', key: '/system/basic/simple', icon: () => <local-nest-offer /> },
-                { label: '财务中心', key: '/srm', icon: () => <local-nest-finance /> },
-                { label: '客服中心', key: '/srm', icon: () => <local-nest-monit /> },
-                { label: '信息查询', key: '/srm', icon: () => <local-nest-infratsr /> },
-                { label: '报表分析', key: '/srm', icon: () => <local-nest-histogr /> },
-                { label: '运营中心', key: '/srm', icon: () => <local-nest-trade /> },
-                { label: '综合设置', key: '/system/basic/simple', icon: () => <local-nest-settings /> }
-            ]
-        })
+        const router = useRouter()
+        const manager = useManager()
+        const configer = useConfiger()
+
+        async function fetchSelecter(path: string, data: Omix) {
+            return await router.push({ path })
+        }
 
         return () => (
             <n-menu
                 class="layout-common-sider"
-                accordion
-                root-indent={24}
-                collapsed-width={64}
-                collapsed-icon-size={24}
+                label-field="name"
+                key-field="router"
+                accordion={true}
                 icon-size={24}
-                value="/manager"
-                options={menuOptions.value}
+                root-indent={20}
+                collapsed-width={64}
+                value={configer.router}
+                options={manager.menuOptions}
+                on-update:value={fetchSelecter}
+                render-icon={(data: Omix) => (utils.isEmpty(data.iconName) ? null : <common-icon name={data.iconName}></common-icon>)}
             ></n-menu>
         )
     }

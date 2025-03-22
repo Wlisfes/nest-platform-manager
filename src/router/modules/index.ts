@@ -1,6 +1,7 @@
 import { App } from 'vue'
 import { createRouter, createWebHistory, Router } from 'vue-router'
 import { useManager, useStore } from '@/store'
+import deploy from '@/router/modules/deploy'
 import * as utils from '@/utils/utils-common'
 import * as cookie from '@/utils/utils-cookie'
 
@@ -12,6 +13,7 @@ export function fetchSetupRouter() {
             name: 'BaseManager',
             meta: { title: '工作台', AUTH: 'AUTH', menu: false },
             component: () => import('@/views/main/manager/manager.vue')
-        }
+        },
+        ...deploy
     ]
 }

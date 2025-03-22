@@ -1,6 +1,7 @@
 import { defineConfig, ConfigEnv, UserConfig } from 'vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
+import SvgLoader from 'vite-svg-loader'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -24,6 +25,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         plugins: [
             Vue(),
             VueJsx(),
+            SvgLoader(),
             AutoImport({
                 resolvers: [NaiveUiResolver(), IconsResolver()]
             }),

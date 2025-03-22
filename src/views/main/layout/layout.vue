@@ -17,6 +17,7 @@ export default defineComponent({
                 <n-layout class="flex-1" has-sider content-class="flex flex-col overflow-hidden">
                     <n-layout-sider
                         collapse-mode="width"
+                        width={260}
                         native-scrollbar={false}
                         collapsed={collapsed.value}
                         collapsed-width={device.value === 'MOBILE' ? 0 : 64}

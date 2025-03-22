@@ -1,6 +1,14 @@
+import { VNode } from 'vue'
 import { isNotEmpty, isEmpty, isArray, isEmail } from 'class-validator'
 import dayjs from 'dayjs'
 export { isNotEmpty, isEmpty, isArray, isEmail }
+
+/**图标示例对象**/
+export const modules: Record<string, VNode> = import.meta.glob(`@/assets/icons/*.svg`, { as: 'component', eager: true })
+export const iconNames = Object.keys(modules).reduce((icons: typeof modules, next) => {
+    icons[next.match(/([^/]+)\.svg$/)?.[1] as string] = modules[next] as never as VNode
+    return icons
+}, {})
 
 /**dayjs实例**/
 export const moment = dayjs

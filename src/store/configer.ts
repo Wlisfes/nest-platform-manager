@@ -4,6 +4,7 @@ import { useState } from '@/hooks/hook-state'
 import * as utils from '@/utils/utils-common'
 
 export interface ConfigState {
+    router: string
     theme: 'light' | 'dark'
     primaryColor: string
     width: number
@@ -12,10 +13,13 @@ export interface ConfigState {
     collapsed: boolean
 }
 
-/**基础缓存配置实例**/ //prettier-ignore
-export const useConfiger = defineStore('APP_STORE_CONFIGER', () => {
+/**基础缓存配置实例**/
+export const useConfiger = defineStore(
+    'APP_STORE_CONFIGER',
+    function () {
         const screen = utils.fetchScreenResize()
         const { state, setState } = useState<ConfigState>({
+            router: '/manager',
             theme: 'light',
             primaryColor: '#536dfe',
             width: window.innerWidth,
@@ -38,4 +42,6 @@ export const useConfiger = defineStore('APP_STORE_CONFIGER', () => {
         }
 
         return { ...toRefs(state), setState, fetchResize, fetchThemeUpdate }
-}, { persist: true })
+    },
+    { persist: true }
+)

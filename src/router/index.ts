@@ -1,6 +1,6 @@
 import { App } from 'vue'
 import { createRouter, createWebHistory, Router } from 'vue-router'
-import { useManager } from '@/store'
+import { useManager, useConfiger } from '@/store'
 import { fetchSetupRouter } from '@/router/modules'
 import * as utils from '@/utils/utils-common'
 import * as cookie from '@/utils/utils-cookie'
@@ -34,35 +34,40 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
 
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
+    const configer = useConfiger()
     const manager = useManager()
     router.beforeEach(async (to, from, next) => {
         window.$loadingBar.start()
         const token = cookie.getToken()
         if (utils.isEmpty(token)) {
-            if (to.meta.AUTH === 'AUTH_NONE') {
-                return next()
-            }
+            /**token为空：未登录可进入AUTH_NONE类型页面**/
+            if (to.meta.AUTH === 'AUTH_NONE') return next()
             return await cookie.delCompose().then(() => {
+                /**情况token存储**/
                 return next({ replace: true, path: '/login' })
             })
         } else if (utils.isEmpty(manager.uid)) {
+            /**token不为空：用户信息不存在加载用户信息**/
             try {
                 await manager.fetchCommonUserResolver()
             } catch (err) {
+                /**用户信息加载失败：移除token存储后重定向到登录页面**/
                 return await cookie.delCompose().then(() => {
                     return next({ replace: true, path: '/login' })
                 })
             }
         }
-
         if (to.meta.AUTH === 'AUTH_NONE') {
-            return next({ replace: true, path: '/' })
+            /**存在token不可在进入AUTH_NONE类型页面、重定向到工作台页面**/
+            return next({ replace: true, path: '/manager' })
         } else {
             return next()
         }
     })
     router.afterEach(async (to, from) => {
+        document.title = `昆仑服务平台${utils.fetchWhere(!!to.meta.title, ` - ${to.meta.title}`, '')}`
         window.$loadingBar.finish()
+        return await configer.setState({ router: to.path })
     })
 }
 

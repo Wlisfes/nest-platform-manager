@@ -1,7 +1,8 @@
 import { VNode } from 'vue'
+import { cloneDeep, concat } from 'lodash-es'
 import { isNotEmpty, isEmpty, isArray, isEmail } from 'class-validator'
 import dayjs from 'dayjs'
-export { isNotEmpty, isEmpty, isArray, isEmail }
+export { cloneDeep, concat, isNotEmpty, isEmpty, isArray, isEmail }
 
 /**图标示例对象**/
 export const modules: Record<string, VNode> = import.meta.glob(`@/assets/icons/*.svg`, { as: 'component', eager: true })
@@ -51,14 +52,14 @@ export function fetchDelay(delay = 100, handler?: Function) {
 }
 
 /**条件函数执行**/
-export async function fetchHandler<T>(where: boolean | Function, scope: Omix<{ handler: Function; failure?: Function }>): Promise<T> {
+export async function fetchHandler<T>(where: boolean | Function, scope: Omix<{ handler: Function; feedback?: Function }>): Promise<T> {
     if (typeof where === 'function') {
         where = await where()
     }
     if (where) {
         return await scope.handler()
     } else {
-        return (await scope.failure?.()) ?? undefined
+        return (await scope.feedback?.()) ?? undefined
     }
 }
 
@@ -75,47 +76,6 @@ export function fetchByte(byte: number, dec: number = 2) {
     const sizes = ['Byte', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
     const i = Math.floor(Math.log(byte) / Math.log(k))
     return parseFloat((byte / Math.pow(k, i)).toFixed(dm)) + sizes[i]
-}
-
-/**通用字段转换**/
-export function fetchTreePattern<T extends Omix>(data: Array<T>) {
-    return fetchTreeTransfor(data, {
-        transform: list => fetchTreeChildren(list),
-        pattern: item => ({
-            key: item.id,
-            value: item.id,
-            label: item.name,
-            children: item.children
-        })
-    })
-}
-
-/**移除空数据children字段**/
-export function fetchTreeChildren<T extends Omix>(data: Array<T>) {
-    data.forEach((node: T) => {
-        if (node.children && node.children.length > 0) {
-            return fetchTreeChildren(node.children)
-        }
-        return delete node.children
-    })
-    return data
-}
-
-/**字段转换**/
-export function fetchTreeTransfor<T extends Omix>(
-    data: Array<T>,
-    option: Omix<{ pattern: (e: Omix<T>) => Omix; transform?: (data: Array<T>) => Array<T> }>
-) {
-    function fetchTreeNode(item: Omix) {
-        if (item.children && item.children.length > 0) {
-            item.children = item.children.map((omix: Omix) => fetchTreeNode(omix))
-        }
-        return option.pattern(item as Omix<T>)
-    }
-    if (isNotEmpty(option.transform) && option.transform) {
-        return option.transform(data.map(item => fetchTreeNode(item)) as Array<T>)
-    }
-    return data.map(item => fetchTreeNode(item)) as Array<T>
 }
 
 /**视口判断**/

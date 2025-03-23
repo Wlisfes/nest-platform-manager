@@ -9,9 +9,9 @@ const list = [
     { name: '采购管理', router: '/srm', iconName: 'nest-stock' },
     { name: '报价管理', router: '/offer', iconName: 'nest-offer' },
     { name: '财务中心', router: '/finance', iconName: 'nest-finance' },
-    { name: '信息查询', router: '/infor', iconName: 'nest-infratsr' },
+    { name: '信息查询', router: '/infor', iconName: 'nest-infor' },
     { name: '报表分析', router: '/report', iconName: 'nest-histogr' },
-    { name: '运营中心', router: '/fiseek', iconName: 'nest-trade' },
+    { name: '运营中心', router: '/fiseek', iconName: 'nest-fiseek' },
     {
         name: '综合设置',
         router: '/deploy',

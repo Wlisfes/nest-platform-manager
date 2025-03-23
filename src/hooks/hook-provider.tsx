@@ -40,7 +40,7 @@ export function useProvider() {
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,
             primaryColorSuppl: primaryColor.value,
-            '--common-body-color': 'var(--card-color)'
+            '--common-body-color': '#f8f8f8'
         },
         Scrollbar: { width: '6px', height: '6px' },
         Tree: { nodeHeight: '36px' }

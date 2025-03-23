@@ -1,18 +1,24 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, computed, CSSProperties } from 'vue'
 
 export default defineComponent({
     name: 'LayoutCommonContainer',
+    props: {
+        /**容器样式**/
+        className: { type: String, default: '' }
+    },
     setup(props, { slots }) {
-        return () => <n-element class="layout-common-container">{slots.default && slots.default()}</n-element>
+        const elementStyles = computed<CSSProperties>(() => ({
+            transition: 'background-color 0.3s var(--n-bezier)'
+        }))
+
+        return () => (
+            <n-element class="layout-common-container flex flex-col relative bg-[var(--common-body-color)]" style={elementStyles.value}>
+                <div class={`relative bg-[var(--card-color)] ${props.className}`} style={elementStyles.value}>
+                    {slots.default && slots.default()}
+                </div>
+            </n-element>
+        )
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.layout-common-container {
-    position: relative;
-    background-color: var(--common-body-color);
-    transition: background-color 0.3s var(--n-bezier);
-}
-</style>

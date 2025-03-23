@@ -20,7 +20,6 @@ export default defineComponent({
                 class="layout-common-sider"
                 label-field="name"
                 key-field="router"
-                inverted
                 accordion={true}
                 icon-size={20}
                 root-indent={20}

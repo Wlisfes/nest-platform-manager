@@ -31,13 +31,14 @@ export default defineComponent({
         }
 
         return () => (
-            <common-element bordered={false} class="layout-common-store" class-name="flex gap-10 overflow-hidden">
-                <div ref={element} class="flex-1 whitespace-nowrap overflow-hidden relative p-be-10 cursor-pointer">
+            <n-card bordered={false} class="layout-common-store" content-class="flex gap-10 p-inline-10! p-block-0! overflow-hidden">
+                <div ref={element} class="flex-1 whitespace-nowrap overflow-hidden relative  cursor-pointer">
                     <div class="inline-flex gap-10 element-bscrollbar">
                         {configer.menuRouter.map(item => (
                             <div key={item.fullPath} class="select-none inline-flex element-block">
                                 <n-button
                                     secondary
+                                    size="small"
                                     type={item.fullPath === router.currentRoute.value.fullPath ? 'primary' : undefined}
                                     onClick={() => fetchJumpRouter(item)}
                                 >
@@ -47,19 +48,51 @@ export default defineComponent({
                         ))}
                     </div>
                 </div>
-                <div class="flex gap-10 p-ie-10 p-be-10">
-                    <n-button secondary class="p-inline-5!">
-                        <common-icon size={24} name="nest-double-left"></common-icon>
+                <div class="flex gap-10">
+                    <n-button secondary size="small" class="p-inline-4!">
+                        <common-icon size={20} name="nest-double-left"></common-icon>
                     </n-button>
-                    <n-button secondary class="p-inline-5!">
-                        <common-icon size={24} name="nest-double-right"></common-icon>
+                    <n-button secondary size="small" class="p-inline-4!">
+                        <common-icon size={20} name="nest-double-right"></common-icon>
                     </n-button>
-                    <n-button secondary class="p-inline-4!">
-                        <common-icon size={26} name="nest-vertical-more"></common-icon>
+                    <n-button secondary size="small" class="p-inline-3!">
+                        <common-icon size={22} name="nest-vertical-more"></common-icon>
                     </n-button>
                 </div>
-            </common-element>
+            </n-card>
         )
+
+        // return () => (
+        //     <common-element bordered={false} class="layout-common-store" class-name="flex gap-10 p-inline-10 overflow-hidden">
+        //         <div ref={element} class="flex-1 whitespace-nowrap overflow-hidden relative  cursor-pointer">
+        //             <div class="inline-flex gap-10 element-bscrollbar">
+        //                 {configer.menuRouter.map(item => (
+        //                     <div key={item.fullPath} class="select-none inline-flex element-block">
+        //                         <n-button
+        //                             secondary
+        //                             size="small"
+        //                             type={item.fullPath === router.currentRoute.value.fullPath ? 'primary' : undefined}
+        //                             onClick={() => fetchJumpRouter(item)}
+        //                         >
+        //                             {item.meta.title}
+        //                         </n-button>
+        //                     </div>
+        //                 ))}
+        //             </div>
+        //         </div>
+        //         <div class="flex gap-10">
+        //             <n-button secondary size="small" class="p-inline-4!">
+        //                 <common-icon size={20} name="nest-double-left"></common-icon>
+        //             </n-button>
+        //             <n-button secondary size="small" class="p-inline-4!">
+        //                 <common-icon size={20} name="nest-double-right"></common-icon>
+        //             </n-button>
+        //             <n-button secondary size="small" class="p-inline-3!">
+        //                 <common-icon size={22} name="nest-vertical-more"></common-icon>
+        //             </n-button>
+        //         </div>
+        //     </common-element>
+        // )
     }
 })
 </script>

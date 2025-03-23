@@ -9,19 +9,21 @@ export default defineComponent({
 
         return () => (
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden">
-                <n-layout-header class="h-60 p-inline-16 flex items-center gap-24">
+                <n-layout-header class="h-54 p-inline-16 flex items-center gap-24">
                     <layout-common-logo></layout-common-logo>
                     <layout-common-navigate></layout-common-navigate>
                     <layout-common-user></layout-common-user>
                 </n-layout-header>
                 <n-layout class="flex-1" has-sider content-class="flex flex-col overflow-hidden">
                     <n-layout-sider
+                        inverted
                         collapse-mode="width"
-                        width={260}
+                        width={240}
                         native-scrollbar={false}
                         collapsed={collapsed.value}
                         collapsed-width={device.value === 'MOBILE' ? 0 : 64}
                         show-trigger={device.value === 'MOBILE' ? false : 'bar'}
+                        //trigger-style={{ zIndex: 99 }}
                         on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
                     >
                         <layout-common-sider></layout-common-sider>

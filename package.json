@@ -17,7 +17,7 @@
         "@better-scroll/scroll-bar": "^2.5.1",
         "@vueuse/components": "^11.0.3",
         "@vueuse/core": "^11.0.3",
-        "axios": "^1.7.7",
+        "axios": "1.7.7",
         "class-validator": "^0.14.1",
         "dayjs": "^1.11.13",
         "js-cookie": "^3.0.5",
@@ -26,7 +26,7 @@
         "pinia": "^2.2.2",
         "pinia-plugin-persistedstate": "^3.2.3",
         "vue": "3.5.10",
-        "vue-router": "^4.4.3"
+        "vue-router": "4.4.3"
     },
     "devDependencies": {
         "@types/js-cookie": "^3.0.6",
@@ -35,14 +35,14 @@
         "@vitejs/plugin-vue": "^5.1.2",
         "@vitejs/plugin-vue-jsx": "^4.0.1",
         "sass": "1.77.6",
-        "typescript": "^5.5.3",
-        "unocss": "^0.60.4",
+        "typescript": "5.5.3",
+        "unocss": "0.60.4",
         "unplugin-auto-import": "^0.18.2",
         "unplugin-icons": "^0.19.2",
         "unplugin-vue-components": "^0.27.4",
-        "vite": "^5.4.1",
-        "vite-plugin-vue-devtools": "^7.3.9",
-        "vite-svg-loader": "^5.1.0",
-        "vue-tsc": "^2.0.29"
+        "vite": "5.4.1",
+        "vite-plugin-vue-devtools": "7.3.9",
+        "vite-svg-loader": "5.1.0",
+        "vue-tsc": "2.0.29"
     }
 }

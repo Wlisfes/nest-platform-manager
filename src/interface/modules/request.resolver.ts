@@ -2,7 +2,7 @@ export type NoticeResolver = Omix & {
     message: string
 }
 
-export type RestResolver<T = Omix> = NoticeResolver & {
+export type ResultResolver<T = Omix> = NoticeResolver & {
     data: T
     code: number
     timestamp: string
@@ -11,12 +11,12 @@ export type RestResolver<T = Omix> = NoticeResolver & {
 }
 
 export type BodyColumn<T = Omix> = Omix<T> & {
-    offset?: number
-    limit?: number
-    keyword?: string
+    page?: number
+    size?: number
+    vague?: string
 }
 
-export type RestColumn<T = Omix> = NoticeResolver & {
+export type ResultColumn<T = Omix> = NoticeResolver & {
     page: number
     size: number
     total: number

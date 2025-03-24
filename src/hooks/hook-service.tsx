@@ -1,4 +1,5 @@
 import { ref, toRefs, Ref } from 'vue'
+import { DataTableColumn } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import * as utils from '@/utils/utils-common'
@@ -10,6 +11,7 @@ export type ColumnState<T> = Omix & {
     search: boolean
     page: number
     size: number
+    columns: Array<DataTableColumn>
     dataSource: Array<T>
     total: number
 }
@@ -20,6 +22,8 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
     immediate?: boolean
     /**额外字段**/
     option?: Omix<R>
+    /**表头**/
+    columns?: Array<DataTableColumn>
     /**筛选条件表单**/
     form: Omix<U>
     request: (forms: U, base: ColumnState<T & Omix<R>>, opt: Omix) => Promise<ResultResolver<ResultColumn<T>>>
@@ -37,8 +41,9 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         search: option.search ?? false,
         page: option.page ?? 1,
         size: option.size ?? 20,
+        total: option.total ?? 0,
+        columns: option.columns ?? [],
         dataSource: [] as Array<T>,
-        total: 0,
         ...(option.option ?? {})
     } as ColumnState<T> & typeof option.option)
 

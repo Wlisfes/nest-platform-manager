@@ -32,7 +32,7 @@ export default defineComponent({
                         class="flex-1 overflow-hidden"
                         content-class="min-h-full flex flex-col"
                         native-scrollbar={false}
-                        scrollbar-props={{ size: 100, trigger: 'none', xScrollable: true }}
+                        scrollbar-props={{ size: 100, trigger: 'none' }}
                     >
                         <router-view></router-view>
                     </n-layout-content>

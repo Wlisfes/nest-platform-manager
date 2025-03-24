@@ -63,7 +63,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         return Object.assign(form.value, value)
     }
 
-    /**下拉刷新**/
+    /**刷新**/
     async function fetchRefresh(data: Partial<ColumnState<T> & typeof option.option> = {}, opt: Omix = {}) {
         return await setState(data).then(async () => {
             return await fetchRequest(opt)
@@ -110,7 +110,7 @@ export type BaseState = Omix & {
 export type BaseOption<T, U> = Partial<BaseState> & {
     immediate?: boolean
     option?: Omix<U>
-    request: (data: T, base: BaseState & Omix<U>) => Promise<ResultResolver<T>>
+    request: (data: T, base: BaseState & Omix<U>, opt: Omix) => Promise<ResultResolver<T>>
     transform?: (data: T) => Omix | Promise<Omix>
     callback?: (data: T, base: BaseState & Omix<U>) => void | any | Promise<any>
 }
@@ -141,11 +141,18 @@ export function useBaseService<T extends Omix, U extends Omix>(option: BaseOptio
         return (faseNode.value = data)
     }
 
+    /**刷新**/
+    async function fetchRefresh(data: Partial<ColumnState<T> & typeof option.option> = {}, opt: Omix = {}) {
+        return await setState(data).then(async () => {
+            return await fetchRequest(opt)
+        })
+    }
+
     /**接口请求**/
-    async function fetchRequest() {
+    async function fetchRequest(opt: Omix = {}) {
         return await setState({ loading: true } as BaseState & typeof option.option).then(async () => {
             try {
-                return await option.request(faseNode.value, state as BaseState & typeof option.option).then(async ({ data }) => {
+                return await option.request(faseNode.value, state as BaseState & typeof option.option, opt).then(async ({ data }) => {
                     await fetchUpdate(data ?? {})
                     return await setState({
                         initialize: false,
@@ -163,4 +170,6 @@ export function useBaseService<T extends Omix, U extends Omix>(option: BaseOptio
             }
         })
     }
+
+    return { faseNode, state, ...toRefs(state), setState, fetchUpdate, fetchInitialize, fetchRequest, fetchRefresh }
 }

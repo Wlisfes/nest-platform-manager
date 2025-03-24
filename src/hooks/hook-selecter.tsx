@@ -2,7 +2,7 @@ import { toRefs } from 'vue'
 import { isNotEmpty } from 'class-validator'
 import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks/hook-state'
-import { RestResolver, RestColumn } from '@/interface/instance.resolver'
+import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 
 export interface SetNode extends Omix {
     sid: string
@@ -17,7 +17,7 @@ export interface SetState {
     dataColumn: Array<SetNode>
     dataSource: Array<SetNode>
 }
-export type httpRequest = (state: SetState) => Promise<RestResolver<RestColumn<Omix>>>
+export type httpRequest = (state: SetState) => Promise<ResultResolver<ResultColumn<Omix>>>
 export interface SetOption<T> extends Partial<SetState> {
     immediate?: boolean
     transform?: (data: Array<SetNode & T>) => Array<Omix> | Promise<Array<Omix>>

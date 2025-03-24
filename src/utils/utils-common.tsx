@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 export { cloneDeep, concat, omit, pick, isNotEmpty, isEmpty, isArray, isEmail }
 
 /**图标示例对象**/
-export const modules: Record<string, VNode> = import.meta.glob(`@/assets/icons/*.svg`, { as: 'component', eager: true })
+export const modules: Record<string, VNode> = import.meta.glob(`@/assets/icons/*.svg`, { query: '?component', eager: true })
 export const iconNames = Object.keys(modules).reduce((icons: typeof modules, next) => {
     icons[next.match(/([^/]+)\.svg$/)?.[1] as string] = modules[next] as never as VNode
     return icons

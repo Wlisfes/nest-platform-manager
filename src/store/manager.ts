@@ -32,12 +32,12 @@ const list = [
 export const useManager = defineStore('APP_STORE_MANAGER', () => {
     const { state, setState } = useState({
         uid: '',
-        account: '',
+        phone: '',
+        number: '',
         email: '',
-        nickname: '',
+        name: '',
         avatar: '',
         status: 'enable',
-        system: false,
         menuOptions: [] as Array<Omix>
     })
 
@@ -46,12 +46,12 @@ export const useManager = defineStore('APP_STORE_MANAGER', () => {
         return await Service.httpBaseSystemUserResolver().then(async ({ data }) => {
             return await setState({
                 uid: data.uid,
-                account: data.account,
+                phone: data.phone,
+                number: data.number,
                 email: data.email,
-                nickname: data.nickname,
+                name: data.name,
                 avatar: data.avatar,
                 status: data.status,
-                system: data.system,
                 menuOptions: list
             })
         })

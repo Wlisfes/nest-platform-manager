@@ -71,12 +71,12 @@ export default defineComponent({
                         <n-h2 class="text-28 font-500 text-center">
                             <n-text depth={2}>欢迎登录</n-text>
                         </n-h2>
-                        <n-form-item path="account">
+                        <n-form-item path="number">
                             <n-input
                                 maxlength={32}
                                 type="text"
                                 placeholder="请输入登录账号"
-                                v-model:value={form.value.account}
+                                v-model:value={form.value.number}
                                 input-props={{ autocomplete: 'on' }}
                                 onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                 v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-user />}></n-icon> }}

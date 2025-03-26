@@ -42,8 +42,8 @@ export const useManager = defineStore('APP_STORE_MANAGER', () => {
     })
 
     /**获取账号基本信息**/
-    async function fetchCommonUserResolver() {
-        return await Service.httpCommonUserResolver().then(async ({ data }) => {
+    async function fetchBaseSystemUserResolver() {
+        return await Service.httpBaseSystemUserResolver().then(async ({ data }) => {
             return await setState({
                 uid: data.uid,
                 account: data.account,
@@ -61,6 +61,6 @@ export const useManager = defineStore('APP_STORE_MANAGER', () => {
         state: computed(() => state),
         ...toRefs(state),
         setState,
-        fetchCommonUserResolver
+        fetchBaseSystemUserResolver
     }
 })

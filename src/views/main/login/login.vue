@@ -11,15 +11,15 @@ export default defineComponent({
     name: 'BaseAuthorize',
     setup(props) {
         const codexRef = ref<any>()
-        const { fetchCommonUserResolver } = useStore(useManager)
+        const { fetchBaseSystemUserResolver } = useStore(useManager)
         const { formRef, form, state, setState, fetchValidater } = useForm({
             form: {
-                account: '',
+                number: '',
                 password: '',
                 code: ''
             },
             rules: {
-                account: { required: true, trigger: 'blur', message: '请输入登录账号' },
+                number: { required: true, trigger: 'blur', message: '请输入登录账号' },
                 password: { required: true, trigger: 'blur', min: 6, max: 18, message: '请输入6~18位登录密码' },
                 code: { required: true, trigger: 'blur', message: '请输入验证码' }
             }
@@ -33,13 +33,13 @@ export default defineComponent({
                     })
                 }
                 try {
-                    return await Service.httpCommonUserAuthorize({
+                    return await Service.httpBaseCreateSystemUserAuthorize({
                         code: form.value.code,
-                        account: form.value.account,
+                        number: form.value.number,
                         password: window.btoa(encodeURIComponent(form.value.password))
                     }).then(async ({ data }) => {
                         return await setCompose(data).then(async () => {
-                            await fetchCommonUserResolver()
+                            await fetchBaseSystemUserResolver()
                             return router.push({ path: '/', replace: true })
                         })
                     })

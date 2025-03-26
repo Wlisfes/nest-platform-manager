@@ -10,12 +10,10 @@ export default defineComponent({
     props: {
         /**排列布局**/
         cols: { type: Number, default: 1 },
-        /**弹出层宽度**/
-        width: { type: String, default: '450px' },
+        /**弹出层最大宽度**/
+        maxWidth: { type: String, default: '450px' },
         /**弹出层最大高度**/
         maxHeight: { type: String, default: '450px' },
-        /**输入框最大宽度**/
-        maxWidth: { type: Number, default: 400 },
         /**模糊查询关键字**/
         vague: { type: String },
         /**搜索框占位符**/
@@ -39,7 +37,7 @@ export default defineComponent({
             return await emit('submit', { event: eventName })
         }
 
-        /**确定表达提交**/
+        /**确定提交**/
         async function fetchSubmit(evt: MouseEvent) {
             return await fetchEvent('submit').then(() => {
                 return instance.value.setShow(false)
@@ -48,12 +46,7 @@ export default defineComponent({
 
         return () => (
             <div class="common-search-action flex flex-1 gap-10">
-                <n-input
-                    v-model:value={vague.value}
-                    placeholder={props.placeholder}
-                    onKeyup={fetchKeyup}
-                    style={{ maxWidth: props.maxWidth + 'px' }}
-                >
+                <n-input v-model:value={vague.value} placeholder={props.placeholder} onKeyup={fetchKeyup}>
                     {{ prefix: () => <n-icon size={18} component={<local-nest-search />}></n-icon> }}
                 </n-input>
                 <n-popover ref={instance} placement="bottom" trigger="click" style={{ padding: 0 }}>
@@ -64,7 +57,7 @@ export default defineComponent({
                             </n-button>
                         ),
                         default: () => (
-                            <n-element class="flex flex-col" style={{ width: props.width }}>
+                            <n-element class="flex flex-col w-full" style={{ maxWidth: props.maxWidth }}>
                                 <n-h1 class="m-0 text-16 line-height-24 p-inline-14 p-block-10">高级筛选</n-h1>
                                 <n-scrollbar style={{ maxHeight: props.maxHeight }}>
                                     <n-form class="p-inline-14" label-width={props.labelWidth} label-placement="left" show-feedback={false}>

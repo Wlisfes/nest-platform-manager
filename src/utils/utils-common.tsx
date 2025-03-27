@@ -40,6 +40,14 @@ export function fetchWhere<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T
 }
 
+/**列表包装hook参数聚合**/
+export function fetchBaseWhere<T>(data: Omix = {}, base: Omix = {}): T {
+    if (base.event === 'input-submit') {
+        return { page: base.page, size: base.size, vague: data.vague } as T
+    }
+    return Object.assign({ page: base.page, size: base.size, ...omit(data, ['vague']) }) as T
+}
+
 /**延时方法**/
 export function fetchDelay(delay = 100, handler?: Function) {
     return new Promise(resolve => {

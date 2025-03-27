@@ -5,6 +5,7 @@ import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import * as utils from '@/utils/utils-common'
 
 export type ColumnState<T> = Omix & {
+    event: 'input-submit' | 'submit'
     initialize: boolean
     loading: boolean
     refresh: boolean
@@ -35,6 +36,7 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(option: ColumnOption<T, U, R>) {
     const form = ref<typeof option.form>(option.form)
     const { state, setState } = useState({
+        event: 'input-submit',
         initialize: option.initialize ?? true,
         loading: option.loading ?? true,
         refresh: option.refresh ?? false,
@@ -49,6 +51,12 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     if (option.immediate ?? true) {
         fetchInitialize()
+    }
+
+    function fetchWhere(data: Omix = {}, base: Omix = {}) {
+        if ((base.event ?? state.event) === 'input-submit') {
+        }
+        return
     }
 
     /**初始化**/

@@ -1,13 +1,18 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, computed, CSSProperties } from 'vue'
+import { defineComponent, ref, Ref, computed, CSSProperties, nextTick } from 'vue'
 import { PopoverInst } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { enter, fetchWhere, isNotEmpty } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonElementSearch',
-    emits: ['update:vague', 'submit'],
+    emits: ['update:initialize', 'update:loading', 'update:vague', 'update:event', 'submit'],
     props: {
+        /**初始化中**/
+        initialize: { type: Boolean, default: true },
+        /**加载中**/
+        loading: { type: Boolean, default: true },
+        /**容器节点样式**/
         className: { type: String, default: 'max-w-520' },
         /**排列布局**/
         cols: { type: Number, default: 1 },
@@ -19,6 +24,8 @@ export default defineComponent({
         maxHeight: { type: String, default: '450px' },
         /**模糊查询关键字**/
         vague: { type: String },
+        /**查询事件名称**/
+        event: { type: String },
         /**搜索框占位符**/
         placeholder: { type: String },
         /**字符占位宽度**/
@@ -26,7 +33,7 @@ export default defineComponent({
     },
     setup(props, { emit, slots }) {
         const instance = ref() as Ref<PopoverInst>
-        const { vague } = useVModels(props, emit)
+        const { initialize, loading, vague, event } = useVModels(props, emit)
         const elementNodes = computed(() => ({
             width: 'calc(100vw - 20px)',
             maxWidth: fetchWhere(isNotEmpty(props.maxWidth), props.maxWidth, props.cols === 1 ? '450px' : '750px')
@@ -45,8 +52,10 @@ export default defineComponent({
         }
 
         /**事件触发**/
-        async function fetchEvent(event: 'input-submit' | 'submit' | 'refresh') {
-            return await emit('submit', { event })
+        async function fetchEvent(eventName: 'input-submit' | 'submit') {
+            return await nextTick(() => (event.value = eventName)).then(async () => {
+                return await emit('submit', { event: eventName })
+            })
         }
 
         /**确定提交**/
@@ -58,7 +67,7 @@ export default defineComponent({
 
         return () => (
             <div class={`common-element-action flex flex-1 gap-10 ${props.className}`}>
-                <n-input v-model:value={vague.value} placeholder={props.placeholder} onKeyup={fetchKeyup}>
+                <n-input v-model:value={vague.value} placeholder={props.placeholder} clearable onKeyup={fetchKeyup}>
                     {{ prefix: () => <n-icon size={18} component={<local-nest-search />}></n-icon> }}
                 </n-input>
                 <n-popover ref={instance} placement="bottom" trigger="click" arrow-point-to-center style={{ padding: 0 }}>

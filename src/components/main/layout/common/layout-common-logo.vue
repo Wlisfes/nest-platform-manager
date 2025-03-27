@@ -9,7 +9,7 @@ export default defineComponent({
 
         return () => (
             <router-link to="/manager" class={{ 'layout-common-logo p-inline-16': true, 'p-inline-11!': collapsed.value }}>
-                <div class="h-full flex gap-8 items-center overflow-hidden">
+                <div class="h-full flex gap-8 items-center overflow-hidden transform-gpu">
                     <n-icon size={42} color="var(--primary-color)" component={<local-nest-logo />}></n-icon>
                     <n-icon size={34} color="var(--primary-color)" component={<local-nest-logo-name />}></n-icon>
                 </div>

@@ -19,11 +19,11 @@ export default defineComponent({
                     show-trigger={device.value === 'MOBILE' ? false : 'bar'}
                     on-update:collapsed={(value: boolean) => setState({ collapsed: value })}
                 >
-                    <layout-common-logo class="h-54"></layout-common-logo>
+                    <layout-common-logo class="h-50"></layout-common-logo>
                     <layout-common-sider></layout-common-sider>
                 </n-layout-sider>
                 <n-layout content-class="flex flex-col overflow-hidden">
-                    <n-layout-header class="h-54 p-inline-16 flex items-center gap-24">
+                    <n-layout-header class="h-50 p-inline-16 flex items-center gap-24">
                         <layout-common-navigate></layout-common-navigate>
                         <layout-common-user></layout-common-user>
                     </n-layout-header>

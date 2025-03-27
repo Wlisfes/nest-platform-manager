@@ -25,9 +25,33 @@ export default defineComponent({
 
         return () => (
             <layout-common-container class="flex flex-col flex-1 p-inline-12 p-bs-12" class-name="p-inline-12 p-bs-12 gap-10">
-                <div class="flex items-center justify-end">
-                    <common-search-action></common-search-action>
-                </div>
+                <n-element class="flex gap-10">
+                    <div class="flex-1"></div>
+                    <common-element-action cols={2}>
+                        <n-form-item label="菜单名称">
+                            <n-input placeholder="请输入菜单名称" clearable />
+                        </n-form-item>
+                        <n-form-item label="权限标识">
+                            <n-input placeholder="请输入权限标识" clearable />
+                        </n-form-item>
+                        <n-form-item label="路由地址">
+                            <n-input placeholder="请输入路由地址" clearable />
+                        </n-form-item>
+                        <n-form-item label="版本号">
+                            <n-input placeholder="请输入版本号" clearable />
+                        </n-form-item>
+                        <n-form-item label="上级菜单">
+                            <n-input placeholder="请输入上级菜单" />
+                        </n-form-item>
+                        <n-form-item label="操作人">
+                            <n-input placeholder="请输入操作人" />
+                        </n-form-item>
+                        <n-form-item label="更新时间" style={{ 'grid-column': 'span 2 / span 2' }}>
+                            <n-date-picker type="datetimerange" clearable default-time="13:22:11" class="w-full" />
+                        </n-form-item>
+                    </common-element-action>
+                </n-element>
+
                 <div class="flex-1 overflow-hidden">
                     <common-data-table bordered striped single-line={false} scroll-x={1600} columns={state.columns} data={state.dataSource}>
                         {{

@@ -4,7 +4,7 @@ import { useState } from '@/hooks/hook-state'
 import { fetchDelay } from '@/utils/utils-common'
 
 export default defineComponent({
-    name: 'CommonCodex',
+    name: 'CommonElementCodex',
     props: {
         /**是否禁用**/
         disabled: { type: Boolean },
@@ -36,7 +36,7 @@ export default defineComponent({
         expose({ fetchRefresh })
 
         return () => (
-            <n-spin class="common-codex" size="small" content-class="flex flex-col" show={state.loading}>
+            <n-spin class="common-element-codex" size="small" content-class="flex flex-col" show={state.loading}>
                 <n-button
                     class="p-0"
                     size="large"

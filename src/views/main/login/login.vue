@@ -128,7 +128,7 @@ export default defineComponent({
                                     onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
                                     v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
                                 ></n-input>
-                                <common-codex ref={codexRef} disabled={state.loading}></common-codex>
+                                <common-element-codex ref={codexRef} disabled={state.loading}></common-element-codex>
                             </n-flex>
                         </n-form-item>
                         <n-form-item>

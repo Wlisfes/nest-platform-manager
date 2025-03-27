@@ -38,8 +38,8 @@ export default defineComponent({
         })
 
         return () => (
-            <layout-common-container class="flex flex-col flex-1 p-inline-12 p-block-12" class-name="p-inline-12 p-block-12 gap-10">
-                <n-element class="flex gap-10">
+            <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+                <n-element class="flex gap-10 overflow-hidden">
                     <div class="flex-1">
                         <n-h1 class="m-0 text-16 line-height-34">资源管理</n-h1>
                     </div>
@@ -78,37 +78,57 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                 </n-element>
-                <use-element-size
-                    class="flex-1 overflow-hidden"
-                    v-slots={{
-                        default: ({ width, height }: Omix<{ width: number; height: number }>) => (
-                            <common-data-table
-                                bordered
-                                bottom-bordered
-                                remote
-                                //max-height={200}
-                                scroll-x={1600}
-                                loading={state.loading}
-                                columns={state.columns}
-                                data={state.dataSource}
-                            >
-                                {{
-                                    iconName: (data: Omix) => (
-                                        <div class="flex items-center justify-center">
-                                            <common-icon class="flex-inline" size={28} name={data.iconName}></common-icon>
-                                        </div>
-                                    ),
-                                    type: (data: Omix) => (
-                                        <n-tag bordered={false} type="success">
-                                            的撒
-                                        </n-tag>
-                                    ),
-                                    user: (data: Omix) => data.user.name
-                                }}
-                            </common-data-table>
-                        )
-                    }}
-                ></use-element-size>
+                <common-element-resize loading={false}>
+                    <common-data-table
+                        remote
+                        flex-height
+                        scroll-x={1600}
+                        loading //={state.loading}
+                        columns={state.columns}
+                        data={state.dataSource}
+                        pagination={{}}
+                    >
+                        {{
+                            iconName: (data: Omix) => (
+                                <div class="flex items-center justify-center">
+                                    <common-icon class="flex-inline" size={28} name={data.iconName}></common-icon>
+                                </div>
+                            ),
+                            type: (data: Omix) => (
+                                <n-tag bordered={false} type="success">
+                                    的撒
+                                </n-tag>
+                            ),
+                            user: (data: Omix) => data.user.name
+                        }}
+                    </common-data-table>
+                </common-element-resize>
+
+                {/* <common-data-table
+                        bordered
+                        bottom-bordered
+                        remote
+                        max-height={500}
+                        scroll-x={1600}
+                        loading={state.loading}
+                        columns={state.columns}
+                        data={state.dataSource}
+                        pagination={{}}
+                    >
+                        {{
+                            iconName: (data: Omix) => (
+                                <div class="flex items-center justify-center">
+                                    <common-icon class="flex-inline" size={28} name={data.iconName}></common-icon>
+                                </div>
+                            ),
+                            type: (data: Omix) => (
+                                <n-tag bordered={false} type="success">
+                                    的撒
+                                </n-tag>
+                            ),
+                            user: (data: Omix) => data.user.name
+                        }}
+                    </common-data-table> */}
             </layout-common-container>
         )
     }

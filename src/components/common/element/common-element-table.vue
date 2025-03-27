@@ -30,7 +30,7 @@ export default defineComponent({
 
         return () => (
             <n-data-table
-                class="common-element-table"
+                spin-props={{ size: 'large' }}
                 row-key={(row: Omix) => row.keyId}
                 columns={props.columns}
                 data={props.data}

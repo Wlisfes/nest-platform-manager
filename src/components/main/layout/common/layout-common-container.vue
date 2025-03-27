@@ -13,7 +13,7 @@ export default defineComponent({
         }))
 
         return () => (
-            <n-element class="layout-common-container flex flex-col relative bg-[var(--common-body-color)]" style={elementStyles.value}>
+            <n-element class="layout-common-container flex flex-col bg-[var(--common-body-color)]" style={elementStyles.value}>
                 <div class={`flex flex-col flex-1 relative bg-[var(--card-color)] ${props.className}`} style={elementStyles.value}>
                     {slots.default && slots.default()}
                 </div>

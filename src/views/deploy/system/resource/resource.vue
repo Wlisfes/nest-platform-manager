@@ -78,12 +78,12 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                 </n-element>
-                <common-element-resize loading={false}>
+                <common-element-resize element-table>
                     <common-data-table
                         remote
                         flex-height
                         scroll-x={1600}
-                        loading //={state.loading}
+                        loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}
                         pagination={{}}

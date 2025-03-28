@@ -3,11 +3,9 @@ import { defineComponent } from 'vue'
 import { useColumnService } from '@/hooks/hook-service'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
-import { UseElementSize } from '@vueuse/components'
 
 export default defineComponent({
     name: 'DeploySystemResource',
-    components: { UseElementSize },
     setup(props, ctx) {
         const { state, form, fetchRefresh } = useColumnService({
             request: (data, base) => Service.httpBaseColumnSystemRouter(utils.fetchBaseWhere(data, base)),
@@ -32,7 +30,7 @@ export default defineComponent({
                 { title: '排序号', key: 'sort', width: 80, align: 'center' },
                 { title: '状态', key: 'status', width: 100, align: 'center' },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' },
-                { title: '更新人', key: 'user', width: 120, align: 'center' },
+                { title: '更新人', key: 'user', width: 100, align: 'center' },
                 { title: '操作', key: 'command', width: 150, align: 'center' }
             ]
         })
@@ -79,7 +77,7 @@ export default defineComponent({
                     </common-element-action>
                 </n-element>
                 <common-element-resize element-table>
-                    <common-data-table
+                    <common-element-table
                         remote
                         flex-height
                         scroll-x={1600}
@@ -89,22 +87,23 @@ export default defineComponent({
                         pagination={{}}
                     >
                         {{
-                            iconName: (data: Omix) => (
-                                <div class="flex items-center justify-center">
-                                    <common-icon class="flex-inline" size={28} name={data.iconName}></common-icon>
-                                </div>
-                            ),
-                            type: (data: Omix) => (
-                                <n-tag bordered={false} type="success">
-                                    的撒
-                                </n-tag>
-                            ),
-                            user: (data: Omix) => data.user.name
+                            iconName: (name: string) => {
+                                return <common-element-chunk icon-size={28} name={name}></common-element-chunk>
+                            },
+                            user: (data: Omix) => {
+                                return <common-element-chunk content name={data.name}></common-element-chunk>
+                            },
+                            type: (data: Omix) => {
+                                return <common-element-chunk name={data.name} json={data.json}></common-element-chunk>
+                            },
+                            status: (data: Omix) => {
+                                return <common-element-chunk name={data.name} json={data.json}></common-element-chunk>
+                            }
                         }}
-                    </common-data-table>
+                    </common-element-table>
                 </common-element-resize>
 
-                {/* <common-data-table
+                {/* <common-data-table 
                         bordered
                         bottom-bordered
                         remote
@@ -116,6 +115,11 @@ export default defineComponent({
                         pagination={{}}
                     >
                         {{
+                        iconName: (name: string) => (
+                                <div class="flex items-center justify-center">
+                                    <common-icon class="flex-inline" size={28} name={name}></common-icon>
+                                </div>
+                            ),
                             iconName: (data: Omix) => (
                                 <div class="flex items-center justify-center">
                                     <common-icon class="flex-inline" size={28} name={data.iconName}></common-icon>

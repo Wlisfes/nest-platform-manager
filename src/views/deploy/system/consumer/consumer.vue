@@ -5,9 +5,9 @@ export default defineComponent({
     name: 'DeploySystemConsumer',
     setup(props, ctx) {
         return () => (
-            <common-container class="flex flex-col flex-1 p-inline-12 p-block-12">
+            <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
                 <common-element class="flex-1">用户管理</common-element>
-            </common-container>
+            </layout-common-container>
         )
     }
 })

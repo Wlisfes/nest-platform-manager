@@ -5,9 +5,9 @@ export default defineComponent({
     name: 'BaseManager',
     setup(props, ctx) {
         return () => (
-            <common-container class="flex flex-col flex-1 p-inline-16 p-block-16">
+            <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
                 <main-manager-summary></main-manager-summary>
-            </common-container>
+            </layout-common-container>
         )
     }
 })

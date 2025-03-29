@@ -30,7 +30,7 @@ export default defineComponent({
                             <span>-</span>
                         ) : (
                             <n-button text focusable={false}>
-                                <common-icon size={props.iconSize} name={props.content}></common-icon>
+                                <common-element-icon size={props.iconSize} name={props.content}></common-element-icon>
                             </n-button>
                         )}
                     </div>

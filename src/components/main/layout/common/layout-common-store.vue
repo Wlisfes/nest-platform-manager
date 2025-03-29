@@ -50,13 +50,13 @@ export default defineComponent({
                 </div>
                 <div class="flex gap-10">
                     <n-button secondary size="small" class="p-inline-4!">
-                        <common-icon size={20} name="nest-double-left"></common-icon>
+                        <common-element-icon size={20} name="nest-double-left"></common-element-icon>
                     </n-button>
                     <n-button secondary size="small" class="p-inline-4!">
-                        <common-icon size={20} name="nest-double-right"></common-icon>
+                        <common-element-icon size={20} name="nest-double-right"></common-element-icon>
                     </n-button>
                     <n-button secondary size="small" class="p-inline-3!">
-                        <common-icon size={22} name="nest-vertical-more"></common-icon>
+                        <common-element-icon size={22} name="nest-vertical-more"></common-element-icon>
                     </n-button>
                 </div>
             </n-layout-header>

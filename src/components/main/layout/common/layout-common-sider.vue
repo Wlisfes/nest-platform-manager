@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, h } from 'vue'
 import { useRouter } from 'vue-router'
 import { useManager, useConfiger } from '@/store'
 import * as utils from '@/utils/utils-common'
@@ -15,6 +15,14 @@ export default defineComponent({
             return await router.push({ path })
         }
 
+        /**渲染图标**/
+        function fetchIconRender(data: Omix) {
+            if (utils.isEmpty(data.iconName)) {
+                return null
+            }
+            return h(<common-element-icon name={data.iconName}></common-element-icon>)
+        }
+
         return () => (
             <n-menu
                 class="layout-common-sider"
@@ -26,8 +34,8 @@ export default defineComponent({
                 collapsed-width={64}
                 value={configer.router}
                 options={manager.menuOptions}
+                render-icon={fetchIconRender}
                 on-update:value={fetchSelecter}
-                render-icon={(data: Omix) => (utils.isEmpty(data.iconName) ? null : <common-icon name={data.iconName}></common-icon>)}
             ></n-menu>
         )
     }

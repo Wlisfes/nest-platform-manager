@@ -12,16 +12,16 @@ export default defineComponent({
         return () => (
             <div class="flex flex-1 justify-end gap-16">
                 <n-button text focusable={false}>
-                    <common-icon size={24} name="nest-github"></common-icon>
+                    <common-element-icon size={24} name="nest-github"></common-element-icon>
                 </n-button>
                 <n-button text focusable={false} onClick={toggle}>
-                    <common-icon size={24} name={isFullscreen.value ? 'nest-shrink' : 'nest-screen'}></common-icon>
+                    <common-element-icon size={24} name={isFullscreen.value ? 'nest-shrink' : 'nest-screen'}></common-element-icon>
                 </n-button>
                 <n-button text focusable={false} onClick={() => configer.fetchThemeUpdate()}>
-                    <common-icon size={24} name={configer.theme === 'light' ? 'nest-light' : 'nest-dark'}></common-icon>
+                    <common-element-icon size={24} name={configer.theme === 'light' ? 'nest-light' : 'nest-dark'}></common-element-icon>
                 </n-button>
                 <n-button text focusable={false}>
-                    <common-icon size={24} name="nest-notify"></common-icon>
+                    <common-element-icon size={24} name="nest-notify"></common-element-icon>
                 </n-button>
             </div>
         )

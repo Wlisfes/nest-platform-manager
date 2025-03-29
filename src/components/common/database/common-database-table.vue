@@ -113,19 +113,19 @@ export default defineComponent({
                     goto: () => <span>前往</span>,
                     prefix: () => <span>{`共 ${total.value} 条`}</span>,
                     label: (data: Omix<{ node: number; active: boolean }>) => (
-                        <n-button size="small" secondary type={data.active ? 'primary' : undefined}>
+                        <common-element-button size="small" secondary type={data.active ? 'primary' : undefined}>
                             {data.node}
-                        </n-button>
+                        </common-element-button>
                     ),
                     prev: (data: Omix<PaginationInfo>) => (
-                        <n-button size="small" secondary disabled={data.page <= 1}>
+                        <common-element-button size="small" secondary disabled={data.page <= 1}>
                             上一页
-                        </n-button>
+                        </common-element-button>
                     ),
                     next: (data: Omix<PaginationInfo>) => (
-                        <n-button size="small" secondary disabled={data.page >= data.pageCount}>
+                        <common-element-button size="small" secondary disabled={data.page >= data.pageCount}>
                             下一页
-                        </n-button>
+                        </common-element-button>
                     ),
                     showQuickJumper: props.showQuickJumper,
                     showSizePicker: props.showSizePicker,

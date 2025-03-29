@@ -69,15 +69,19 @@ export default defineComponent({
 
         return () => (
             <div class={`common-element-action flex flex-1 gap-10 ${props.className}`}>
-                <n-input v-model:value={vague.value} placeholder={props.placeholder} clearable onKeyup={fetchKeyup}>
-                    {{ prefix: () => <n-icon size={18} component={<local-nest-search />}></n-icon> }}
-                </n-input>
+                <form-common-input
+                    v-model:value={vague.value}
+                    placeholder={props.placeholder}
+                    clearable
+                    onKeyup={fetchKeyup}
+                    prefix={<common-element-icon size={18} name="nest-search"></common-element-icon>}
+                ></form-common-input>
                 <n-popover ref={instance} placement={props.placement} trigger="click" arrow-point-to-center style={{ padding: 0 }}>
                     {{
                         trigger: () => (
-                            <n-button focusable={false} v-slots={{ icon: () => <local-nest-filter /> }}>
+                            <common-element-button icon="nest-filter">
                                 <span>筛选</span>
-                            </n-button>
+                            </common-element-button>
                         ),
                         default: () => (
                             <n-element class="flex flex-col" style={elementNodes.value}>
@@ -94,10 +98,10 @@ export default defineComponent({
                                     </n-form>
                                 </n-scrollbar>
                                 <n-flex justify="center" class="p-inline-14 p-block-14">
-                                    <n-button class="min-w-80">重置</n-button>
-                                    <n-button class="min-w-80" type="primary" onClick={fetchSubmit}>
+                                    <common-element-button class="min-w-80">重置</common-element-button>
+                                    <common-element-button class="min-w-80" type="primary" onClick={fetchSubmit}>
                                         确定
-                                    </n-button>
+                                    </common-element-button>
                                 </n-flex>
                             </n-element>
                         )

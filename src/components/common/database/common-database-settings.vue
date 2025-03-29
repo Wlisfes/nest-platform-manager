@@ -17,9 +17,10 @@ export default defineComponent({
             <div class="common-database-settings h-full flex items-center overflow-hidden" style={{ columnGap: 'var(--n-th-padding)' }}>
                 {props.command && <div class={{ 'flex-1 overflow-hidden': true, 'text-center': props.fixedCenter }}>操作</div>}
                 {props.settings && (
-                    <n-button text>
-                        <common-element-icon size={22} name="nest-settings"></common-element-icon>
-                    </n-button>
+                    <common-element-button
+                        text
+                        icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
+                    ></common-element-button>
                 )}
             </div>
         )

@@ -92,7 +92,7 @@ export default defineComponent({
                         fixed="right"
                         fixed-center
                         flex-height
-                        scroll-x={1400}
+                        scroll-x={1440}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}

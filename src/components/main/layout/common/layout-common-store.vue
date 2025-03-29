@@ -36,28 +36,28 @@ export default defineComponent({
                     <div class="inline-flex gap-10 element-bscrollbar">
                         {configer.menuRouter.map(item => (
                             <div key={item.fullPath} class="select-none inline-flex element-block">
-                                <n-button
+                                <common-element-button
                                     secondary
                                     size="small"
                                     type={item.fullPath === router.currentRoute.value.fullPath ? 'primary' : undefined}
                                     onClick={() => fetchJumpRouter(item)}
                                 >
                                     {item.meta.title}
-                                </n-button>
+                                </common-element-button>
                             </div>
                         ))}
                     </div>
                 </div>
                 <div class="flex gap-10">
-                    <n-button secondary size="small" class="p-inline-4!">
+                    <common-element-button secondary size="small" class="p-inline-4!">
                         <common-element-icon size={20} name="nest-double-left"></common-element-icon>
-                    </n-button>
-                    <n-button secondary size="small" class="p-inline-4!">
+                    </common-element-button>
+                    <common-element-button secondary size="small" class="p-inline-4!">
                         <common-element-icon size={20} name="nest-double-right"></common-element-icon>
-                    </n-button>
-                    <n-button secondary size="small" class="p-inline-3!">
+                    </common-element-button>
+                    <common-element-button secondary size="small" class="p-inline-3!">
                         <common-element-icon size={22} name="nest-vertical-more"></common-element-icon>
-                    </n-button>
+                    </common-element-button>
                 </div>
             </n-layout-header>
         )

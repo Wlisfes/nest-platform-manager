@@ -10,7 +10,7 @@ export default defineComponent({
                     <n-grid-item span={1}>
                         <common-element class-name="flex items-center gap-20">
                             <n-icon-wrapper size={64} border-radius={6}>
-                                <n-icon size={32} component={<local-nest-logo />} />
+                                <common-element-icon size={32} name="nest-logo"></common-element-icon>
                             </n-icon-wrapper>
                             <div class="flex flex-col">
                                 <n-h1 class="m-0 line-height-40">0</n-h1>
@@ -23,7 +23,7 @@ export default defineComponent({
                     <n-grid-item span={1}>
                         <common-element class-name="flex items-center gap-20">
                             <n-icon-wrapper size={64} border-radius={6}>
-                                <n-icon size={32} component={<local-nest-logo />} />
+                                <common-element-icon size={32} name="nest-logo"></common-element-icon>
                             </n-icon-wrapper>
                             <div class="flex flex-col">
                                 <n-h1 class="m-0 line-height-40">0</n-h1>
@@ -36,7 +36,7 @@ export default defineComponent({
                     <n-grid-item span={1}>
                         <common-element class-name="flex items-center gap-20">
                             <n-icon-wrapper size={64} border-radius={6}>
-                                <n-icon size={32} component={<local-nest-logo />} />
+                                <common-element-icon size={32} name="nest-logo"></common-element-icon>
                             </n-icon-wrapper>
                             <div class="flex flex-col">
                                 <n-h1 class="m-0 line-height-40">0</n-h1>
@@ -49,7 +49,7 @@ export default defineComponent({
                     <n-grid-item span={1}>
                         <common-element class-name="flex items-center gap-20">
                             <n-icon-wrapper size={64} border-radius={6}>
-                                <n-icon size={32} component={<local-nest-logo />} />
+                                <common-element-icon size={32} name="nest-logo"></common-element-icon>
                             </n-icon-wrapper>
                             <div class="flex flex-col">
                                 <n-h1 class="m-0 line-height-40">0</n-h1>

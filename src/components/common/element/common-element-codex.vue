@@ -37,7 +37,7 @@ export default defineComponent({
 
         return () => (
             <n-spin class="common-element-codex" size="small" content-class="flex flex-col" show={state.loading}>
-                <n-button
+                <common-element-button
                     class="p-0"
                     size="large"
                     secondary
@@ -51,7 +51,7 @@ export default defineComponent({
                             )
                         }}
                     </n-image>
-                </n-button>
+                </common-element-button>
             </n-spin>
         )
     }

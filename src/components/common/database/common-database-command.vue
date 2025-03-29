@@ -11,12 +11,12 @@ export default defineComponent({
     setup(props, ctx) {
         return () => (
             <div class={{ 'common-database-command flex items-center gap-10': true, 'justify-center': props.center }}>
-                <n-button type="primary" text>
+                <common-element-button type="primary" text>
                     编辑
-                </n-button>
-                <n-button type="error" text>
+                </common-element-button>
+                <common-element-button type="error" text>
                     删除
-                </n-button>
+                </common-element-button>
             </div>
         )
     }

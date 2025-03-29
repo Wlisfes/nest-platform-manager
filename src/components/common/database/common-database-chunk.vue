@@ -29,9 +29,10 @@ export default defineComponent({
                         {isEmpty(props.content) ? (
                             <span>-</span>
                         ) : (
-                            <n-button text focusable={false}>
-                                <common-element-icon size={props.iconSize} name={props.content}></common-element-icon>
-                            </n-button>
+                            <common-element-button
+                                text
+                                icon={<common-element-icon size={props.iconSize} name={props.content}></common-element-icon>}
+                            ></common-element-button>
                         )}
                     </div>
                 ) : (

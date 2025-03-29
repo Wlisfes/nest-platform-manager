@@ -12,9 +12,11 @@ export type ColumnState<T> = Omix & {
     search: boolean
     page: number
     size: number
+    total: number
+    rowKeys: Array<string>
+    rowNodes: Array<T>
     columns: Array<DataTableColumn>
     dataSource: Array<T>
-    total: number
 }
 export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
     /**是否排除空字段**/
@@ -44,6 +46,8 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         page: option.page ?? 1,
         size: option.size ?? 20,
         total: option.total ?? 0,
+        rowKeys: option.rowKeys ?? [],
+        rowNodes: option.rowNodes ?? [],
         columns: option.columns ?? [],
         dataSource: [] as Array<T>,
         ...(option.option ?? {})

@@ -1,12 +1,12 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, nextTick, PropType } from 'vue'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: ['update:page', 'update:size', 'update:columns'],
+    emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked'],
     props: {
         /**开启设置列**/
         settings: { type: Boolean, default: true },
@@ -28,6 +28,10 @@ export default defineComponent({
         size: { type: Number, default: 20 },
         /**总条数**/
         total: { type: Number, default: 0 },
+        /**被选中的行的keyId列表**/
+        rowKeys: { type: Array as PropType<Array<string>>, default: () => [] },
+        /**被选中的行的对象列表**/
+        rowNodes: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置**/
         columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
         /**表数据列表**/
@@ -37,8 +41,8 @@ export default defineComponent({
         /**分页条数列表**/
         showSizePicker: { type: Boolean, default: true }
     },
-    setup(props, { slots }) {
-        const { columns, page, size, total } = useVModels(props)
+    setup(props, { emit, slots }) {
+        const { columns, page, size, total, rowKeys, rowNodes } = useVModels(props)
 
         /**表头列数据**/
         const faseColumns = computed(() => {
@@ -70,6 +74,15 @@ export default defineComponent({
             })
         }
 
+        /**选择列事件**/
+        async function fetchUpdateChecked(keys: Array<string>, items: Array<Omix>) {
+            rowKeys.value = keys
+            rowNodes.value = items
+            return await nextTick().then(() => {
+                return emit('update:checked', keys, items)
+            })
+        }
+
         /**节点渲染**/
         function fetchColumnContentRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
             if (utils.isNotEmpty(slots[base.key])) {
@@ -94,6 +107,7 @@ export default defineComponent({
                 size={props.elementSize}
                 data={props.data}
                 render-cell={fetchColumnContentRender}
+                on-update:checked-row-keys={fetchUpdateChecked}
                 pagination={utils.fetchWhere<boolean | Omix>(!props.pagination, false, {
                     suffix: utils.fetchWhere(props.showQuickJumper, () => <span>页</span>),
                     goto: () => <span>前往</span>,

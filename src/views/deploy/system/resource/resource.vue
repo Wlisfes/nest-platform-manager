@@ -22,6 +22,7 @@ export default defineComponent({
                 endTime: undefined
             },
             columns: [
+                { type: 'selection' },
                 { title: '菜单名称', key: 'name', width: 180 },
                 { title: '图标', key: 'iconName', width: 60, align: 'center' },
                 { title: '类型', key: 'type', width: 80, align: 'center' },
@@ -29,14 +30,14 @@ export default defineComponent({
                 { title: '权限标识', key: 'key', minWidth: 240 },
                 { title: '排序号', key: 'sort', width: 80, align: 'center' },
                 { title: '状态', key: 'status', width: 90, align: 'center' },
-                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' },
-                { title: '更新人', key: 'user', width: 100, align: 'center' }
+                { title: '更新人', key: 'user', width: 100, align: 'center' },
+                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
             ]
         })
 
         return () => (
             <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <n-element class="flex gap-12 overflow-hidden justify-between">
+                <n-element class="flex gap-10 justify-between">
                     <common-element-action
                         label-width="7.2em"
                         cols={2}
@@ -71,6 +72,17 @@ export default defineComponent({
                             <n-date-picker type="datetimerange" clearable default-time="13:22:11" class="w-full" />
                         </n-form-item>
                     </common-element-action>
+                    <n-flex size={[10, 10]}>
+                        <common-element-button type="primary" secondary>
+                            新增
+                        </common-element-button>
+                        <common-element-button type="success" secondary disabled={state.rowKeys.length === 0}>
+                            启用
+                        </common-element-button>
+                        <common-element-button type="warning" secondary disabled={state.rowKeys.length === 0}>
+                            禁用
+                        </common-element-button>
+                    </n-flex>
                 </n-element>
                 <common-element-resize element-table>
                     <common-database-table
@@ -87,6 +99,8 @@ export default defineComponent({
                         v-model:page={state.page}
                         v-model:size={state.size}
                         v-model:total={state.total}
+                        v-model:row-keys={state.rowKeys}
+                        v-model:row-nodes={state.rowNodes}
                         onUpdate:page={(page: number) => fetchRefresh()}
                         onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >

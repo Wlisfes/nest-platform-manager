@@ -22,6 +22,8 @@ export default defineComponent({
         maxWidth: { type: String },
         /**弹出层最大高度**/
         maxHeight: { type: String, default: '450px' },
+        /**弹出层方向**/
+        placement: { type: String, default: 'bottom-start' },
         /**模糊查询关键字**/
         vague: { type: String },
         /**查询事件名称**/
@@ -70,7 +72,7 @@ export default defineComponent({
                 <n-input v-model:value={vague.value} placeholder={props.placeholder} clearable onKeyup={fetchKeyup}>
                     {{ prefix: () => <n-icon size={18} component={<local-nest-search />}></n-icon> }}
                 </n-input>
-                <n-popover ref={instance} placement="bottom" trigger="click" arrow-point-to-center style={{ padding: 0 }}>
+                <n-popover ref={instance} placement={props.placement} trigger="click" arrow-point-to-center style={{ padding: 0 }}>
                     {{
                         trigger: () => (
                             <n-button focusable={false} v-slots={{ icon: () => <local-nest-filter /> }}>
@@ -78,7 +80,7 @@ export default defineComponent({
                             </n-button>
                         ),
                         default: () => (
-                            <n-element class="flex flex-col w-full" style={elementNodes.value}>
+                            <n-element class="flex flex-col" style={elementNodes.value}>
                                 <n-h1 class="m-0 text-16 line-height-24 p-inline-14 p-block-12">高级筛选</n-h1>
                                 <n-scrollbar style={{ maxHeight: props.maxHeight }}>
                                     <n-form

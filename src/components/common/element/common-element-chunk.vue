@@ -4,6 +4,7 @@ import { isEmpty } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonElementChunk',
+    inheritAttrs: false,
     props: {
         /**内容渲染**/
         content: { type: Boolean, default: false },
@@ -11,6 +12,8 @@ export default defineComponent({
         iconSize: { type: Number, default: 0 },
         /**标签名称**/
         name: { type: String },
+        /**标签边框**/
+        bordered: { type: Boolean, default: false },
         /**标签配置**/
         json: { type: Object as PropType<Omix>, default: () => ({}) }
     },
@@ -26,7 +29,7 @@ export default defineComponent({
                         {isEmpty(props.name) ? '-' : <common-icon size={props.iconSize} name={props.name}></common-icon>}
                     </div>
                 ) : (
-                    <n-tag class="common-element-chunk" bordered={false} type={props.json.type || undefined}>
+                    <n-tag class="common-element-chunk" bordered={props.bordered} type={props.json.type || undefined}>
                         {props.name}
                     </n-tag>
                 )}

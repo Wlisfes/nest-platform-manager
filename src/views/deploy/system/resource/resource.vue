@@ -37,10 +37,7 @@ export default defineComponent({
 
         return () => (
             <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <n-element class="flex gap-10 overflow-hidden">
-                    <div class="flex-1">
-                        <n-h1 class="m-0 text-16 line-height-34">资源管理</n-h1>
-                    </div>
+                <n-element class="flex gap-12 overflow-hidden justify-between">
                     <common-element-action
                         label-width="7.2em"
                         cols={2}
@@ -80,11 +77,16 @@ export default defineComponent({
                     <common-element-table
                         remote
                         flex-height
+                        pagination
                         scroll-x={1600}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}
-                        pagination={{}}
+                        v-model:page={state.page}
+                        v-model:size={state.size}
+                        v-model:total={state.total}
+                        onUpdate:page={(page: number) => fetchRefresh()}
+                        onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >
                         {{
                             iconName: (name: string) => {
@@ -94,7 +96,7 @@ export default defineComponent({
                                 return <common-element-chunk content name={data.name}></common-element-chunk>
                             },
                             type: (data: Omix) => {
-                                return <common-element-chunk name={data.name} json={data.json}></common-element-chunk>
+                                return <common-element-chunk bordered name={data.name} json={data.json}></common-element-chunk>
                             },
                             status: (data: Omix) => {
                                 return <common-element-chunk name={data.name} json={data.json}></common-element-chunk>
@@ -102,37 +104,6 @@ export default defineComponent({
                         }}
                     </common-element-table>
                 </common-element-resize>
-
-                {/* <common-data-table 
-                        bordered
-                        bottom-bordered
-                        remote
-                        max-height={500}
-                        scroll-x={1600}
-                        loading={state.loading}
-                        columns={state.columns}
-                        data={state.dataSource}
-                        pagination={{}}
-                    >
-                        {{
-                        iconName: (name: string) => (
-                                <div class="flex items-center justify-center">
-                                    <common-icon class="flex-inline" size={28} name={name}></common-icon>
-                                </div>
-                            ),
-                            iconName: (data: Omix) => (
-                                <div class="flex items-center justify-center">
-                                    <common-icon class="flex-inline" size={28} name={data.iconName}></common-icon>
-                                </div>
-                            ),
-                            type: (data: Omix) => (
-                                <n-tag bordered={false} type="success">
-                                    的撒
-                                </n-tag>
-                            ),
-                            user: (data: Omix) => data.user.name
-                        }}
-                    </common-data-table> */}
             </layout-common-container>
         )
     }

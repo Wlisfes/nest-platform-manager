@@ -8,7 +8,7 @@ export default defineComponent({
     name: 'DeploySystemResource',
     setup(props, ctx) {
         const { state, form, fetchRefresh } = useColumnService({
-            request: (data, base) => Service.httpBaseColumnSystemRouter(utils.fetchBaseWhere(data, base)),
+            request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
             form: {
                 vague: undefined,
                 name: undefined,
@@ -22,16 +22,21 @@ export default defineComponent({
                 endTime: undefined
             },
             columns: [
-                { title: '菜单名称', key: 'name', width: 200 },
-                { title: '图标', key: 'iconName', width: 80, align: 'center' },
-                { title: '类型', key: 'type', width: 100, align: 'center' },
-                { title: '路由地址', key: 'router', minWidth: 260 },
-                { title: '权限标识', key: 'key', minWidth: 260 },
+                { title: '菜单名称', key: 'name', width: 180 },
+                { title: '图标', key: 'iconName', width: 60, align: 'center' },
+                { title: '类型', key: 'type', width: 80, align: 'center' },
+                { title: '路由地址', key: 'router', minWidth: 240 },
+                { title: '权限标识', key: 'key', minWidth: 240 },
                 { title: '排序号', key: 'sort', width: 80, align: 'center' },
-                { title: '状态', key: 'status', width: 100, align: 'center' },
+                { title: '状态', key: 'status', width: 90, align: 'center' },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' },
-                { title: '更新人', key: 'user', width: 100, align: 'center' },
-                { title: '操作', key: 'command', width: 150, align: 'center' }
+                { title: '更新人', key: 'user', width: 100, align: 'center' }
+                // { title: '操作', key: 'command', width: 100, align: 'center', colSpan: () => 2 },
+                // {
+                //     title: () => <common-element-chunk element="icon" icon-size={22} content="nest-settings"></common-element-chunk>,
+                //     key: 'settings',
+                //     width: 46
+                // }
             ]
         })
 
@@ -74,11 +79,11 @@ export default defineComponent({
                     </common-element-action>
                 </n-element>
                 <common-element-resize element-table>
-                    <common-element-table
+                    <common-database-table
+                        command
                         remote
                         flex-height
-                        pagination
-                        scroll-x={1600}
+                        scroll-x={1440}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}
@@ -90,19 +95,20 @@ export default defineComponent({
                     >
                         {{
                             iconName: (name: string) => {
-                                return <common-element-chunk icon-size={28} name={name}></common-element-chunk>
+                                return <common-element-chunk element="icon" icon-size={28} content={name}></common-element-chunk>
                             },
                             user: (data: Omix) => {
-                                return <common-element-chunk content name={data.name}></common-element-chunk>
+                                return <common-element-chunk element="text" content={data.name}></common-element-chunk>
                             },
                             type: (data: Omix) => {
-                                return <common-element-chunk bordered name={data.name} json={data.json}></common-element-chunk>
+                                return <common-element-chunk bordered content={data.name} json={data.json}></common-element-chunk>
                             },
                             status: (data: Omix) => {
-                                return <common-element-chunk name={data.name} json={data.json}></common-element-chunk>
-                            }
+                                return <common-element-chunk content={data.name} json={data.json}></common-element-chunk>
+                            },
+                            command: (data: Omix) => <common-element-command></common-element-command>
                         }}
-                    </common-element-table>
+                    </common-database-table>
                 </common-element-resize>
             </layout-common-container>
         )

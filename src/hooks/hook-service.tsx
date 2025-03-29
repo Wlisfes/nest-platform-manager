@@ -27,7 +27,7 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
     columns?: Array<DataTableColumn>
     /**筛选条件表单**/
     form: Omix<U>
-    request: (forms: U, base: ColumnState<T & Omix<R>>, opt: Omix) => Promise<ResultResolver<ResultColumn<T>>>
+    request: (forms: U, base: ColumnState<T & Omix<R>>, opts: Omix<{ body: Omix; opt: Omix }>) => Promise<ResultResolver<ResultColumn<T>>>
     transform?: (data: ResultColumn<T>) => Array<Omix> | Promise<Array<Omix>>
     callback?: (forms: U, base: ColumnState<T & Omix<R>>) => void | any | Promise<any>
 }
@@ -53,17 +53,19 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         fetchInitialize()
     }
 
-    function fetchWhere(data: Omix = {}, base: Omix = {}) {
-        if ((base.event ?? state.event) === 'input-submit') {
-        }
-        return
-    }
-
     /**初始化**/
     async function fetchInitialize() {
         return await fetchRequest().then(() => {
             return option.callback?.(form.value, state as ColumnState<T & Omix<R>>)
         })
+    }
+
+    /**类型参数聚合**/
+    function fetchWhere(data: Omix = {}, base: Omix = {}) {
+        if (base.event === 'input-submit') {
+            return { page: base.page, size: base.size, vague: data.vague }
+        }
+        return Object.assign({ page: base.page, size: base.size, ...utils.omit(data, ['vague']) }) as T
     }
 
     /**参数转换**/
@@ -88,7 +90,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         return await setState({ loading: true } as ColumnState<T> & typeof option.option).then(async () => {
             try {
                 const body = await fetchParameter()
-                return await option.request(body, state as ColumnState<T & Omix<R>>, opt).then(async ({ data }) => {
+                return await option.request(body, state as never, { opt, body: fetchWhere(body, state) }).then(async ({ data }) => {
                     if (option.transform && typeof option.transform === 'function') {
                         data.list = ((await option.transform(data)) ?? []) as Array<Omix<T>>
                     }

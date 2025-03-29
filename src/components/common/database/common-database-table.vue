@@ -2,17 +2,22 @@
 import { defineComponent, computed, PropType } from 'vue'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
-import { useState } from '@/hooks/hook-state'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
     emits: ['update:page', 'update:size', 'update:columns'],
     props: {
-        /**开启列设置**/
+        /**开启设置列**/
         settings: { type: Boolean, default: true },
         /**开启操列**/
         command: { type: Boolean, default: false },
+        /**是否固定操作列、设置列**/
+        fixed: { type: String as PropType<'right' | 'left'> },
+        /**操作列是否居中**/
+        fixedCenter: { type: Boolean, default: false },
+        /**操作列、设置列默认宽度**/
+        fixedWidth: { type: Number },
         /**表格size**/
         elementSize: { type: String, default: 'medium' },
         /**开启分页**/
@@ -24,7 +29,7 @@ export default defineComponent({
         /**总条数**/
         total: { type: Number, default: 0 },
         /**表头配置**/
-        columns: { type: Array as PropType<Array<DataTableColumn>>, default: () => [] },
+        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
         /**表数据列表**/
         data: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**分页跳转**/
@@ -34,30 +39,35 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         const { columns, page, size, total } = useVModels(props)
-        const { state, setState } = useState({
-            columns: [
-                { title: '操作', key: 'command', width: 100, align: 'center', colSpan: () => 2 },
-                {
-                    title: () => <common-element-chunk element="icon" icon-size={22} content="nest-settings"></common-element-chunk>,
-                    key: 'settings',
-                    width: 46
+
+        /**表头列数据**/
+        const faseColumns = computed(() => {
+            return fetchBaseColumns().map((item: Omix, index) => {
+                if (props.settings && !props.command && index === columns.value.length - 1) {
+                    /**未开启操作列且开启设置列的时候需要把设置列前一个字段合并单元格**/
+                    const cols = (item.colSpan ?? (() => 1))() + 1
+                    return { ...item, align: 'left', colSpan: () => cols }
                 }
-            ]
+                return item
+            })
         })
 
-        const faseColumns = computed(() => fetchConcatColumns(columns.value))
-
-        /**表头列合并**/
-        function fetchConcatColumns(data: Array<DataTableColumn>) {
-            const keysColumns: typeof data = [
-                { title: '操作', key: 'command', width: 100, align: 'center', colSpan: () => 2 },
-                {
-                    title: () => <common-element-chunk element="icon" icon-size={22} content="nest-settings"></common-element-chunk>,
-                    key: 'settings',
-                    width: 46
-                }
-            ]
-            return [...data].concat(keysColumns)
+        /**默认操作列、设置列配置**/
+        function fetchBaseColumns() {
+            if (!props.command && props.settings) return columns.value
+            return utils.concat(columns.value, {
+                key: (props.command && props.settings) || props.command ? 'command' : 'settings',
+                width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 126 : 46,
+                center: props.fixedCenter,
+                fixed: props.fixed,
+                title: () => (
+                    <common-database-settings
+                        settings={props.settings}
+                        command={props.command}
+                        fixed-center={props.fixedCenter}
+                    ></common-database-settings>
+                )
+            })
         }
 
         /**节点渲染**/

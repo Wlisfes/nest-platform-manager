@@ -46,7 +46,7 @@ export default defineComponent({
         flex-direction: column;
         flex: 1;
     }
-    &.element-table > :deep(.n-data-table.common-element-table) {
+    &.element-table > :deep(.n-data-table.common-database-table) {
         --n-opacity-loading: 0.2;
         --n-loading-size: 54px;
         width: var(--common-element-resize-width);

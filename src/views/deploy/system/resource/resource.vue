@@ -31,12 +31,6 @@ export default defineComponent({
                 { title: '状态', key: 'status', width: 90, align: 'center' },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' },
                 { title: '更新人', key: 'user', width: 100, align: 'center' }
-                // { title: '操作', key: 'command', width: 100, align: 'center', colSpan: () => 2 },
-                // {
-                //     title: () => <common-element-chunk element="icon" icon-size={22} content="nest-settings"></common-element-chunk>,
-                //     key: 'settings',
-                //     width: 46
-                // }
             ]
         })
 
@@ -80,10 +74,13 @@ export default defineComponent({
                 </n-element>
                 <common-element-resize element-table>
                     <common-database-table
+                        settings={false}
                         command
                         remote
+                        fixed="right"
+                        fixed-center
                         flex-height
-                        scroll-x={1440}
+                        scroll-x={1400}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}
@@ -95,18 +92,20 @@ export default defineComponent({
                     >
                         {{
                             iconName: (name: string) => {
-                                return <common-element-chunk element="icon" icon-size={28} content={name}></common-element-chunk>
+                                return <common-database-chunk element="icon" icon-size={28} content={name}></common-database-chunk>
                             },
                             user: (data: Omix) => {
-                                return <common-element-chunk element="text" content={data.name}></common-element-chunk>
+                                return <common-database-chunk element="text" content={data.name}></common-database-chunk>
                             },
                             type: (data: Omix) => {
-                                return <common-element-chunk bordered content={data.name} json={data.json}></common-element-chunk>
+                                return <common-database-chunk bordered content={data.name} json={data.json}></common-database-chunk>
                             },
                             status: (data: Omix) => {
-                                return <common-element-chunk content={data.name} json={data.json}></common-element-chunk>
+                                return <common-database-chunk content={data.name} json={data.json}></common-database-chunk>
                             },
-                            command: (data: Omix) => <common-element-command></common-element-command>
+                            command: (data: Omix, base: Omix<{ center: boolean }>) => (
+                                <common-database-command center={base.center}></common-database-command>
+                            )
                         }}
                     </common-database-table>
                 </common-element-resize>

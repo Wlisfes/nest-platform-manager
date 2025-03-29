@@ -13,6 +13,7 @@ export default defineComponent({
         const codexRef = ref<any>()
         const { fetchBaseSystemUserResolver } = useStore(useManager)
         const { formRef, form, state, setState, fetchValidater } = useForm({
+            option: { check: false },
             form: {
                 number: '',
                 password: '',
@@ -83,39 +84,33 @@ export default defineComponent({
                             ></n-input>
                         </n-form-item>
                         <n-form-item path="password">
-                            <common-state>
+                            <n-input
+                                maxlength={32}
+                                placeholder="请输入登录密码"
+                                type={state.check ? 'text' : 'password'}
+                                input-props={{ autocomplete: 'password' }}
+                                style={{ '--input-password-right': '46px' }}
+                                v-model:value={form.value.password}
+                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                            >
                                 {{
-                                    default: (data: Omix<{ loading: boolean }>, done: Function) => (
-                                        <n-input
-                                            maxlength={32}
-                                            placeholder="请输入登录密码"
-                                            type={data.loading ? 'text' : 'password'}
-                                            input-props={{ autocomplete: 'password' }}
-                                            style={{ '--input-password-right': '46px' }}
-                                            v-model:value={form.value.password}
-                                            onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                    prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
+                                    suffix: () => (
+                                        <n-button
+                                            text
+                                            focusable={false}
+                                            disabled={state.loading}
+                                            onClick={(evt: Event) => setState({ check: !state.check })}
                                         >
-                                            {{
-                                                prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
-                                                suffix: () => (
-                                                    <n-button
-                                                        text
-                                                        focusable={false}
-                                                        disabled={state.loading}
-                                                        onClick={(evt: Event) => done({ loading: !data.loading })}
-                                                    >
-                                                        <n-icon
-                                                            color="var(--text-color-3)"
-                                                            size={22}
-                                                            component={data.loading ? <local-naive-eys /> : <local-naive-eye />}
-                                                        ></n-icon>
-                                                    </n-button>
-                                                )
-                                            }}
-                                        </n-input>
+                                            <n-icon
+                                                color="var(--text-color-3)"
+                                                size={22}
+                                                component={state.check ? <local-naive-eys /> : <local-naive-eye />}
+                                            ></n-icon>
+                                        </n-button>
                                     )
                                 }}
-                            </common-state>
+                            </n-input>
                         </n-form-item>
                         <n-form-item path="code">
                             <n-flex class="w-full">

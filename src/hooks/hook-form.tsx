@@ -31,12 +31,10 @@ export function useForm<T extends Omix, R extends FormRules, U extends Omix>(opt
     } as FormState<R> & typeof option.option)
 
     onMounted(async () => {
-        return await utils.fetchHandler(Boolean(option.mounted ?? true), {
-            async handler() {
-                return await setState({ visible: true } as never).then(() => {
-                    return option.callback?.()
-                })
-            }
+        return await utils.fetchHandler(Boolean(option.mounted ?? true), async () => {
+            return await setState({ visible: true } as never).then(() => {
+                return option.callback?.()
+            })
         })
     })
 
@@ -53,9 +51,7 @@ export function useForm<T extends Omix, R extends FormRules, U extends Omix>(opt
             return setState({ loading: true, disabled: true } as never).then(async () => {
                 try {
                     return formRef.value.validate(async err => {
-                        return utils.fetchHandler(!err, {
-                            handler: () => resolve(true)
-                        })
+                        return await utils.fetchHandler(!err, () => resolve(true))
                     }, formatter)
                 } catch (err) {
                     return resolve(false)

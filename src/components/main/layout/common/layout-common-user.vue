@@ -23,10 +23,8 @@ export default defineComponent({
         /**异步开启用户信息popover组件**/
         async function fetchOpenCollapse(evt: MouseEvent) {
             await utils.stop(evt)
-            return await utils.fetchHandler(!state.visible && !state.delay, {
-                async handler() {
-                    return await setState({ visible: true })
-                }
+            return await utils.fetchHandler(!state.visible && !state.delay, async () => {
+                return await setState({ visible: true })
             })
         }
 

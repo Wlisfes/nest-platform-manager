@@ -51,16 +51,13 @@ export function fetchDelay(delay = 100, handler?: Function) {
     })
 }
 
-/**条件函数执行**/
-export async function fetchHandler<T>(where: boolean | Function, scope: Omix<{ handler: Function; feedback?: Function }>): Promise<T> {
-    if (typeof where === 'function') {
-        where = await where()
+/**条件链式执行函数**/
+export async function fetchHandler<T>(where: boolean | Function, handler?: Function): Promise<T> {
+    const value = typeof where === 'function' ? await where() : where
+    if (value && typeof handler === 'function') {
+        return (await handler()) as T
     }
-    if (where) {
-        return await scope.handler()
-    } else {
-        return (await scope.feedback?.()) ?? undefined
-    }
+    return value as T
 }
 
 /**对象排除空字段**/

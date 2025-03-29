@@ -67,8 +67,10 @@ export function setupGuardRouter(router: Router) {
     router.afterEach(async (to, from) => {
         document.title = `昆仑服务平台${utils.fetchWhere(!!to.meta.title, ` - ${to.meta.title}`, '')}`
         window.$loadingBar.finish()
-        return await configer.fetchMenuRouter(to).then(async menu => {
-            return await configer.setState({ router: to.path })
+        return await utils.fetchHandler(['AUTH'].includes(to.meta.AUTH as string), async () => {
+            return await configer.fetchMenuRouter(to).then(async menu => {
+                return await configer.setState({ router: to.path })
+            })
         })
     })
 }

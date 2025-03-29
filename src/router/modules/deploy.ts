@@ -1,9 +1,9 @@
 export default [
     {
-        path: '/deploy/system/resource',
-        name: 'DeploySystemResource',
-        meta: { title: '资源管理', AUTH: 'AUTH' },
-        component: () => import('@/views/deploy/system/resource/resource.vue')
+        path: '/deploy/system/router',
+        name: 'DeploySystemRouter',
+        meta: { title: '菜单管理', AUTH: 'AUTH' },
+        component: () => import('@/views/deploy/system/router/router.vue')
     },
     {
         path: '/deploy/system/authorize',
@@ -12,9 +12,9 @@ export default [
         component: () => import('@/views/deploy/system/authorize/authorize.vue')
     },
     {
-        path: '/deploy/system/consumer',
-        name: 'DeploySystemConsumer',
+        path: '/deploy/system/user',
+        name: 'DeploySystemUser',
         meta: { title: '用户管理', AUTH: 'AUTH' },
-        component: () => import('@/views/deploy/system/consumer/consumer.vue')
+        component: () => import('@/views/deploy/system/user/user.vue')
     }
 ]

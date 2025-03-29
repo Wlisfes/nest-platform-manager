@@ -1,11 +1,10 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useColumnService } from '@/hooks/hook-service'
-import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'DeploySystemResource',
+    name: 'DeploySystemRouter',
     setup(props, ctx) {
         const { state, form, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),

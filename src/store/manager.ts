@@ -21,9 +21,9 @@ const list = [
                 name: '系统管理',
                 router: '/deploy/system',
                 children: [
-                    { name: '资源管理', router: '/deploy/system/resource' },
+                    { name: '菜单管理', router: '/deploy/system/router' },
                     { name: '权限管理', router: '/deploy/system/authorize' },
-                    { name: '用户管理', router: '/deploy/system/consumer' }
+                    { name: '用户管理', router: '/deploy/system/user' }
                 ]
             }
         ]

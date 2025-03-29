@@ -5,6 +5,7 @@ import { useForm } from '@/hooks/hook-form'
 import { enter } from '@/utils/utils-common'
 import { setCompose } from '@/utils/utils-cookie'
 import { router } from '@/router'
+import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -13,7 +14,6 @@ export default defineComponent({
         const codexRef = ref<any>()
         const { fetchBaseSystemUserResolver } = useStore(useManager)
         const { formRef, form, state, setState, fetchValidater } = useForm({
-            option: { check: false },
             form: {
                 number: '',
                 password: '',
@@ -68,94 +68,70 @@ export default defineComponent({
                         rules={state.rules}
                         disabled={state.loading}
                         show-label={false}
+                        onSubmit={utils.stop}
                     >
                         <n-h2 class="text-28 font-500 text-center">
                             <n-text depth={2}>欢迎登录</n-text>
                         </n-h2>
                         <n-form-item path="number">
-                            <n-input
+                            <form-common-input
                                 maxlength={32}
                                 type="text"
                                 placeholder="请输入登录账号"
                                 v-model:value={form.value.number}
                                 input-props={{ autocomplete: 'on' }}
                                 onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
-                                v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-user />}></n-icon> }}
-                            ></n-input>
+                                prefix={<common-element-icon size={22} name="nest-unset-user"></common-element-icon>}
+                            ></form-common-input>
                         </n-form-item>
                         <n-form-item path="password">
-                            <n-input
+                            <form-common-input
                                 maxlength={32}
                                 placeholder="请输入登录密码"
-                                type={state.check ? 'text' : 'password'}
+                                type="password"
+                                show-password-on="click"
                                 input-props={{ autocomplete: 'password' }}
                                 style={{ '--input-password-right': '46px' }}
                                 v-model:value={form.value.password}
                                 onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
-                            >
-                                {{
-                                    prefix: () => <n-icon size={22} component={<local-naive-ockes />}></n-icon>,
-                                    suffix: () => (
-                                        <n-button
-                                            text
-                                            focusable={false}
-                                            disabled={state.loading}
-                                            onClick={(evt: Event) => setState({ check: !state.check })}
-                                        >
-                                            <n-icon
-                                                color="var(--text-color-3)"
-                                                size={22}
-                                                component={state.check ? <local-naive-eys /> : <local-naive-eye />}
-                                            ></n-icon>
-                                        </n-button>
-                                    )
-                                }}
-                            </n-input>
+                                prefix={<common-element-icon size={22} name="nest-unset-ockes"></common-element-icon>}
+                            ></form-common-input>
                         </n-form-item>
                         <n-form-item path="code">
                             <n-flex class="w-full">
-                                <n-input
+                                <form-common-input
                                     class="flex-1"
                                     type="text"
                                     placeholder="验证码"
                                     maxlength={4}
                                     v-model:value={form.value.code}
                                     onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
-                                    v-slots={{ prefix: () => <n-icon size={22} component={<local-naive-codex />}></n-icon> }}
-                                ></n-input>
+                                    prefix={<common-element-icon size={22} name="nest-unset-codex"></common-element-icon>}
+                                ></form-common-input>
                                 <common-element-codex ref={codexRef} disabled={state.loading}></common-element-codex>
                             </n-flex>
                         </n-form-item>
                         <n-form-item>
-                            <n-button
+                            <common-element-button
                                 class="w-full"
                                 type="info"
-                                focusable={false}
                                 disabled={state.loading}
                                 loading={state.loading}
                                 onClick={onSubmit}
                             >
                                 立即登录
-                            </n-button>
+                            </common-element-button>
                         </n-form-item>
-                        <n-flex class="w-full" justify="space-between">
-                            <n-button text focusable={false}>
-                                忘记密码
-                            </n-button>
-                            <n-button text focusable={false}>
-                                注册账号
-                            </n-button>
-                        </n-flex>
                         <n-flex size={32} wrap-item={false} justify="center" align="center" style={{ marginTop: '24px' }}>
-                            <n-button text focusable={false}>
-                                <n-icon size={44} component={<local-naive-github />}></n-icon>
-                            </n-button>
-                            <n-button text focusable={false}>
-                                <n-icon size={24} component={<local-naive-specor />}></n-icon>
-                            </n-button>
-                            <n-button text focusable={false}>
-                                <n-icon size={44} component={<local-naive-google />}></n-icon>
-                            </n-button>
+                            <common-element-button text>
+                                <common-element-icon size={44} name="nest-github"></common-element-icon>
+                            </common-element-button>
+                            <common-element-button text>
+                                <common-element-icon size={24} name="nest-specor"></common-element-icon>
+                            </common-element-button>
+                            <common-element-button text>
+                                <common-element-icon size={44} name="nest-google"></common-element-icon>
+                            </common-element-button>
                         </n-flex>
                     </n-form>
                 </n-card>

@@ -1,6 +1,5 @@
 <script lang="tsx">
 import { defineComponent, computed } from 'vue'
-import { createTransfer } from '@/plugins/transfer/transfer'
 
 export default defineComponent({
     name: 'CommonDialog',
@@ -34,7 +33,6 @@ export default defineComponent({
                 auto-focus={false}
                 mask-closable={false}
                 show-icon={false}
-                on-after-enter={(el: HTMLElement) => createTransfer(el)}
                 v-slots={{
                     action: () => (
                         <div class={{ 'flex-1 p-inline-24 p-be-24 overflow-hidden': true, 'p-bs-24': props.action }}>

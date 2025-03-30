@@ -1,11 +1,14 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useColumnService } from '@/hooks/hook-service'
+import { fetchDialogReactive } from '@/plugins'
 import * as Service from '@/api/instance.service'
+import { useDialog } from 'naive-ui'
 
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
+        const dialog = useDialog()
         const { state, form, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
             form: {
@@ -33,6 +36,13 @@ export default defineComponent({
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
             ]
         })
+
+        /**编辑菜单状态**/
+        async function fetchBaseUpdateStateSystemRouter() {
+            return await fetchDialogReactive({
+                title: '提示'
+            })
+        }
 
         return () => (
             <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
@@ -72,7 +82,7 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                     <n-flex size={[10, 10]}>
-                        <common-element-button type="primary" secondary>
+                        <common-element-button type="primary" secondary onClick={fetchBaseUpdateStateSystemRouter}>
                             新增
                         </common-element-button>
                         <common-element-button type="success" secondary disabled={state.rowKeys.length === 0}>

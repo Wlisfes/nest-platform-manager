@@ -74,112 +74,119 @@ export function fetchRender(Component: Parameters<typeof createApp>['0']) {
     return () => createVNode(Component)
 }
 
-// /**对话弹窗二次封装**/
-// export function fetchDiscover(
-//     option: Pick<
-//         DialogOptions,
-//         'type' | 'style' | 'closable' | 'negativeText' | 'positiveText' | 'negativeButtonProps' | 'positiveButtonProps'
-//     > & {
-//         title?: string | VNode
-//         content?: string | VNode
-//         icon?: 'BsMistake' | 'BsCorrect' | VNode
-//         onAfterEnter?: (e: HTMLElement, x: DialogReactive) => any
-//         onClose?: (x: DialogReactive) => boolean | Promise<boolean>
-//         onNegativeClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
-//         onPositiveClick?: (e: MouseEvent, x: DialogReactive, done: (loading: boolean) => Promise<boolean>) => boolean | Promise<boolean>
-//     }
-// ): Promise<DialogReactive> {
-//     return new Promise(async resolve => {
-//         const vm = window.$dialog.create({
-//             showIcon: false,
-//             autoFocus: false,
-//             maskClosable: false,
-//             type: option.type ?? 'default',
-//             closable: option.closable,
-//             negativeText: option.negativeText,
-//             positiveText: option.positiveText,
-//             title: function render() {
-//                 if (isEmpty(option.title)) {
-//                     return undefined
-//                 } else if (typeof option.title === 'string') {
-//                     return <done-title content={option.title} icon={option.icon} type={option.type ?? 'default'}></done-title>
-//                 }
-//                 return (
-//                     <done-title icon={option.icon} type={option.type ?? 'default'}>
-//                         {option.title}
-//                     </done-title>
-//                 )
-//             },
-//             content: function render() {
-//                 if (isEmpty(option.content)) {
-//                     return undefined
-//                 } else if (typeof option.content === 'string') {
-//                     return <done-content content={option.content} show-icon={Boolean(option.icon)}></done-content>
-//                 }
-//                 return <done-content show-icon={Boolean(option.icon)}>{option.content}</done-content>
-//             },
-//             style: {
-//                 '--n-padding': '20px 24px 24px',
-//                 '--n-close-margin': '16px 16px 0 0',
-//                 '--n-content-margin': '0px',
-//                 '--n-close-size': fetchWhere(option.closable ?? true, '22px', '-6px'),
-//                 display: 'flex',
-//                 flexDirection: 'column',
-//                 rowGap: '10px',
-//                 ...((option.style ?? {}) as Omix<CSSProperties>)
-//             },
-//             negativeButtonProps: {
-//                 size: 'medium',
-//                 ghost: false,
-//                 secondary: true,
-//                 style: { '--n-height': '34px', '--n-padding': '0 10px', 'min-width': '80px' },
-//                 ...option.negativeButtonProps
-//             },
-//             positiveButtonProps: {
-//                 size: 'medium',
-//                 type: 'error',
-//                 style: { '--n-height': '34px', '--n-padding': '0 10px', 'min-width': '80px' },
-//                 ...option.positiveButtonProps
-//             },
-//             onAfterEnter: async (e: HTMLElement) => {
-//                 return await fetchHandler(Boolean(option.onAfterEnter), {
-//                     handler: async () => {
-//                         // await divineTransfer(e)
-//                         return await option.onAfterEnter!(e, vm)
-//                     },
-//                     failure: async () => {
-//                         // return await divineTransfer(e)
-//                     }
-//                 })
-//             },
-//             onClose: async function onClose() {
-//                 return await fetchHandler(Boolean(option.onClose), {
-//                     handler: () => option.onClose!(vm),
-//                     failure: () => true
-//                 })
-//             },
-//             onEsc: async function onEsc() {
-//                 return await fetchHandler(Boolean(option.onClose), {
-//                     handler: () => option.onClose!(vm),
-//                     failure: () => true
-//                 })
-//             },
-//             onNegativeClick: async function onNegativeClick(e: MouseEvent) {
-//                 return await fetchHandler(Boolean(option.onNegativeClick), {
-//                     handler: () => option.onNegativeClick!(e, vm),
-//                     failure: () => true
-//                 })
-//             },
-//             onPositiveClick: async function onPositiveClick(e: MouseEvent) {
-//                 return await fetchHandler(Boolean(option.onPositiveClick), {
-//                     handler: () => option.onPositiveClick!(e, vm, async loading => (vm.loading = loading)),
-//                     failure: () => true
-//                 })
-//             }
-//         } as unknown as DialogOptions)
-//         return await resolve(vm)
-//     })
-// }
+/**对话弹窗二次封装**/
+export function fetchDialogReactive(opts: Omix<DialogOptions>): Promise<DialogReactive> {
+    return new Promise(async resolve => {
+        const vm = window.$dialog.create({
+            draggable: opts.draggable ?? true,
+            showIcon: opts.showIcon ?? true,
+            autoFocus: opts.autoFocus ?? false,
+            maskClosable: opts.maskClosable ?? false,
+            title: opts.title ?? null,
+            content: '你确定？',
+            positiveText: '确定',
+            negativeText: '不确定',
+            titleClass: `text-18 line-height-28 gap-8 ${opts.titleClass}`,
+            contentClass: 'text-18 line-height-24',
+            style: {
+                '--n-padding': '20px',
+                '--n-close-margin': '16px 16px 0 0',
+                '--n-icon-margin': '0',
+                '--n-content-margin': '0px',
+                display: 'flex',
+                flexDirection: 'column',
+                rowGap: '12px'
+            }
+            // draggable: true,
+            // showIcon: false,
+            // autoFocus: false,
+            // maskClosable: false,
+            // type: opts.type ?? 'default',
+            // closable: opts.closable,
+            // negativeText: opts.negativeText,
+            // positiveText: opts.positiveText
+            // title: function render() {
+            //     if (isEmpty(option.title)) {
+            //         return undefined
+            //     } else if (typeof option.title === 'string') {
+            //         return <done-title content={option.title} icon={option.icon} type={option.type ?? 'default'}></done-title>
+            //     }
+            //     return (
+            //         <done-title icon={option.icon} type={option.type ?? 'default'}>
+            //             {option.title}
+            //         </done-title>
+            //     )
+            // },
+            // content: function render() {
+            //     if (isEmpty(option.content)) {
+            //         return undefined
+            //     } else if (typeof option.content === 'string') {
+            //         return <done-content content={option.content} show-icon={Boolean(option.icon)}></done-content>
+            //     }
+            //     return <done-content show-icon={Boolean(option.icon)}>{option.content}</done-content>
+            // },
+            // style: {
+            //     '--n-padding': '20px 24px 24px',
+            //     '--n-close-margin': '16px 16px 0 0',
+            //     '--n-content-margin': '0px',
+            //     '--n-close-size': fetchWhere(option.closable ?? true, '22px', '-6px'),
+            //     display: 'flex',
+            //     flexDirection: 'column',
+            //     rowGap: '10px',
+            //     ...((option.style ?? {}) as Omix<CSSProperties>)
+            // },
+            // negativeButtonProps: {
+            //     size: 'medium',
+            //     ghost: false,
+            //     secondary: true,
+            //     style: { '--n-height': '34px', '--n-padding': '0 10px', 'min-width': '80px' },
+            //     ...option.negativeButtonProps
+            // },
+            // positiveButtonProps: {
+            //     size: 'medium',
+            //     type: 'error',
+            //     style: { '--n-height': '34px', '--n-padding': '0 10px', 'min-width': '80px' },
+            //     ...option.positiveButtonProps
+            // },
+            // onAfterEnter: async (e: HTMLElement) => {
+            //     return await fetchHandler(Boolean(option.onAfterEnter), {
+            //         handler: async () => {
+            //             // await divineTransfer(e)
+            //             return await option.onAfterEnter!(e, vm)
+            //         },
+            //         failure: async () => {
+            //             // return await divineTransfer(e)
+            //         }
+            //     })
+            // },
+            // onClose: async function onClose() {
+            //     return await fetchHandler(Boolean(option.onClose), {
+            //         handler: () => option.onClose!(vm),
+            //         failure: () => true
+            //     })
+            // },
+            // onEsc: async function onEsc() {
+            //     return await fetchHandler(Boolean(option.onClose), {
+            //         handler: () => option.onClose!(vm),
+            //         failure: () => true
+            //     })
+            // },
+            // onNegativeClick: async function onNegativeClick(e: MouseEvent) {
+            //     return await fetchHandler(Boolean(option.onNegativeClick), {
+            //         handler: () => option.onNegativeClick!(e, vm),
+            //         failure: () => true
+            //     })
+            // },
+            // onPositiveClick: async function onPositiveClick(e: MouseEvent) {
+            //     return await fetchHandler(Boolean(option.onPositiveClick), {
+            //         handler: () => option.onPositiveClick!(e, vm, async loading => (vm.loading = loading)),
+            //         failure: () => true
+            //     })
+            // }
+        } as unknown as DialogOptions)
+        return await resolve(vm)
+    })
+}
 
 // /**通知弹窗二次封装**/
 // export function fetchNotice(

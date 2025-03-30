@@ -2,7 +2,7 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfiger } from '@/store'
-import { BScroll } from '@/plugins/better-scroll'
+import { BScroll } from '@/plugins'
 
 export default defineComponent({
     name: 'LayoutCommonStore',

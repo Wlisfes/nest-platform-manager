@@ -1,46 +1,120 @@
 import { VNode } from 'vue'
-import { DialogOptions, DialogReactive, NotificationOptions, NotificationReactive } from 'naive-ui'
+import { DialogOptions, DialogReactive } from 'naive-ui'
+import { useState } from '@/hooks/hook-state'
 import * as utils from '@/utils/utils-common'
 
-export interface BaseDialogReactiveOption extends Omix {
+export interface BaseDialogReactiveOption {
+    /**弹窗类型**/
     type?: 'error' | 'success' | 'warning'
+    /**是否可拖拽：必须存在title、showIcon可以使用**/
     draggable?: boolean
+    /**头部图标**/
     showIcon?: boolean
-    autoFocus?: boolean
+    /**点击遮罩层可关闭弹窗**/
     maskClosable?: boolean
+    /**取消按钮文案**/
+    cancel?: string
+    /**确定按钮文案**/
+    submit?: string
+    /**标题**/
     title?: string | VNode
+    /**标题额外样式**/
+    titleClass?: string
+    /**内容**/
+    content?: string | VNode
+    /**内容额外样式**/
+    contentClass?: string
+    /**关闭弹窗回调事件**/
+    onClose?: Function
+    /**确定按钮事件**/
+    onSubmit?: Function
+    /**取消按钮事件**/
+    onCancel?: Function
 }
 
 /**对话弹窗二次封装**/
 export async function fetchDialogReactive(opts: BaseDialogReactiveOption): Promise<DialogReactive> {
-    const isTitle = utils.isNotEmpty(opts.title)
-    return window.$dialog.create({
+    /**关闭事件异步方法**/
+    async function fetchClosePromise() {
+        try {
+            return await utils.fetchHandler(!!opts.onClose, opts.onClose).then(async function () {
+                return true
+            })
+        } catch (err) {
+            return true
+        }
+    }
+    /**取消按钮事件异步方法**/
+    async function fetchNegativeClickPromise(event: MouseEvent) {
+        try {
+            return await utils.fetchHandler(!!opts.onCancel, opts.onCancel).then(async () => {
+                return await fetchClosePromise()
+            })
+        } catch (err) {
+            return await fetchClosePromise()
+        }
+    }
+    /**确定按钮回调处理**/
+    async function fetchSubmit(vm: DialogReactive, setState: Function, data: Omix = {}) {
+        if (utils.isNotEmpty(data.loading)) {
+            vm.loading = Boolean(data.loading)
+            await setState({ loading: vm.loading })
+        }
+        if (utils.isNotEmpty(data.visible)) {
+            return await setState({ visible: data.visible })
+        }
+    }
+    /**取消按钮事件异步方法**/
+    async function fetchPositiveClickPromise(vm: DialogReactive) {
+        const { state, setState } = useState({ loading: false, visible: undefined })
+        return new Promise(async resolve => {
+            try {
+                if (utils.isNotEmpty(opts.onSubmit) && opts.onSubmit) {
+                    await opts.onSubmit((data: Omix) => fetchSubmit(vm, setState, data))
+                    return utils.isNotEmpty(state.visible) ? resolve(!state.visible) : resolve(true)
+                } else {
+                    await resolve(true)
+                    return await fetchClosePromise()
+                }
+            } catch (err) {
+                return await fetchClosePromise()
+            }
+        })
+    }
+
+    const vm = window.$dialog.create({
+        autoFocus: false,
         type: opts.type,
         draggable: opts.draggable ?? true,
-        showIcon: isTitle ? opts.showIcon ?? true : false,
-        autoFocus: opts.autoFocus ?? false,
+        showIcon: utils.isNotEmpty(opts.title) ? opts.showIcon ?? true : false,
         maskClosable: opts.maskClosable ?? false,
-        title: () => <div>dasdas </div>,
-        content: '你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定你确定',
-        positiveText: '确定',
-        negativeText: '不确定',
-        titleClass: `text-18 line-height-28 gap-8 ${opts.titleClass ?? ''}`,
-        contentClass: `text-18 line-height-24 ${opts.contentClass ?? ''}`,
+        negativeButtonProps: { size: 'medium', ghost: false, secondary: true, style: { '--n-height': '32px', 'min-width': '68px' } },
+        positiveButtonProps: { size: 'medium', style: { '--n-height': '32px', 'min-width': '68px' } },
+        positiveText: opts.cancel ?? '确定',
+        negativeText: opts.submit ?? '取消',
+        titleClass: `text-18 line-height-28 gap-8 select-none ${opts.titleClass ?? ''}`,
+        contentClass: `text-18 line-height-24 select-none ${opts.contentClass ?? ''}`,
+        class: 'flex flex-col',
         style: {
             '--n-padding': '20px',
             '--n-close-margin': '16px 16px 0 0',
             '--n-icon-margin': '0',
-            '--n-content-margin': isTitle ? '12px 0 16px' : '0px 28px 16px 0',
-            display: 'flex',
-            flexDirection: 'column'
+            '--n-content-margin': utils.isNotEmpty(opts.title) ? '12px 0 16px' : '0px 28px 32px 0'
         },
+        title: function () {
+            return utils.isEmpty(opts.title) ? undefined : opts.title
+        },
+        content: function () {
+            return utils.isEmpty(opts.content) ? undefined : opts.content
+        },
+        /**Esc按钮关闭回调事件**/
+        onEsc: fetchClosePromise,
+        /**关闭icon事件**/
+        onClose: fetchClosePromise,
         /**取消按钮事件**/
-        onNegativeClick: (event: MouseEvent) => {
-            console.log(event)
-        },
+        onNegativeClick: fetchNegativeClickPromise,
         /**确定按钮事件**/
-        onPositiveClick: (event: MouseEvent) => {
-            console.log(event)
-        }
+        onPositiveClick: (event: MouseEvent) => fetchPositiveClickPromise(vm)
     } as never as DialogOptions)
+    return vm
 }

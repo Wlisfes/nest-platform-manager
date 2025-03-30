@@ -2,15 +2,15 @@
 import { defineComponent } from 'vue'
 import { useColumnService } from '@/hooks/hook-service'
 import { fetchDialogReactive } from '@/plugins'
+import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
-import { useDialog } from 'naive-ui'
 
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const dialog = useDialog()
-        const { state, form, fetchRefresh } = useColumnService({
+        const { state, form, setState, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
+            option: { sds2w: false },
             form: {
                 vague: undefined,
                 name: undefined,
@@ -40,7 +40,16 @@ export default defineComponent({
         /**编辑菜单状态**/
         async function fetchBaseUpdateStateSystemRouter() {
             return await fetchDialogReactive({
-                title: '提示'
+                title: '提示',
+                content: 'dasdas',
+                onClose: () => console.log('onClose'),
+                onCancel: () => console.log('onCancel'),
+                onSubmit: async (done: Function) => {
+                    await done({ loading: true })
+                    await utils.fetchDelay(3000)
+                    await done({ loading: false })
+                    console.log('onSubmit')
+                }
             })
         }
 

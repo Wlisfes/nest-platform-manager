@@ -1,4 +1,4 @@
-import { VNode } from 'vue'
+import { createApp, createVNode, render, VNode, CSSProperties } from 'vue'
 import { DialogOptions, DialogReactive } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 import * as utils from '@/utils/utils-common'
@@ -18,6 +18,8 @@ export interface BaseDialogReactiveOption {
     submit?: string
     /**标题**/
     title?: string | VNode
+    /**头部图标**/
+    icon?: VNode
     /**标题额外样式**/
     titleClass?: string
     /**内容**/
@@ -30,6 +32,18 @@ export interface BaseDialogReactiveOption {
     onSubmit?: Function
     /**取消按钮事件**/
     onCancel?: Function
+}
+
+/**DOM生成函数**/
+export async function fetchDOMRender<T extends Omix<{ style: CSSProperties }>>(
+    Component: Parameters<typeof createApp>['0'],
+    parameter?: T
+) {
+    const node = document.createElement('section')
+    const component = createVNode(Component, parameter)
+    await render(component, node)
+    const element = Array.from(node.children).reduce((str: string, el) => (str += el.outerHTML), '')
+    return { node, element, component }
 }
 
 /**对话弹窗二次封装**/
@@ -84,18 +98,19 @@ export async function fetchDialogReactive(opts: BaseDialogReactiveOption): Promi
 
     const vm = window.$dialog.create({
         autoFocus: false,
-        type: opts.type,
+        type: 'warning',
         draggable: opts.draggable ?? true,
         showIcon: utils.isNotEmpty(opts.title) ? opts.showIcon ?? true : false,
         maskClosable: opts.maskClosable ?? false,
         negativeButtonProps: { size: 'medium', ghost: false, secondary: true, style: { '--n-height': '32px', 'min-width': '68px' } },
-        positiveButtonProps: { size: 'medium', style: { '--n-height': '32px', 'min-width': '68px' } },
+        positiveButtonProps: { size: 'medium', type: 'primary', style: { '--n-height': '32px', 'min-width': '68px' } },
         positiveText: opts.cancel ?? '确定',
         negativeText: opts.submit ?? '取消',
         titleClass: `text-18 line-height-28 gap-8 select-none ${opts.titleClass ?? ''}`,
-        contentClass: `text-18 line-height-24 select-none ${opts.contentClass ?? ''}`,
+        contentClass: `line-height-24 select-none ${opts.contentClass ?? ''}`,
         class: 'flex flex-col',
         style: {
+            '--n-font-size': '15px',
             '--n-padding': '20px',
             '--n-close-margin': '16px 16px 0 0',
             '--n-icon-margin': '0',
@@ -106,6 +121,15 @@ export async function fetchDialogReactive(opts: BaseDialogReactiveOption): Promi
         },
         content: function () {
             return utils.isEmpty(opts.content) ? undefined : opts.content
+        },
+        icon: function () {
+            return opts.icon ? (
+                opts.icon
+            ) : (
+                <n-text class="flex items-center" type={opts.type ?? 'warning'}>
+                    <common-element-icon size={28} name="nest-state-warning"></common-element-icon>
+                </n-text>
+            )
         },
         /**Esc按钮关闭回调事件**/
         onEsc: fetchClosePromise,

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useColumnService } from '@/hooks/hook-service'
-import { fetchDialogReactive } from '@/plugins'
+import { fetchDOMRender, fetchDialogReactive } from '@/plugins'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
@@ -38,10 +38,10 @@ export default defineComponent({
         })
 
         /**编辑菜单状态**/
-        async function fetchBaseUpdateStateSystemRouter() {
+        async function fetchBaseUpdateStateSystemRouter(data: Omix<{ name: string }>) {
             return await fetchDialogReactive({
                 title: '提示',
-                content: 'dasdas',
+                content: <common-dialog-state document={`${data.name}选中`} count={state.rowKeys.length}></common-dialog-state>,
                 onClose: () => console.log('onClose'),
                 onCancel: () => console.log('onCancel'),
                 onSubmit: async (done: Function) => {
@@ -91,13 +91,23 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                     <n-flex size={[10, 10]}>
-                        <common-element-button type="primary" secondary onClick={fetchBaseUpdateStateSystemRouter}>
+                        <common-element-button type="primary" secondary>
                             新增
                         </common-element-button>
-                        <common-element-button type="success" secondary disabled={state.rowKeys.length === 0}>
+                        <common-element-button
+                            type="success"
+                            secondary
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchBaseUpdateStateSystemRouter({ name: '启用' })}
+                        >
                             启用
                         </common-element-button>
-                        <common-element-button type="warning" secondary disabled={state.rowKeys.length === 0}>
+                        <common-element-button
+                            type="warning"
+                            secondary
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchBaseUpdateStateSystemRouter({ name: '禁用' })}
+                        >
                             禁用
                         </common-element-button>
                     </n-flex>

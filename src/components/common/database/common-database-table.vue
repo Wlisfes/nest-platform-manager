@@ -106,6 +106,8 @@ export default defineComponent({
                 columns={faseColumns.value}
                 size={props.elementSize}
                 data={props.data}
+                checked-row-keys={rowKeys.value}
+                default-checked-row-keys={rowKeys.value}
                 render-cell={fetchColumnContentRender}
                 on-update:checked-row-keys={fetchUpdateChecked}
                 pagination={utils.fetchWhere<boolean | Omix>(!props.pagination, false, {

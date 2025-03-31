@@ -39,41 +39,29 @@ export default defineComponent({
         })
 
         /**编辑菜单状态**/
-        async function fetchBaseUpdateStateSystemRouter(data: Omix<{ name: string }>) {
-            // if (['启用'].includes(data.name)) {
-            //     return await fetchDialogReactive({
-            //         title: '提示',
-            //         type: 'success',
-            //         content: (
-            //             <common-dialog-state
-            //                 count-type="success"
-            //                 document={`${data.name}选中`}
-            //                 count={state.rowKeys.length}
-            //             ></common-dialog-state>
-            //         ),
-            //         onSubmit: async (done: Function) => {
-            //             await done({ loading: true })
-            //             await utils.fetchDelay(3000)
-            //             await done({ loading: false })
-            //             console.log('onSubmit')
-            //         }
-            //     })
-            // }
-            // if (['禁用'].includes(data.name)) {
-            // }
-            return await fetchDialogReactive({
-                title: '提示',
-                content: (
-                    <n-element
-                        v-html={`此操作将启用选中 <span class="text-naive-success">${state.rowKeys.length}</span> 条数据，是否继续？`}
-                    ></n-element>
-                ),
-                onSubmit: async (done: Function) => {
-                    await done({ loading: true })
-                    await utils.fetchDelay(3000)
-                    await done({ loading: false })
-                    console.log('onSubmit')
-                }
+        async function fetchBaseUpdateStateSystemRouter(data: Omix) {
+            return await fetchDOMRender(
+                <n-element>
+                    <common-content-text depth={2}>{`此操作将${data.name}选中`}</common-content-text>
+                    <common-content-text class="m-inline-5" type={data.type} text={state.rowKeys.length}></common-content-text>
+                    <common-content-text depth={2}>条数据，是否继续？</common-content-text>
+                </n-element>
+            ).then(async dom => {
+                return await fetchDialogReactive({
+                    title: '提示',
+                    type: data.type,
+                    content: dom.component,
+                    async onSubmit(done: Function) {
+                        try {
+                            await done({ loading: true })
+                            await Service.httpBaseUpdateStateSystemRouter({ status: data.status, keys: state.rowKeys })
+                            await done({ visible: false })
+                            return await fetchRefresh()
+                        } catch (err) {
+                            return await done({ loading: false })
+                        }
+                    }
+                })
             })
         }
 
@@ -122,7 +110,7 @@ export default defineComponent({
                             type="success"
                             secondary
                             disabled={state.rowKeys.length === 0}
-                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'success', name: '启用' })}
+                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'success', status: 'enable', name: '启用' })}
                         >
                             启用
                         </common-element-button>
@@ -130,7 +118,7 @@ export default defineComponent({
                             type="warning"
                             secondary
                             disabled={state.rowKeys.length === 0}
-                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', name: '禁用' })}
+                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', status: 'disable', name: '禁用' })}
                         >
                             禁用
                         </common-element-button>

@@ -69,23 +69,21 @@ export async function fetchDialogReactive(opts: BaseDialogReactiveOption): Promi
         }
     }
     /**确定按钮回调处理**/
-    async function fetchSubmit(vm: DialogReactive, setState: Function, data: Omix = {}) {
+    async function fetchSubmit(vm: DialogReactive, done: Function, data: Omix = {}) {
         if (utils.isNotEmpty(data.loading)) {
             vm.loading = Boolean(data.loading)
-            await setState({ loading: vm.loading })
         }
-        if (utils.isNotEmpty(data.visible)) {
-            return await setState({ visible: data.visible })
+        if (utils.isNotEmpty(data.visible) && data.visible === false) {
+            await done(true)
+            return await fetchClosePromise()
         }
     }
     /**取消按钮事件异步方法**/
     async function fetchPositiveClickPromise(vm: DialogReactive) {
-        const { state, setState } = useState({ loading: false, visible: undefined })
         return new Promise(async resolve => {
             try {
                 if (utils.isNotEmpty(opts.onSubmit) && opts.onSubmit) {
-                    await opts.onSubmit((data: Omix) => fetchSubmit(vm, setState, data))
-                    return utils.isNotEmpty(state.visible) ? resolve(!state.visible) : resolve(true)
+                    return await opts.onSubmit((data: Omix) => fetchSubmit(vm, resolve, data))
                 } else {
                     await resolve(true)
                     return await fetchClosePromise()

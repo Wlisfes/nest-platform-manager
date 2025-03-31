@@ -85,7 +85,10 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     /**刷新**/
     async function fetchRefresh(data: Partial<ColumnState<T> & typeof option.option> = {}, opt: Omix = {}) {
         return await setState(data).then(async () => {
-            return await fetchRequest(opt)
+            return await fetchRequest(opt).then(async response => {
+                await setState({ rowKeys: [], rowNodes: [] } as never)
+                return response
+            })
         })
     }
 

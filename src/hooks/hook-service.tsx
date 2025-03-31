@@ -118,7 +118,16 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         })
     }
 
-    return { form, state, ...toRefs(state), setState, setForm, fetchInitialize, fetchRequest, fetchRefresh }
+    return {
+        form,
+        state,
+        ...toRefs(state),
+        setState,
+        setForm,
+        fetchInitialize,
+        fetchRequest,
+        fetchRefresh
+    }
 }
 
 export type BaseState = Omix & {

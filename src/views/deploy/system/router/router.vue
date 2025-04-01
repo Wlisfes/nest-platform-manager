@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import { useChunkService } from '@/hooks/hook-chunk'
 import { useColumnService } from '@/hooks/hook-service'
 import { fetchDOMRender, fetchDialogReactive } from '@/plugins'
+import * as feedback from '@/components/deploy/hooks'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
@@ -27,8 +28,8 @@ export default defineComponent({
             columns: [
                 { type: 'selection' },
                 { title: '菜单名称', key: 'name', width: 180 },
-                { title: '图标', key: 'iconName', width: 60, align: 'center' },
-                { title: '类型', key: 'type', width: 80, align: 'center' },
+                { title: '图标', key: 'iconName', width: 80, align: 'center' },
+                { title: '类型', key: 'type', width: 90, align: 'center' },
                 { title: '路由地址', key: 'router', minWidth: 240 },
                 { title: '权限标识', key: 'key', minWidth: 240 },
                 { title: '排序号', key: 'sort', width: 80, align: 'center' },
@@ -37,6 +38,11 @@ export default defineComponent({
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
             ]
         })
+
+        /**新增、编辑菜单权限**/
+        async function fetchDeploySystemFeedbackRouter() {
+            return await feedback.fetchDeploySystemFeedbackRouter({})
+        }
 
         /**编辑菜单状态**/
         async function fetchBaseUpdateStateSystemRouter(data: Omix) {
@@ -103,7 +109,7 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                     <n-flex size={[10, 10]}>
-                        <common-element-button type="primary" secondary>
+                        <common-element-button type="primary" secondary onClick={() => fetchDeploySystemFeedbackRouter()}>
                             新增
                         </common-element-button>
                         <common-element-button
@@ -132,7 +138,7 @@ export default defineComponent({
                         fixed="right"
                         fixed-center
                         flex-height
-                        scroll-x={1440}
+                        scroll-x={1480}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}

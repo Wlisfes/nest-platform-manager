@@ -37,7 +37,9 @@ export async function createComponent<T extends Omix>(Component: Parameters<type
 
     /**组件关闭事件**/
     async function onClose(scope: Omix) {
-        if (utils.isEmpty(props.onClose)) return await unmount()
+        if (utils.isEmpty(props.onClose)) {
+            return await unmount()
+        }
         return await props.onClose!({ ...scope, unmount })
     }
 

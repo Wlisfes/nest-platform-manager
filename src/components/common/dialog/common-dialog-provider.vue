@@ -1,0 +1,104 @@
+<script lang="tsx">
+import { defineComponent, computed, CSSProperties } from 'vue'
+import { useVModels } from '@vueuse/core'
+
+export default defineComponent({
+    name: 'CommonDialogProvider',
+    emits: ['update:visible', 'close', 'cancel', 'submit'],
+    props: {
+        /**开启弹窗**/
+        visible: { type: Boolean, default: false },
+        /**按钮加载状态**/
+        loading: { type: Boolean, default: false },
+        /**初始化中**/
+        initialize: { type: Boolean, default: false },
+        /**透明度**/
+        opacity: { type: Number, default: 0.5 },
+        /**弹窗宽度**/
+        width: { type: String, default: '640px' },
+        /**开启滚动容器**/
+        scrollbar: { type: Boolean, default: true },
+        /**开启底部按钮**/
+        action: { type: Boolean, default: true },
+        /**取消按钮文案**/
+        cancel: { type: String, default: '取消' },
+        /**确定按钮文案**/
+        submit: { type: String, default: '确定' }
+    },
+    setup(props, { emit, slots }) {
+        const { visible } = useVModels(props, emit)
+        const styleNodes = computed<CSSProperties>(() => ({
+            width: props.width,
+            height: '90vh',
+            'max-height': '90vh',
+            '--n-font-size': '15px',
+            '--n-padding': '0',
+            '--n-close-margin': '16px 16px 0 0',
+            '--n-icon-margin': '0',
+            '--n-content-margin': '0'
+        }))
+
+        return () => (
+            <n-modal
+                draggable
+                preset="dialog"
+                type="success"
+                auto-focus={false}
+                mask-closable={false}
+                show-icon={false}
+                show={visible.value}
+                style={styleNodes.value}
+                class="flex flex-col overflow-hidden"
+                content-class="flex flex-col flex-1 overflow-hidden"
+                title-class="text-18 line-height-28 gap-8 select-none p-inline-20! p-bs-15! p-be-10!"
+                action-class="flex flex-col overflow-hidden"
+                on-update:show={() => emit('close')}
+            >
+                {{
+                    action: () => {
+                        return !props.action ? null : (
+                            <n-element class="flex justify-center gap-12 p-inline-20 p-block-20">
+                                {props.cancel && (
+                                    <n-button class="min-w-80" size="medium" secondary focusable={false} onClick={() => emit('cancel')}>
+                                        {props.cancel}
+                                    </n-button>
+                                )}
+                                {props.submit && (
+                                    <n-button
+                                        class="min-w-80"
+                                        size="medium"
+                                        type="primary"
+                                        focusable={false}
+                                        onClick={() => emit('submit')}
+                                        disabled={props.loading || props.initialize}
+                                        loading={props.loading}
+                                    >
+                                        {props.submit}
+                                    </n-button>
+                                )}
+                            </n-element>
+                        )
+                    },
+                    default: () => (
+                        <n-spin
+                            size="large"
+                            class="flex flex-col flex-1 overflow-hidden"
+                            content-class="flex flex-col flex-1 overflow-hidden"
+                            style={{ '--n-opacity-spinning': props.opacity }}
+                            show={props.initialize}
+                        >
+                            {props.scrollbar ? (
+                                <n-scrollbar class="flex flex-col flex-1" content-class="min-h-full flex flex-col" trigger="none">
+                                    <n-element class="flex flex-col flex-1 p-inline-20">{slots.default && slots.default()}</n-element>
+                                </n-scrollbar>
+                            ) : (
+                                <n-element class="flex flex-col flex-1 overflow-hidden">{slots.default && slots.default()}</n-element>
+                            )}
+                        </n-spin>
+                    )
+                }}
+            </n-modal>
+        )
+    }
+})
+</script>

@@ -41,11 +41,10 @@ export function fetchWhere<T>(where: boolean, value: T, defaultValue?: T): T {
 }
 
 /**延时方法**/
-export function fetchDelay(delay = 100, handler?: Function) {
+export function fetchDelay<T>(delay = 100, handler?: Function): Promise<T> {
     return new Promise(resolve => {
         const timeout = setTimeout(() => {
-            handler?.()
-            resolve(undefined)
+            resolve(handler?.())
             clearTimeout(timeout)
         }, delay)
     })

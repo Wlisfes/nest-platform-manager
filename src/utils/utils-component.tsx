@@ -2,33 +2,37 @@ import { createApp, createVNode, nextTick, App } from 'vue'
 import { setupStore } from '@/store'
 import * as utils from '@/utils/utils-common'
 
-export interface EventComponent extends Omix {
-    mounte: () => Promise<Omix<any>>
-    unmount: (delay?: number) => Promise<Omix<any>>
-}
-
-export interface RestComponent extends EventComponent {
+export interface RestComponent {
     element: HTMLElement
     app: App<Element>
+    unmount: (delay: number) => Promise<Omix>
 }
 
-export type CompProps<T> = Omix<T> & {
-    onClose?: (e: Omix<EventComponent>) => void | any | Promise<any>
-    onSubmit?: (e: Omix<EventComponent>) => void | any | Promise<any>
+export interface OptsComponent {
+    destroy?: boolean
+}
+
+export type PropsState<T> = Omix<T> & {
+    onClose?: (e: Omix<{ done: Function }>) => Promise<Omix>
+    onSubmit?: (e: Omix<{ done: Function }>) => Promise<Omix>
 }
 
 /**创建组件实例**/
-export async function createComponent<T extends Omix>(Component: Parameters<typeof createApp>['0'], props: T): Promise<RestComponent> {
+export async function createComponent<T extends Omix>(
+    Component: Parameters<typeof createApp>['0'],
+    props: PropsState<T>,
+    opts: OptsComponent = {}
+): Promise<RestComponent> {
     const element = document.createElement('div')
-    const app = createApp(<layout-config-provider>{createVNode(Component, { ...props, onSubmit, onClose })}</layout-config-provider>)
+    const app = createApp(<layout-common-provider>{createVNode(Component, { ...props, onSubmit, onClose })}</layout-common-provider>)
 
     /**组件挂载**/
-    async function mounte(): Promise<any> {
+    async function mounte(): Promise<Omix> {
         return app.mount(element, true)
     }
 
     /**组件销毁**/
-    async function unmount(delay: number = 300): Promise<any> {
+    async function unmount(delay: number = 300): Promise<Omix> {
         return await utils.fetchDelay(delay, async () => {
             app.unmount()
             return element.remove()
@@ -36,15 +40,17 @@ export async function createComponent<T extends Omix>(Component: Parameters<type
     }
 
     /**组件关闭事件**/
-    async function onClose(scope: Omix) {
-        if (utils.isEmpty(props.onClose)) {
-            return await unmount()
+    async function onClose(scope: Omix<{ done: Function }>): Promise<Omix> {
+        if ((opts.destroy ?? true) || utils.isEmpty(props.onClose)) {
+            return await scope.done({ visible: false }).then(async () => {
+                return await unmount()
+            })
         }
         return await props.onClose!({ ...scope, unmount })
     }
 
     /**组件提交表单事件**/
-    async function onSubmit(scope: Omix) {
+    async function onSubmit(scope: Omix<{ done: Function }>): Promise<Omix> {
         return await utils.fetchHandler(Boolean(props.onSubmit), async () => {
             return props.onSubmit!({ ...scope, unmount })
         })
@@ -55,7 +61,7 @@ export async function createComponent<T extends Omix>(Component: Parameters<type
         await mounte()
     })
 
-    return { element, app, mounte, unmount }
+    return { element, app, unmount }
 }
 
 /**异步返回VNode**/

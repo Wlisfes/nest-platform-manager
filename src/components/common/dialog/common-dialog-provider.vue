@@ -29,7 +29,6 @@ export default defineComponent({
         const { visible } = useVModels(props, emit)
         const styleNodes = computed<CSSProperties>(() => ({
             width: props.width,
-            height: '90vh',
             'max-height': '90vh',
             '--n-font-size': '15px',
             '--n-padding': '0',
@@ -50,7 +49,7 @@ export default defineComponent({
                 style={styleNodes.value}
                 class="flex flex-col overflow-hidden"
                 content-class="flex flex-col flex-1 overflow-hidden"
-                title-class="text-18 line-height-28 gap-8 select-none p-inline-20! p-bs-15! p-be-10!"
+                title-class="text-18 line-height-28 gap-8 select-none p-inline-20! p-block-15!"
                 action-class="flex flex-col overflow-hidden"
                 on-update:show={() => emit('close')}
             >
@@ -69,9 +68,9 @@ export default defineComponent({
                                         size="medium"
                                         type="primary"
                                         focusable={false}
-                                        onClick={() => emit('submit')}
                                         disabled={props.loading || props.initialize}
                                         loading={props.loading}
+                                        onClick={() => emit('submit')}
                                     >
                                         {props.submit}
                                     </n-button>

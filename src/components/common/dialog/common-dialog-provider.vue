@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, CSSProperties } from 'vue'
 import { useVModels } from '@vueuse/core'
+import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDialogProvider',
@@ -15,7 +16,7 @@ export default defineComponent({
         /**透明度**/
         opacity: { type: Number, default: 0.5 },
         /**弹窗宽度**/
-        width: { type: String, default: '640px' },
+        width: { type: [String, Number], default: '640px' },
         /**开启滚动容器**/
         scrollbar: { type: Boolean, default: true },
         /**开启底部按钮**/
@@ -28,7 +29,7 @@ export default defineComponent({
     setup(props, { emit, slots }) {
         const { visible } = useVModels(props, emit)
         const styleNodes = computed<CSSProperties>(() => ({
-            width: props.width,
+            width: utils.isString(props.width) ? props.width : props.width + 'px',
             'max-height': '90vh',
             '--n-font-size': '15px',
             '--n-padding': '0',

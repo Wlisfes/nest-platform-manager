@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { useManager, useStore } from '@/store'
-import { useForm } from '@/hooks/hook-form'
+import { useFormService } from '@/hooks/hook-form'
 import { enter } from '@/utils/utils-common'
 import { setCompose } from '@/utils/utils-cookie'
 import { router } from '@/router'
@@ -13,7 +13,7 @@ export default defineComponent({
     setup(props) {
         const codexRef = ref<any>()
         const { fetchBaseSystemUserResolver } = useStore(useManager)
-        const { formRef, form, state, setState, fetchValidater } = useForm({
+        const { formRef, form, state, setState, fetchValidater } = useFormService({
             form: {
                 number: '',
                 password: '',

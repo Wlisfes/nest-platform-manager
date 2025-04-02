@@ -37,6 +37,14 @@ export function httpBaseColumnSystemRouter(data: BodyColumn<Omix>) {
     })
 }
 
+/**菜单列表树**/
+export function httpBaseColumnTreeSystemRouter() {
+    return request({
+        url: `/api/system/router/column/tree`,
+        method: 'GET'
+    })
+}
+
 /**获取当前用户菜单**/
 export function httpBaseColumnUserSystemRouter() {
     return request({

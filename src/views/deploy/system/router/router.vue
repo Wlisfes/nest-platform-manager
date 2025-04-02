@@ -39,9 +39,19 @@ export default defineComponent({
             ]
         })
 
-        /**新增、编辑菜单权限**/
-        async function fetchDeploySystemFeedbackRouter() {
-            return await feedback.fetchDeploySystemFeedbackRouter({})
+        /**新增菜单权限**/
+        async function fetchCreateDeploySystemFeedbackRouter() {
+            return await feedback.fetchDeploySystemFeedbackRouter({
+                command: 'CREATE'
+            })
+        }
+
+        /**编辑菜单权限**/
+        async function fetchUpdateDeploySystemFeedbackRouter(node: Omix = {}) {
+            return await feedback.fetchDeploySystemFeedbackRouter({
+                command: 'UPDATE',
+                node
+            })
         }
 
         /**编辑菜单状态**/
@@ -109,7 +119,7 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                     <n-flex size={[10, 10]}>
-                        <common-element-button type="primary" secondary onClick={() => fetchDeploySystemFeedbackRouter()}>
+                        <common-element-button type="primary" secondary onClick={fetchCreateDeploySystemFeedbackRouter}>
                             新增
                         </common-element-button>
                         <common-element-button

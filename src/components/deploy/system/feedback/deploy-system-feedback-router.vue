@@ -1,10 +1,13 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
-import { useForm } from '@/hooks/hook-form'
+import { defineComponent, PropType } from 'vue'
+import { useSelectService } from '@/hooks/hook-selecter'
 import { useChunkService } from '@/hooks/hook-chunk'
+import { useFormService } from '@/hooks/hook-form'
+import * as Service from '@/api/instance.service'
+
 export function initState(data: Omix = {}) {
     return {
-        type: data.type, //菜单类型
+        type: data.type ?? 'router', //菜单类型
         name: data.name, //菜单名称
         pid: data.pid, //父级菜单
         version: data.version, //版本号
@@ -20,18 +23,48 @@ export function initState(data: Omix = {}) {
 export default defineComponent({
     name: 'DeploySystemFeedbackRouter',
     emits: ['close', 'submit'],
+    props: {
+        /**操作指令**/
+        command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
+        /**编辑操作详情数据**/
+        node: { type: Object as PropType<Omix>, default: () => ({}) }
+    },
     setup(props, { emit }) {
-        const chunkOptions = useChunkService({
+        const { state, form, formRef, setState, fetchValidater } = useFormService({
+            form: initState(),
+            rules: {
+                type: { required: true, message: '请选择菜单类型', trigger: 'blur' },
+                name: { required: true, message: '请输入菜单名称', trigger: 'blur' },
+                version: { required: true, message: '请输入版本号', trigger: 'blur' },
+                check: { required: true, message: '请选择是否可见', trigger: 'blur' },
+                status: { required: true, message: '请选择状态', trigger: 'blur' },
+                sort: { required: true, message: '请输入排序号', trigger: 'blur' },
+                key: { required: true, message: '请输入权限标识', trigger: 'blur' },
+                router: { required: true, message: '请输入菜单地址', trigger: 'blur' }
+            }
+        })
+        /**父级菜单Options**/
+        const treeOptions = useSelectService(() => Service.httpBaseColumnTreeSystemRouter(), {
+            treeNode: true,
+            immediate: true
+        })
+        /**通用字典枚举**/
+        const { COMMON_SYSTEM_ROUTER_STATUS, COMMON_SYSTEM_ROUTER_TYPE, COMMON_SYSTEM_ROUTER_CHECK } = useChunkService({
             COMMON_SYSTEM_ROUTER_STATUS: true,
             COMMON_SYSTEM_ROUTER_TYPE: true,
             COMMON_SYSTEM_ROUTER_CHECK: true
         })
-        const { state, form, formRef, setState, setForm } = useForm({
-            form: initState()
-        })
 
+        /**确定提交表单**/
         async function fetchSubmit() {
-            console.log('fetchSubmit')
+            return await setState({ loading: true, disabled: true }).then(async () => {
+                return await fetchValidater().then(async result => {
+                    if (result) {
+                        return await await setState({ loading: false, disabled: false })
+                    }
+                    console.log(result)
+                })
+            })
         }
 
         return () => (
@@ -45,6 +78,7 @@ export default defineComponent({
             >
                 <n-form
                     class="grid-columns-2 gap-col-20"
+                    require-mark-placement="left"
                     size="medium"
                     ref={formRef}
                     model={form.value}
@@ -56,14 +90,23 @@ export default defineComponent({
                             label-field="name"
                             value-field="value"
                             placeholder="请选择菜单类型"
-                            options={chunkOptions.COMMON_SYSTEM_ROUTER_TYPE.value}
+                            options={COMMON_SYSTEM_ROUTER_TYPE.value}
                             v-model:value={form.value.type}
                         ></n-select>
                     </n-form-item>
                     <n-form-item label="菜单名称" path="name">
                         <n-input maxlength={32} placeholder="请输入菜单名称" v-model:value={form.value.name}></n-input>
                     </n-form-item>
-                    <n-form-item label="父级菜单" path="pid"></n-form-item>
+                    <n-form-item label="父级菜单" path="pid">
+                        <n-cascader
+                            v-model:value={form.value.pid}
+                            placeholder="没啥用的值"
+                            expand-trigger="click"
+                            label-field="name"
+                            value-field="keyId"
+                            options={treeOptions.dataSource.value}
+                        ></n-cascader>
+                    </n-form-item>
                     <n-form-item label="版本号" path="version">
                         <n-input maxlength={32} placeholder="请输入版本号" v-model:value={form.value.version}></n-input>
                     </n-form-item>
@@ -72,8 +115,17 @@ export default defineComponent({
                             label-field="name"
                             value-field="value"
                             placeholder="请选择是否可见"
-                            options={chunkOptions.COMMON_SYSTEM_ROUTER_CHECK.value}
+                            options={COMMON_SYSTEM_ROUTER_CHECK.value}
                             v-model:value={form.value.check}
+                        ></n-select>
+                    </n-form-item>
+                    <n-form-item label="状态" path="status">
+                        <n-select
+                            label-field="name"
+                            value-field="value"
+                            placeholder="请选择状态"
+                            options={COMMON_SYSTEM_ROUTER_STATUS.value}
+                            v-model:value={form.value.status}
                         ></n-select>
                     </n-form-item>
                     <n-form-item label="排序号" path="sort">

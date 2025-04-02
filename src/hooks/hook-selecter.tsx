@@ -5,7 +5,7 @@ import { useState } from '@/hooks/hook-state'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 
 export interface SetNode extends Omix {
-    sid: string
+    keyId: string
     name: string
     label: string
     value: string
@@ -20,12 +20,13 @@ export interface SetState {
 export type httpRequest = (state: SetState) => Promise<ResultResolver<ResultColumn<Omix>>>
 export interface SetOption<T> extends Partial<SetState> {
     immediate?: boolean
+    treeNode?: boolean
     transform?: (data: Array<SetNode & T>) => Array<Omix> | Promise<Array<Omix>>
     callback?: (data: SetState) => void | any
 }
 
 /**下拉通用查询接口hook**/
-export function useSelecter<T>(request: httpRequest, options: SetOption<T> = {}) {
+export function useSelectService<T>(request: httpRequest, options: SetOption<T> = {}) {
     const { state, setState } = useState<SetState>({
         keywords: options.keywords ?? '',
         loading: options.loading ?? true,
@@ -61,14 +62,15 @@ export function useSelecter<T>(request: httpRequest, options: SetOption<T> = {})
     }
 
     /**移除空数据children字段**/
-    function fetchTreeNodeChilder(data: Array<Omix>) {
+    function fetchTreeNodeChilder(data: Array<Omix>): Array<SetNode & T> {
         data.forEach((node: Omix) => {
             if (node.children && node.children.length > 0) {
                 return fetchTreeNodeChilder(node.children)
+            } else if (node.children && node.children.length === 0) {
+                return delete node.children
             }
-            return delete node.children
         })
-        return data
+        return data as Array<SetNode & T>
     }
 
     /**数据转换**/
@@ -84,7 +86,9 @@ export function useSelecter<T>(request: httpRequest, options: SetOption<T> = {})
         try {
             await setState({ loading: true })
             const { data } = await request(state)
-            const list = await fetchTransform(data.list ?? [])
+            const list = await fetchTransform(data.list ?? []).then(items => {
+                return options.treeNode ? fetchTreeNodeChilder(items) : items
+            })
             return await setState({ loading: false, initialize: false, dataSource: list, dataColumn: list.slice(0, 100) }).then(() => {
                 options.callback?.(state)
                 return state

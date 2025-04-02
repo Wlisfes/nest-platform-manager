@@ -18,7 +18,7 @@ export type FormOption<T, R, U> = Partial<FormState<R>> & {
 }
 
 /**自定义表单Hooks**/
-export function useForm<T extends Omix, R extends FormRules, U extends Omix>(option: FormOption<T, R, U>) {
+export function useFormService<T extends Omix, R extends FormRules, U extends Omix>(option: FormOption<T, R, U>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const form = ref<typeof option.form>(option.form)
     const { state, setState } = useState({
@@ -42,21 +42,33 @@ export function useForm<T extends Omix, R extends FormRules, U extends Omix>(opt
         return Object.assign(form.value, data)
     }
 
+    /**批量验证表单字段**/
+    function fetchRuleCheck(keys: Array<string>, rule: FormItemRule) {
+        if (keys.length === 0 || utils.isEmpty(rule.key)) {
+            return true
+        }
+        return keys.includes(rule.key as string)
+    }
+
     /**验证表单**/
-    function fetchValidater(formatter?: (e: Omix<FormItemRule>) => boolean): Promise<any> {
+    function fetchValidater(keys: Array<string> = []): Promise<any> {
         return new Promise((resolve, reject) => {
             if (!formRef.value) {
                 return reject('不存在formRef实例')
             }
-            return setState({ loading: true, disabled: true } as never).then(async () => {
-                try {
-                    return formRef.value.validate(async err => {
-                        return await utils.fetchHandler(!err, () => resolve(true))
-                    }, formatter)
-                } catch (err) {
-                    return resolve(false)
-                }
-            })
+            try {
+                return formRef.value.validate(
+                    errors => {
+                        if (errors) {
+                            return resolve(errors)
+                        }
+                        return resolve(false)
+                    },
+                    rule => fetchRuleCheck(keys, rule)
+                )
+            } catch (err) {
+                return resolve(false)
+            }
         })
     }
 

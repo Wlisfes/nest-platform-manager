@@ -5,7 +5,7 @@ import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDialogProvider',
-    emits: ['update:visible', 'close', 'cancel', 'submit'],
+    emits: ['update:visible', 'update:initialize', 'update:loading', 'close', 'cancel', 'submit'],
     props: {
         /**开启弹窗**/
         visible: { type: Boolean, default: false },
@@ -27,7 +27,7 @@ export default defineComponent({
         submit: { type: String, default: '确定' }
     },
     setup(props, { emit, slots }) {
-        const { visible } = useVModels(props, emit)
+        const { visible, initialize, loading } = useVModels(props, emit)
         const styleNodes = computed<CSSProperties>(() => ({
             width: utils.isString(props.width) ? props.width : props.width + 'px',
             'max-height': '90vh',
@@ -69,8 +69,8 @@ export default defineComponent({
                                         size="medium"
                                         type="primary"
                                         focusable={false}
-                                        disabled={props.loading || props.initialize}
-                                        loading={props.loading}
+                                        disabled={loading.value || initialize.value}
+                                        loading={loading.value}
                                         onClick={() => emit('submit')}
                                     >
                                         {props.submit}
@@ -85,7 +85,7 @@ export default defineComponent({
                             class="flex flex-col flex-1 overflow-hidden"
                             content-class="flex flex-col flex-1 overflow-hidden"
                             style={{ '--n-opacity-spinning': props.opacity }}
-                            show={props.initialize}
+                            show={initialize.value}
                         >
                             {props.scrollbar ? (
                                 <n-scrollbar class="flex flex-col flex-1" content-class="min-h-full flex flex-col" trigger="none">

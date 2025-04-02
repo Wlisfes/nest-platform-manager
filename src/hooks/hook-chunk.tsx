@@ -54,8 +54,8 @@ export function useChunkService(options: ChunkOption) {
 
     /**回调事件**/
     async function fetchCallback() {
-        return await fetchHandler(!!options.transform, () => {
-            return options.transform!(state)
+        return await fetchHandler(!!options.callback, () => {
+            return options.callback!(state)
         }).then(() => state)
     }
 

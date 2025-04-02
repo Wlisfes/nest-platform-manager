@@ -52,11 +52,12 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
 
     /**验证表单**/
     function fetchValidater(keys: Array<string> = []): Promise<any> {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if (!formRef.value) {
                 return reject('不存在formRef实例')
             }
             try {
+                await setState({ loading: true, disabled: true } as never)
                 return formRef.value.validate(
                     errors => {
                         if (errors) {
@@ -67,7 +68,9 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
                     rule => fetchRuleCheck(keys, rule)
                 )
             } catch (err) {
-                return resolve(false)
+                return await setState({ loading: false, disabled: false } as never).then(() => {
+                    return resolve(false)
+                })
             }
         })
     }

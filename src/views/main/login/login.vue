@@ -28,7 +28,7 @@ export default defineComponent({
 
         async function onSubmit() {
             return await fetchValidater().then(async result => {
-                if (!result) {
+                if (result) {
                     return await codexRef.value.fetchRefresh(300).then(() => {
                         return setState({ loading: false, disabled: false })
                     })

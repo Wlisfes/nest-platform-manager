@@ -3,6 +3,7 @@ import { defineComponent, PropType, Fragment } from 'vue'
 import { useSelectService } from '@/hooks/hook-selecter'
 import { useChunkService } from '@/hooks/hook-chunk'
 import { useFormService } from '@/hooks/hook-form'
+import { fetchNotifyService } from '@/plugins'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
@@ -80,16 +81,18 @@ export default defineComponent({
         async function fetchBaseCreateSystemRouter(body: Omix) {
             return await Service.httpBaseCreateSystemRouter(body).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
-                    console.log(message)
+                    await emit('submit', { done: setState })
+                    return await fetchNotifyService({ title: message })
                 })
             })
         }
 
         /**编辑菜单**/
         async function fetchBaseUpdateSystemRouter(body: Omix) {
-            return await Service.httpBaseUpdateSystemRouter({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
+            return await Service.httpBaseUpdateSystemRouter({ ...body }).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
-                    console.log(message)
+                    await emit('submit', { done: setState })
+                    return await fetchNotifyService({ title: message })
                 })
             })
         }
@@ -108,7 +111,9 @@ export default defineComponent({
                             return await fetchBaseUpdateSystemRouter(body)
                         }
                     } catch (err) {
-                        return await await setState({ loading: false, disabled: false })
+                        return await await setState({ loading: false, disabled: false }).then(async () => {
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        })
                     }
                 })
             })

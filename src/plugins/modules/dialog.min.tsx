@@ -1,9 +1,8 @@
 import { createApp, createVNode, render, VNode, CSSProperties } from 'vue'
 import { DialogOptions, DialogReactive } from 'naive-ui'
-import { useState } from '@/hooks/hook-state'
 import * as utils from '@/utils/utils-common'
 
-export interface BaseDialogReactiveOption {
+export interface BaseDialogServiceOtipns {
     /**弹窗类型**/
     type?: 'error' | 'success' | 'warning'
     /**是否可拖拽：必须存在title、showIcon可以使用**/
@@ -47,7 +46,7 @@ export async function fetchDOMRender<T extends Omix<{ style: CSSProperties }>>(
 }
 
 /**对话弹窗二次封装**/
-export async function fetchDialogReactive(opts: BaseDialogReactiveOption): Promise<DialogReactive> {
+export async function fetchDialogService(opts: BaseDialogServiceOtipns): Promise<DialogReactive> {
     /**关闭事件异步方法**/
     async function fetchClosePromise() {
         try {
@@ -137,6 +136,6 @@ export async function fetchDialogReactive(opts: BaseDialogReactiveOption): Promi
         onNegativeClick: fetchNegativeClickPromise,
         /**确定按钮事件**/
         onPositiveClick: (event: MouseEvent) => fetchPositiveClickPromise(vm)
-    } as never as DialogOptions)
+    } as DialogOptions)
     return vm
 }

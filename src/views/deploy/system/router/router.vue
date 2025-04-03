@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 import { useChunkService } from '@/hooks/hook-chunk'
 import { useColumnService } from '@/hooks/hook-service'
-import { fetchDOMRender, fetchDialogReactive } from '@/plugins'
+import { fetchDOMRender, fetchDialogService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
@@ -65,7 +65,7 @@ export default defineComponent({
                     <common-content-text depth={2}>条数据，是否继续？</common-content-text>
                 </n-element>
             ).then(async dom => {
-                return await fetchDialogReactive({
+                return await fetchDialogService({
                     title: '提示',
                     type: data.type,
                     content: dom.component,

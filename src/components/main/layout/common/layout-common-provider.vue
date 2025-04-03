@@ -23,7 +23,7 @@ export default defineComponent({
                 {props.globalStyle && <n-global-style />}
                 <n-loading-bar-provider>
                     <n-dialog-provider>
-                        <n-notification-provider max={3}>
+                        <n-notification-provider max={5}>
                             <n-message-provider>
                                 <n-element class="w-full h-full overflow-hidden">{{ default: slots.default }}</n-element>
                             </n-message-provider>

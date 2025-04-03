@@ -52,7 +52,8 @@ export default defineComponent({
                 content-class="flex flex-col flex-1 overflow-hidden"
                 title-class="text-18 line-height-28 gap-8 select-none p-inline-20! p-block-15!"
                 action-class="flex flex-col overflow-hidden"
-                on-update:show={() => emit('close')}
+                on-update:show={(show: boolean) => (visible.value = show)}
+                on-after-leave={() => emit('close')}
             >
                 {{
                     action: () => {

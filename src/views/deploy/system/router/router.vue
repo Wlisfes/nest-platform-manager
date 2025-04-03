@@ -29,11 +29,11 @@ export default defineComponent({
                 { type: 'selection' },
                 { title: '菜单名称', key: 'name', width: 180 },
                 { title: '图标', key: 'iconName', width: 80, align: 'center' },
-                { title: '类型', key: 'type', width: 90, align: 'center' },
+                { title: '类型', key: 'typeChunk', width: 90, align: 'center' },
                 { title: '路由地址', key: 'router', minWidth: 240 },
                 { title: '权限标识', key: 'key', minWidth: 240 },
                 { title: '排序号', key: 'sort', width: 80, align: 'center' },
-                { title: '状态', key: 'status', width: 90, align: 'center' },
+                { title: '状态', key: 'statusChunk', width: 90, align: 'center' },
                 { title: '更新人', key: 'user', width: 100, align: 'center' },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
             ]
@@ -42,6 +42,7 @@ export default defineComponent({
         /**新增菜单权限**/
         async function fetchCreateDeploySystemFeedbackRouter() {
             return await feedback.fetchDeploySystemFeedbackRouter({
+                title: '新增菜单',
                 command: 'CREATE'
             })
         }
@@ -49,6 +50,7 @@ export default defineComponent({
         /**编辑菜单权限**/
         async function fetchUpdateDeploySystemFeedbackRouter(node: Omix = {}) {
             return await feedback.fetchDeploySystemFeedbackRouter({
+                title: '编辑菜单',
                 command: 'UPDATE',
                 node
             })
@@ -161,20 +163,27 @@ export default defineComponent({
                         onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >
                         {{
-                            iconName: (name: string) => {
-                                return <common-database-chunk element="icon" icon-size={28} content={name}></common-database-chunk>
+                            iconName: (iconName: string) => {
+                                return <common-database-chunk element="icon" icon-size={28} content={iconName}></common-database-chunk>
                             },
                             user: (data: Omix) => {
                                 return <common-database-chunk element="text" content={data.name}></common-database-chunk>
                             },
-                            type: (data: Omix) => {
+                            typeChunk: (data: Omix) => {
                                 return <common-database-chunk bordered content={data.name} json={data.json}></common-database-chunk>
                             },
-                            status: (data: Omix) => {
+                            statusChunk: (data: Omix) => {
                                 return <common-database-chunk content={data.name} json={data.json}></common-database-chunk>
                             },
                             command: (data: Omix, base: Omix<{ center: boolean }>) => (
-                                <common-database-command center={base.center}></common-database-command>
+                                <n-element class="flex items-center gap-10 justify-center">
+                                    <common-element-button type="primary" text onClick={() => fetchUpdateDeploySystemFeedbackRouter(data)}>
+                                        编辑
+                                    </common-element-button>
+                                    <common-element-button type="error" text>
+                                        删除
+                                    </common-element-button>
+                                </n-element>
                             )
                         }}
                     </common-database-table>

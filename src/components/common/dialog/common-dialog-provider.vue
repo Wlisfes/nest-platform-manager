@@ -14,7 +14,7 @@ export default defineComponent({
         /**初始化中**/
         initialize: { type: Boolean, default: false },
         /**透明度**/
-        opacity: { type: Number, default: 0.5 },
+        opacity: { type: Number, default: 0.1 },
         /**弹窗宽度**/
         width: { type: [String, Number], default: '640px' },
         /**开启滚动容器**/

@@ -20,7 +20,6 @@ export interface SetState {
 export type httpRequest = (state: SetState) => Promise<ResultResolver<ResultColumn<Omix>>>
 export interface SetOption<T> extends Partial<SetState> {
     immediate?: boolean
-    treeNode?: boolean
     transform?: (data: Array<SetNode & T>) => Array<Omix> | Promise<Array<Omix>>
     callback?: (data: SetState) => void | any
 }
@@ -61,18 +60,6 @@ export function useSelectService<T>(request: httpRequest, options: SetOption<T> 
         }
     }
 
-    /**移除空数据children字段**/
-    function fetchTreeNodeChilder(data: Array<Omix>): Array<SetNode & T> {
-        data.forEach((node: Omix) => {
-            if (node.children && node.children.length > 0) {
-                return fetchTreeNodeChilder(node.children)
-            } else if (node.children && node.children.length === 0) {
-                return delete node.children
-            }
-        })
-        return data as Array<SetNode & T>
-    }
-
     /**数据转换**/
     async function fetchTransform(data: Array<Omix>): Promise<Array<SetNode & T>> {
         if (options.transform) {
@@ -86,9 +73,7 @@ export function useSelectService<T>(request: httpRequest, options: SetOption<T> 
         try {
             await setState({ loading: true })
             const { data } = await request(state)
-            const list = await fetchTransform(data.list ?? []).then(items => {
-                return options.treeNode ? fetchTreeNodeChilder(items) : items
-            })
+            const list = await fetchTransform(data.list ?? [])
             return await setState({ loading: false, initialize: false, dataSource: list, dataColumn: list.slice(0, 100) }).then(() => {
                 options.callback?.(state)
                 return state
@@ -107,7 +92,6 @@ export function useSelectService<T>(request: httpRequest, options: SetOption<T> 
         setState,
         fetchRequest,
         fetchRemote,
-        fetchCacheRemote,
-        fetchTreeNodeChilder
+        fetchCacheRemote
     }
 }

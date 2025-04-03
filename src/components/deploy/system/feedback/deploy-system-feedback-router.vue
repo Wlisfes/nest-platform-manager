@@ -5,25 +5,13 @@ import { useChunkService } from '@/hooks/hook-chunk'
 import { useFormService } from '@/hooks/hook-form'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
-export function initState(data: Omix = {}) {
-    return {
-        type: data.type, //菜单类型
-        name: data.name, //菜单名称
-        pid: data.pid, //父级菜单
-        version: data.version, //版本号
-        check: data.check, //是否可见
-        sort: data.sort ?? 10, //排序号
-        key: data.key, //权限标识
-        router: data.router, //菜单地址
-        active: data.active, //激活路由
-        iconName: data.iconName //菜单图标
-    }
-}
 
 export default defineComponent({
     name: 'DeploySystemFeedbackRouter',
     emits: ['close', 'submit'],
     props: {
+        /**标题**/
+        title: { type: String, required: true },
         /**操作指令**/
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
         /**编辑操作详情数据**/
@@ -31,13 +19,32 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { state, form, formRef, setState, setForm, fetchValidater } = useFormService({
-            form: initState(),
+            callback: fetchCallback,
+            form: {
+                type: props.node.type, //菜单类型
+                name: props.node.name, //菜单名称
+                pid: props.node.pid, //父级菜单
+                version: props.node.version, //版本号
+                status: props.node.status, //状态
+                check: Number(props.node.check ?? 1), //是否可见
+                sort: props.node.sort ?? 10, //排序号
+                key: props.node.key, //权限标识
+                router: props.node.router, //菜单地址
+                active: props.node.active, //激活路由
+                iconName: props.node.iconName //菜单图标
+            },
+            option: {
+                COMMON_SYSTEM_ROUTER_CHECK: [
+                    { value: 1, name: '显示' },
+                    { value: 0, name: '隐藏' }
+                ]
+            },
             rules: {
                 type: { required: true, message: '请选择菜单类型', trigger: 'blur' },
                 name: { required: true, message: '请输入菜单名称', trigger: 'blur' },
                 version: { required: true, message: '请输入版本号', trigger: 'blur' },
-                check: { required: true, message: '请选择是否可见', trigger: 'blur' },
                 status: { required: true, message: '请选择状态', trigger: 'blur' },
+                check: { required: true, type: 'number', message: '请选择是否可见', trigger: 'blur' },
                 sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' },
                 key: { required: true, message: '请输入权限标识', trigger: 'blur' },
                 router: { required: true, message: '请输入菜单地址', trigger: 'blur' }
@@ -45,26 +52,45 @@ export default defineComponent({
         })
         /**父级菜单Options**/
         const treeOptions = useSelectService(() => Service.httpBaseColumnTreeSystemRouter(), {
-            immediate: true,
-            treeNode: true
+            immediate: false
         })
         /**通用字典枚举**/
-        const { COMMON_SYSTEM_ROUTER_STATUS, COMMON_SYSTEM_ROUTER_TYPE, COMMON_SYSTEM_ROUTER_CHECK } = useChunkService({
+        const { fetchRequest, COMMON_SYSTEM_ROUTER_STATUS, COMMON_SYSTEM_ROUTER_TYPE } = useChunkService({
+            immediate: false,
             COMMON_SYSTEM_ROUTER_STATUS: true,
-            COMMON_SYSTEM_ROUTER_TYPE: true,
-            COMMON_SYSTEM_ROUTER_CHECK: true,
-            callback: async function (data) {
-                if (utils.isEmpty(form.value.type) && data.COMMON_SYSTEM_ROUTER_TYPE.length > 0) {
-                    await setForm({ type: data.COMMON_SYSTEM_ROUTER_TYPE[0].value })
-                }
-                return await setState({ initialize: false })
-            }
+            COMMON_SYSTEM_ROUTER_TYPE: true
         })
 
+        /**表达初始化回调**/
+        async function fetchCallback() {
+            return await Promise.all([fetchRequest(), treeOptions.fetchRequest()]).then(async () => {
+                if (utils.isEmpty(form.value.type) && COMMON_SYSTEM_ROUTER_TYPE.value.length > 0) {
+                    await setForm({ type: COMMON_SYSTEM_ROUTER_TYPE.value[0].value })
+                }
+                return await setState({ initialize: false })
+            })
+        }
+
         /**提交参数转换**/
-        async function fetchSubmitParameter(data: ReturnType<typeof initState>) {
-            return await utils.fetchParameter(utils.fetchExclude(data)).then(node => {
-                return node
+        async function fetchSubmitParameter(data: typeof form.value) {
+            return await utils.fetchExclude({ ...data, check: Boolean(data.check) })
+        }
+
+        /**创建菜单**/
+        async function fetchBaseCreateSystemRouter(body: Omix) {
+            return await Service.httpBaseCreateSystemRouter(body).then(async ({ message }) => {
+                return await setState({ visible: false }).then(async () => {
+                    console.log(message)
+                })
+            })
+        }
+
+        /**编辑菜单**/
+        async function fetchBaseUpdateSystemRouter(body: Omix) {
+            return await Service.httpBaseUpdateSystemRouter({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
+                return await setState({ visible: false }).then(async () => {
+                    console.log(message)
+                })
             })
         }
 
@@ -74,13 +100,13 @@ export default defineComponent({
                 if (result) {
                     return await await setState({ loading: false, disabled: false })
                 }
-                return await fetchSubmitParameter(utils.cloneDeep(form.value)).then(async body => {
+                return await fetchSubmitParameter(form.value).then(async body => {
                     try {
-                        return await Service.httpBaseCreateSystemRouter(body).then(async ({ message }) => {
-                            return await setState({ visible: false }).then(async () => {
-                                console.log(message)
-                            })
-                        })
+                        if (props.command === 'CREATE') {
+                            return await fetchBaseCreateSystemRouter(body)
+                        } else {
+                            return await fetchBaseUpdateSystemRouter(body)
+                        }
                     } catch (err) {
                         return await await setState({ loading: false, disabled: false })
                     }
@@ -90,7 +116,7 @@ export default defineComponent({
 
         return () => (
             <common-dialog-provider
-                title="编辑菜单"
+                title={props.title}
                 width={840}
                 v-model:visible={state.visible}
                 v-model:loading={state.loading}
@@ -160,7 +186,7 @@ export default defineComponent({
                             label-field="name"
                             value-field="value"
                             placeholder="请选择是否可见"
-                            options={COMMON_SYSTEM_ROUTER_CHECK.value}
+                            options={state.COMMON_SYSTEM_ROUTER_CHECK}
                             v-model:value={form.value.check}
                         ></n-select>
                     </n-form-item>

@@ -1,15 +1,18 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
+import { useRouter } from 'vue-router'
 import { useManager, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useProvider } from '@/hooks/hook-provider'
+import { fetchDialogService } from '@/plugins'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'LayoutCommonUser',
     setup(props, ctx) {
+        const router = useRouter()
+        const { flowUser, fetchReset } = useStore(useManager)
         const { theme, fetchThemeUpdate } = useProvider()
-        const { avatar, uid, name, email } = useStore(useManager)
         const { state, setState } = useState({ visible: false, delay: false })
 
         /**异步关闭用户信息popover组件**/
@@ -30,7 +33,19 @@ export default defineComponent({
 
         /**退出登录**/
         async function fetchCompose() {
-            return await setState({ visible: false })
+            return await setState({ visible: false }).then(async () => {
+                return await fetchDialogService({
+                    title: '提示',
+                    type: 'warning',
+                    content: <common-content-text depth={1}>确定要退出当前账号吗？</common-content-text>,
+                    async onSubmit(done: Function) {
+                        return await fetchReset().then(async () => {
+                            await done({ visible: false })
+                            return router.push({ path: '/login', replace: true })
+                        })
+                    }
+                })
+            })
         }
 
         return () => (
@@ -39,17 +54,17 @@ export default defineComponent({
                 trigger="click"
                 width={300}
                 show={state.visible}
-                style={{ padding: 0 }}
+                style={{ padding: 0, '--v-offset-left': '4px' }}
                 onClickoutside={fetchClickoutside}
                 v-slots={{
                     trigger: () => (
-                        <div class="h-full flex items-center cursor-pointer" onClick={fetchOpenCollapse}>
+                        <div class="flex items-center cursor-pointer" onClick={fetchOpenCollapse}>
                             <common-element-image
+                                class="b-rd-50% block overflow-hidden"
                                 width={36}
                                 height={36}
                                 preview-disabled
-                                class="b-rd-50% block overflow-hidden"
-                                src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg"
+                                src={flowUser.value.avatar}
                             ></common-element-image>
                         </div>
                     )
@@ -58,18 +73,18 @@ export default defineComponent({
                 <n-element class="flex flex-col overflow-hidden">
                     <div class="flex items-center gap-10 p-16 select-none cursor-pointer border-b border-b-solid border-b-[var(--divider-color)]">
                         <common-element-image
+                            class="b-rd-50% block overflow-hidden"
                             width={44}
                             height={44}
                             preview-disabled
-                            class="b-rd-50% block overflow-hidden"
-                            src="https://oss.lisfes.cn/cloud/avatar/2021-08/1628499198955.jpg"
+                            src={flowUser.value.avatar}
                         ></common-element-image>
                         <div class="flex flex-col flex-1">
                             <n-text depth={1} style={{ fontSize: '16px', lineHeight: '24px' }}>
-                                <n-ellipsis tooltip={false}>{name.value}</n-ellipsis>
+                                <n-ellipsis tooltip={false}>{flowUser.value.name}</n-ellipsis>
                             </n-text>
                             <n-text depth={3} style={{ lineHeight: '20px' }}>
-                                <n-ellipsis tooltip={false}>{`UID：${uid.value}`}</n-ellipsis>
+                                <n-ellipsis tooltip={false}>{`UID：${flowUser.value.uid}`}</n-ellipsis>
                             </n-text>
                         </div>
                     </div>

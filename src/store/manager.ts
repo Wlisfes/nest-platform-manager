@@ -1,66 +1,52 @@
-import { toRefs, computed } from 'vue'
+import { ref, toRefs } from 'vue'
 import { defineStore } from 'pinia'
+import { useConfiger } from '@/store/configer'
 import { useState } from '@/hooks/hook-state'
+import { delCompose } from '@/utils/utils-cookie'
+import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
-const list = [
-    { name: '工作台', router: '/manager', iconName: 'nest-compass' },
-    { name: '销售管理', router: '/crm', iconName: 'nest-market' },
-    { name: '采购管理', router: '/srm', iconName: 'nest-stock' },
-    { name: '报价管理', router: '/offer', iconName: 'nest-offer' },
-    { name: '财务中心', router: '/finance', iconName: 'nest-finance' },
-    { name: '信息查询', router: '/infor', iconName: 'nest-infor' },
-    { name: '报表分析', router: '/report', iconName: 'nest-histogr' },
-    { name: '运营中心', router: '/fiseek', iconName: 'nest-fiseek' },
-    {
-        name: '综合设置',
-        router: '/deploy',
-        iconName: 'nest-settings',
-        children: [
-            {
-                name: '系统管理',
-                router: '/deploy/system',
-                children: [
-                    { name: '菜单管理', router: '/deploy/system/router' },
-                    { name: '权限管理', router: '/deploy/system/authorize' },
-                    { name: '用户管理', router: '/deploy/system/user' }
-                ]
-            }
-        ]
-    }
-]
 export const useManager = defineStore('APP_STORE_MANAGER', () => {
+    const configer = useConfiger()
+    const flowUser = ref<Omix>({})
     const { state, setState } = useState({
-        uid: '',
-        phone: '',
-        number: '',
-        email: '',
-        name: '',
-        avatar: '',
-        status: 'enable',
         menuOptions: [] as Array<Omix>
     })
+
+    /**退出登录时重置store数据**/
+    async function fetchReset() {
+        const { device, collapsed } = utils.fetchScreenResize()
+        return await configer.setState({ device, collapsed, router: '/manager', menuRouter: [] }).then(async data => {
+            await delCompose()
+            return await fetchUpdateUser()
+        })
+    }
+
+    /**更新用户信息对象**/
+    async function fetchUpdateUser(data: Omix = {}) {
+        return (flowUser.value = data)
+    }
 
     /**获取账号基本信息**/
     async function fetchBaseSystemUserResolver() {
         return await Service.httpBaseSystemUserResolver().then(async ({ data }) => {
-            return await setState({
-                uid: data.uid,
-                phone: data.phone,
-                number: data.number,
-                email: data.email,
-                name: data.name,
-                avatar: data.avatar,
-                status: data.status,
-                menuOptions: list
-            })
+            return await fetchUpdateUser(data ?? {})
+        })
+    }
+
+    async function fetchBaseColumnUserSystemRouter() {
+        return await Service.httpBaseColumnUserSystemRouter().then(async ({ data }) => {
+            return await setState({ menuOptions: data.list ?? [] })
         })
     }
 
     return {
-        state: computed(() => state),
+        flowUser,
         ...toRefs(state),
         setState,
-        fetchBaseSystemUserResolver
+        fetchReset,
+        fetchUpdateUser,
+        fetchBaseSystemUserResolver,
+        fetchBaseColumnUserSystemRouter
     }
 })

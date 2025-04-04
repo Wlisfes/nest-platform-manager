@@ -1,10 +1,8 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useChunkService } from '@/hooks/hook-chunk'
 import { useColumnService } from '@/hooks/hook-service'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
-import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({

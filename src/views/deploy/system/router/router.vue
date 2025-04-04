@@ -43,16 +43,18 @@ export default defineComponent({
         async function fetchCreateDeploySystemFeedbackRouter() {
             return await feedback.fetchDeploySystemFeedbackRouter({
                 title: '新增菜单',
-                command: 'CREATE'
+                command: 'CREATE',
+                onSubmit: () => fetchRefresh()
             })
         }
 
         /**编辑菜单权限**/
-        async function fetchUpdateDeploySystemFeedbackRouter(node: Omix = {}) {
+        async function fetchUpdateDeploySystemFeedbackRouter(data: Omix = {}) {
             return await feedback.fetchDeploySystemFeedbackRouter({
                 title: '编辑菜单',
                 command: 'UPDATE',
-                node
+                node: data,
+                onSubmit: () => fetchRefresh()
             })
         }
 
@@ -144,7 +146,7 @@ export default defineComponent({
                 </n-element>
                 <common-element-resize element-table>
                     <common-database-table
-                        settings={false}
+                        //settings={false}
                         command
                         remote
                         fixed="right"

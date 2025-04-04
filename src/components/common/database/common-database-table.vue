@@ -61,7 +61,7 @@ export default defineComponent({
             if (!props.command && props.settings) return columns.value
             return utils.concat(columns.value, {
                 key: (props.command && props.settings) || props.command ? 'command' : 'settings',
-                width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 126 : 46,
+                width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 110 : 46,
                 center: props.fixedCenter,
                 fixed: props.fixed,
                 title: () => (

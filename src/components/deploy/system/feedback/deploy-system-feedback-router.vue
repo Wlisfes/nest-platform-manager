@@ -89,7 +89,7 @@ export default defineComponent({
 
         /**编辑菜单**/
         async function fetchBaseUpdateSystemRouter(body: Omix) {
-            return await Service.httpBaseUpdateSystemRouter({ ...body }).then(async ({ message }) => {
+            return await Service.httpBaseUpdateSystemRouter({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
                     await emit('submit', { done: setState })
                     return await fetchNotifyService({ title: message })

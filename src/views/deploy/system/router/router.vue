@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 import { useChunkService } from '@/hooks/hook-chunk'
 import { useColumnService } from '@/hooks/hook-service'
-import { fetchDOMRender, fetchDialogService } from '@/plugins'
+import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
@@ -39,7 +39,7 @@ export default defineComponent({
             ]
         })
 
-        /**新增菜单权限**/
+        /**新增菜单**/
         async function fetchCreateDeploySystemFeedbackRouter() {
             return await feedback.fetchDeploySystemFeedbackRouter({
                 title: '新增菜单',
@@ -48,7 +48,7 @@ export default defineComponent({
             })
         }
 
-        /**编辑菜单权限**/
+        /**编辑菜单**/
         async function fetchUpdateDeploySystemFeedbackRouter(data: Omix = {}) {
             return await feedback.fetchDeploySystemFeedbackRouter({
                 title: '编辑菜单',
@@ -58,30 +58,64 @@ export default defineComponent({
             })
         }
 
+        /**删除菜单**/
+        async function httpBaseDeleteSystemRouter(data: Omix) {
+            return await fetchDialogService({
+                title: '提示',
+                type: 'warning',
+                content: (
+                    <n-element>
+                        <common-content-text depth={2}>此操作将删除</common-content-text>
+                        <common-content-text class="m-inline-5" type="error" text={`"${data.name}"`}></common-content-text>
+                        <common-content-text depth={2}>是否继续？</common-content-text>
+                    </n-element>
+                ),
+                async onSubmit(done: Function) {
+                    try {
+                        await done({ loading: true })
+                        return await Service.httpBaseDeleteSystemRouter({ keyId: data.keyId }).then(async ({ message }) => {
+                            await done({ visible: false })
+                            await fetchNotifyService({ title: message })
+                            return await fetchRefresh()
+                        })
+                    } catch (err) {
+                        return await done({ loading: false }).then(async () => {
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        })
+                    }
+                }
+            })
+        }
+
         /**编辑菜单状态**/
         async function fetchBaseUpdateStateSystemRouter(data: Omix) {
-            return await fetchDOMRender(
-                <n-element>
-                    <common-content-text depth={2}>{`此操作将${data.name}选中`}</common-content-text>
-                    <common-content-text class="m-inline-5" type={data.type} text={state.rowKeys.length}></common-content-text>
-                    <common-content-text depth={2}>条数据，是否继续？</common-content-text>
-                </n-element>
-            ).then(async dom => {
-                return await fetchDialogService({
-                    title: '提示',
-                    type: data.type,
-                    content: dom.component,
-                    async onSubmit(done: Function) {
-                        try {
-                            await done({ loading: true })
-                            await Service.httpBaseUpdateStateSystemRouter({ status: data.status, keys: state.rowKeys })
+            return await fetchDialogService({
+                title: '提示',
+                type: data.type,
+                content: (
+                    <n-element>
+                        <common-content-text depth={2}>{`此操作将${data.name}选中`}</common-content-text>
+                        <common-content-text class="m-inline-5" type={data.type} text={state.rowKeys.length}></common-content-text>
+                        <common-content-text depth={2}>条数据，是否继续？</common-content-text>
+                    </n-element>
+                ),
+                async onSubmit(done: Function) {
+                    try {
+                        await done({ loading: true })
+                        return await Service.httpBaseUpdateStateSystemRouter({
+                            status: data.status,
+                            keys: state.rowKeys
+                        }).then(async ({ message }) => {
                             await done({ visible: false })
+                            await fetchNotifyService({ title: message })
                             return await fetchRefresh()
-                        } catch (err) {
-                            return await done({ loading: false })
-                        }
+                        })
+                    } catch (err) {
+                        return await done({ loading: false }).then(async () => {
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        })
                     }
-                })
+                }
             })
         }
 
@@ -182,7 +216,7 @@ export default defineComponent({
                                     <common-element-button type="primary" text onClick={() => fetchUpdateDeploySystemFeedbackRouter(data)}>
                                         编辑
                                     </common-element-button>
-                                    <common-element-button type="error" text>
+                                    <common-element-button type="error" text onClick={() => httpBaseDeleteSystemRouter(data)}>
                                         删除
                                     </common-element-button>
                                 </n-element>

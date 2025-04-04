@@ -28,6 +28,15 @@ export function httpBaseUpdateStateSystemRouter(data: Omix) {
     })
 }
 
+/**删除菜单**/
+export function httpBaseDeleteSystemRouter(data: Omix) {
+    return request({
+        url: `/api/system/router/delete`,
+        method: 'POST',
+        data
+    })
+}
+
 /**菜单列表**/
 export function httpBaseColumnSystemRouter(data: BodyColumn<Omix>) {
     return request<ResultColumn<Omix>>({

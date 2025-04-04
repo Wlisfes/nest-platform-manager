@@ -1,5 +1,5 @@
 import { request } from '@/utils/utils-request'
-import { BodyColumn, ResultColumn, NoticeResolver } from '@/interface/instance.resolver'
+import { BodyColumn, ResultColumn } from '@/interface/instance.resolver'
 
 /**创建菜单**/
 export function httpBaseCreateSystemRouter(data: Omix) {

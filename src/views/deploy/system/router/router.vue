@@ -10,7 +10,6 @@ export default defineComponent({
     setup(props, ctx) {
         const { state, form, setState, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
-            option: { sds2w: false },
             form: {
                 vague: undefined,
                 name: undefined,

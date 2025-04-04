@@ -11,7 +11,7 @@ export default defineComponent({
         /**icon图标渲染**/
         iconSize: { type: Number, default: 0 },
         /**文本内容**/
-        content: { type: String },
+        content: { type: [String, Number] },
         /**标签边框**/
         bordered: { type: Boolean, default: false },
         /**标签配置**/

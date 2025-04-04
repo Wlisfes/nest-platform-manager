@@ -58,18 +58,36 @@ export default defineComponent({
 
         /**默认操作列、设置列配置**/
         function fetchBaseColumns() {
-            if (!props.command && props.settings) return columns.value
+            if (!props.command && props.settings) {
+                return utils.concat(columns.value, {
+                    key: 'settings',
+                    width: 46,
+                    fixed: props.fixed,
+                    title: () => (
+                        <n-element class="flex items-center justify-center">
+                            <common-element-button
+                                text
+                                icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
+                            ></common-element-button>
+                        </n-element>
+                    )
+                })
+            }
             return utils.concat(columns.value, {
                 key: (props.command && props.settings) || props.command ? 'command' : 'settings',
                 width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 110 : 46,
                 center: props.fixedCenter,
                 fixed: props.fixed,
                 title: () => (
-                    <common-database-settings
-                        settings={props.settings}
-                        command={props.command}
-                        fixed-center={props.fixedCenter}
-                    ></common-database-settings>
+                    <n-element class="flex items-center overflow-hidden" style={{ columnGap: 'var(--n-th-padding)' }}>
+                        {props.command && <div class={{ 'flex-1 overflow-hidden': true, 'text-center': props.fixedCenter }}>操作</div>}
+                        {props.settings && (
+                            <common-element-button
+                                text
+                                icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
+                            ></common-element-button>
+                        )}
+                    </n-element>
                 )
             })
         }

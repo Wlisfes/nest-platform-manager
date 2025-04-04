@@ -119,7 +119,30 @@ export default defineComponent({
 
         return () => (
             <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <n-element class="flex gap-10 justify-between">
+                <n-element class="flex flex-row-reverse justify-between gap-10">
+                    <n-flex size={[10, 10]}>
+                        <common-element-button
+                            content="新增"
+                            type="primary"
+                            icon="nest-plus"
+                            secondary
+                            onClick={fetchCreateDeploySystemFeedbackRouter}
+                        ></common-element-button>
+                        <common-element-button
+                            content="启用"
+                            type="success"
+                            secondary
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'success', status: 'enable', name: '启用' })}
+                        ></common-element-button>
+                        <common-element-button
+                            content="禁用"
+                            type="error"
+                            secondary
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', status: 'disable', name: '禁用' })}
+                        ></common-element-button>
+                    </n-flex>
                     <common-element-action
                         label-width="7.2em"
                         cols={2}
@@ -154,36 +177,14 @@ export default defineComponent({
                             <n-date-picker type="datetimerange" clearable default-time="13:22:11" class="w-full" />
                         </n-form-item>
                     </common-element-action>
-                    <n-flex size={[10, 10]}>
-                        <common-element-button type="primary" secondary onClick={fetchCreateDeploySystemFeedbackRouter}>
-                            新增
-                        </common-element-button>
-                        <common-element-button
-                            type="success"
-                            secondary
-                            disabled={state.rowKeys.length === 0}
-                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'success', status: 'enable', name: '启用' })}
-                        >
-                            启用
-                        </common-element-button>
-                        <common-element-button
-                            type="warning"
-                            secondary
-                            disabled={state.rowKeys.length === 0}
-                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', status: 'disable', name: '禁用' })}
-                        >
-                            禁用
-                        </common-element-button>
-                    </n-flex>
                 </n-element>
                 <common-element-resize element-table>
                     <common-database-table
-                        //settings={false}
                         command
                         remote
-                        fixed="right"
                         fixed-center
                         flex-height
+                        fixed="right"
                         scroll-x={1480}
                         loading={state.loading}
                         columns={state.columns}

@@ -24,24 +24,59 @@ export default defineComponent({
             },
             columns: [
                 { title: '角色名称', key: 'name', minWidth: 180 },
-                { title: '用户数', key: 'uids', minWidth: 80, align: 'center' },
-                { title: '状态', key: 'statusChunk', minWidth: 90, align: 'center' },
-                { title: '更新人', key: 'user', minWidth: 100, align: 'center' },
-                { title: '更新时间', key: 'modifyTime', minWidth: 200, align: 'center' }
+                { title: '用户数', key: 'uids', align: 'center' },
+                { title: '状态', key: 'statusChunk', align: 'center' },
+                { title: '更新人', key: 'user', align: 'center' },
+                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
             ]
         })
 
         return () => (
-            <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <n-element class="flex flex-row-reverse justify-between gap-10"></n-element>
-                <common-element-resize element-table>
+            <common-element-container class="absolute inset-0">
+                <n-element class="p-inline-10 p-bs-10 overflow-hidden">
+                    <common-element class-name="flex flex-row-reverse justify-between gap-10 p-inline-10! p-block-10!">
+                        <common-element-action
+                            label-width="7.2em"
+                            cols={2}
+                            v-model:initialize={state.initialize}
+                            v-model:loading={state.loading}
+                            v-model:event={state.event}
+                            v-model:vague={form.value.vague}
+                            onSubmit={() => fetchRefresh()}
+                        ></common-element-action>
+                    </common-element>
+                </n-element>
+                <n-element class="flex flex-col flex-1 overflow-hidden">
+                    <common-element-scrollbar class="p-inline-10">
+                        {Array.from({ length: 50 }, (x, index) => (
+                            <n-h3>{index}</n-h3>
+                        ))}
+                    </common-element-scrollbar>
+                </n-element>
+
+                {/* <n-element class="flex flex-row-reverse justify-between gap-10 p-inline-10">
+                    <n-flex size={[10, 10]}>
+                        <common-element-button content="新增" type="primary" icon="nest-plus" secondary></common-element-button>
+                    </n-flex>
+                    <common-element-action
+                        label-width="7.2em"
+                        cols={2}
+                        v-model:initialize={state.initialize}
+                        v-model:loading={state.loading}
+                        v-model:event={state.event}
+                        v-model:vague={form.value.vague}
+                        onSubmit={() => fetchRefresh()}
+                    ></common-element-action>
+                </n-element> */}
+                {/* <common-element-resize element-table>
                     <common-database-table
+                        settings={false}
                         command
                         remote
                         fixed-center
                         flex-height
                         fixed="right"
-                        scroll-x={1480}
+                        scroll-x={750}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}
@@ -75,8 +110,8 @@ export default defineComponent({
                             )
                         }}
                     </common-database-table>
-                </common-element-resize>
-            </layout-common-container>
+                </common-element-resize> */}
+            </common-element-container>
         )
     }
 })

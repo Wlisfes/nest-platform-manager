@@ -9,7 +9,7 @@ export default defineComponent({
     emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked'],
     props: {
         /**开启设置列**/
-        settings: { type: Boolean, default: true },
+        settings: { type: Boolean, default: false },
         /**开启操列**/
         command: { type: Boolean, default: false },
         /**是否固定操作列、设置列**/

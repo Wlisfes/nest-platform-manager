@@ -9,7 +9,7 @@ export default defineComponent({
         /**是否禁用**/
         disabled: { type: Boolean },
         /**图形验证码地址**/
-        baseURL: { type: String, default: '/api/common/codex/system/user/token' }
+        baseURL: { type: String, default: '/api/system/deploy/codex/token/write' }
     },
     setup(props, { expose }) {
         const { state, setState } = useState({ initialize: true, loading: false, baseURL: '' })

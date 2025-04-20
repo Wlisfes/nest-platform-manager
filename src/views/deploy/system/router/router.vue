@@ -10,6 +10,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { state, form, setState, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
+            dynamic: 'base:deploy:system:router',
             form: {
                 vague: undefined,
                 name: undefined,
@@ -23,16 +24,16 @@ export default defineComponent({
                 endTime: undefined
             },
             columns: [
-                { type: 'selection' },
-                { title: '菜单名称', key: 'name', width: 180 },
-                { title: '图标', key: 'iconName', width: 80, align: 'center' },
-                { title: '类型', key: 'typeChunk', width: 90, align: 'center' },
-                { title: '权限标识', key: 'key', width: 240 },
-                { title: '路由地址', key: 'router', width: 240 },
-                { title: '排序号', key: 'sort', width: 80, align: 'center' },
-                { title: '状态', key: 'statusChunk', width: 90, align: 'center' },
-                { title: '更新人', key: 'user', width: 100, align: 'center' },
-                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
+                { type: 'selection', checked: true },
+                { title: '菜单名称', key: 'name', width: 180, checked: true },
+                { title: '图标', key: 'iconName', width: 80, align: 'center', checked: true },
+                { title: '类型', key: 'typeChunk', width: 90, align: 'center', checked: true },
+                { title: '权限标识', key: 'key', width: 240, checked: true },
+                { title: '路由地址', key: 'router', width: 240, checked: true },
+                { title: '排序号', key: 'sort', width: 80, align: 'center', checked: true },
+                { title: '状态', key: 'statusChunk', width: 90, align: 'center', checked: true },
+                { title: '更新人', key: 'user', width: 100, align: 'center', checked: true },
+                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', checked: false }
             ]
         })
 
@@ -188,6 +189,7 @@ export default defineComponent({
                         v-model:total={state.total}
                         v-model:row-keys={state.rowKeys}
                         v-model:row-nodes={state.rowNodes}
+                        v-model:checkboxs={state.checkboxs}
                         onUpdate:page={(page: number) => fetchRefresh()}
                         onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >

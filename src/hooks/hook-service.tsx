@@ -15,7 +15,7 @@ export type ColumnState<T> = Omix & {
     total: number
     rowKeys: Array<string>
     rowNodes: Array<T>
-    columns: Array<DataTableColumn>
+    columns: Array<Omix<DataTableColumn>>
     dataSource: Array<T>
     checkboxs: Array<Omix>
 }
@@ -29,7 +29,7 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
     /**额外字段**/
     option?: Omix<R>
     /**表头**/
-    columns?: Array<DataTableColumn>
+    columns?: Array<Omix<DataTableColumn>>
     /**筛选条件表单**/
     form: Omix<U>
     /**列表接口**/
@@ -138,7 +138,17 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         }
         try {
             return await setState({
-                checkboxs: []
+                checkboxs: [
+                    { name: '菜单名称', field: 'name', checked: true },
+                    { name: '图标', field: 'iconName', checked: true },
+                    { name: '类型', field: 'typeChunk', checked: true },
+                    { name: '权限标识', field: 'key', checked: true },
+                    { name: '路由地址', kefieldy: 'router', checked: true },
+                    { name: '排序号', field: 'sort', checked: true },
+                    { name: '状态', field: 'statusChunk', checked: true },
+                    { name: '更新人', field: 'user', checked: true },
+                    { name: '更新时间', field: 'modifyTime', checked: false }
+                ]
             } as never)
         } catch (err) {}
     }

@@ -46,7 +46,8 @@ export default defineComponent({
         /**表头列数据**/
         const faseColumns = computed(() => {
             return fetchBaseColumns(props.command as Omix).filter(item => {
-                return true
+                const data = checkboxs.value.find(k => k.field === item.key)
+                return data?.checked ?? item.checked ?? true
             })
         })
         /**表格内容的横向宽度**/
@@ -54,6 +55,16 @@ export default defineComponent({
             if (utils.isNotEmpty(props.scrollX)) return Number(props.scrollX)
             return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 40)
         })
+
+        console.log(checkboxs.value, fetchCheckColumns(fetchBaseColumns(props.command as Omix)))
+
+        /**表头自定义配置**/
+        function fetchCheckColumns(data: Array<Omix<DataTableColumn>>) {
+            return data.filter(item => {
+                const node = (checkboxs.value.find(k => k.field === item.key) ?? {}) as Omix
+                return node.checked ?? item.checked ?? true
+            })
+        }
 
         /**默认操作列、设置列配置**/
         function fetchBaseColumns(data: Omix = {}) {
@@ -65,7 +76,8 @@ export default defineComponent({
                 key: 'command',
                 align: 'center',
                 width: data.width ?? 110,
-                fixed: data.fixed
+                fixed: data.fixed,
+                checked: true
             })
         }
 

@@ -7,6 +7,8 @@ export default defineComponent({
     props: {
         /**图标名称、图标节点**/
         icon: { type: [String, Object] as PropType<string | VNode> },
+        /**图标size**/
+        iconSize: { type: Number, default: 18 },
         /**按钮文案**/
         content: { type: [String, Object] as PropType<string | VNode> }
     },
@@ -16,7 +18,7 @@ export default defineComponent({
             if (utils.isEmpty(props.icon)) {
                 return null
             } else if (utils.isString(props.icon)) {
-                return <common-element-icon name={props.icon}></common-element-icon>
+                return <common-element-icon size={props.iconSize} name={props.icon}></common-element-icon>
             }
             return h(props.icon as VNode)
         }

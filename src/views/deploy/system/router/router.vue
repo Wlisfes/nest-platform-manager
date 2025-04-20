@@ -118,8 +118,8 @@ export default defineComponent({
 
         return () => (
             <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <n-element class="flex flex-row-reverse justify-between gap-10">
-                    <n-flex size={[10, 10]}>
+                <common-database-compute element-class="flex-row-reverse justify-between" loading={state.loading} onRefresh={fetchRefresh}>
+                    <n-element class="flex gap-10 items-center">
                         <common-element-button
                             content="新增"
                             type="primary"
@@ -141,7 +141,7 @@ export default defineComponent({
                             disabled={state.rowKeys.length === 0}
                             onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', status: 'disable', name: '禁用' })}
                         ></common-element-button>
-                    </n-flex>
+                    </n-element>
                     <common-element-action
                         label-width="7.2em"
                         cols={2}
@@ -176,7 +176,7 @@ export default defineComponent({
                             <n-date-picker type="datetimerange" clearable default-time="13:22:11" class="w-full" />
                         </n-form-item>
                     </common-element-action>
-                </n-element>
+                </common-database-compute>
                 <common-element-resize element-table>
                     <common-database-table
                         command

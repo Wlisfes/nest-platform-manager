@@ -2,6 +2,7 @@
 import { defineComponent, computed, nextTick, PropType } from 'vue'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
+import { useConfiger } from '@/store'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
@@ -18,8 +19,6 @@ export default defineComponent({
         fixedCenter: { type: Boolean, default: false },
         /**操作列、设置列默认宽度**/
         fixedWidth: { type: Number },
-        /**表格size**/
-        elementSize: { type: String, default: 'medium' },
         /**开启分页**/
         pagination: { type: Boolean, default: false },
         /**分页数**/
@@ -44,6 +43,7 @@ export default defineComponent({
         showSizePicker: { type: Boolean, default: true }
     },
     setup(props, { emit, slots }) {
+        const configer = useConfiger()
         const { columns, page, size, total, rowKeys, rowNodes } = useVModels(props)
 
         /**表头列数据**/
@@ -131,7 +131,7 @@ export default defineComponent({
                 remote
                 row-key={(row: Omix) => row.keyId}
                 columns={faseColumns.value}
-                size={props.elementSize}
+                size={configer.elementSize}
                 data={props.data}
                 scroll-x={width.value}
                 checked-row-keys={rowKeys.value}

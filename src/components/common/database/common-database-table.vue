@@ -28,6 +28,8 @@ export default defineComponent({
         size: { type: Number, default: 20 },
         /**总条数**/
         total: { type: Number, default: 0 },
+        /**表格内容的横向宽度**/
+        scrollX: { type: Number },
         /**被选中的行的keyId列表**/
         rowKeys: { type: Array as PropType<Array<string>>, default: () => [] },
         /**被选中的行的对象列表**/
@@ -54,6 +56,11 @@ export default defineComponent({
                 }
                 return item
             })
+        })
+        /**表格内容的横向宽度**/
+        const width = computed(() => {
+            if (utils.isNotEmpty(props.scrollX)) return Number(props.scrollX)
+            return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 20)
         })
 
         /**默认操作列、设置列配置**/
@@ -104,11 +111,13 @@ export default defineComponent({
         /**节点渲染**/
         function fetchColumnContentRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
             if (utils.isNotEmpty(slots[base.key])) {
+                /**字段命名插槽**/
                 if (['command'].includes(base.key)) {
                     return slots.command!(data, base)
                 }
                 return slots[base.key]!(value, data, base)
             } else if (slots.default) {
+                /**默认插槽**/
                 return slots.default(value, data, base)
             } else if (utils.isEmpty(value)) {
                 return <span>-</span>
@@ -124,6 +133,7 @@ export default defineComponent({
                 columns={faseColumns.value}
                 size={props.elementSize}
                 data={props.data}
+                scroll-x={width.value}
                 checked-row-keys={rowKeys.value}
                 default-checked-row-keys={rowKeys.value}
                 render-cell={fetchColumnContentRender}

@@ -27,8 +27,8 @@ export default defineComponent({
                 { title: '菜单名称', key: 'name', width: 180 },
                 { title: '图标', key: 'iconName', width: 80, align: 'center' },
                 { title: '类型', key: 'typeChunk', width: 90, align: 'center' },
-                { title: '权限标识', key: 'key', minWidth: 240 },
-                { title: '路由地址', key: 'router', minWidth: 240 },
+                { title: '权限标识', key: 'key', width: 240 },
+                { title: '路由地址', key: 'router', width: 240 },
                 { title: '排序号', key: 'sort', width: 80, align: 'center' },
                 { title: '状态', key: 'statusChunk', width: 90, align: 'center' },
                 { title: '更新人', key: 'user', width: 100, align: 'center' },
@@ -181,10 +181,9 @@ export default defineComponent({
                     <common-database-table
                         command
                         remote
-                        fixed-center
                         flex-height
+                        fixed-center
                         fixed="right"
-                        scroll-x={1480}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}

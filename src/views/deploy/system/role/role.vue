@@ -23,11 +23,12 @@ export default defineComponent({
                 endTime: undefined
             },
             columns: [
-                { title: '角色名称', key: 'name', minWidth: 180 },
-                { title: '用户数', key: 'uids', align: 'center' },
-                { title: '状态', key: 'statusChunk', align: 'center' },
-                { title: '更新人', key: 'user', align: 'center' },
-                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center' }
+                { title: 'ID', key: 'keyId', width: 190 },
+                { title: '角色名称', key: 'name', width: 200 },
+                { title: '用户数', key: 'uids', align: 'center', width: 140 },
+                { title: '状态', key: 'statusChunk', align: 'center', width: 140 },
+                { title: '更新人', key: 'user', align: 'center', width: 140 },
+                { title: '更新时间', key: 'modifyTime', align: 'center', width: 200 }
             ]
         })
 
@@ -53,7 +54,7 @@ export default defineComponent({
                         remote
                         fixed-center
                         flex-height
-                        scroll-x={800}
+                        fixed="right"
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}

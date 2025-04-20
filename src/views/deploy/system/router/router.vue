@@ -177,13 +177,9 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                 </common-database-compute>
-                <common-element-resize element-table>
+                <common-database-container element-table>
                     <common-database-table
-                        command
-                        remote
-                        flex-height
-                        fixed-center
-                        fixed="right"
+                        command={{ fixed: 'right' }}
                         loading={state.loading}
                         columns={state.columns}
                         data={state.dataSource}
@@ -220,7 +216,7 @@ export default defineComponent({
                             )
                         }}
                     </common-database-table>
-                </common-element-resize>
+                </common-database-container>
             </layout-common-container>
         )
     }

@@ -1,8 +1,8 @@
 import { VNode } from 'vue'
 import { cloneDeep, concat, omit, pick } from 'lodash-es'
-import { isNotEmpty, isEmpty, isArray, isEmail, isString, isObject } from 'class-validator'
+import { isNotEmpty, isEmpty, isArray, isEmail, isString, isObject, isBoolean } from 'class-validator'
 import dayjs from 'dayjs'
-export { cloneDeep, concat, omit, pick, isNotEmpty, isEmpty, isArray, isEmail, isString, isObject }
+export { cloneDeep, concat, omit, pick, isNotEmpty, isEmpty, isArray, isEmail, isString, isObject, isBoolean }
 
 /**图标示例对象**/
 export const modules: Record<string, VNode> = import.meta.glob(`@/assets/icons/*.svg`, { query: '?component', eager: true })

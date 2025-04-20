@@ -7,18 +7,14 @@ import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked'],
+    emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked', 'update:checkboxs'],
     props: {
-        /**开启设置列**/
-        settings: { type: Boolean, default: false },
         /**开启操列**/
-        command: { type: Boolean, default: false },
-        /**是否固定操作列、设置列**/
-        fixed: { type: String as PropType<'right' | 'left'> },
-        /**操作列是否居中**/
-        fixedCenter: { type: Boolean, default: false },
-        /**操作列、设置列默认宽度**/
-        fixedWidth: { type: Number },
+        command: { type: [Boolean, Object] as PropType<boolean | Omix<{ width?: number; fixed?: 'right' | 'left' }>>, default: false },
+        /**表格是否自动分页数据，在异步的状况下你可能需要把它设为 true**/
+        remote: { type: Boolean, default: true },
+        /**是否让表格主体的高度自动适应整个表格区域的高度**/
+        flexHeight: { type: Boolean, default: true },
         /**开启分页**/
         pagination: { type: Boolean, default: false },
         /**分页数**/
@@ -35,6 +31,8 @@ export default defineComponent({
         rowNodes: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置**/
         columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
+        /**表头复选配置**/
+        checkboxs: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表数据列表**/
         data: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**分页跳转**/
@@ -44,58 +42,30 @@ export default defineComponent({
     },
     setup(props, { emit, slots }) {
         const configer = useConfiger()
-        const { columns, page, size, total, rowKeys, rowNodes } = useVModels(props)
-
+        const { columns, page, size, total, rowKeys, rowNodes, checkboxs } = useVModels(props)
         /**表头列数据**/
         const faseColumns = computed(() => {
-            return fetchBaseColumns().map((item: Omix, index) => {
-                if (props.settings && !props.command && index === columns.value.length - 1) {
-                    /**未开启操作列且开启设置列的时候需要把设置列前一个字段合并单元格**/
-                    const cols = (item.colSpan ?? (() => 1))() + 1
-                    return { ...item, align: 'left', colSpan: () => cols }
-                }
-                return item
+            return fetchBaseColumns(props.command as Omix).filter(item => {
+                return true
             })
         })
         /**表格内容的横向宽度**/
         const width = computed(() => {
             if (utils.isNotEmpty(props.scrollX)) return Number(props.scrollX)
-            return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 20)
+            return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 40)
         })
 
         /**默认操作列、设置列配置**/
-        function fetchBaseColumns() {
-            if (!props.command && props.settings) {
-                return utils.concat(columns.value, {
-                    key: 'settings',
-                    width: 46,
-                    fixed: props.fixed,
-                    title: () => (
-                        <n-element class="flex items-center justify-center">
-                            <common-element-button
-                                text
-                                icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
-                            ></common-element-button>
-                        </n-element>
-                    )
-                })
+        function fetchBaseColumns(data: Omix = {}) {
+            if (utils.isEmpty(data) || (utils.isBoolean(data) && !data)) {
+                return props.columns
             }
             return utils.concat(columns.value, {
-                key: (props.command && props.settings) || props.command ? 'command' : 'settings',
-                width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 110 : 46,
-                center: props.fixedCenter,
-                fixed: props.fixed,
-                title: () => (
-                    <n-element class="flex items-center overflow-hidden" style={{ columnGap: 'var(--n-th-padding)' }}>
-                        {props.command && <div class={{ 'flex-1 overflow-hidden': true, 'text-center': props.fixedCenter }}>操作</div>}
-                        {props.settings && (
-                            <common-element-button
-                                text
-                                icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
-                            ></common-element-button>
-                        )}
-                    </n-element>
-                )
+                title: '操作',
+                key: 'command',
+                align: 'center',
+                width: data.width ?? 110,
+                fixed: data.fixed
             })
         }
 
@@ -128,10 +98,11 @@ export default defineComponent({
         return () => (
             <n-data-table
                 class="common-database-table"
-                remote
                 row-key={(row: Omix) => row.keyId}
                 columns={faseColumns.value}
                 size={configer.elementSize}
+                flex-height={props.flexHeight}
+                remote={props.remote}
                 data={props.data}
                 scroll-x={width.value}
                 checked-row-keys={rowKeys.value}

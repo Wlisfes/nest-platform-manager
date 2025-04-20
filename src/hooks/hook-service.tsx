@@ -17,8 +17,11 @@ export type ColumnState<T> = Omix & {
     rowNodes: Array<T>
     columns: Array<DataTableColumn>
     dataSource: Array<T>
+    checkboxs: Array<Omix>
 }
 export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
+    /**自定义动态表头**/
+    dynamic?: string
     /**是否排除空字段**/
     exclude?: boolean
     /**立即执行**/
@@ -29,8 +32,11 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
     columns?: Array<DataTableColumn>
     /**筛选条件表单**/
     form: Omix<U>
+    /**列表接口**/
     request: (forms: U, base: ColumnState<T & Omix<R>>, opts: Omix<{ body: Omix; opt: Omix }>) => Promise<ResultResolver<ResultColumn<T>>>
+    /**列表数据转换函数**/
     transform?: (data: ResultColumn<T>) => Array<Omix> | Promise<Array<Omix>>
+    /**初始化回调函数**/
     callback?: (forms: U, base: ColumnState<T & Omix<R>>) => void | any | Promise<any>
 }
 
@@ -50,15 +56,19 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         rowNodes: option.rowNodes ?? [],
         columns: option.columns ?? [],
         dataSource: [] as Array<T>,
+        checkboxs: [] as Array<Omix>,
         ...(option.option ?? {})
     } as ColumnState<T> & typeof option.option)
 
     if (option.immediate ?? true) {
         fetchInitialize()
+    } else {
+        fetchDynamic()
     }
 
     /**初始化**/
     async function fetchInitialize() {
+        await fetchDynamic()
         return await fetchRequest().then(() => {
             return option.callback?.(form.value, state as ColumnState<T & Omix<R>>)
         })
@@ -119,6 +129,18 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
                 } as ColumnState<T> & typeof option.option)
             }
         })
+    }
+
+    /**获取自定义动态表头**/
+    async function fetchDynamic() {
+        if (utils.isEmpty(option.dynamic)) {
+            return await setState({ checkboxs: [] } as never)
+        }
+        try {
+            return await setState({
+                checkboxs: []
+            } as never)
+        } catch (err) {}
     }
 
     return {

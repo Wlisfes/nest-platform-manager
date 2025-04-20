@@ -5,7 +5,7 @@ import { useConfiger, useStore } from '@/store'
 export default defineComponent({
     name: 'BaseLayout',
     setup(props, ctx) {
-        const { collapsed, device, setState, fetchResize } = useStore(useConfiger)
+        const { collapsed, device, setState } = useStore(useConfiger)
 
         return () => (
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden" has-sider>

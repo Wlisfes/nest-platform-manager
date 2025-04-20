@@ -1,6 +1,6 @@
 import { ref, toRefs } from 'vue'
 import { defineStore } from 'pinia'
-import { useConfiger } from '@/store/configer'
+import { useConfiger } from '@/store/modules/configer'
 import { useState } from '@/hooks/hook-state'
 import { delCompose } from '@/utils/utils-cookie'
 import * as utils from '@/utils/utils-common'

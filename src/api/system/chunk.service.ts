@@ -1,13 +1,5 @@
 import { request } from '@/utils/utils-request'
-import { BodyColumn, ResultColumn, SCHEMA_CHUNK_OPTIONS } from '@/interface/instance.resolver'
-
-/**字典类型**/
-export function httpBaseColumnSystemChunkType() {
-    return request({
-        url: `/api/system/chunk/column/type`,
-        method: 'GET'
-    })
-}
+import { BodyColumn, ResultColumn } from '@/interface/instance.resolver'
 
 /**新增字典**/
 export function httpBaseCreateSystemChunk(data: Omix) {
@@ -40,15 +32,6 @@ export function httpBaseUpdateSystemChunk(data: Omix) {
 export function httpBaseUpdateStateSystemChunk(data: Omix) {
     return request({
         url: `/api/system/chunk/update/state`,
-        method: 'POST',
-        data
-    })
-}
-
-/**批量获取字典分类列表**/
-export function httpBaseSelectSystemChunk(data: Omix<{ type: Array<string> }>) {
-    return request({
-        url: `/api/system/chunk/select`,
         method: 'POST',
         data
     })

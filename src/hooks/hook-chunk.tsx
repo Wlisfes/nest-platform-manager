@@ -62,7 +62,7 @@ export function useChunkService(options: ChunkOption) {
     async function fetchRequest() {
         return await setState({ loading: true }).then(async () => {
             try {
-                const chunkData = await Service.httpBaseSelectSystemChunk({
+                const chunkData = await Service.httpBaseDeployEnumsCompiler({
                     type: Object.keys(pick(options, Object.keys(SCHEMA_CHUNK_OPTIONS)))
                 }).then(async ({ data }) => {
                     return await fetchTransform(data ?? {})

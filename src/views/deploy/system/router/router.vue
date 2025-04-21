@@ -125,20 +125,17 @@ export default defineComponent({
                             content="新增"
                             type="primary"
                             icon="nest-plus"
-                            secondary
                             onClick={fetchCreateDeploySystemFeedbackRouter}
                         ></common-element-button>
                         <common-element-button
                             content="启用"
                             type="success"
-                            secondary
                             disabled={state.rowKeys.length === 0}
                             onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'success', status: 'enable', name: '启用' })}
                         ></common-element-button>
                         <common-element-button
                             content="禁用"
                             type="error"
-                            secondary
                             disabled={state.rowKeys.length === 0}
                             onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', status: 'disable', name: '禁用' })}
                         ></common-element-button>

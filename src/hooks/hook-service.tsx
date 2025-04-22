@@ -1,6 +1,7 @@
 import { ref, toRefs, Ref } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
+import { useKinesService } from '@/hooks/hook-chunk'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import * as utils from '@/utils/utils-common'
 
@@ -27,6 +28,10 @@ export type ColumnState<T> = Omix & {
     dataSource: Array<T>
 }
 export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
+    /**自定义json类型**/
+    dynamic?: string
+    /**自定义json描述**/
+    document?: string
     /**是否排除空字段**/
     exclude?: boolean
     /**立即执行**/
@@ -48,6 +53,11 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
 /**列表包装hook**/
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(option: ColumnOption<T, U, R>) {
     const form = ref<typeof option.form>(option.form)
+    const { faseNode, fetchKinesCompiler, fetchKinesUpdater } = useKinesService<Array<Omix>>({
+        type: String(option.dynamic),
+        document: option.document,
+        value: []
+    })
     const { state, setState } = useState({
         event: 'input-submit',
         initialize: option.initialize ?? true,
@@ -64,10 +74,13 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     if (option.immediate ?? true) {
         fetchInitialize()
+    } else {
+        fetchKinesCompiler()
     }
 
     /**初始化**/
     async function fetchInitialize() {
+        await fetchKinesCompiler()
         return await fetchRequest().then(() => {
             return option.callback?.(form.value, state as ColumnState<T & Omix<R>>)
         })
@@ -131,9 +144,12 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     return {
         form,
         state,
+        faseNode,
         ...toRefs(state),
         setState,
         setForm,
+        fetchKinesCompiler,
+        fetchKinesUpdater,
         fetchInitialize,
         fetchRequest,
         fetchRefresh

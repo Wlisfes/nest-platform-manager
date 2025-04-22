@@ -186,7 +186,7 @@ export default defineComponent({
                         v-model:total={state.total}
                         v-model:row-keys={state.rowKeys}
                         v-model:row-nodes={state.rowNodes}
-                        v-model:checkboxs={state.checkboxs}
+                        //v-model:checkboxs={}
                         onUpdate:page={(page: number) => fetchRefresh()}
                         onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >

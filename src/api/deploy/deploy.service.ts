@@ -16,3 +16,21 @@ export function httpBaseDeployEnumsCompiler(data: Omix<{ type: Array<string> }>)
         data
     })
 }
+
+/**更新自定义json**/
+export function httpBaseDeployKinesUpdate(data: Omix<{ type: string; document: string; json: Array<Omix> | Omix }>) {
+    return request({
+        url: `/api/system/deploy/kines/update`,
+        method: 'POST',
+        data
+    })
+}
+
+/**查询自定义json**/
+export function httpBaseDeployKinesCompiler(data: Omix<{ type: string }>) {
+    return request<Omix>({
+        url: `/api/system/deploy/kines/resolver`,
+        method: 'POST',
+        data
+    })
+}

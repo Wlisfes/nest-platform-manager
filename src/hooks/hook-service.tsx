@@ -5,23 +5,28 @@ import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import * as utils from '@/utils/utils-common'
 
 export type ColumnState<T> = Omix & {
+    /**事件类型**/
     event: 'input-submit' | 'submit'
+    /**初始化状态**/
     initialize: boolean
+    /**加载状态**/
     loading: boolean
-    refresh: boolean
-    search: boolean
+    /**当前页**/
     page: number
+    /**当前页数量**/
     size: number
+    /**列表总数**/
     total: number
+    /**列表勾选ID数组**/
     rowKeys: Array<string>
+    /**列表勾选对象数组**/
     rowNodes: Array<T>
+    /**表头数据**/
     columns: Array<Omix<DataTableColumn>>
+    /**列表数据**/
     dataSource: Array<T>
-    checkboxs: Array<Omix>
 }
 export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
-    /**自定义动态表头**/
-    dynamic?: string
     /**是否排除空字段**/
     exclude?: boolean
     /**立即执行**/
@@ -47,8 +52,6 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         event: 'input-submit',
         initialize: option.initialize ?? true,
         loading: option.loading ?? true,
-        refresh: option.refresh ?? false,
-        search: option.search ?? false,
         page: option.page ?? 1,
         size: option.size ?? 20,
         total: option.total ?? 0,
@@ -56,19 +59,15 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         rowNodes: option.rowNodes ?? [],
         columns: option.columns ?? [],
         dataSource: [] as Array<T>,
-        checkboxs: [] as Array<Omix>,
         ...(option.option ?? {})
     } as ColumnState<T> & typeof option.option)
 
     if (option.immediate ?? true) {
         fetchInitialize()
-    } else {
-        fetchDynamic()
     }
 
     /**初始化**/
     async function fetchInitialize() {
-        await fetchDynamic()
         return await fetchRequest().then(() => {
             return option.callback?.(form.value, state as ColumnState<T & Omix<R>>)
         })
@@ -114,7 +113,6 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
                     return await setState({
                         initialize: false,
                         loading: false,
-                        search: true,
                         total: data.total ?? 0,
                         dataSource: data.list
                     } as ColumnState<T> & typeof option.option)
@@ -123,34 +121,11 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
                 return await setState({
                     initialize: false,
                     loading: false,
-                    search: true,
                     total: 0,
                     dataSource: [] as Array<T>
                 } as ColumnState<T> & typeof option.option)
             }
         })
-    }
-
-    /**获取自定义动态表头**/
-    async function fetchDynamic() {
-        if (utils.isEmpty(option.dynamic)) {
-            return await setState({ checkboxs: [] } as never)
-        }
-        try {
-            return await setState({
-                checkboxs: [
-                    { name: '菜单名称', field: 'name', checked: true },
-                    { name: '图标', field: 'iconName', checked: true },
-                    { name: '类型', field: 'typeChunk', checked: true },
-                    { name: '权限标识', field: 'key', checked: true },
-                    { name: '路由地址', kefieldy: 'router', checked: true },
-                    { name: '排序号', field: 'sort', checked: true },
-                    { name: '状态', field: 'statusChunk', checked: true },
-                    { name: '更新人', field: 'user', checked: true },
-                    { name: '更新时间', field: 'modifyTime', checked: false }
-                ]
-            } as never)
-        } catch (err) {}
     }
 
     return {

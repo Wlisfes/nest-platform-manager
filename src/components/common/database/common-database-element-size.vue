@@ -35,7 +35,7 @@ export default defineComponent({
             >
                 {{
                     trigger: () => (
-                        <common-element-button class="h-full" text onClick={fetchTrigger}>
+                        <common-element-button class="h-full p-inline-8" text onClick={fetchTrigger}>
                             <common-element-icon size={22} name="nest-density"></common-element-icon>
                         </common-element-button>
                     ),

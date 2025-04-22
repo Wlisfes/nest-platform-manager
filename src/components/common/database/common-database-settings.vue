@@ -19,14 +19,14 @@ export default defineComponent({
 
         return () => (
             <common-element-popover
-                style={{ padding: 0, '--v-offset-left': '-4px' }}
+                style={{ padding: 0 }}
                 v-model:visible={state.visible}
                 on-update:show={(visible: boolean) => setState({ visible })}
             >
                 {{
                     trigger: () => (
                         <div
-                            class="common-database-settings h-full flex items-center overflow-hidden"
+                            class="common-database-settings h-full flex items-center overflow-hidden p-inline-8"
                             onClick={() => setState({ visible: true })}
                         >
                             <common-element-button text icon="nest-settings" icon-size={22}></common-element-button>

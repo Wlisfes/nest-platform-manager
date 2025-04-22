@@ -26,16 +26,16 @@ export default defineComponent({
         return () => (
             <n-element class="flex gap-10">
                 <n-element class={`flex flex-1 gap-10 ${props.elementClass}`}>{slots.default && slots.default()}</n-element>
-                <div class="flex items-center p-inline-10">
-                    <common-element-button class="h-full" text disabled={loading.value} onClick={() => emit('refresh')}>
+                <div class="flex items-center">
+                    <common-element-button class="h-full p-inline-8" text disabled={loading.value} onClick={() => emit('refresh')}>
                         <common-element-icon size={22} name="nest-refresh"></common-element-icon>
                     </common-element-button>
-                    <n-divider class="m-inline-15" vertical />
+                    <n-divider class="m-0!" vertical />
                     <common-database-element-size></common-database-element-size>
-                    <n-divider class="m-inline-15" vertical />
+                    <n-divider class="m-0!" vertical />
                     <common-database-settings v-model:columns={columns.value} checkboxs={checkboxs.value}></common-database-settings>
-                    <n-divider class="m-inline-15" vertical />
-                    <common-element-button class="h-full" text onClick={props.toggle}>
+                    <n-divider class="m-0!" vertical />
+                    <common-element-button class="h-full p-inline-8" text onClick={props.toggle}>
                         <common-element-icon size={22} name={full.value ? 'nest-shrink' : 'nest-screen'}></common-element-icon>
                     </common-element-button>
                 </div>

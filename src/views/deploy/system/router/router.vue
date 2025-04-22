@@ -8,8 +8,9 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { state, form, setState, fetchRefresh } = useColumnService({
+        const { state, form, faseNode, setState, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
+            document: '菜单管理自定义表头',
             dynamic: 'base:deploy:system:router',
             form: {
                 vague: undefined,
@@ -186,7 +187,7 @@ export default defineComponent({
                         v-model:total={state.total}
                         v-model:row-keys={state.rowKeys}
                         v-model:row-nodes={state.rowNodes}
-                        //v-model:checkboxs={}
+                        v-model:checkboxs={faseNode.value}
                         onUpdate:page={(page: number) => fetchRefresh()}
                         onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >

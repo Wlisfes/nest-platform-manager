@@ -26,7 +26,8 @@ export default defineComponent({
                     <n-divider class="m-inline-15" vertical />
                     <common-database-density></common-database-density>
                     <n-divider class="m-inline-15" vertical />
-                    <common-element-button text icon="nest-settings" icon-size={22}></common-element-button>
+                    <common-database-settings></common-database-settings>
+                    {/* <common-element-button text icon="nest-settings" icon-size={22}></common-element-button> */}
                 </div>
             </n-element>
         )

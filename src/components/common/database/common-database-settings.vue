@@ -13,10 +13,9 @@ export default defineComponent({
     },
     setup(props, ctx) {
         return () => (
-            <div
-                class="common-database-settings h-full flex items-center overflow-hidden"
-                style={{ columnGap: 'var(--n-th-padding)' }}
-            ></div>
+            <div class="common-database-settings h-full flex items-center overflow-hidden" style={{ columnGap: 'var(--n-th-padding)' }}>
+                <common-element-button text icon="nest-settings" icon-size={22}></common-element-button>
+            </div>
         )
     }
 })

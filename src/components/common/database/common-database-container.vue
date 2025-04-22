@@ -19,7 +19,10 @@ export default defineComponent({
         }))
 
         return () => (
-            <div class="common-database-container flex flex-col flex-1 overflow-hidden" style={element.value}>
+            <div
+                class="common-database-container flex flex-col flex-1 overflow-hidden bg-transition bg-[var(--table-color)]"
+                style={element.value}
+            >
                 {props.elementTable ? (
                     <Fragment>{slots.default && slots.default({ width, height })}</Fragment>
                 ) : (

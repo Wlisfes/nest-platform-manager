@@ -1,10 +1,12 @@
 import { ref, toRefs, Ref } from 'vue'
 import { DataTableColumn } from 'naive-ui'
+import { useFullscreen } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
 import { useKinesService } from '@/hooks/hook-chunk'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import * as utils from '@/utils/utils-common'
 
+/**列表缓存对象**/
 export type ColumnState<T> = Omix & {
     /**事件类型**/
     event: 'input-submit' | 'submit'
@@ -27,7 +29,8 @@ export type ColumnState<T> = Omix & {
     /**列表数据**/
     dataSource: Array<T>
 }
-export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
+/**列表包装配置**/
+export type ColumnOptions<T, U, R> = Partial<ColumnState<T>> & {
     /**自定义json类型**/
     dynamic?: string
     /**自定义json描述**/
@@ -50,29 +53,49 @@ export type ColumnOption<T, U, R> = Partial<ColumnState<T>> & {
     callback?: (forms: U, base: ColumnState<T & Omix<R>>) => void | any | Promise<any>
 }
 
+/**表格列配置**/
+export function fetchKineColumns(data: boolean | Partial<Omix<DataTableColumn>>, columns: Array<Omix<DataTableColumn>> = []) {
+    if (utils.isEmpty(data) || (utils.isBoolean(data) && !data)) {
+        return columns
+    } else {
+        const node = utils.fetchWhere(utils.isObject(data), data, Object.assign({}))
+        return utils.concat(columns, {
+            title: node.title ?? '操作',
+            key: node.key ?? 'command',
+            align: node.align ?? 'center',
+            width: node.width ?? 110,
+            maxWidth: node.width ?? 110,
+            fixed: node.fixed ?? 'right',
+            checked: node.checked ?? true
+        })
+    }
+}
+
 /**列表包装hook**/
-export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(option: ColumnOption<T, U, R>) {
-    const form = ref<typeof option.form>(option.form)
+export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: ColumnOptions<T, U, R>) {
+    const root = ref<HTMLElement>()
+    const form = ref<typeof options.form>(options.form)
+    const { isFullscreen, toggle } = useFullscreen(root)
     const { faseNode, fetchKinesCompiler, fetchKinesUpdater } = useKinesService<Array<Omix>>({
-        type: String(option.dynamic),
-        document: option.document,
+        type: String(options.dynamic),
+        document: options.document,
         value: []
     })
     const { state, setState } = useState({
         event: 'input-submit',
-        initialize: option.initialize ?? true,
-        loading: option.loading ?? true,
-        page: option.page ?? 1,
-        size: option.size ?? 20,
-        total: option.total ?? 0,
-        rowKeys: option.rowKeys ?? [],
-        rowNodes: option.rowNodes ?? [],
-        columns: option.columns ?? [],
+        initialize: options.initialize ?? true,
+        loading: options.loading ?? true,
+        page: options.page ?? 1,
+        size: options.size ?? 20,
+        total: options.total ?? 0,
+        rowKeys: options.rowKeys ?? [],
+        rowNodes: options.rowNodes ?? [],
+        columns: options.columns ?? [],
         dataSource: [] as Array<T>,
-        ...(option.option ?? {})
-    } as ColumnState<T> & typeof option.option)
+        ...(options.option ?? {})
+    } as ColumnState<T> & typeof options.option)
 
-    if (option.immediate ?? true) {
+    if (options.immediate ?? true) {
         fetchInitialize()
     } else {
         fetchKinesCompiler()
@@ -82,7 +105,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     async function fetchInitialize() {
         await fetchKinesCompiler()
         return await fetchRequest().then(() => {
-            return option.callback?.(form.value, state as ColumnState<T & Omix<R>>)
+            return options.callback?.(form.value, state as ColumnState<T & Omix<R>>)
         })
     }
 
@@ -96,16 +119,16 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     /**参数转换**/
     async function fetchParameter() {
-        return option.exclude ?? true ? utils.fetchExclude(form.value) : form.value
+        return options.exclude ?? true ? utils.fetchExclude(form.value) : form.value
     }
 
     /**修改表单筛选**/
-    async function setForm(value: Partial<Omix<typeof option.form>> = {}): Promise<Omix<typeof option.form>> {
+    async function setForm(value: Partial<Omix<typeof options.form>> = {}): Promise<Omix<typeof options.form>> {
         return Object.assign(form.value, value)
     }
 
     /**刷新**/
-    async function fetchRefresh(data: Partial<ColumnState<T> & typeof option.option> = {}, opt: Omix = {}) {
+    async function fetchRefresh(data: Partial<ColumnState<T> & typeof options.option> = {}, opt: Omix = {}) {
         return await setState(data).then(async () => {
             return await fetchRequest(opt).then(async response => {
                 await setState({ rowKeys: [], rowNodes: [] } as never)
@@ -116,19 +139,19 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     /**列表接口请求**/
     async function fetchRequest(opt: Omix = {}) {
-        return await setState({ loading: true } as ColumnState<T> & typeof option.option).then(async () => {
+        return await setState({ loading: true } as ColumnState<T> & typeof options.option).then(async () => {
             try {
                 const body = await fetchParameter()
-                return await option.request(body, state as never, { opt, body: fetchWhere(body, state) }).then(async ({ data }) => {
-                    if (option.transform && typeof option.transform === 'function') {
-                        data.list = ((await option.transform(data)) ?? []) as Array<Omix<T>>
+                return await options.request(body, state as never, { opt, body: fetchWhere(body, state) }).then(async ({ data }) => {
+                    if (options.transform && typeof options.transform === 'function') {
+                        data.list = ((await options.transform(data)) ?? []) as Array<Omix<T>>
                     }
                     return await setState({
                         initialize: false,
                         loading: false,
                         total: data.total ?? 0,
                         dataSource: data.list
-                    } as ColumnState<T> & typeof option.option)
+                    } as ColumnState<T> & typeof options.option)
                 })
             } catch (err) {
                 return await setState({
@@ -136,15 +159,18 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
                     loading: false,
                     total: 0,
                     dataSource: [] as Array<T>
-                } as ColumnState<T> & typeof option.option)
+                } as ColumnState<T> & typeof options.option)
             }
         })
     }
 
     return {
+        root,
         form,
         state,
         faseNode,
+        full: isFullscreen,
+        toggle,
         ...toRefs(state),
         setState,
         setForm,

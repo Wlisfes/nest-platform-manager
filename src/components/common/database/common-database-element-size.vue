@@ -45,9 +45,11 @@ export default defineComponent({
                                 <n-button quaternary focusable={false} style={{ padding: 0 }} onClick={() => fetchSelecter(vm, item)}>
                                     <div class="w-60 flex justify-between p-is-8 p-ie-5">
                                         <n-text type={configer.elementSize === item.value ? 'success' : undefined}>{item.label}</n-text>
-                                        <n-text type={configer.elementSize === item.value ? 'success' : undefined}>
-                                            <common-element-icon name="nest-check"></common-element-icon>
-                                        </n-text>
+                                        {configer.elementSize === item.value && (
+                                            <n-text type="success">
+                                                <common-element-icon name="nest-check"></common-element-icon>
+                                            </n-text>
+                                        )}
                                     </div>
                                 </n-button>
                             ))}

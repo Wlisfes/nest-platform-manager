@@ -9,8 +9,6 @@ export default defineComponent({
     name: 'CommonDatabaseTable',
     emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked', 'update:checkboxs'],
     props: {
-        /**开启操列**/
-        command: { type: [Boolean, Object] as PropType<boolean | Omix<{ width?: number; fixed?: 'right' | 'left' }>>, default: false },
         /**表格是否自动分页数据，在异步的状况下你可能需要把它设为 true**/
         remote: { type: Boolean, default: true },
         /**是否让表格主体的高度自动适应整个表格区域的高度**/
@@ -45,7 +43,7 @@ export default defineComponent({
         const { columns, page, size, total, rowKeys, rowNodes, checkboxs } = useVModels(props)
         /**表头列数据**/
         const faseColumns = computed(() => {
-            return fetchBaseColumns(props.command as Omix).filter(item => {
+            return columns.value.filter(item => {
                 const data = checkboxs.value.find(k => k.field === item.key)
                 return data?.checked ?? item.checked ?? true
             })
@@ -56,28 +54,13 @@ export default defineComponent({
             return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 40)
         })
 
-        console.log(checkboxs.value, fetchCheckColumns(fetchBaseColumns(props.command as Omix)))
+        console.log(checkboxs.value)
 
         /**表头自定义配置**/
         function fetchCheckColumns(data: Array<Omix<DataTableColumn>>) {
             return data.filter(item => {
                 const node = (checkboxs.value.find(k => k.field === item.key) ?? {}) as Omix
                 return node.checked ?? item.checked ?? true
-            })
-        }
-
-        /**默认操作列、设置列配置**/
-        function fetchBaseColumns(data: Omix = {}) {
-            if (utils.isEmpty(data) || (utils.isBoolean(data) && !data)) {
-                return props.columns
-            }
-            return utils.concat(columns.value, {
-                title: '操作',
-                key: 'command',
-                align: 'center',
-                width: data.width ?? 110,
-                fixed: data.fixed,
-                checked: true
             })
         }
 

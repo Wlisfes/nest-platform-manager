@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useColumnService } from '@/hooks/hook-service'
+import { useColumnService, fetchKineColumns } from '@/hooks/hook-service'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
@@ -8,7 +8,7 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { state, form, faseNode, setState, fetchRefresh } = useColumnService({
+        const { root, state, form, faseNode, full, setState, toggle, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
             document: '菜单管理自定义表头',
             dynamic: 'base:deploy:system:router',
@@ -24,8 +24,8 @@ export default defineComponent({
                 startTime: undefined,
                 endTime: undefined
             },
-            columns: [
-                { type: 'selection', checked: true },
+            columns: fetchKineColumns(true, [
+                { title: '选择框', type: 'selection', checked: true },
                 { title: '菜单名称', key: 'name', width: 180, checked: true },
                 { title: '图标', key: 'iconName', width: 80, align: 'center', checked: true },
                 { title: '类型', key: 'typeChunk', width: 90, align: 'center', checked: true },
@@ -35,7 +35,7 @@ export default defineComponent({
                 { title: '状态', key: 'statusChunk', width: 90, align: 'center', checked: true },
                 { title: '更新人', key: 'user', width: 100, align: 'center', checked: true },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', checked: false }
-            ]
+            ])
         })
 
         /**新增菜单**/
@@ -119,8 +119,16 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <common-database-compute element-class="flex-row-reverse justify-between" loading={state.loading} onRefresh={fetchRefresh}>
+            <layout-common-container ref={root} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+                <common-database-compute
+                    element-class="flex-row-reverse justify-between"
+                    v-model:full={full.value}
+                    v-model:loading={state.loading}
+                    v-model:columns={state.columns}
+                    v-model:checkboxs={faseNode.value}
+                    toggle={toggle}
+                    onRefresh={fetchRefresh}
+                >
                     <n-element class="flex gap-10 items-center">
                         <common-element-button
                             content="新增"
@@ -180,8 +188,8 @@ export default defineComponent({
                     <common-database-table
                         command={{ fixed: 'right' }}
                         loading={state.loading}
-                        columns={state.columns}
                         data={state.dataSource}
+                        v-model:columns={state.columns}
                         v-model:page={state.page}
                         v-model:size={state.size}
                         v-model:total={state.total}
@@ -209,7 +217,7 @@ export default defineComponent({
                                     <common-element-button type="primary" text onClick={() => fetchUpdateDeploySystemFeedbackRouter(data)}>
                                         编辑
                                     </common-element-button>
-                                    <common-element-button type="error" text onClick={() => httpBaseDeleteSystemRouter(data)}>
+                                    <common-element-button type="error" text onClick={() => toggle()}>
                                         删除
                                     </common-element-button>
                                 </n-element>

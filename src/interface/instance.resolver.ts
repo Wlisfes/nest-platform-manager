@@ -1,2 +1,1 @@
-export * from '@/interface/modules/chunk.resolver'
-export * from '@/interface/modules/request.resolver'
+export * from '@/interface/deploy/deploy-instance.resolver'

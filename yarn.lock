@@ -701,6 +701,11 @@
   dependencies:
     undici-types "~6.20.0"
 
+"@types/sortablejs@^1.15.8":
+  version "1.15.8"
+  resolved "https://registry.npmmirror.com/@types/sortablejs/-/sortablejs-1.15.8.tgz#11ed555076046e00869a5ef85d1e7651e7a66ef6"
+  integrity sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==
+
 "@types/validator@^13.11.8":
   version "13.12.3"
   resolved "https://registry.npmmirror.com/@types/validator/-/validator-13.12.3.tgz#af160ddaf1e43ab66fe69473a90b14bb9f435d29"
@@ -2692,6 +2697,13 @@ vue-demi@>=0.14.10, vue-demi@^0.14.10:
   version "0.14.10"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.10.tgz#afc78de3d6f9e11bf78c55e8510ee12814522f04"
   integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==
+
+vue-draggable-plus@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmmirror.com/vue-draggable-plus/-/vue-draggable-plus-0.6.0.tgz#e4da6917e94ca73402f34113073f44771691fa5e"
+  integrity sha512-G5TSfHrt9tX9EjdG49InoFJbt2NYk0h3kgjgKxkFWr3ulIUays0oFObr5KZ8qzD4+QnhtALiRwIqY6qul4egqw==
+  dependencies:
+    "@types/sortablejs" "^1.15.8"
 
 vue-router@4.4.3:
   version "4.4.3"

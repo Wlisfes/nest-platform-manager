@@ -49,10 +49,10 @@ export default defineComponent({
                             <n-divider style={{ margin: 0 }} />
                             <div class="flex flex-col p-block-10 overflow-hidden">
                                 <n-scrollbar class="max-h-50vh" trigger="none">
-                                    <div class="flex flex-col gap-10 overflow-hidden">
+                                    <common-element-draggable class="flex flex-col overflow-hidden" animation={150} v-model={columns.value}>
                                         {columns.value.map(item => (
-                                            <div class="flex items-center overflow-hidden" key={item.key}>
-                                                <div class="min-w-40 flex p-is-8 p-ie-10 box-border cursor-move">
+                                            <div class="flex items-center p-block-6 overflow-hidden cursor-move" key={item.key}>
+                                                <div class="min-w-40 flex p-is-8 p-ie-10 box-border">
                                                     <common-element-icon size={22} name="nest-mobile"></common-element-icon>
                                                 </div>
                                                 <n-checkbox focusable={false} v-model:checked={item.checked}>
@@ -62,7 +62,7 @@ export default defineComponent({
                                                 </n-checkbox>
                                             </div>
                                         ))}
-                                    </div>
+                                    </common-element-draggable>
                                 </n-scrollbar>
                             </div>
                         </n-element>

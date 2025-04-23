@@ -1,4 +1,4 @@
-import { ref, toRefs, Ref } from 'vue'
+import { ref, toRefs, Ref, onBeforeMount } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useFullscreen } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
@@ -53,13 +53,16 @@ export type ColumnOptions<T, U, R> = Partial<ColumnState<T>> & {
     callback?: (forms: U, base: ColumnState<T & Omix<R>>) => void | any | Promise<any>
 }
 
-/**表格列配置**/
+/**表格列初始化配置**/
 export function fetchKineColumns(data: boolean | Partial<Omix<DataTableColumn>>, columns: Array<Omix<DataTableColumn>> = []) {
+    function concat(items: Array<Omix<DataTableColumn>>): Array<Omix<DataTableColumn>> {
+        return items.map(item => ({ ...item, check: Boolean(item.check), checked: Boolean(item.check) }))
+    }
     if (utils.isEmpty(data) || (utils.isBoolean(data) && !data)) {
-        return columns
+        return concat(columns)
     } else {
         const node = utils.fetchWhere(utils.isObject(data), data, Object.assign({}))
-        return utils.concat(columns, {
+        return utils.concat(concat(columns), {
             title: node.title ?? '操作',
             key: node.key ?? 'command',
             align: node.align ?? 'center',
@@ -68,6 +71,20 @@ export function fetchKineColumns(data: boolean | Partial<Omix<DataTableColumn>>,
             fixed: node.fixed ?? 'right',
             checked: node.checked ?? true
         })
+    }
+}
+
+/**表格列动态json格式化**/
+export async function fetchKineDynamic<T extends Omix<DataTableColumn>>(data: Array<T>, json: Array<T> = []): Promise<Array<T>> {
+    if (json.length === 0) {
+        return data
+    } else {
+        const keys = json.map(k => k.key)
+        const columns = data.map(item => {
+            const node = (json.find((k: Omix) => k.key === item.key) ?? {}) as Omix
+            return Object.assign(item, { checked: node.checked ?? item.checked })
+        })
+        return columns.sort((a, b) => keys.indexOf(a.key) - keys.indexOf(b.key))
     }
 }
 
@@ -94,10 +111,18 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         ...(options.option ?? {})
     } as ColumnState<T> & typeof options.option)
 
-    if (options.immediate ?? true) {
-        fetchInitialize()
-    } else {
-        fetchCheckboxsCompiler()
+    /**初始化**/
+    onBeforeMount(fetchInitialize)
+    async function fetchInitialize() {
+        if (options.immediate ?? true) {
+            await fetchCheckboxsCompiler()
+            return await fetchRequest().then(() => {
+                return options.callback?.(form.value, state as ColumnState<T & Omix<R>>)
+            })
+        }
+        return await fetchCheckboxsCompiler().then(async () => {
+            return await setState({ initialize: false, loading: false } as ColumnState<T> & typeof options.option)
+        })
     }
 
     /**表头配置更新**/
@@ -107,18 +132,9 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     /**表头配置查询**/
     async function fetchCheckboxsCompiler() {
-        return await fetchKinesCompiler().then(data => {
-            const columns = data?.json?.columns ?? []
-
-            console.log(data)
-        })
-    }
-
-    /**初始化**/
-    async function fetchInitialize() {
-        await fetchCheckboxsCompiler()
-        return await fetchRequest().then(() => {
-            return options.callback?.(form.value, state as ColumnState<T & Omix<R>>)
+        return await fetchKinesCompiler().then(async data => {
+            const columns = await fetchKineDynamic(state.columns, data.columns)
+            return await setState({ columns } as ColumnState<T> & typeof options.option)
         })
     }
 

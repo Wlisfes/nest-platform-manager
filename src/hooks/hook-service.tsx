@@ -76,10 +76,9 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     const root = ref<HTMLElement>()
     const form = ref<typeof options.form>(options.form)
     const { isFullscreen, toggle } = useFullscreen(root)
-    const { faseNode, fetchKinesCompiler, fetchKinesUpdater } = useKinesService<Array<Omix>>({
+    const { faseNode, fetchKinesCompiler, fetchKinesUpdater } = useKinesService<Omix>({
         type: String(options.dynamic),
-        document: options.document,
-        value: []
+        document: options.document
     })
     const { state, setState } = useState({
         event: 'input-submit',
@@ -98,12 +97,26 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     if (options.immediate ?? true) {
         fetchInitialize()
     } else {
-        fetchKinesCompiler()
+        fetchCheckboxsCompiler()
+    }
+
+    /**表头配置更新**/
+    async function fetchCheckboxs(data: Array<Omix>) {
+        return await fetchKinesUpdater({ json: { columns: data } })
+    }
+
+    /**表头配置查询**/
+    async function fetchCheckboxsCompiler() {
+        return await fetchKinesCompiler().then(data => {
+            const columns = data?.json?.columns ?? []
+
+            console.log(data)
+        })
     }
 
     /**初始化**/
     async function fetchInitialize() {
-        await fetchKinesCompiler()
+        await fetchCheckboxsCompiler()
         return await fetchRequest().then(() => {
             return options.callback?.(form.value, state as ColumnState<T & Omix<R>>)
         })
@@ -174,6 +187,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         ...toRefs(state),
         setState,
         setForm,
+        fetchCheckboxs,
         fetchKinesCompiler,
         fetchKinesUpdater,
         fetchInitialize,

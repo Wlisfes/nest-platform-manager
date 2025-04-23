@@ -7,7 +7,7 @@ import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked', 'update:checkboxs'],
+    emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked'],
     props: {
         /**表格是否自动分页数据，在异步的状况下你可能需要把它设为 true**/
         remote: { type: Boolean, default: true },
@@ -29,8 +29,6 @@ export default defineComponent({
         rowNodes: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置**/
         columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
-        /**表头复选配置**/
-        checkboxs: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表数据列表**/
         data: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**分页跳转**/
@@ -40,29 +38,16 @@ export default defineComponent({
     },
     setup(props, { emit, slots }) {
         const configer = useConfiger()
-        const { columns, page, size, total, rowKeys, rowNodes, checkboxs } = useVModels(props)
+        const { columns, page, size, total, rowKeys, rowNodes } = useVModels(props)
         /**表头列数据**/
-        const faseColumns = computed(() => {
-            return columns.value.filter(item => {
-                const data = checkboxs.value.find(k => k.field === item.key)
-                return data?.checked ?? item.checked ?? true
-            })
-        })
+        const faseColumns = computed(() => columns.value.filter(item => item.checked))
         /**表格内容的横向宽度**/
-        const width = computed(() => {
-            if (utils.isNotEmpty(props.scrollX)) return Number(props.scrollX)
+        const width = computed<number>(() => {
+            if (utils.isNotEmpty(props.scrollX)) {
+                return Number(props.scrollX)
+            }
             return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 40)
         })
-
-        console.log(checkboxs.value)
-
-        /**表头自定义配置**/
-        function fetchCheckColumns(data: Array<Omix<DataTableColumn>>) {
-            return data.filter(item => {
-                const node = (checkboxs.value.find(k => k.field === item.key) ?? {}) as Omix
-                return node.checked ?? item.checked ?? true
-            })
-        }
 
         /**选择列事件**/
         async function fetchUpdateChecked(keys: Array<string>, items: Array<Omix>) {

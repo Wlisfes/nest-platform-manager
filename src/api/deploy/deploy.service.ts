@@ -18,7 +18,7 @@ export function httpBaseDeployEnumsCompiler(data: Omix<{ type: Array<string> }>)
 }
 
 /**更新自定义json**/
-export function httpBaseDeployKinesUpdate(data: Omix<{ type: string; document: string; json: Array<Omix> | Omix }>) {
+export function httpBaseDeployKinesUpdate(data: Omix<{ type: string; document: string; json: Omix }>) {
     return request({
         url: `/api/system/deploy/kines/update`,
         method: 'POST',

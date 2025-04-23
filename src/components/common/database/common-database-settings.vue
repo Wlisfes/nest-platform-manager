@@ -3,26 +3,33 @@ import { defineComponent, PropType } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
+import { pick, fetchHandler } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonDatabaseSettings',
-    emits: ['update:columns', 'update:checkboxs'],
+    emits: ['checkboxs', 'update:columns'],
     props: {
         /**表头配置**/
-        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
-        /**表头复选配置**/
-        checkboxs: { type: Array as PropType<Array<Omix>>, default: () => [] }
+        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] }
     },
-    setup(props, ctx) {
-        const { columns, checkboxs } = useVModels(props)
-        const { state, setState } = useState({ visible: false, checked: false, checkboxs: [] })
+    setup(props, { emit }) {
+        const { columns } = useVModels(props)
+        const { state, setState } = useState({ visible: false, checked: false })
+
+        /**关闭事件**/
+        async function fetchClose(visible: boolean) {
+            return await fetchHandler(!visible, async () => {
+                return await setState({ visible }).then(async () => {
+                    return emit(
+                        'checkboxs',
+                        columns.value.map(item => pick(item, ['key', 'title', 'checked']))
+                    )
+                })
+            })
+        }
 
         return () => (
-            <common-element-popover
-                style={{ padding: 0 }}
-                v-model:visible={state.visible}
-                on-update:show={(visible: boolean) => setState({ visible })}
-            >
+            <common-element-popover style={{ padding: 0 }} v-model:visible={state.visible} on-update:show={fetchClose}>
                 {{
                     trigger: () => (
                         <div

@@ -5,7 +5,7 @@ import { useVModels } from '@vueuse/core'
 
 export default defineComponent({
     name: 'CommonDatabaseCompute',
-    emits: ['refresh', 'update:full', 'update:loading', 'update:columns', 'update:checkboxs'],
+    emits: ['refresh', 'checkboxs', 'update:full', 'update:loading', 'update:columns', 'update:checkboxs'],
     props: {
         /**开启全屏**/
         full: { type: Boolean, default: false },
@@ -16,12 +16,10 @@ export default defineComponent({
         /**加载中**/
         loading: { type: Boolean, default: false },
         /**表头配置**/
-        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
-        /**表头复选配置**/
-        checkboxs: { type: Array as PropType<Array<Omix>>, default: () => [] }
+        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] }
     },
     setup(props, { slots, emit }) {
-        const { full, loading, columns, checkboxs } = useVModels(props)
+        const { full, loading, columns } = useVModels(props)
 
         return () => (
             <n-element class="flex gap-10">
@@ -33,7 +31,10 @@ export default defineComponent({
                     <n-divider class="m-0!" vertical />
                     <common-database-element-size></common-database-element-size>
                     <n-divider class="m-0!" vertical />
-                    <common-database-settings v-model:columns={columns.value} checkboxs={checkboxs.value}></common-database-settings>
+                    <common-database-settings
+                        v-model:columns={columns.value}
+                        onCheckboxs={(s: Array<Omix<DataTableColumn>>) => emit('checkboxs', s)}
+                    ></common-database-settings>
                     <n-divider class="m-0!" vertical />
                     <common-element-button class="h-full p-inline-8" text onClick={props.toggle}>
                         <common-element-icon size={22} name={full.value ? 'nest-shrink' : 'nest-screen'}></common-element-icon>

@@ -8,7 +8,7 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { root, state, form, faseNode, full, setState, toggle, fetchRefresh } = useColumnService({
+        const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
             document: '菜单管理自定义表头',
             dynamic: 'base:deploy:system:router',
@@ -25,16 +25,16 @@ export default defineComponent({
                 endTime: undefined
             },
             columns: fetchKineColumns(true, [
-                { title: '选择框', type: 'selection', checked: true },
+                { title: '选择框', key: 'selection', type: 'selection', checked: true },
                 { title: '菜单名称', key: 'name', width: 180, checked: true },
                 { title: '图标', key: 'iconName', width: 80, align: 'center', checked: true },
                 { title: '类型', key: 'typeChunk', width: 90, align: 'center', checked: true },
                 { title: '权限标识', key: 'key', width: 240, checked: true },
                 { title: '路由地址', key: 'router', width: 240, checked: true },
                 { title: '排序号', key: 'sort', width: 80, align: 'center', checked: true },
-                { title: '状态', key: 'statusChunk', width: 90, align: 'center', checked: true },
-                { title: '更新人', key: 'user', width: 100, align: 'center', checked: true },
-                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', checked: false }
+                { title: '状态', key: 'statusChunk', width: 90, align: 'center', checked: true }
+                // { title: '更新人', key: 'user', width: 100, align: 'center', checked: true },
+                // { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', checked: false }
             ])
         })
 
@@ -125,9 +125,9 @@ export default defineComponent({
                     v-model:full={full.value}
                     v-model:loading={state.loading}
                     v-model:columns={state.columns}
-                    v-model:checkboxs={faseNode.value}
                     toggle={toggle}
                     onRefresh={fetchRefresh}
+                    onCheckboxs={fetchCheckboxs}
                 >
                     <n-element class="flex gap-10 items-center">
                         <common-element-button
@@ -195,7 +195,6 @@ export default defineComponent({
                         v-model:total={state.total}
                         v-model:row-keys={state.rowKeys}
                         v-model:row-nodes={state.rowNodes}
-                        v-model:checkboxs={faseNode.value}
                         onUpdate:page={(page: number) => fetchRefresh()}
                         onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                     >

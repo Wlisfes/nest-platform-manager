@@ -99,8 +99,6 @@ export interface KinesState extends Omix {
 }
 /**hooks默认配置**/
 export interface KinesOptions extends KinesState {
-    /**自定义json默认值**/
-    value: Omix
     /**立即执行**/
     immediate?: boolean
 }
@@ -145,12 +143,12 @@ export function useKinesService<T>(options: KinesOptions) {
             try {
                 return await Service.httpBaseDeployKinesCompiler({ type: opts.type ?? String(state.type) }).then(async ({ data }) => {
                     return await setState({ initialize: false, loading: false }).then(() => {
-                        return (faseNode.value = (data?.json ?? options.value ?? {}) as T)
+                        return (faseNode.value = (data?.json ?? {}) as T)
                     })
                 })
             } catch (err) {
                 return await setState({ initialize: false, loading: false }).then(() => {
-                    return (faseNode.value = (options.value ?? {}) as T)
+                    return (faseNode.value = {} as T)
                 })
             }
         })

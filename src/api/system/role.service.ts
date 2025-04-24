@@ -47,7 +47,7 @@ export function httpBaseUpdateSystemRoleUser(data: Omix) {
 }
 
 /**角色列表**/
-export function httpBaseColumnSystemRole(data: BodyColumn<Omix>) {
+export function httpBaseSystemColumnRole(data: BodyColumn<Omix>) {
     return request<ResultColumn<Omix>>({
         url: `/api/system/role/column`,
         method: 'POST',

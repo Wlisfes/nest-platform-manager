@@ -184,9 +184,8 @@ export default defineComponent({
                         </n-form-item>
                     </common-element-action>
                 </common-database-compute>
-                <common-database-container element-table>
+                <common-database-container element-table v-model:initialize={state.initialize} v-model:loading={state.loading}>
                     <common-database-table
-                        command={{ fixed: 'right' }}
                         loading={state.loading}
                         data={state.dataSource}
                         v-model:columns={state.columns}

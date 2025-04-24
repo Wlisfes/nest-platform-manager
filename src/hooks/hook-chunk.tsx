@@ -103,8 +103,8 @@ export interface KinesOptions extends KinesState {
     immediate?: boolean
 }
 
-export function useKinesService<T>(options: KinesOptions) {
-    const faseNode = ref<T>(options.value as never) as Ref<T>
+export function useKinesService<T extends Omix>(options: KinesOptions) {
+    const faseNode = ref<Omix<T>>({} as T)
     const { state, setState } = useState<KinesState>({
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,

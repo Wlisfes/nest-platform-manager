@@ -94,7 +94,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     const form = ref<typeof options.form>(options.form)
     const { isFullscreen, toggle } = useFullscreen(root)
     const { faseNode, fetchKinesCompiler, fetchKinesUpdater } = useKinesService<Omix>({
-        type: String(options.dynamic),
+        type: options.dynamic ?? '',
         document: options.document
     })
     const { state, setState } = useState({

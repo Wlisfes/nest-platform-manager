@@ -34,8 +34,8 @@ export const useManager = defineStore('APP_STORE_MANAGER', () => {
         })
     }
 
-    async function fetchBaseColumnUserSystemRouter() {
-        return await Service.httpBaseColumnUserSystemRouter().then(async ({ data }) => {
+    async function fetchBaseSystemUserRouter() {
+        return await Service.httpBaseSystemUserRouter().then(async ({ data }) => {
             return await setState({ menuOptions: data.list ?? [] })
         })
     }
@@ -47,6 +47,6 @@ export const useManager = defineStore('APP_STORE_MANAGER', () => {
         fetchReset,
         fetchUpdateUser,
         fetchBaseSystemUserResolver,
-        fetchBaseColumnUserSystemRouter
+        fetchBaseSystemUserRouter
     }
 })

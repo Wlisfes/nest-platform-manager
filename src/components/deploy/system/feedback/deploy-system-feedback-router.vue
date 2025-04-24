@@ -52,7 +52,7 @@ export default defineComponent({
             }
         })
         /**父级菜单Options**/
-        const treeOptions = useSelectService(() => Service.httpBaseColumnTreeSystemRouter(), {
+        const treeOptions = useSelectService(() => Service.httpBaseSystemColumnTreeRouter(), {
             immediate: false
         })
         /**通用字典枚举**/
@@ -78,8 +78,8 @@ export default defineComponent({
         }
 
         /**创建菜单**/
-        async function fetchBaseCreateSystemRouter(body: Omix) {
-            return await Service.httpBaseCreateSystemRouter(body).then(async ({ message }) => {
+        async function fetchBaseSystemRouterCreate(body: Omix) {
+            return await Service.httpBaseSystemRouterCreate(body).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
                     await emit('submit', { done: setState })
                     return await fetchNotifyService({ title: message })
@@ -88,8 +88,8 @@ export default defineComponent({
         }
 
         /**编辑菜单**/
-        async function fetchBaseUpdateSystemRouter(body: Omix) {
-            return await Service.httpBaseUpdateSystemRouter({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
+        async function fetchBaseSystemRouterUpdate(body: Omix) {
+            return await Service.httpBaseSystemRouterUpdate({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
                     await emit('submit', { done: setState })
                     return await fetchNotifyService({ title: message })
@@ -106,9 +106,9 @@ export default defineComponent({
                 return await fetchSubmitParameter(form.value).then(async body => {
                     try {
                         if (props.command === 'CREATE') {
-                            return await fetchBaseCreateSystemRouter(body)
+                            return await fetchBaseSystemRouterCreate(body)
                         } else {
-                            return await fetchBaseUpdateSystemRouter(body)
+                            return await fetchBaseSystemRouterUpdate(body)
                         }
                     } catch (err) {
                         return await await setState({ loading: false, disabled: false }).then(async () => {

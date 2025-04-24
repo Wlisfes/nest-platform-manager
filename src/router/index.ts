@@ -50,7 +50,7 @@ export function setupGuardRouter(router: Router) {
             /**token不为空：用户信息不存在加载用户信息**/
             try {
                 await manager.fetchBaseSystemUserResolver()
-                await manager.fetchBaseColumnUserSystemRouter()
+                await manager.fetchBaseSystemUserRouter()
             } catch (err) {
                 /**用户信息加载失败：移除token存储后重定向到登录页面**/
                 return await cookie.delCompose().then(() => {

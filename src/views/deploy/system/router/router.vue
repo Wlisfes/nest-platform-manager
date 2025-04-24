@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
         const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
-            request: (data, base, opts) => Service.httpBaseColumnSystemRouter(opts.body),
+            request: (data, base, opts) => Service.httpBaseSystemColumnRouter(opts.body),
             document: '菜单管理自定义表头',
             dynamic: 'base:deploy:system:router',
             form: {
@@ -58,7 +58,7 @@ export default defineComponent({
         }
 
         /**删除菜单**/
-        async function httpBaseDeleteSystemRouter(data: Omix) {
+        async function fetchBaseSystemRouterDelete(data: Omix) {
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
@@ -72,7 +72,7 @@ export default defineComponent({
                 async onSubmit(done: Function) {
                     try {
                         await done({ loading: true })
-                        return await Service.httpBaseDeleteSystemRouter({ keyId: data.keyId }).then(async ({ message }) => {
+                        return await Service.httpBaseSystemRouterDelete({ keyId: data.keyId }).then(async ({ message }) => {
                             await done({ visible: false })
                             await fetchNotifyService({ title: message })
                             return await fetchRefresh()
@@ -101,7 +101,7 @@ export default defineComponent({
                 async onSubmit(done: Function) {
                     try {
                         await done({ loading: true })
-                        return await Service.httpBaseUpdateStateSystemRouter({
+                        return await Service.httpBaseSystemSwitchRouter({
                             status: data.status,
                             keys: state.rowKeys
                         }).then(async ({ message }) => {

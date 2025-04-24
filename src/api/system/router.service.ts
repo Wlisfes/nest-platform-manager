@@ -2,7 +2,7 @@ import { request } from '@/utils/utils-request'
 import { BodyColumn, ResultColumn } from '@/interface/instance.resolver'
 
 /**创建菜单**/
-export function httpBaseCreateSystemRouter(data: Omix) {
+export function httpBaseSystemRouterCreate(data: Omix) {
     return request({
         url: `/api/system/router/create`,
         method: 'POST',
@@ -11,7 +11,7 @@ export function httpBaseCreateSystemRouter(data: Omix) {
 }
 
 /**编辑菜单**/
-export function httpBaseUpdateSystemRouter(data: Omix) {
+export function httpBaseSystemRouterUpdate(data: Omix) {
     return request({
         url: `/api/system/router/update`,
         method: 'POST',
@@ -20,7 +20,7 @@ export function httpBaseUpdateSystemRouter(data: Omix) {
 }
 
 /**编辑菜单状态**/
-export function httpBaseUpdateStateSystemRouter(data: Omix) {
+export function httpBaseSystemSwitchRouter(data: Omix) {
     return request({
         url: `/api/system/router/update/state`,
         method: 'POST',
@@ -29,7 +29,7 @@ export function httpBaseUpdateStateSystemRouter(data: Omix) {
 }
 
 /**删除菜单**/
-export function httpBaseDeleteSystemRouter(data: Omix) {
+export function httpBaseSystemRouterDelete(data: Omix) {
     return request({
         url: `/api/system/router/delete`,
         method: 'POST',
@@ -38,7 +38,7 @@ export function httpBaseDeleteSystemRouter(data: Omix) {
 }
 
 /**菜单列表**/
-export function httpBaseColumnSystemRouter(data: BodyColumn<Omix>) {
+export function httpBaseSystemColumnRouter(data: BodyColumn<Omix>) {
     return request<ResultColumn<Omix>>({
         url: `/api/system/router/column`,
         method: 'POST',
@@ -47,7 +47,7 @@ export function httpBaseColumnSystemRouter(data: BodyColumn<Omix>) {
 }
 
 /**菜单列表树**/
-export function httpBaseColumnTreeSystemRouter() {
+export function httpBaseSystemColumnTreeRouter() {
     return request({
         url: `/api/system/router/column/tree`,
         method: 'GET'
@@ -55,9 +55,9 @@ export function httpBaseColumnTreeSystemRouter() {
 }
 
 /**获取当前用户菜单**/
-export function httpBaseColumnUserSystemRouter() {
+export function httpBaseSystemUserRouter() {
     return request({
-        url: `/api/system/router/user`,
+        url: `/api/system/router/column/user`,
         method: 'GET'
     })
 }

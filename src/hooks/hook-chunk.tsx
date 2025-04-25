@@ -35,12 +35,12 @@ export function initState(data: Omix = {}) {
 export function useChunkService(options: ChunkOption) {
     const { state, setState } = useState<ChunkState>(
         initState({
-            loading: options.loading ?? true,
-            initialize: options.initialize ?? options.immediate ?? true
+            loading: options.loading ?? options.immediate ?? false,
+            initialize: options.initialize ?? options.immediate ?? false
         })
     )
 
-    if (options.immediate ?? true) {
+    if (options.immediate) {
         fetchRequest()
     }
 
@@ -80,7 +80,7 @@ export function useChunkService(options: ChunkOption) {
 
     return {
         ...toRefs(state),
-        state,
+        chunk: state,
         setState,
         fetchRequest
     }

@@ -36,6 +36,23 @@ export default defineComponent({
             ])
         })
 
+        /**新增、编辑角色**/
+        async function fetchUseDeploySystemFeedbackRole(event: Omix) {
+            if (event.command === 'CREATE') {
+                return await feedback.fetchDeploySystemFeedbackRole({
+                    command: event.command,
+                    title: '新增角色',
+                    onSubmit: () => fetchRefresh()
+                })
+            }
+            return await feedback.fetchDeploySystemFeedbackRole({
+                command: event.command,
+                node: event.data,
+                title: '编辑角色',
+                onSubmit: () => fetchRefresh()
+            })
+        }
+
         return () => (
             <layout-common-container ref={root} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
                 <common-database-compute
@@ -48,7 +65,7 @@ export default defineComponent({
                     onCheckboxs={fetchCheckboxs}
                 >
                     <n-element class="flex gap-10 items-center">
-                        <common-database-create icon="nest-plus"></common-database-create>
+                        <common-database-create icon="nest-plus" onClick={fetchUseDeploySystemFeedbackRole}></common-database-create>
                         <common-database-enable keys={state.rowKeys}></common-database-enable>
                         <common-database-disable keys={state.rowKeys}></common-database-disable>
                     </n-element>
@@ -84,7 +101,7 @@ export default defineComponent({
                             },
                             command: (data: Omix, base: Omix<{ center: boolean }>) => (
                                 <n-element class="flex items-center gap-10 justify-center">
-                                    <common-database-update data={data}></common-database-update>
+                                    <common-database-update data={data} onClick={fetchUseDeploySystemFeedbackRole}></common-database-update>
                                     <common-database-delete data={data}></common-database-delete>
                                 </n-element>
                             )

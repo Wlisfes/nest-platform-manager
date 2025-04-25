@@ -2,7 +2,7 @@ import { request } from '@/utils/utils-request'
 import { BodyColumn, ResultColumn } from '@/interface/instance.resolver'
 
 /**新增角色**/
-export function httpBaseCreateSystemRole(data: Omix) {
+export function httpBaseSystemRoleCreate(data: Omix) {
     return request({
         url: `/api/system/role/create`,
         method: 'POST',
@@ -11,7 +11,7 @@ export function httpBaseCreateSystemRole(data: Omix) {
 }
 
 /**编辑角色**/
-export function httpBaseUpdateSystemRole(data: Omix) {
+export function httpBaseSystemRoleUpdate(data: Omix) {
     return request({
         url: `/api/system/role/update`,
         method: 'POST',

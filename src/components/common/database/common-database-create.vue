@@ -6,6 +6,10 @@ export default defineComponent({
     name: 'CommonDatabaseCreate',
     emits: ['click'],
     props: {
+        /**操作指令**/
+        command: { type: String, default: 'CREATE' },
+        /**节点数据**/
+        data: { type: Object, default: () => ({}) },
         /**新增按钮内容**/
         content: { type: [String, Number], default: '新增' },
         /**按钮类型**/
@@ -15,7 +19,13 @@ export default defineComponent({
     },
     setup(props, { emit, slots }) {
         async function fetchClick(event: MouseEvent) {
-            return emit('click', { event, type: props.type, content: props.content, status: 'create' })
+            return emit('click', {
+                event,
+                data: props.data,
+                type: props.type,
+                content: props.content,
+                command: props.command
+            })
         }
 
         return () => (

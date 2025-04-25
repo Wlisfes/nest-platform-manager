@@ -46,7 +46,7 @@ export default defineComponent({
             if (utils.isNotEmpty(props.scrollX)) {
                 return Number(props.scrollX)
             }
-            return faseColumns.value.reduce((num, next) => num + Number(next.width ?? 0), 40)
+            return faseColumns.value.reduce((num, next) => num + Number(next.width ?? next.minWidth ?? 0), 40)
         })
 
         /**选择列事件**/

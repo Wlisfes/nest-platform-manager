@@ -26,10 +26,10 @@ export default defineComponent({
             },
             columns: fetchKineColumns(true, [
                 { title: '选择框', key: 'selection', type: 'selection', check: true },
-                { title: '角色ID', key: 'keyId', width: 190, check: true },
-                { title: '角色名称', key: 'name', width: 180, check: true },
+                { title: '角色ID', key: 'keyId', width: 200, check: true },
+                { title: '角色名称', key: 'name', width: 200, check: true },
                 { title: '角色描述', key: 'comment', width: 240, check: true },
-                { title: '已关联用户', key: 'typeChunk', width: 140, align: 'center', check: true },
+                { title: '已关联用户', key: 'mumber', width: 150, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
                 { title: '更新人', key: 'user', width: 100, align: 'center', check: true },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: true }

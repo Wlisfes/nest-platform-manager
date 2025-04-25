@@ -130,24 +130,9 @@ export default defineComponent({
                     onCheckboxs={fetchCheckboxs}
                 >
                     <n-element class="flex gap-10 items-center">
-                        <common-element-button
-                            content="新增"
-                            type="primary"
-                            icon="nest-plus"
-                            onClick={fetchCreateDeploySystemFeedbackRouter}
-                        ></common-element-button>
-                        <common-element-button
-                            content="启用"
-                            type="success"
-                            disabled={state.rowKeys.length === 0}
-                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'success', status: 'enable', name: '启用' })}
-                        ></common-element-button>
-                        <common-element-button
-                            content="禁用"
-                            type="error"
-                            disabled={state.rowKeys.length === 0}
-                            onClick={() => fetchBaseUpdateStateSystemRouter({ type: 'warning', status: 'disable', name: '禁用' })}
-                        ></common-element-button>
+                        <common-database-create icon="nest-plus" onClick={fetchCreateDeploySystemFeedbackRouter}></common-database-create>
+                        <common-database-enable keys={state.rowKeys} onClick={fetchBaseUpdateStateSystemRouter}></common-database-enable>
+                        <common-database-disable keys={state.rowKeys} onClick={fetchBaseUpdateStateSystemRouter}></common-database-disable>
                     </n-element>
                     <common-element-action
                         label-width="7.2em"
@@ -212,12 +197,11 @@ export default defineComponent({
                             },
                             command: (data: Omix, base: Omix<{ center: boolean }>) => (
                                 <n-element class="flex items-center gap-10 justify-center">
-                                    <common-element-button type="primary" text onClick={() => fetchUpdateDeploySystemFeedbackRouter(data)}>
-                                        编辑
-                                    </common-element-button>
-                                    <common-element-button type="error" text onClick={() => toggle()}>
-                                        删除
-                                    </common-element-button>
+                                    <common-database-update
+                                        data={data}
+                                        onClick={fetchUpdateDeploySystemFeedbackRouter}
+                                    ></common-database-update>
+                                    <common-database-delete data={data}></common-database-delete>
                                 </n-element>
                             )
                         }}

@@ -38,7 +38,7 @@ export default defineComponent({
         const { initialize, loading, vague, event } = useVModels(props, emit)
         const elementNodes = computed(() => ({
             width: 'calc(100vw - 20px)',
-            maxWidth: fetchWhere(isNotEmpty(props.maxWidth), props.maxWidth, props.cols === 1 ? '450px' : '750px')
+            maxWidth: fetchWhere(isNotEmpty(props.maxWidth), props.maxWidth, props.cols === 1 ? '450px' : '800px')
         }))
         const formNodes = computed<CSSProperties>(() => ({
             display: 'grid',

@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, Fragment } from 'vue'
 import { useColumnService, fetchKineColumns } from '@/hooks/hook-service'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
@@ -36,21 +36,32 @@ export default defineComponent({
             ])
         })
 
+        /**删除角色**/
+        async function fetchBaseSystemRoleDelete(node: Omix) {
+            try {
+                console.log(node)
+                // return await Service.httpBaseSystemRoleDelete({})
+            } catch (err) {}
+        }
+
         /**新增、编辑角色**/
-        async function fetchUseDeploySystemFeedbackRole(event: Omix) {
-            if (event.command === 'CREATE') {
+        async function fetchCommand(event: Omix) {
+            if (event.command === 'DELETE') {
+                return await fetchBaseSystemRoleDelete(event.node)
+            } else if (event.command === 'CREATE') {
                 return await feedback.fetchDeploySystemFeedbackRole({
                     command: event.command,
                     title: '新增角色',
                     onSubmit: () => fetchRefresh()
                 })
+            } else if (event.command === 'UPDATE') {
+                return await feedback.fetchDeploySystemFeedbackRole({
+                    command: event.command,
+                    node: event.node,
+                    title: '编辑角色',
+                    onSubmit: () => fetchRefresh()
+                })
             }
-            return await feedback.fetchDeploySystemFeedbackRole({
-                command: event.command,
-                node: event.data,
-                title: '编辑角色',
-                onSubmit: () => fetchRefresh()
-            })
         }
 
         return () => (
@@ -65,9 +76,14 @@ export default defineComponent({
                     onCheckboxs={fetchCheckboxs}
                 >
                     <n-element class="flex gap-10 items-center">
-                        <common-database-create icon="nest-plus" onClick={fetchUseDeploySystemFeedbackRole}></common-database-create>
-                        <common-database-enable keys={state.rowKeys}></common-database-enable>
-                        <common-database-disable keys={state.rowKeys}></common-database-disable>
+                        <common-element-button
+                            content="新增"
+                            type="primary"
+                            icon="nest-plus"
+                            onClick={() => fetchCommand({ command: 'CREATE' })}
+                        ></common-element-button>
+                        <common-element-button content="启用" type="success" disabled={state.rowKeys.length === 0}></common-element-button>
+                        <common-element-button content="禁用" type="error" disabled={state.rowKeys.length === 0}></common-element-button>
                     </n-element>
                     <common-element-action
                         label-width="7.2em"
@@ -99,44 +115,46 @@ export default defineComponent({
                             statusChunk: (data: Omix) => {
                                 return <common-database-chunk content={data.name} json={data.json}></common-database-chunk>
                             },
-                            command: (data: Omix, base: Omix<{ center: boolean }>) => (
+                            command: (node: Omix, base: Omix<{ center: boolean }>) => (
                                 <n-element class="flex items-center gap-10 justify-center">
-                                    {/* <common-database-update
-                                        text
-                                        data={data}
-                                        onClick={fetchUseDeploySystemFeedbackRole}
-                                    ></common-database-update> */}
-
-                                    <common-database-button
+                                    <common-element-button
+                                        database
                                         text
                                         content="编辑"
                                         type="primary"
                                         icon="nest-edit"
                                         icon-size={16}
-                                    ></common-database-button>
+                                        onClick={() => fetchCommand({ node, command: 'UPDATE' })}
+                                    ></common-element-button>
                                     <common-database-command>
-                                        <common-element-button
-                                            quaternary
-                                            content="删除"
-                                            type="error"
-                                            icon="nest-delete"
-                                            icon-size={16}
-                                        ></common-element-button>
-                                        <common-element-button
-                                            quaternary
-                                            content="删除删除"
-                                            type="error"
-                                            icon="nest-delete"
-                                            icon-size={16}
-                                        ></common-element-button>
-                                        <div class="justify-start p-inline-10"></div>
-                                        <common-element-button
-                                            quaternary
-                                            content="删除删除删除"
-                                            type="error"
-                                            icon="nest-delete"
-                                            icon-size={16}
-                                        ></common-element-button>
+                                        {{
+                                            default: () => (
+                                                <Fragment>
+                                                    <common-element-button
+                                                        text
+                                                        content="关联菜单"
+                                                        type="primary"
+                                                        icon="nest-stock"
+                                                        icon-size={16}
+                                                    ></common-element-button>
+                                                    <common-element-button
+                                                        text
+                                                        content="关联用户"
+                                                        type="primary"
+                                                        icon="nest-join-user"
+                                                        icon-size={16}
+                                                    ></common-element-button>
+                                                    <common-element-button
+                                                        text
+                                                        content="删除"
+                                                        type="error"
+                                                        icon="nest-delete"
+                                                        icon-size={16}
+                                                        onClick={() => fetchCommand({ node, command: 'DELETE' })}
+                                                    ></common-element-button>
+                                                </Fragment>
+                                            )
+                                        }}
                                     </common-database-command>
                                 </n-element>
                             )

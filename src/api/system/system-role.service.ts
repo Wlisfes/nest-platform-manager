@@ -54,3 +54,12 @@ export function httpBaseSystemColumnRole(data: BodyColumn<Omix>) {
         data
     })
 }
+
+/**删除角色**/
+export function httpBaseSystemRoleDelete(data: Omix) {
+    return request({
+        url: `/api/system/role/delete`,
+        method: 'POST',
+        data
+    })
+}

@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { stop } from '@/utils/utils-common'
 
 export default defineComponent({
-    name: 'FormChunkStatusSelect',
+    name: 'FormChunkCustomSelect',
     props: {
         /**选项label的字段名**/
         labelField: { type: String, default: 'name' },

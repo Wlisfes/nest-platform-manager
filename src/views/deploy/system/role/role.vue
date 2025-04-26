@@ -28,8 +28,8 @@ export default defineComponent({
                 { title: '选择框', key: 'selection', type: 'selection', check: true },
                 { title: '角色ID', key: 'keyId', width: 200, check: true },
                 { title: '角色名称', key: 'name', width: 200, check: true },
-                { title: '角色描述', key: 'comment', width: 240, check: true },
-                { title: '已关联用户', key: 'mumber', width: 150, align: 'center', check: true },
+                { title: '角色描述', key: 'comment', width: 200, check: true },
+                { title: '已关联用户', key: 'mumber', width: 120, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
                 { title: '更新人', key: 'user', width: 100, align: 'center', check: true },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: true }
@@ -101,8 +101,43 @@ export default defineComponent({
                             },
                             command: (data: Omix, base: Omix<{ center: boolean }>) => (
                                 <n-element class="flex items-center gap-10 justify-center">
-                                    <common-database-update data={data} onClick={fetchUseDeploySystemFeedbackRole}></common-database-update>
-                                    <common-database-delete data={data}></common-database-delete>
+                                    {/* <common-database-update
+                                        text
+                                        data={data}
+                                        onClick={fetchUseDeploySystemFeedbackRole}
+                                    ></common-database-update> */}
+
+                                    <common-database-button
+                                        text
+                                        content="编辑"
+                                        type="primary"
+                                        icon="nest-edit"
+                                        icon-size={16}
+                                    ></common-database-button>
+                                    <common-database-command>
+                                        <common-element-button
+                                            quaternary
+                                            content="删除"
+                                            type="error"
+                                            icon="nest-delete"
+                                            icon-size={16}
+                                        ></common-element-button>
+                                        <common-element-button
+                                            quaternary
+                                            content="删除删除"
+                                            type="error"
+                                            icon="nest-delete"
+                                            icon-size={16}
+                                        ></common-element-button>
+                                        <div class="justify-start p-inline-10"></div>
+                                        <common-element-button
+                                            quaternary
+                                            content="删除删除删除"
+                                            type="error"
+                                            icon="nest-delete"
+                                            icon-size={16}
+                                        ></common-element-button>
+                                    </common-database-command>
                                 </n-element>
                             )
                         }}

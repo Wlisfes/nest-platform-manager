@@ -27,7 +27,14 @@ export default defineComponent({
         }
 
         return () => (
-            <common-element-button text content={props.content} type={props.type} onClick={fetchClick}>
+            <common-element-button
+                content={props.content}
+                type={props.type}
+                icon="nest-edit"
+                icon-size={16}
+                style={{ '--n-icon-margin': '3px' }}
+                onClick={fetchClick}
+            >
                 {slots}
             </common-element-button>
         )

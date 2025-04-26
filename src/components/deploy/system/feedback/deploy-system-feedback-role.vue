@@ -113,11 +113,11 @@ export default defineComponent({
                         ></n-select>
                     </n-form-item>
                     <n-form-item label="角色状态" path="status">
-                        <form-chunk-status-select
+                        <form-chunk-custom-select
                             placeholder="请选择角色状态"
                             options={chunk.COMMON_SYSTEM_ROLE_STATUS}
                             v-model:value={form.value.status}
-                        ></form-chunk-status-select>
+                        ></form-chunk-custom-select>
                     </n-form-item>
                     <n-form-item label="角色描述" path="comment">
                         <n-input

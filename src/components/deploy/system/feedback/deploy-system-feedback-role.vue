@@ -17,8 +17,7 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        console.log(props.node)
-        const { state, form, formRef, setState, setForm, fetchValidater } = useFormService({
+        const { state, form, formRef, setState, fetchValidater } = useFormService({
             callback: fetchCallback,
             form: {
                 name: props.node.name,
@@ -114,13 +113,11 @@ export default defineComponent({
                         ></n-select>
                     </n-form-item>
                     <n-form-item label="角色状态" path="status">
-                        <n-select
-                            label-field="name"
-                            value-field="value"
+                        <form-chunk-status-select
                             placeholder="请选择角色状态"
                             options={chunk.COMMON_SYSTEM_ROLE_STATUS}
                             v-model:value={form.value.status}
-                        ></n-select>
+                        ></form-chunk-status-select>
                     </n-form-item>
                     <n-form-item label="角色描述" path="comment">
                         <n-input

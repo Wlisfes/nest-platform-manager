@@ -10,6 +10,8 @@ import * as utils from '@/utils/utils-common'
 export type ColumnState<T> = Omix & {
     /**事件类型**/
     event: 'input-submit' | 'submit'
+    /**控制器**/
+    visible: boolean
     /**初始化状态**/
     initialize: boolean
     /**加载状态**/
@@ -99,6 +101,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     })
     const { state, setState } = useState({
         event: 'input-submit',
+        visible: options.visible ?? false,
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,
         page: options.page ?? 1,

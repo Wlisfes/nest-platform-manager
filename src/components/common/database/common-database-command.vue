@@ -1,11 +1,14 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
 import { ButtonProps } from 'naive-ui'
-import { useState } from '@/hooks/hook-state'
+import { useVModels } from '@vueuse/core'
 
 export default defineComponent({
     name: 'CommonDatabaseCommand',
+    emits: ['update:visible'],
     props: {
+        /**是否展示**/
+        visible: { type: Boolean, default: false },
         /**按钮内容**/
         content: { type: [String, Number], default: '更多' },
         /**按钮类型**/
@@ -13,15 +16,15 @@ export default defineComponent({
         /**弹出层容器样式**/
         className: { type: String, default: '' }
     },
-    setup(props, { slots }) {
-        const { state, setState } = useState({ visible: false, checked: false })
+    setup(props, { slots, emit }) {
+        const { visible } = useVModels(props, emit)
 
         return () => (
             <common-element-popover
                 placement="bottom-end"
                 style={{ padding: '8px' }}
-                v-model:visible={state.visible}
-                on-update:show={(visible: boolean) => setState({ visible })}
+                v-model:visible={visible.value}
+                on-update:show={(show: boolean) => (visible.value = show)}
             >
                 {{
                     trigger: () => (
@@ -38,7 +41,7 @@ export default defineComponent({
                         <n-element
                             class={`min-w-80 flex flex-col overflow-hidden [&>.n-button]:justify-start [&>.n-button]:p-inline-6 ${props.className}`}
                         >
-                            {slots.default && slots.default(state, setState)}
+                            {slots.default && slots.default()}
                         </n-element>
                     )
                 }}

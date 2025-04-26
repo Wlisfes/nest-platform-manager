@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
+import { defineComponent } from 'vue'
 import { useColumnService, fetchKineColumns } from '@/hooks/hook-service'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
@@ -36,30 +36,44 @@ export default defineComponent({
             ])
         })
 
-        /**删除角色**/
-        async function fetchBaseSystemRoleDelete(node: Omix) {
-            try {
-                console.log(node)
-                // return await Service.httpBaseSystemRoleDelete({})
-            } catch (err) {}
-        }
-
-        /**新增、编辑角色**/
+        /**操作指令回调函数**/
         async function fetchCommand(event: Omix) {
-            if (event.command === 'DELETE') {
-                return await fetchBaseSystemRoleDelete(event.node)
-            } else if (event.command === 'CREATE') {
+            if (event.command === 'CREATE') {
                 return await feedback.fetchDeploySystemFeedbackRole({
                     command: event.command,
                     title: '新增角色',
                     onSubmit: () => fetchRefresh()
                 })
-            } else if (event.command === 'UPDATE') {
+            }
+            if (event.command === 'UPDATE') {
                 return await feedback.fetchDeploySystemFeedbackRole({
                     command: event.command,
                     node: event.node,
                     title: '编辑角色',
                     onSubmit: () => fetchRefresh()
+                })
+            }
+            if (event.command === 'SWITCH') {
+                return await fetchDialogService({
+                    title: `${event.title}提示`,
+                    type: event.type,
+                    content: `确定${event.title}当前所选角色？`,
+                    async onSubmit(done: Function) {
+                        try {
+                            await done({ loading: true })
+                            return await Service.httpBaseSystemRoleDelete({ status: event.status, keys: state.rowKeys }).then(
+                                async response => {
+                                    await done({ visible: false })
+                                    await fetchNotifyService({ title: response.message })
+                                    return await fetchRefresh()
+                                }
+                            )
+                        } catch (err) {
+                            return await done({ loading: false }).then(async () => {
+                                return await fetchNotifyService({ type: 'error', title: err.message })
+                            })
+                        }
+                    }
                 })
             }
         }
@@ -82,8 +96,18 @@ export default defineComponent({
                             icon="nest-plus"
                             onClick={() => fetchCommand({ command: 'CREATE' })}
                         ></common-element-button>
-                        <common-element-button content="启用" type="success" disabled={state.rowKeys.length === 0}></common-element-button>
-                        <common-element-button content="禁用" type="error" disabled={state.rowKeys.length === 0}></common-element-button>
+                        <common-element-button
+                            content="启用"
+                            type="success"
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchCommand({ command: 'SWITCH', status: 'enable', type: 'success', title: '启用' })}
+                        ></common-element-button>
+                        <common-element-button
+                            content="禁用"
+                            type="error"
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchCommand({ command: 'SWITCH', status: 'disable', type: 'error', title: '禁用' })}
+                        ></common-element-button>
                     </n-element>
                     <common-element-action
                         label-width="7.2em"
@@ -126,35 +150,29 @@ export default defineComponent({
                                         icon-size={16}
                                         onClick={() => fetchCommand({ node, command: 'UPDATE' })}
                                     ></common-element-button>
-                                    <common-database-command>
-                                        {{
-                                            default: () => (
-                                                <Fragment>
-                                                    <common-element-button
-                                                        text
-                                                        content="关联菜单"
-                                                        type="primary"
-                                                        icon="nest-stock"
-                                                        icon-size={16}
-                                                    ></common-element-button>
-                                                    <common-element-button
-                                                        text
-                                                        content="关联用户"
-                                                        type="primary"
-                                                        icon="nest-join-user"
-                                                        icon-size={16}
-                                                    ></common-element-button>
-                                                    <common-element-button
-                                                        text
-                                                        content="删除"
-                                                        type="error"
-                                                        icon="nest-delete"
-                                                        icon-size={16}
-                                                        onClick={() => fetchCommand({ node, command: 'DELETE' })}
-                                                    ></common-element-button>
-                                                </Fragment>
-                                            )
-                                        }}
+                                    <common-database-command v-model:visible={state.visible}>
+                                        <common-element-button
+                                            text
+                                            content="关联菜单"
+                                            type="primary"
+                                            icon="nest-stock"
+                                            icon-size={16}
+                                        ></common-element-button>
+                                        <common-element-button
+                                            text
+                                            content="关联用户"
+                                            type="primary"
+                                            icon="nest-join-user"
+                                            icon-size={16}
+                                        ></common-element-button>
+                                        <common-element-button
+                                            text
+                                            content="删除"
+                                            type="error"
+                                            icon="nest-delete"
+                                            icon-size={16}
+                                            onClick={() => fetchCommand({ node, command: 'DELETE', type: 'error', title: '删除' })}
+                                        ></common-element-button>
                                     </common-database-command>
                                 </n-element>
                             )

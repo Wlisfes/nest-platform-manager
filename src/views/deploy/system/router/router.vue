@@ -38,84 +38,67 @@ export default defineComponent({
             ])
         })
 
-        /**新增菜单**/
-        async function fetchCreateDeploySystemFeedbackRouter() {
-            return await feedback.fetchDeploySystemFeedbackRouter({
-                title: '新增菜单',
-                command: 'CREATE',
-                onSubmit: () => fetchRefresh()
-            })
-        }
-
-        /**编辑菜单**/
-        async function fetchUpdateDeploySystemFeedbackRouter(data: Omix = {}) {
-            return await feedback.fetchDeploySystemFeedbackRouter({
-                title: '编辑菜单',
-                command: 'UPDATE',
-                node: data,
-                onSubmit: () => fetchRefresh()
-            })
-        }
-
-        /**删除菜单**/
-        async function fetchBaseSystemRouterDelete(data: Omix) {
-            return await fetchDialogService({
-                title: '提示',
-                type: 'warning',
-                content: (
-                    <n-element>
-                        <common-content-text depth={2}>此操作将删除</common-content-text>
-                        <common-content-text class="m-inline-5" type="error" text={`"${data.name}"`}></common-content-text>
-                        <common-content-text depth={2}>是否继续？</common-content-text>
-                    </n-element>
-                ),
-                async onSubmit(done: Function) {
-                    try {
-                        await done({ loading: true })
-                        return await Service.httpBaseSystemRouterDelete({ keyId: data.keyId }).then(async ({ message }) => {
-                            await done({ visible: false })
-                            await fetchNotifyService({ title: message })
-                            return await fetchRefresh()
-                        })
-                    } catch (err) {
-                        return await done({ loading: false }).then(async () => {
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        })
+        /**操作指令回调函数**/
+        async function fetchCommand(event: Omix) {
+            if (event.command === 'CREATE') {
+                return await feedback.fetchDeploySystemFeedbackRouter({
+                    command: event.command,
+                    title: '新增菜单',
+                    onSubmit: () => fetchRefresh()
+                })
+            }
+            if (event.command === 'UPDATE') {
+                return await feedback.fetchDeploySystemFeedbackRouter({
+                    command: event.command,
+                    node: event.node,
+                    title: '编辑菜单',
+                    onSubmit: () => fetchRefresh()
+                })
+            }
+            if (event.command === 'DELETE') {
+                return await fetchDialogService({
+                    type: event.type,
+                    title: `${event.title}提示`,
+                    content: `确定${event.title}当前所选菜单？`,
+                    async onSubmit(done: Function) {
+                        try {
+                            await done({ loading: true })
+                            return await Service.httpBaseSystemRouterDelete({ keyId: event.node.keyId }).then(async response => {
+                                await done({ visible: false })
+                                await fetchNotifyService({ title: response.message })
+                                return await fetchRefresh()
+                            })
+                        } catch (err) {
+                            return await done({ loading: false }).then(async () => {
+                                return await fetchNotifyService({ type: 'error', title: err.message })
+                            })
+                        }
                     }
-                }
-            })
-        }
-
-        /**编辑菜单状态**/
-        async function fetchBaseUpdateStateSystemRouter(data: Omix) {
-            return await fetchDialogService({
-                title: '提示',
-                type: data.type,
-                content: (
-                    <n-element>
-                        <common-content-text depth={2}>{`此操作将${data.name}选中`}</common-content-text>
-                        <common-content-text class="m-inline-5" type={data.type} text={state.rowKeys.length}></common-content-text>
-                        <common-content-text depth={2}>条数据，是否继续？</common-content-text>
-                    </n-element>
-                ),
-                async onSubmit(done: Function) {
-                    try {
-                        await done({ loading: true })
-                        return await Service.httpBaseSystemSwitchRouter({
-                            status: data.status,
-                            keys: state.rowKeys
-                        }).then(async ({ message }) => {
-                            await done({ visible: false })
-                            await fetchNotifyService({ title: message })
-                            return await fetchRefresh()
-                        })
-                    } catch (err) {
-                        return await done({ loading: false }).then(async () => {
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        })
+                })
+            }
+            if (event.command === 'SWITCH') {
+                return await fetchDialogService({
+                    type: event.type,
+                    title: `${event.title}提示`,
+                    content: `确定${event.title}当前所选菜单？`,
+                    async onSubmit(done: Function) {
+                        try {
+                            await done({ loading: true })
+                            return await Service.httpBaseSystemSwitchRouter({ status: event.status, keys: state.rowKeys }).then(
+                                async response => {
+                                    await done({ visible: false })
+                                    await fetchNotifyService({ title: response.message })
+                                    return await fetchRefresh()
+                                }
+                            )
+                        } catch (err) {
+                            return await done({ loading: false }).then(async () => {
+                                return await fetchNotifyService({ type: 'error', title: err.message })
+                            })
+                        }
                     }
-                }
-            })
+                })
+            }
         }
 
         return () => (
@@ -130,9 +113,24 @@ export default defineComponent({
                     onCheckboxs={fetchCheckboxs}
                 >
                     <n-element class="flex gap-10 items-center">
-                        <common-database-create icon="nest-plus" onClick={fetchCreateDeploySystemFeedbackRouter}></common-database-create>
-                        <common-database-enable keys={state.rowKeys} onClick={fetchBaseUpdateStateSystemRouter}></common-database-enable>
-                        <common-database-disable keys={state.rowKeys} onClick={fetchBaseUpdateStateSystemRouter}></common-database-disable>
+                        <common-element-button
+                            content="新增"
+                            type="primary"
+                            icon="nest-plus"
+                            onClick={() => fetchCommand({ command: 'CREATE' })}
+                        ></common-element-button>
+                        <common-element-button
+                            content="启用"
+                            type="success"
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchCommand({ command: 'SWITCH', status: 'enable', type: 'success', title: '启用' })}
+                        ></common-element-button>
+                        <common-element-button
+                            content="禁用"
+                            type="error"
+                            disabled={state.rowKeys.length === 0}
+                            onClick={() => fetchCommand({ command: 'SWITCH', status: 'disable', type: 'error', title: '禁用' })}
+                        ></common-element-button>
                     </n-element>
                     <common-element-action
                         label-width="7.2em"
@@ -195,13 +193,26 @@ export default defineComponent({
                             statusChunk: (data: Omix) => {
                                 return <common-database-chunk content={data.name} json={data.json}></common-database-chunk>
                             },
-                            command: (data: Omix, base: Omix<{ center: boolean }>) => (
+                            command: (node: Omix, base: Omix<{ center: boolean }>) => (
                                 <n-element class="flex items-center gap-10 justify-center">
-                                    <common-database-update
-                                        data={data}
-                                        onClick={fetchUpdateDeploySystemFeedbackRouter}
-                                    ></common-database-update>
-                                    <common-database-delete data={data}></common-database-delete>
+                                    <common-element-button
+                                        database
+                                        text
+                                        content="编辑"
+                                        type="primary"
+                                        icon="nest-edit"
+                                        icon-size={16}
+                                        onClick={() => fetchCommand({ node, command: 'UPDATE' })}
+                                    ></common-element-button>
+                                    <common-element-button
+                                        database
+                                        text
+                                        content="删除"
+                                        type="error"
+                                        icon="nest-delete"
+                                        icon-size={16}
+                                        onClick={() => fetchCommand({ node, command: 'DELETE', type: 'error', title: '删除' })}
+                                    ></common-element-button>
                                 </n-element>
                             )
                         }}

@@ -53,6 +53,14 @@ export default defineComponent({
                     onSubmit: () => fetchRefresh()
                 })
             }
+            if (event.command === 'JOINUSER') {
+                return await feedback.fetchDeploySystemFeedbackRoleUser({
+                    command: event.command,
+                    title: event.title,
+                    node: event.node,
+                    onSubmit: () => fetchRefresh()
+                })
+            }
             if (event.command === 'SWITCH') {
                 return await fetchDialogService({
                     title: `${event.title}提示`,
@@ -152,21 +160,22 @@ export default defineComponent({
                                     ></common-element-button>
                                     <common-database-command v-model:visible={state.visible}>
                                         <common-element-button
-                                            text
+                                            quaternary
                                             content="关联菜单"
                                             type="primary"
                                             icon="nest-stock"
                                             icon-size={16}
                                         ></common-element-button>
                                         <common-element-button
-                                            text
+                                            quaternary
                                             content="关联用户"
                                             type="primary"
                                             icon="nest-join-user"
                                             icon-size={16}
+                                            onClick={() => fetchCommand({ node, command: 'JOINUSER', title: '关联用户' })}
                                         ></common-element-button>
                                         <common-element-button
-                                            text
+                                            quaternary
                                             content="删除"
                                             type="error"
                                             icon="nest-delete"

@@ -63,3 +63,12 @@ export function httpBaseSystemRoleDelete(data: Omix) {
         data
     })
 }
+
+/**角色详情信息**/
+export function httpBaseSystemRoleResolver(params: Omix) {
+    return request({
+        url: `/api/system/role/resolver`,
+        method: 'GET',
+        params
+    })
+}

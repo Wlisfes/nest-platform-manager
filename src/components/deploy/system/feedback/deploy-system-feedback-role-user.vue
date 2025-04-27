@@ -17,17 +17,8 @@ export default defineComponent({
     setup(props, { emit }) {
         const { state, form, formRef, setState, fetchValidater } = useFormService({
             callback: fetchCallback,
-            form: {
-                name: props.node.name,
-                model: props.node.model,
-                status: props.node.status,
-                comment: props.node.comment
-            },
-            rules: {
-                name: { required: true, trigger: 'blur', message: '请输入菜单名称' },
-                model: { required: true, trigger: 'blur', message: '请选择角色数据权限' },
-                status: { required: true, trigger: 'blur', message: '请选择角色状态' }
-            }
+            form: { keys: [] },
+            rules: {}
         })
 
         /**表达初始化回调**/
@@ -79,7 +70,7 @@ export default defineComponent({
                     rules={state.rules}
                     disabled={state.loading}
                 >
-                    <n-form-item label="角色数据权限" path="model">
+                    <n-form-item label="选择关联用户" path="keys">
                         {/* <n-select
                             label-field="name"
                             value-field="value"

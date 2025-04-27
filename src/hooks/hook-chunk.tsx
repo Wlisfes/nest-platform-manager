@@ -1,28 +1,38 @@
-import { toRefs, ref, Ref } from 'vue'
+import { toRefs, ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks/hook-state'
 import { SCHEMA_CHUNK_OPTIONS } from '@/interface/instance.resolver'
 import { pick, isEmpty, fetchHandler } from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
-/**字典数据格式**/
+/**枚举数据格式**/
 export interface BaseChunkOption extends Omix {
+    /**枚举ID**/
     keyId: string
+    /**枚举数名称**/
     name: string
+    /**枚举唯一标识**/
     value: string
+    /**枚举样式类型**/
     type: string
+    /**枚举其他额外配置**/
     json: Omix
 }
-/**字典类数据格式转换**/
+/**枚举数类数据格式转换**/
 export interface BaseChunk<T> extends Record<keyof typeof SCHEMA_CHUNK_OPTIONS, T> {}
-/**字典枚举通用hooks配置**/
+/**枚举数枚举通用hooks配置**/
 export interface ChunkOption extends Partial<BaseChunk<boolean>> {
+    /**立即执行**/
     immediate?: boolean
+    /**初始化状态**/
     initialize?: boolean
+    /**加载状态**/
     loading?: boolean
+    /**初始化回调事件**/
     callback?: (data: ChunkState) => void
+    /**数据转换**/
     transform?: (data: Record<keyof typeof SCHEMA_CHUNK_OPTIONS, Array<BaseChunkOption>>) => Omix
 }
-/**字典枚举通用hooks字段配置**/
+/**枚举数枚举通用hooks字段配置**/
 export interface ChunkState extends BaseChunk<Array<BaseChunkOption>>, Pick<ChunkOption, 'initialize' | 'loading'> {}
 /**初始化字段**/
 export function initState(data: Omix = {}) {
@@ -31,7 +41,7 @@ export function initState(data: Omix = {}) {
     }, {})
     return { ...ChunkOmix, ...data } as ChunkState
 }
-/**字典枚举通用hooks**/
+/**枚举数枚举通用hooks**/
 export function useChunkService(options: ChunkOption) {
     const { state, setState } = useState<ChunkState>(
         initState({
@@ -86,7 +96,7 @@ export function useChunkService(options: ChunkOption) {
     }
 }
 
-/**缓存对象**/
+/**缓存对象**********************************************************************************************/
 export interface KinesState extends Omix {
     /**初始化状态**/
     initialize?: boolean

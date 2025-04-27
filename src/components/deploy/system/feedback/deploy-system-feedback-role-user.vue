@@ -1,8 +1,9 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useChunkService } from '@/hooks/hook-chunk'
+import { useSelectService } from '@/hooks/hook-chunk'
 import { useFormService } from '@/hooks/hook-form'
 import { fetchNotifyService } from '@/plugins'
+import { stop } from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -15,24 +16,36 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const { state, form, formRef, setState, fetchValidater } = useFormService({
+        /**通用用户账号列表Options**/
+        const chunkUser = useSelectService(() => Service.httpBaseSystemColumnChunkUser())
+        /**表单实例**/
+        const { state, form, formRef, setState, setForm, fetchValidater } = useFormService({
             callback: fetchCallback,
-            form: { keys: [] },
+            option: {
+                dataSource: [] as Array<Omix>
+            },
+            form: {
+                keys: [] as Array<string>
+            },
             rules: {}
         })
 
         /**表达初始化回调**/
         async function fetchCallback() {
-            try {
-                return await Service.httpBaseSystemRoleResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
-                    console.log(data)
+            return await fetchBaseSystemRoleMumber().then(async () => {
+                return await setState({ initialize: false })
+            })
+        }
 
-                    return await setState({ initialize: false })
+        /**角色关联用户列表**/
+        async function fetchBaseSystemRoleMumber() {
+            try {
+                return await Service.httpBaseSystemRoleMumber({ keyId: props.node.keyId }).then(async ({ data }) => {
+                    await setForm({ keys: data.map((item: Omix) => item.uid) })
+                    return await setState({ dataSource: data ?? [] })
                 })
             } catch (err) {
-                return await setState({ initialize: false }).then(async () => {
-                    return await fetchNotifyService({ type: 'error', title: err.message })
-                })
+                return await fetchNotifyService({ type: 'error', title: err.message })
             }
         }
 
@@ -51,6 +64,29 @@ export default defineComponent({
             })
         }
 
+        /**自定义渲染tag**/
+        function fetchCustomLabelRender(data: Omix) {
+            return (
+                <div class="flex items-center">
+                    <n-tag bordered={false} onMousedown={(e: FocusEvent) => stop(e)}>
+                        {data.name}
+                    </n-tag>
+                </div>
+            )
+        }
+
+        /**自定义渲染tag**/
+        function fetchCustomTagRender(data: Omix<{ option: Omix; handleClose: Function }>) {
+            console.log(data)
+            return (
+                <n-tag closable onMousedown={(e: FocusEvent) => stop(e)} onClose={(e: MouseEvent) => stop(e, data.handleClose)}>
+                    <div class="flex items-center gap-5">
+                        <n-avatar round size={20} src={data.option.avatar} />
+                        <span>{data.option.name}</span>
+                    </div>
+                </n-tag>
+            )
+        }
         return () => (
             <common-dialog-provider
                 title={props.title}
@@ -71,13 +107,18 @@ export default defineComponent({
                     disabled={state.loading}
                 >
                     <n-form-item label="选择关联用户" path="keys">
-                        {/* <n-select
+                        <n-select
+                            multiple
+                            filterable
+                            max-tag-count="responsive"
                             label-field="name"
-                            value-field="value"
-                            placeholder="请选择角色数据权限"
-                            options={chunk.COMMON_SYSTEM_ROLE_MODEL}
-                            v-model:value={form.value.model}
-                        ></n-select> */}
+                            value-field="uid"
+                            placeholder="请选择选择关联用户"
+                            options={chunkUser.dataSource.value}
+                            v-model:value={form.value.keys}
+                            render-label={fetchCustomLabelRender}
+                            render-tag={fetchCustomTagRender}
+                        ></n-select>
                     </n-form-item>
                 </n-form>
             </common-dialog-provider>

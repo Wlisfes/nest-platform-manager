@@ -23,7 +23,7 @@ export function httpBaseSystemUserTokenAuthorize(data: Omix) {
 export function httpBaseSystemUserResolver() {
     return request({
         url: `/api/system/user/token/resolver`,
-        method: 'POST'
+        method: 'GET'
     })
 }
 

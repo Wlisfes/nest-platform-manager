@@ -48,7 +48,7 @@ export default defineComponent({
                 show-icon={false}
                 show={visible.value}
                 style={styleNodes.value}
-                class="flex flex-col overflow-hidden"
+                class="flex flex-col"
                 content-class="flex flex-col flex-1 overflow-hidden"
                 title-class="text-18 line-height-28 gap-8 select-none p-inline-20! p-block-15!"
                 action-class="flex flex-col overflow-hidden"

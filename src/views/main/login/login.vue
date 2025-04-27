@@ -32,7 +32,7 @@ export default defineComponent({
                     })
                 }
                 try {
-                    return await Service.httpBaseCreateSystemUserAuthorize({
+                    return await Service.httpBaseSystemUserTokenAuthorize({
                         code: form.value.code,
                         number: form.value.number,
                         password: window.btoa(encodeURIComponent(form.value.password))

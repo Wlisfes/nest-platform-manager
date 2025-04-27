@@ -72,3 +72,12 @@ export function httpBaseSystemRoleResolver(params: Omix) {
         params
     })
 }
+
+/**角色关联用户列表**/
+export function httpBaseSystemRoleMumber(params: Omix) {
+    return request({
+        url: `/api/system/role/mumber`,
+        method: 'GET',
+        params
+    })
+}

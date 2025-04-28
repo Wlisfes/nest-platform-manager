@@ -67,22 +67,37 @@ export default defineComponent({
         /**自定义渲染tag**/
         function fetchCustomLabelRender(data: Omix) {
             return (
-                <div class="flex items-center">
-                    <n-tag bordered={false} onMousedown={(e: FocusEvent) => stop(e)}>
-                        {data.name}
-                    </n-tag>
+                <div class="flex items-center gap-10 p-block-6">
+                    {data.avatar ? (
+                        <n-avatar round size={28} src={data.avatar}></n-avatar>
+                    ) : (
+                        <n-avatar round size={28} src={data.avatar}>
+                            <span class="text-14">{data.nickname.slice(0, 1)}</span>
+                        </n-avatar>
+                    )}
+                    <div>{data.nickname}</div>
                 </div>
             )
         }
 
         /**自定义渲染tag**/
         function fetchCustomTagRender(data: Omix<{ option: Omix; handleClose: Function }>) {
-            console.log(data)
             return (
-                <n-tag closable onMousedown={(e: FocusEvent) => stop(e)} onClose={(e: MouseEvent) => stop(e, data.handleClose)}>
+                <n-tag
+                    closable
+                    disabled={state.loading && state.disabled}
+                    onMousedown={(e: FocusEvent) => stop(e)}
+                    onClose={(e: MouseEvent) => stop(e, data.handleClose)}
+                >
                     <div class="flex items-center gap-5">
-                        <n-avatar round size={20} src={data.option.avatar} />
-                        <span>{data.option.name}</span>
+                        {data.option.avatar ? (
+                            <n-avatar round size={20} src={data.option.avatar}></n-avatar>
+                        ) : (
+                            <n-avatar round size={20} src={data.option.avatar}>
+                                <span class="text-12">{data.option.nickname.slice(0, 1)}</span>
+                            </n-avatar>
+                        )}
+                        <span>{data.option.nickname}</span>
                     </div>
                 </n-tag>
             )
@@ -90,7 +105,7 @@ export default defineComponent({
         return () => (
             <common-dialog-provider
                 title={props.title}
-                width={640}
+                width={800}
                 v-model:visible={state.visible}
                 v-model:loading={state.loading}
                 v-model:initialize={state.initialize}
@@ -120,6 +135,21 @@ export default defineComponent({
                             render-tag={fetchCustomTagRender}
                         ></n-select>
                     </n-form-item>
+                    <n-scrollbar class="h-200">
+                        <div class="grid-columns-5 gap-10 flex-wrap max-h-200">
+                            {chunkUser.dataSource.value.map(item => (
+                                <div key={item.uid} class="flex items-center p-inline-10 p-block-10">
+                                    <n-avatar round size={34} src={item.avatar}>
+                                        <span class="text-14">{item.nickname.slice(0, 1)}</span>
+                                    </n-avatar>
+                                    <div class="flex flex-1 items-center text-14 gap-3">
+                                        <div>{item.name}</div>
+                                        <div class="text-12">{item.number}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </n-scrollbar>
                 </n-form>
             </common-dialog-provider>
         )

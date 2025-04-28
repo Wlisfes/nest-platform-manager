@@ -56,6 +56,15 @@ export default defineComponent({
                     return await await setState({ loading: false, disabled: false })
                 }
                 try {
+                    return await Service.httpBaseUpdateSystemRoleUser({
+                        keyId: props.node.keyId,
+                        keys: form.value.keys
+                    }).then(async ({ message }) => {
+                        return await setState({ visible: false }).then(async () => {
+                            await emit('submit', { done: setState })
+                            return await fetchNotifyService({ title: message })
+                        })
+                    })
                 } catch (err) {
                     return await await setState({ loading: false, disabled: false }).then(async () => {
                         return await fetchNotifyService({ type: 'error', title: err.message })
@@ -72,7 +81,7 @@ export default defineComponent({
                         <n-avatar round size={28} src={data.avatar}></n-avatar>
                     ) : (
                         <n-avatar round size={28} src={data.avatar}>
-                            <span class="text-14">{data.nickname.slice(0, 1)}</span>
+                            <span class="text-14">{(data.nickname ?? '').slice(0, 1)}</span>
                         </n-avatar>
                     )}
                     <div>{data.nickname}</div>
@@ -102,6 +111,7 @@ export default defineComponent({
                 </n-tag>
             )
         }
+
         return () => (
             <common-dialog-provider
                 title={props.title}
@@ -126,7 +136,7 @@ export default defineComponent({
                             multiple
                             filterable
                             max-tag-count="responsive"
-                            label-field="name"
+                            label-field="nickname"
                             value-field="uid"
                             placeholder="请选择选择关联用户"
                             options={chunkUser.dataSource.value}
@@ -135,21 +145,6 @@ export default defineComponent({
                             render-tag={fetchCustomTagRender}
                         ></n-select>
                     </n-form-item>
-                    <n-scrollbar class="h-200">
-                        <div class="grid-columns-5 gap-10 flex-wrap max-h-200">
-                            {chunkUser.dataSource.value.map(item => (
-                                <div key={item.uid} class="flex items-center p-inline-10 p-block-10">
-                                    <n-avatar round size={34} src={item.avatar}>
-                                        <span class="text-14">{item.nickname.slice(0, 1)}</span>
-                                    </n-avatar>
-                                    <div class="flex flex-1 items-center text-14 gap-3">
-                                        <div>{item.name}</div>
-                                        <div class="text-12">{item.number}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </n-scrollbar>
                 </n-form>
             </common-dialog-provider>
         )

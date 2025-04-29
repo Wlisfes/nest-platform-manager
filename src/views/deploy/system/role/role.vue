@@ -12,6 +12,7 @@ export default defineComponent({
             request: (data, base, opts) => Service.httpBaseSystemColumnRole(opts.body),
             document: '角色管理自定义表头',
             dynamic: 'base:deploy:system:role',
+            immediate: false,
             form: {
                 vague: undefined,
                 name: undefined,
@@ -87,8 +88,17 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container ref={root} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <common-database-compute
+            <layout-common-container ref={root} abstract={false} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+                <n-layout has-sider class="bg-transparent">
+                    <n-layout-sider width={280}>sdadas</n-layout-sider>
+                    <n-layout-content class="bg-transparent p-is-12 overflow-hidden">
+                        <common-element border class="h-full">
+                            element
+                        </common-element>
+                    </n-layout-content>
+                </n-layout>
+
+                {/* <common-database-compute
                     element-class="flex-row-reverse justify-between"
                     v-model:full={full.value}
                     v-model:loading={state.loading}
@@ -187,7 +197,7 @@ export default defineComponent({
                             )
                         }}
                     </common-database-table>
-                </common-database-container>
+                </common-database-container> */}
             </layout-common-container>
         )
     }

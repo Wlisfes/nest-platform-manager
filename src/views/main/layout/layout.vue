@@ -14,6 +14,7 @@ export default defineComponent({
                     width={240}
                     collapse-mode="width"
                     native-scrollbar={false}
+                    style={{ zIndex: 2 }}
                     collapsed={collapsed.value}
                     collapsed-width={device.value === 'MOBILE' ? 0 : 64}
                     show-trigger={device.value === 'MOBILE' ? false : 'bar'}

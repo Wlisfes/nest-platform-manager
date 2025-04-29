@@ -8,11 +8,20 @@ export default defineComponent({
         className: { type: String, default: '' },
         /**开启边框**/
         border: { type: Boolean, default: false },
+        /**圆角值**/
+        radius: { type: String, default: '0px' },
         /**开启悬浮阴影**/
         hover: { type: Boolean, default: false }
     },
     setup(props, { slots }) {
-        return () => <n-element class={{ 'common-element': true, 'is-border': props.border, 'is-hover': props.hover }}>{slots}</n-element>
+        return () => (
+            <n-element
+                class={{ 'common-element': true, 'is-border': props.border, 'is-hover': props.hover }}
+                style={{ '--n-element-border-radius': props.radius }}
+            >
+                {slots}
+            </n-element>
+        )
     }
 })
 </script>
@@ -27,9 +36,9 @@ export default defineComponent({
     background-color: var(--card-color);
     transition: color 0.3s var(--n-bezier), background-color 0.3s var(--n-bezier), box-shadow 0.3s var(--n-bezier),
         border-color 0.3s var(--n-bezier);
+    border-radius: var(--n-element-border-radius);
     &.is-border {
         border: 1px solid var(--divider-color);
-        border-radius: var(--border-radius);
     }
     &.is-hover {
         box-shadow: var(--box-shadow-1);

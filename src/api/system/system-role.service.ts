@@ -55,6 +55,22 @@ export function httpBaseSystemColumnRole(data: BodyColumn<Omix>) {
     })
 }
 
+/**岗位角色**/
+export function httpBaseSystemColumnPostRoles() {
+    return request({
+        url: `/api/system/role/column/post`,
+        method: 'POST'
+    })
+}
+
+/**部门角色**/
+export function httpBaseSystemColumnDeptRoles() {
+    return request({
+        url: `/api/system/role/column/dept`,
+        method: 'POST'
+    })
+}
+
 /**删除角色**/
 export function httpBaseSystemRoleDelete(data: Omix) {
     return request({

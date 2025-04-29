@@ -1,6 +1,8 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useColumnService, fetchKineColumns } from '@/hooks/hook-service'
+import { useState } from '@/hooks/hook-state'
+import { useSelectService } from '@/hooks/hook-chunk'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
@@ -8,91 +10,114 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRole',
     setup(props, ctx) {
-        const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
-            request: (data, base, opts) => Service.httpBaseSystemColumnRole(opts.body),
-            document: '角色管理自定义表头',
-            dynamic: 'base:deploy:system:role',
-            immediate: false,
-            form: {
-                vague: undefined,
-                name: undefined,
-                key: undefined,
-                router: undefined,
-                version: undefined,
-                pid: undefined,
-                status: undefined,
-                uid: undefined,
-                startTime: undefined,
-                endTime: undefined
-            },
-            columns: fetchKineColumns(true, [
-                { title: '选择框', key: 'selection', type: 'selection', check: true },
-                { title: '角色ID', key: 'keyId', width: 200, check: true },
-                { title: '角色名称', key: 'name', width: 200, check: true },
-                { title: '角色描述', key: 'comment', width: 200, check: true },
-                { title: '已关联用户', key: 'mumber', width: 120, align: 'center', check: true },
-                { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
-                { title: '更新人', key: 'user', width: 100, align: 'center', check: true },
-                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: true }
-            ])
+        /**岗位角色列表Options**/
+        const postOptions = useSelectService(() => Service.httpBaseSystemColumnPostRoles())
+        /**部门角色列表Options**/
+        const deptOptions = useSelectService(() => Service.httpBaseSystemColumnDeptRoles())
+
+        const { state, setState } = useState({
+            keyId: undefined,
+            collapsed: false,
+            initialize: true,
+            dataPosts: []
         })
 
-        /**操作指令回调函数**/
-        async function fetchCommand(event: Omix) {
-            if (event.command === 'CREATE') {
-                return await feedback.fetchDeploySystemFeedbackRole({
-                    command: event.command,
-                    title: '新增角色',
-                    onSubmit: () => fetchRefresh()
-                })
-            }
-            if (event.command === 'UPDATE') {
-                return await feedback.fetchDeploySystemFeedbackRole({
-                    command: event.command,
-                    node: event.node,
-                    title: '编辑角色',
-                    onSubmit: () => fetchRefresh()
-                })
-            }
-            if (event.command === 'JOINUSER') {
-                return await feedback.fetchDeploySystemFeedbackRoleUser({
-                    command: event.command,
-                    title: event.title,
-                    node: event.node,
-                    onSubmit: () => fetchRefresh()
-                })
-            }
-            if (event.command === 'SWITCH') {
-                return await fetchDialogService({
-                    title: `${event.title}提示`,
-                    type: event.type,
-                    content: `确定${event.title}当前所选角色？`,
-                    async onSubmit(done: Function) {
-                        try {
-                            await done({ loading: true })
-                            return await Service.httpBaseSystemRoleDelete({ status: event.status, keys: state.rowKeys }).then(
-                                async response => {
-                                    await done({ visible: false })
-                                    await fetchNotifyService({ title: response.message })
-                                    return await fetchRefresh()
-                                }
-                            )
-                        } catch (err) {
-                            return await done({ loading: false }).then(async () => {
-                                return await fetchNotifyService({ type: 'error', title: err.message })
-                            })
-                        }
-                    }
-                })
-            }
-        }
+        // const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
+        //     request: (data, base, opts) => Service.httpBaseSystemColumnRole(opts.body),
+        //     document: '角色管理自定义表头',
+        //     dynamic: 'base:deploy:system:role',
+        //     immediate: false,
+        //     form: {
+        //         vague: undefined,
+        //         name: undefined,
+        //         key: undefined,
+        //         router: undefined,
+        //         version: undefined,
+        //         pid: undefined,
+        //         status: undefined,
+        //         uid: undefined,
+        //         startTime: undefined,
+        //         endTime: undefined
+        //     },
+        //     columns: fetchKineColumns(true, [
+        //         { title: '选择框', key: 'selection', type: 'selection', check: true },
+        //         { title: '角色ID', key: 'keyId', width: 200, check: true },
+        //         { title: '角色名称', key: 'name', width: 200, check: true },
+        //         { title: '角色描述', key: 'comment', width: 200, check: true },
+        //         { title: '已关联用户', key: 'mumber', width: 120, align: 'center', check: true },
+        //         { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
+        //         { title: '更新人', key: 'user', width: 100, align: 'center', check: true },
+        //         { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: true }
+        //     ])
+        // })
+
+        // /**操作指令回调函数**/
+        // async function fetchCommand(event: Omix) {
+        //     if (event.command === 'CREATE') {
+        //         return await feedback.fetchDeploySystemFeedbackRole({
+        //             command: event.command,
+        //             title: '新增角色',
+        //             onSubmit: () => fetchRefresh()
+        //         })
+        //     }
+        //     if (event.command === 'UPDATE') {
+        //         return await feedback.fetchDeploySystemFeedbackRole({
+        //             command: event.command,
+        //             node: event.node,
+        //             title: '编辑角色',
+        //             onSubmit: () => fetchRefresh()
+        //         })
+        //     }
+        //     if (event.command === 'JOINUSER') {
+        //         return await feedback.fetchDeploySystemFeedbackRoleUser({
+        //             command: event.command,
+        //             title: event.title,
+        //             node: event.node,
+        //             onSubmit: () => fetchRefresh()
+        //         })
+        //     }
+        //     if (event.command === 'SWITCH') {
+        //         return await fetchDialogService({
+        //             title: `${event.title}提示`,
+        //             type: event.type,
+        //             content: `确定${event.title}当前所选角色？`,
+        //             async onSubmit(done: Function) {
+        //                 try {
+        //                     await done({ loading: true })
+        //                     return await Service.httpBaseSystemRoleDelete({ status: event.status, keys: state.rowKeys }).then(
+        //                         async response => {
+        //                             await done({ visible: false })
+        //                             await fetchNotifyService({ title: response.message })
+        //                             return await fetchRefresh()
+        //                         }
+        //                     )
+        //                 } catch (err) {
+        //                     return await done({ loading: false }).then(async () => {
+        //                         return await fetchNotifyService({ type: 'error', title: err.message })
+        //                     })
+        //                 }
+        //             }
+        //         })
+        //     }
+        // }
 
         return () => (
-            <layout-common-container ref={root} abstract={false} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
-                <n-layout has-sider class="bg-transparent">
-                    <n-layout-sider width={280}>sdadas</n-layout-sider>
-                    <n-layout-content class="bg-transparent p-is-12 overflow-hidden">
-                        <common-element border class="h-full">
+            <layout-common-container abstract={false} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+                <n-layout has-sider class="h-full bg-transparent overflow-hidden">
+                    <n-layout-sider
+                        width={320}
+                        collapsed-width={0}
+                        collapsed={state.collapsed}
+                        class="bg-transparent overflow-hidden box-border"
+                        content-class="p-ie-12 overflow-hidden!"
+                    >
+                        <deploy-system-common-column-role
+                            data-column={deptOptions.dataSource.value}
+                            data-source={deptOptions.dataSource.value}
+                        ></deploy-system-common-column-role>
+                    </n-layout-sider>
+                    <n-layout-content class="flex-1 bg-transparent overflow-hidden" content-class="overflow-hidden">
+                        <common-element radius="var(--border-radius)" class="h-full flex flex-col overflow-hidden">
                             element
                         </common-element>
                     </n-layout-content>

@@ -16,7 +16,7 @@ export default defineComponent({
         const deptOptions = useSelectService(() => Service.httpBaseSystemColumnDeptRoles())
 
         const { state, setState } = useState({
-            keyId: undefined,
+            keyId: '',
             collapsed: false,
             initialize: true,
             dataPosts: []
@@ -101,6 +101,12 @@ export default defineComponent({
         //     }
         // }
 
+        async function fetchSelecter(keyId: string) {
+            console.log(keyId)
+
+            return await setState({ keyId })
+        }
+
         return () => (
             <layout-common-container abstract={false} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
                 <n-layout has-sider class="h-full bg-transparent overflow-hidden">
@@ -112,8 +118,10 @@ export default defineComponent({
                         content-class="p-ie-12 overflow-hidden!"
                     >
                         <deploy-system-common-column-role
-                            data-column={deptOptions.dataSource.value}
+                            key-id={state.keyId}
+                            data-column={postOptions.dataSource.value}
                             data-source={deptOptions.dataSource.value}
+                            onSelecter={fetchSelecter}
                         ></deploy-system-common-column-role>
                     </n-layout-sider>
                     <n-layout-content class="flex-1 bg-transparent overflow-hidden" content-class="overflow-hidden">

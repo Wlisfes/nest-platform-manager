@@ -3,7 +3,7 @@ import { defineComponent, computed, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 
 export default defineComponent({
-    name: 'DeploySystemCommonColumnRole',
+    name: 'DeploySystemCommonRoleSider',
     emits: ['selecter', 'update:list'],
     props: {
         /**选中ID**/
@@ -27,7 +27,7 @@ export default defineComponent({
         }
 
         return () => (
-            <common-element class="deploy-system-common-column-role h-full flex flex-col overflow-hidden" radius="var(--border-radius)">
+            <common-element class="deploy-system-common-role-sider h-full flex flex-col overflow-hidden" radius="var(--border-radius)">
                 <div class="flex items-center justify-between p-inline-12 p-bs-12 p-be-12">
                     <n-h4 prefix="bar" class="m-0 line-height-20">
                         部门角色

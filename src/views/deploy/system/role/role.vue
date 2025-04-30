@@ -136,18 +136,18 @@ export default defineComponent({
                         class="bg-transparent overflow-hidden box-border"
                         content-class="p-ie-12 overflow-hidden!"
                     >
-                        <deploy-system-common-column-role
+                        <deploy-system-common-role-sider
                             v-model:key-id={state.keyId}
                             v-model:list={state.list}
                             v-model:items={state.items}
                             onSelecter={fetchSelecter}
-                        ></deploy-system-common-column-role>
+                        ></deploy-system-common-role-sider>
                     </n-layout-sider>
                     <n-layout-content class="flex-1 bg-transparent overflow-hidden" content-class="overflow-hidden">
-                        <deploy-system-common-context-role
+                        <deploy-system-common-role-container
                             v-model:collapsed={state.collapsed}
                             v-model:key-id={state.keyId}
-                        ></deploy-system-common-context-role>
+                        ></deploy-system-common-role-container>
                     </n-layout-content>
                 </n-layout>
 

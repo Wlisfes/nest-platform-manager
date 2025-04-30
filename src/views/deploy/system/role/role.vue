@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, onBeforeMount } from 'vue'
 import { useColumnService, fetchKineColumns } from '@/hooks/hook-service'
 import { useState } from '@/hooks/hook-state'
 import { useSelectService } from '@/hooks/hook-chunk'
@@ -10,17 +10,31 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRole',
     setup(props, ctx) {
-        /**岗位角色列表Options**/
-        const postOptions = useSelectService(() => Service.httpBaseSystemColumnPostRoles())
-        /**部门角色列表Options**/
-        const deptOptions = useSelectService(() => Service.httpBaseSystemColumnDeptRoles())
-
         const { state, setState } = useState({
             keyId: '',
             collapsed: false,
             initialize: true,
-            dataPosts: []
+            list: [] as Array<Omix>,
+            items: [] as Array<Omix>
         })
+
+        /**所有角色配置**/
+        onBeforeMount(fetchBaseSystemColumnRoleWhole)
+        async function fetchBaseSystemColumnRoleWhole() {
+            try {
+                return await Service.httpBaseSystemColumnRoleWhole().then(async ({ data }) => {
+                    const item = data.list.at(0)
+                    return await setState({
+                        initialize: false,
+                        list: data.list,
+                        items: data.items,
+                        keyId: item.keyId
+                    })
+                })
+            } catch (err) {
+                return await setState({ initialize: false, list: [], items: [], keyId: '' })
+            }
+        }
 
         // const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
         //     request: (data, base, opts) => Service.httpBaseSystemColumnRole(opts.body),
@@ -108,7 +122,12 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container abstract={false} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+            <layout-common-container
+                transition
+                initialize={state.initialize}
+                class="absolute inset-0 p-12"
+                class-name="p-12 gap-12 overflow-hidden"
+            >
                 <n-layout has-sider class="h-full bg-transparent overflow-hidden">
                     <n-layout-sider
                         width={320}
@@ -118,16 +137,17 @@ export default defineComponent({
                         content-class="p-ie-12 overflow-hidden!"
                     >
                         <deploy-system-common-column-role
-                            key-id={state.keyId}
-                            data-column={postOptions.dataSource.value}
-                            data-source={deptOptions.dataSource.value}
+                            v-model:key-id={state.keyId}
+                            v-model:list={state.list}
+                            v-model:items={state.items}
                             onSelecter={fetchSelecter}
                         ></deploy-system-common-column-role>
                     </n-layout-sider>
                     <n-layout-content class="flex-1 bg-transparent overflow-hidden" content-class="overflow-hidden">
-                        <common-element radius="var(--border-radius)" class="h-full flex flex-col overflow-hidden">
-                            element
-                        </common-element>
+                        <deploy-system-common-context-role
+                            v-model:collapsed={state.collapsed}
+                            v-model:key-id={state.keyId}
+                        ></deploy-system-common-context-role>
                     </n-layout-content>
                 </n-layout>
 

@@ -12,7 +12,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { state, setState } = useState({
             keyId: '',
-            collapsed: false,
+            collapsed: true,
             initialize: true,
             list: [] as Array<Omix>,
             items: [] as Array<Omix>
@@ -125,7 +125,7 @@ export default defineComponent({
             <layout-common-container
                 transition
                 initialize={state.initialize}
-                class="absolute inset-0 p-12"
+                class="deploy-system-role-container absolute inset-0 p-12"
                 class-name="p-12 gap-12 overflow-hidden"
             >
                 <n-layout has-sider class="h-full bg-transparent overflow-hidden">
@@ -144,10 +144,12 @@ export default defineComponent({
                         ></deploy-system-common-role-sider>
                     </n-layout-sider>
                     <n-layout-content class="flex-1 bg-transparent overflow-hidden" content-class="overflow-hidden">
-                        <deploy-system-common-role-container
-                            v-model:collapsed={state.collapsed}
-                            v-model:key-id={state.keyId}
-                        ></deploy-system-common-role-container>
+                        {state.keyId && (
+                            <deploy-system-common-role-container
+                                v-model:collapsed={state.collapsed}
+                                v-model:key-id={state.keyId}
+                            ></deploy-system-common-role-container>
+                        )}
                     </n-layout-content>
                 </n-layout>
 

@@ -63,6 +63,15 @@ export function httpBaseSystemColumnRoleWhole() {
     })
 }
 
+/**角色关联用户列表**/
+export function httpBaseSystemColumnRoleUser(data: BodyColumn<Omix>) {
+    return request<ResultColumn<Omix>>({
+        url: `/api/system/role/column/user`,
+        method: 'POST',
+        data
+    })
+}
+
 /**删除角色**/
 export function httpBaseSystemRoleDelete(data: Omix) {
     return request({

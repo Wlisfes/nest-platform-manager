@@ -33,6 +33,7 @@ export type ColumnState<T> = Omix & {
 }
 /**列表包装配置**/
 export type ColumnOptions<T, U, R> = Partial<ColumnState<T>> & {
+    root?: null | Element | HTMLElement
     /**自定义json类型**/
     dynamic?: string
     /**自定义json描述**/
@@ -92,7 +93,7 @@ export async function fetchKineDynamic<T extends Omix<DataTableColumn>>(data: Ar
 
 /**列表包装hook**/
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: ColumnOptions<T, U, R>) {
-    const root = ref<HTMLElement>()
+    const root = ref<HTMLElement>(options.root as HTMLElement)
     const form = ref<typeof options.form>(options.form)
     const { isFullscreen, toggle } = useFullscreen(root)
     const { faseNode, fetchKinesCompiler, fetchKinesUpdater } = useKinesService<Omix>({
@@ -100,7 +101,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         document: options.document
     })
     const { state, setState } = useState({
-        event: 'input-submit',
+        event: options.event ?? 'input-submit',
         visible: options.visible ?? false,
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,

@@ -10,31 +10,7 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRole',
     setup(props, ctx) {
-        const { state, setState } = useState({
-            keyId: '',
-            collapsed: false,
-            initialize: true,
-            list: [] as Array<Omix>,
-            items: [] as Array<Omix>
-        })
-
-        /**所有角色配置**/
-        onBeforeMount(fetchBaseSystemColumnRoleWhole)
-        async function fetchBaseSystemColumnRoleWhole() {
-            try {
-                return await Service.httpBaseSystemColumnRoleWhole().then(async ({ data }) => {
-                    const item = data.list.at(0)
-                    return await setState({
-                        initialize: false,
-                        list: data.list,
-                        items: data.items,
-                        keyId: item.keyId
-                    })
-                })
-            } catch (err) {
-                return await setState({ initialize: false, list: [], items: [], keyId: '' })
-            }
-        }
+        const { state, setState } = useState({ keyId: '', collapsed: false, initialize: true })
 
         // const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
         //     request: (data, base, opts) => Service.httpBaseSystemColumnRole(opts.body),
@@ -138,10 +114,7 @@ export default defineComponent({
                     >
                         <deploy-system-common-role-sider
                             v-model:key-id={state.keyId}
-                            v-model:list={state.list}
-                            v-model:items={state.items}
-                            fetch-refresh={fetchBaseSystemColumnRoleWhole}
-                            onSelecter={fetchSelecter}
+                            v-model:initialize={state.initialize}
                         ></deploy-system-common-role-sider>
                     </n-layout-sider>
                     <n-layout-content class="flex-1 bg-transparent overflow-hidden" content-class="overflow-hidden">

@@ -13,8 +13,8 @@ export interface OptsComponent {
 }
 
 export type PropsState<T> = Omix<T> & {
-    onClose?: (e: Omix<{ done: Function }>) => Promise<Omix>
-    onSubmit?: (e: Omix<{ done: Function }>) => Promise<Omix>
+    onClose?: (e: Omix<{ done: Function }>) => void | any | Promise<any> | Promise<Omix>
+    onSubmit?: (e: Omix<{ done: Function }>) => void | any | Promise<any> | Promise<Omix>
 }
 
 /**创建组件实例**/

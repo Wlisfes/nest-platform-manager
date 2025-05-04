@@ -21,18 +21,16 @@ export default defineComponent({
             callback: fetchCallback,
             form: {
                 name: props.node.name,
-                model: props.node.model,
                 status: props.node.status,
                 comment: props.node.comment
             },
             rules: {
                 name: { required: true, trigger: 'blur', message: '请输入菜单名称' },
-                model: { required: true, trigger: 'blur', message: '请选择角色数据权限' },
                 status: { required: true, trigger: 'blur', message: '请选择角色状态' }
             }
         })
         /**通用字典枚举**/
-        const { chunk, fetchRequest } = useChunkService({ COMMON_SYSTEM_ROLE_STATUS: true, COMMON_SYSTEM_ROLE_MODEL: true })
+        const { chunk, fetchRequest } = useChunkService({ COMMON_SYSTEM_ROLE_STATUS: true })
 
         /**表达初始化回调**/
         async function fetchCallback() {
@@ -102,15 +100,6 @@ export default defineComponent({
                 >
                     <n-form-item label="角色名称" path="name">
                         <n-input placeholder="请输入菜单名称" maxlength={32} v-model:value={form.value.name}></n-input>
-                    </n-form-item>
-                    <n-form-item label="角色数据权限" path="model">
-                        <n-select
-                            label-field="name"
-                            value-field="value"
-                            placeholder="请选择角色数据权限"
-                            options={chunk.COMMON_SYSTEM_ROLE_MODEL}
-                            v-model:value={form.value.model}
-                        ></n-select>
                     </n-form-item>
                     <n-form-item label="角色状态" path="status">
                         <form-chunk-custom-select

@@ -2,6 +2,7 @@
 import { defineComponent, onBeforeMount } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
+import { isNotEmpty } from '@/utils/utils-common'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -23,9 +24,10 @@ export default defineComponent({
         async function fetchBaseSystemColumnRoleWhole() {
             try {
                 return await Service.httpBaseSystemColumnRoleWhole().then(async ({ data }) => {
-                    const item = data.list.at(0)
                     return await setState({ list: data.list, items: data.items }).then(() => {
-                        keyId.value = item.keyId
+                        if (isNotEmpty(data.list.at(0))) {
+                            keyId.value = data.list.at(0).keyId
+                        }
                         initialize.value = false
                     })
                 })
@@ -68,6 +70,7 @@ export default defineComponent({
                                     v-model:key-id={props.keyId}
                                     v-model:node={item}
                                     onSelecter={(id: string) => (keyId.value = id)}
+                                    onRefresh={fetchBaseSystemColumnRoleWhole}
                                 ></deploy-system-common-role-column>
                             ))}
                         </common-element-draggable>

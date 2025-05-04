@@ -12,42 +12,18 @@ export default defineComponent({
     props: {
         /**标题**/
         title: { type: String, required: true },
-        /**编辑操作详情数据**/
-        node: { type: Object as PropType<Omix>, default: () => ({}) }
+        /**选中ID**/
+        keyId: { type: String, required: true }
     },
     setup(props, { emit }) {
         /**通用用户账号列表Options**/
         const chunkUser = useSelectService(() => Service.httpBaseSystemColumnChunkUser())
         /**表单实例**/
         const { state, form, formRef, setState, setForm, fetchValidater } = useFormService({
-            callback: fetchCallback,
-            option: {
-                dataSource: [] as Array<Omix>
-            },
-            form: {
-                keys: [] as Array<string>
-            },
+            // callback: fetchCallback,
+            form: { uid: undefined },
             rules: {}
         })
-
-        /**表达初始化回调**/
-        async function fetchCallback() {
-            return await fetchBaseSystemRoleMumber().then(async () => {
-                return await setState({ initialize: false })
-            })
-        }
-
-        /**角色关联用户列表**/
-        async function fetchBaseSystemRoleMumber() {
-            try {
-                return await Service.httpBaseSystemRoleMumber({ keyId: props.node.keyId }).then(async ({ data }) => {
-                    await setForm({ keys: data.map((item: Omix) => item.uid) })
-                    return await setState({ dataSource: data ?? [] })
-                })
-            } catch (err) {
-                return await fetchNotifyService({ type: 'error', title: err.message })
-            }
-        }
 
         /**确定提交表单**/
         async function fetchSubmit() {
@@ -56,15 +32,14 @@ export default defineComponent({
                     return await await setState({ loading: false, disabled: false })
                 }
                 try {
-                    return await Service.httpBaseUpdateSystemRoleUser({
-                        keyId: props.node.keyId,
-                        keys: form.value.keys
-                    }).then(async ({ message }) => {
-                        return await setState({ visible: false }).then(async () => {
-                            await emit('submit', { done: setState })
-                            return await fetchNotifyService({ title: message })
-                        })
-                    })
+                    return await Service.httpBaseSystemJoinRoleUser({ keyId: props.keyId, uid: form.value.uid }).then(
+                        async ({ message }) => {
+                            return await setState({ visible: false }).then(async () => {
+                                await emit('submit', { done: setState })
+                                return await fetchNotifyService({ title: message })
+                            })
+                        }
+                    )
                 } catch (err) {
                     return await await setState({ loading: false, disabled: false }).then(async () => {
                         return await fetchNotifyService({ type: 'error', title: err.message })
@@ -91,6 +66,7 @@ export default defineComponent({
 
         /**自定义渲染tag**/
         function fetchCustomTagRender(data: Omix<{ option: Omix; handleClose: Function }>) {
+            console.log(data.option)
             return (
                 <n-tag
                     closable
@@ -115,10 +91,9 @@ export default defineComponent({
         return () => (
             <common-dialog-provider
                 title={props.title}
-                width={800}
+                width={640}
                 v-model:visible={state.visible}
                 v-model:loading={state.loading}
-                v-model:initialize={state.initialize}
                 onSubmit={fetchSubmit}
                 onCancel={() => setState({ visible: false })}
                 onClose={() => emit('close', { done: setState })}
@@ -131,18 +106,16 @@ export default defineComponent({
                     rules={state.rules}
                     disabled={state.loading}
                 >
-                    <n-form-item label="选择关联用户" path="keys">
+                    <n-form-item label="选择关联员工" path="uid">
                         <n-select
-                            multiple
                             filterable
-                            max-tag-count="responsive"
                             label-field="nickname"
                             value-field="uid"
-                            placeholder="请选择选择关联用户"
+                            placeholder="请选择关联员工"
                             options={chunkUser.dataSource.value}
-                            v-model:value={form.value.keys}
-                            render-label={fetchCustomLabelRender}
-                            render-tag={fetchCustomTagRender}
+                            v-model:value={form.value.uid}
+                            //render-label={fetchCustomLabelRender}
+                            //render-tag={fetchCustomTagRender}
                         ></n-select>
                     </n-form-item>
                 </n-form>

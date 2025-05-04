@@ -19,37 +19,10 @@ export function httpBaseSystemRoleUpdate(data: Omix) {
     })
 }
 
-/**编辑角色状态**/
-export function httpBaseUpdateStateSystemRole(data: Omix) {
-    return request({
-        url: `/api/system/role/update/state`,
-        method: 'POST',
-        data
-    })
-}
-
 /**编辑角色权限**/
 export function httpBaseUpdateSystemRoleAuthorize(data: Omix) {
     return request({
         url: `/api/system/role/update/authorize`,
-        method: 'POST',
-        data
-    })
-}
-
-/**编辑角色用户**/
-export function httpBaseUpdateSystemRoleUser(data: Omix) {
-    return request({
-        url: `/api/system/role/update/user`,
-        method: 'POST',
-        data
-    })
-}
-
-/**角色列表**/
-export function httpBaseSystemColumnRole(data: BodyColumn<Omix>) {
-    return request<ResultColumn<Omix>>({
-        url: `/api/system/role/column`,
         method: 'POST',
         data
     })
@@ -72,6 +45,24 @@ export function httpBaseSystemColumnRoleUser(data: BodyColumn<Omix>) {
     })
 }
 
+/**角色关联用户**/
+export function httpBaseSystemJoinRoleUser(data: Omix) {
+    return request({
+        url: `/api/system/role/join/user`,
+        method: 'POST',
+        data
+    })
+}
+
+/**移除角色关联用户**/
+export function httpBaseSystemJoinRoleUserDelete(data: Omix) {
+    return request({
+        url: `/api/system/role/join/user/delete`,
+        method: 'POST',
+        data
+    })
+}
+
 /**删除角色**/
 export function httpBaseSystemRoleDelete(data: Omix) {
     return request({
@@ -85,15 +76,6 @@ export function httpBaseSystemRoleDelete(data: Omix) {
 export function httpBaseSystemRoleResolver(params: Omix) {
     return request({
         url: `/api/system/role/resolver`,
-        method: 'GET',
-        params
-    })
-}
-
-/**角色关联用户列表**/
-export function httpBaseSystemRoleMumber(params: Omix) {
-    return request({
-        url: `/api/system/role/mumber`,
         method: 'GET',
         params
     })

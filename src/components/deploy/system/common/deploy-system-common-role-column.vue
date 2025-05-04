@@ -3,7 +3,9 @@ import { defineComponent, computed, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks/hook-state'
 import { stop } from '@/utils/utils-common'
+import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
+import * as Service from '@/api/instance.service'
 
 export default defineComponent({
     name: 'DeploySystemCommonRoleColumn',
@@ -37,6 +39,25 @@ export default defineComponent({
                     })
                 }
                 if (event.command === 'DELETE') {
+                    return await fetchDialogService({
+                        title: `删除提示`,
+                        type: event.type,
+                        content: `确定删除当前所选角色？`,
+                        async onSubmit(done: Function) {
+                            try {
+                                await done({ loading: true })
+                                return await Service.httpBaseSystemRoleDelete({ keyId: node.value.keyId }).then(async response => {
+                                    await done({ visible: false })
+                                    await fetchNotifyService({ title: response.message })
+                                    return await emit('refresh')
+                                })
+                            } catch (err) {
+                                return await done({ loading: false }).then(async () => {
+                                    return await fetchNotifyService({ type: 'error', title: err.message })
+                                })
+                            }
+                        }
+                    })
                 }
             })
         }
@@ -49,7 +70,16 @@ export default defineComponent({
                 class={{ 'deploy-system-common-role-column': true, 'is-checked': checked.value }}
                 onClick={() => emit('selecter', node.value.keyId)}
             >
-                <n-text class="flex-1 text-start">{node.value.name}</n-text>
+                <div class="flex flex-1 items-center gap-5 overflow-hidden p-ie-10">
+                    {node.value.status === 'enable' ? (
+                        <common-element-icon size={16} color="var(--success-color)" name="nest-state-success"></common-element-icon>
+                    ) : (
+                        <common-element-icon size={16} color="var(--error-color)" name="nest-state-warning"></common-element-icon>
+                    )}
+                    <n-ellipsis tooltip={false}>
+                        <n-text>{node.value.name}</n-text>
+                    </n-ellipsis>
+                </div>
                 <common-element-popover
                     placement="bottom-end"
                     style={{ padding: '8px', '--v-offset-left': '-5px' }}
@@ -58,7 +88,13 @@ export default defineComponent({
                 >
                     {{
                         trigger: () => (
-                            <common-element-button text icon="nest-settings" icon-size={18} onClick={fetchTrigger}></common-element-button>
+                            <common-element-button
+                                text
+                                icon="nest-settings"
+                                disabled={['管理员'].includes(node.value.name)}
+                                icon-size={18}
+                                onClick={fetchTrigger}
+                            ></common-element-button>
                         ),
                         default: () => (
                             <n-element class="min-w-80 flex flex-col overflow-hidden [&>.n-button]:justify-start [&>.n-button]:p-inline-8">

@@ -43,6 +43,9 @@ export default defineComponent({
                                 <n-tab-pane name="role" tab="角色权限">
                                     <deploy-system-common-role-rule key-id={keyId.value}></deploy-system-common-role-rule>
                                 </n-tab-pane>
+                                <n-tab-pane name="model" tab="数据权限">
+                                    <deploy-system-common-role-rule key-id={keyId.value}></deploy-system-common-role-rule>
+                                </n-tab-pane>
                             </Fragment>
                         )
                     }}
@@ -62,6 +65,7 @@ export default defineComponent({
     }
     :deep(.n-tabs-rail) {
         width: auto;
+        user-select: none;
     }
     :deep(.n-tab-pane) {
         flex: 1;

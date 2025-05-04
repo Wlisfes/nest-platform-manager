@@ -14,7 +14,7 @@ export async function fetchDeploySystemFeedbackRole(props: PropsState<Omix>) {
     })
 }
 
-/**角色关联用户**/
+/**角色关联员工**/
 export async function fetchDeploySystemFeedbackRoleUser(props: PropsState<Omix>) {
     return await import('@/components/deploy/system/feedback/deploy-system-feedback-role-user.vue').then(component => {
         return createComponent(component.default, props)

@@ -63,6 +63,11 @@ export default defineComponent({
     :deep(.n-tabs-rail) {
         width: auto;
     }
+    :deep(.n-tab-pane) {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
     :deep(.n-tabs-pane-wrapper) {
         position: relative;
         flex: 1;

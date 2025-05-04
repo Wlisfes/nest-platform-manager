@@ -1,10 +1,11 @@
 <script lang="tsx">
 import { defineComponent, computed, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
+import * as feedback from '@/components/deploy/hooks'
 
 export default defineComponent({
     name: 'DeploySystemCommonRoleSider',
-    emits: ['selecter', 'update:list'],
+    emits: ['refresh', 'selecter', 'update:list'],
     props: {
         /**选中ID**/
         keyId: { type: String },
@@ -13,17 +14,20 @@ export default defineComponent({
         /**岗位角色**/
         list: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**部门角色**/
-        items: { type: Array as PropType<Array<Omix>>, default: () => [] }
+        items: { type: Array as PropType<Array<Omix>>, default: () => [] },
+        /**刷新回调事件**/
+        fetchRefresh: { type: Function, required: true }
     },
     setup(props, { emit }) {
         const { list, items } = useVModels(props)
-        const treeNode = computed(() => ({
-            keys: [props.keyId].filter(Boolean),
-            style: { '--n-node-content-height': '34px', '--n-node-color-active': 'var(--n-node-color-pressed)' }
-        }))
 
-        async function fetchSelecter(keyId: string) {
-            return emit('selecter', keyId)
+        /**操作指令回调函数**/
+        async function fetchCommand(event: Omix) {
+            return await feedback.fetchDeploySystemFeedbackRole({
+                command: event.command,
+                title: '新增角色',
+                onSubmit: () => props.fetchRefresh()
+            })
         }
 
         return () => (
@@ -32,23 +36,22 @@ export default defineComponent({
                     <n-h4 prefix="bar" class="m-0 line-height-20">
                         部门角色
                     </n-h4>
-                    <common-element-button content="新增" type="primary" icon="nest-plus"></common-element-button>
+                    <common-element-button
+                        content="新增"
+                        type="primary"
+                        icon="nest-plus"
+                        onClick={() => fetchCommand({ command: 'CREATE' })}
+                    ></common-element-button>
                 </div>
                 <div class="flex flex-col flex-1 overflow-hidden">
                     <n-scrollbar class="flex-1 overflow-hidden">
-                        <common-element-draggable class="p-inline-5" animation={150} v-model={list.value}>
+                        <common-element-draggable class="flex flex-col gap-6 p-inline-5" animation={150} v-model={list.value}>
                             {list.value.map(item => (
-                                <div class="flex flex-col" key={item.keyId}>
-                                    <n-button
-                                        style={props.keyId === item.keyId ? { backgroundColor: 'var(--n-color-hover)' } : {}}
-                                        class="justify-start p-inline-10"
-                                        type="primary"
-                                        quaternary
-                                        onClick={() => fetchSelecter(item.keyId)}
-                                    >
-                                        <n-text>{item.name}</n-text>
-                                    </n-button>
-                                </div>
+                                <deploy-system-common-role-column
+                                    key={item.keyId}
+                                    v-model:node={item}
+                                    onSelecter={(id: string) => emit('selecter', id)}
+                                ></deploy-system-common-role-column>
                             ))}
                         </common-element-draggable>
                         <div class="flex flex-col overflow-hidden">
@@ -63,13 +66,12 @@ export default defineComponent({
                                     block-line
                                     expand-on-click
                                     cancelable={false}
-                                    selected-keys={treeNode.value.keys}
+                                    selected-keys={[props.keyId].filter(Boolean)}
                                     data={items.value}
-                                    style={treeNode.value.style}
                                     key-field="keyId"
                                     label-field="name"
                                     children-field="children"
-                                    on-update:selected-keys={(keys: Array<string>) => fetchSelecter(keys[0])}
+                                    on-update:selected-keys={(keys: Array<string>) => emit('selecter', keys[0])}
                                 />
                             </div>
                         </div>
@@ -80,3 +82,17 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.deploy-system-common-role-sider {
+    position: relative;
+    :deep(.deploy-system-common-role-column) {
+        justify-content: flex-start;
+        padding: 0 10px;
+    }
+    .n-tree.n-tree--block-node {
+        --n-node-content-height: 34px;
+        --n-node-color-active: var(--n-node-color-pressed);
+    }
+}
+</style>

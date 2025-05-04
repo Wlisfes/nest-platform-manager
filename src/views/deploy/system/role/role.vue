@@ -12,7 +12,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { state, setState } = useState({
             keyId: '',
-            collapsed: true,
+            collapsed: false,
             initialize: true,
             list: [] as Array<Omix>,
             items: [] as Array<Omix>
@@ -140,6 +140,7 @@ export default defineComponent({
                             v-model:key-id={state.keyId}
                             v-model:list={state.list}
                             v-model:items={state.items}
+                            fetch-refresh={fetchBaseSystemColumnRoleWhole}
                             onSelecter={fetchSelecter}
                         ></deploy-system-common-role-sider>
                     </n-layout-sider>

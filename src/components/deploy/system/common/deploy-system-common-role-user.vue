@@ -99,6 +99,7 @@ export default defineComponent({
                 <div class="flex flex-col flex-1 p-12 overflow-hidden">
                     <common-database-container element-table v-model:initialize={state.initialize} v-model:loading={state.loading}>
                         <common-database-table
+                            pagination
                             loading={state.loading}
                             data={state.dataSource}
                             v-model:columns={state.columns}

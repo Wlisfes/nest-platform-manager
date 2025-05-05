@@ -84,28 +84,30 @@ export default defineComponent({
                             key-field="keyId"
                             label-field="name"
                             style={{ '--n-node-content-height': '34px' }}
+                            disabled={state.loading}
                             data={state.list}
                             checked-keys={state.keys}
                             on-update:checked-keys={(keys: Array<string>) => setState({ keys })}
                         ></n-tree>
+                        <n-element class="flex gap-24 p-inline-28 p-block-12 overflow-hidden">
+                            <common-element-button
+                                class="min-w-80"
+                                type="warning"
+                                content="重置"
+                                disabled={state.loading}
+                                onClick={() => setState({ keys: state.next })}
+                            ></common-element-button>
+                            <common-element-button
+                                class="min-w-80"
+                                type="primary"
+                                content="保存"
+                                loading={state.loading}
+                                disabled={state.loading}
+                                onClick={fetchSubmit}
+                            ></common-element-button>
+                        </n-element>
                     </n-element>
                 </n-scrollbar>
-                <n-element class="flex gap-24 p-inline-40 p-block-12 overflow-hidden">
-                    <common-element-button
-                        class="min-w-80"
-                        type="warning"
-                        content="重置"
-                        onClick={() => setState({ keys: state.next })}
-                    ></common-element-button>
-                    <common-element-button
-                        class="min-w-80"
-                        type="primary"
-                        content="保存"
-                        loading={state.loading}
-                        disabled={state.loading}
-                        onClick={fetchSubmit}
-                    ></common-element-button>
-                </n-element>
             </common-element>
         )
     }

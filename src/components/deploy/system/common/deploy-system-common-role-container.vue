@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { keyId, collapsed } = useVModels(props, emit)
-        const { state, setState } = useState({ current: 'rule' })
+        const { state, setState } = useState({ current: 'user' })
 
         return () => (
             <common-element class="deploy-system-common-role-container h-full flex flex-col overflow-hidden" radius="var(--border-radius)">

@@ -72,7 +72,7 @@ export default defineComponent({
             } else if (utils.isEmpty(value)) {
                 return <span>-</span>
             }
-            return value
+            return <common-database-chunk element="text" content={value}></common-database-chunk>
         }
 
         return () => (

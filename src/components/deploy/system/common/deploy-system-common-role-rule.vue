@@ -15,7 +15,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { state, setState } = useState({
             initialize: true,
-            loading: true,
+            loading: false,
             message: '',
             list: [] as Array<Omix>,
             next: [] as Array<string>,
@@ -27,9 +27,9 @@ export default defineComponent({
             try {
                 await fetchBaseSystemTreeRouter()
                 await fetchBaseSystemJoinColumnRoleRouter()
-                return await setState({ initialize: false, loading: false, message: '' })
+                return await setState({ initialize: false, message: '' })
             } catch (err) {
-                return await setState({ initialize: false, loading: false, message: '' })
+                return await setState({ initialize: false, message: '' })
             }
         }
 

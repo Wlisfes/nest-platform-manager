@@ -58,27 +58,27 @@ export default defineComponent({
                 onClickoutside={fetchClickoutside}
                 v-slots={{
                     trigger: () => (
-                        <div class="flex items-center cursor-pointer" onClick={fetchOpenCollapse}>
-                            <common-element-image
-                                class="b-rd-50% block overflow-hidden"
-                                width={36}
-                                height={36}
-                                preview-disabled
-                                src={flowUser.value.avatar}
-                            ></common-element-image>
+                        <div class="flex items-center cursor-pointer select-none" onClick={fetchOpenCollapse}>
+                            {utils.isEmpty(flowUser.value.avatar) ? (
+                                <n-avatar round size={36} color="var(--primary-color)">
+                                    {String(flowUser.value.name ?? '-').slice(0, 1)}
+                                </n-avatar>
+                            ) : (
+                                <n-avatar round size={36} src={flowUser.value.avatar}></n-avatar>
+                            )}
                         </div>
                     )
                 }}
             >
                 <n-element class="flex flex-col overflow-hidden">
                     <div class="flex items-center gap-10 p-16 select-none cursor-pointer border-b border-b-solid border-b-[var(--divider-color)]">
-                        <common-element-image
-                            class="b-rd-50% block overflow-hidden"
-                            width={44}
-                            height={44}
-                            preview-disabled
-                            src={flowUser.value.avatar}
-                        ></common-element-image>
+                        {utils.isEmpty(flowUser.value.avatar) ? (
+                            <n-avatar round size={44} color="var(--primary-color)" class="text-18">
+                                {String(flowUser.value.name ?? '-').slice(0, 1)}
+                            </n-avatar>
+                        ) : (
+                            <n-avatar round size={44} src={flowUser.value.avatar}></n-avatar>
+                        )}
                         <div class="flex flex-col flex-1">
                             <n-text depth={1} style={{ fontSize: '16px', lineHeight: '24px' }}>
                                 <n-ellipsis tooltip={false}>{flowUser.value.name}</n-ellipsis>

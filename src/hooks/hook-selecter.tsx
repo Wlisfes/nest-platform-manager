@@ -1,7 +1,7 @@
 import { toRefs } from 'vue'
 import { isNotEmpty } from 'class-validator'
-import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks/hook-state'
+import { cloneDeep, isArray, isObject } from '@/utils/utils-common'
 import { ResultResolver } from '@/interface/instance.resolver'
 
 export interface BaseState {
@@ -74,7 +74,14 @@ export function useSelectService<T>(request: (state: BaseState) => Promise<Resul
     async function fetchRequest() {
         try {
             await setState({ loading: true })
-            const list = await request(state).then(({ data }) => fetchTransform(data ?? []))
+            const list = await request(state).then(({ data }) => {
+                if (data && isArray(data)) {
+                    return fetchTransform(data ?? [])
+                } else if (isObject(data)) {
+                    return fetchTransform((data as Omix).list ?? [])
+                }
+                return fetchTransform([])
+            })
             return await setState({ loading: false, initialize: false, dataSource: list, dataColumn: list.slice(0, 100) }).then(() => {
                 options.callback?.(state)
                 return state

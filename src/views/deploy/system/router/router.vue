@@ -102,9 +102,10 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container ref={root} class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+            <layout-common-container ref={root} abstract class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
                 <common-database-compute
                     element-class="flex-row-reverse justify-between"
+                    keys={['refresh', 'settings', 'size', 'full']}
                     v-model:full={full.value}
                     v-model:loading={state.loading}
                     v-model:columns={state.columns}

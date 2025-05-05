@@ -15,7 +15,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
             root: document.querySelector('.deploy-system-role-container'),
-            request: (data, base, opts) => Service.httpBaseSystemColumnRoleUser({ ...data, keyId: props.keyId }),
+            request: (data, base, opts) => Service.httpBaseSystemJoinColumnRoleUser({ ...data, keyId: props.keyId }),
             event: 'submit',
             form: { vague: undefined },
             columns: fetchKineColumns(true, [

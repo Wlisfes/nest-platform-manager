@@ -46,10 +46,27 @@ export function httpBaseSystemColumnRouter(data: BodyColumn<Omix>) {
     })
 }
 
+/**菜单资源详情**/
+export function httpBaseSystemRouterResolver(params: Omix) {
+    return request({
+        url: `/api/system/router/resolver`,
+        method: 'GET',
+        params
+    })
+}
+
 /**菜单列表树**/
 export function httpBaseSystemColumnTreeRouter() {
     return request({
         url: `/api/system/router/column/tree`,
+        method: 'GET'
+    })
+}
+
+/**完整路由菜单树**/
+export function httpBaseSystemTreeRouter() {
+    return request({
+        url: `/api/system/router/tree`,
         method: 'GET'
     })
 }
@@ -59,14 +76,5 @@ export function httpBaseSystemUserRouter() {
     return request({
         url: `/api/system/router/column/user`,
         method: 'GET'
-    })
-}
-
-/**菜单资源详情**/
-export function httpBaseSystemRouterResolver(params: Omix) {
-    return request({
-        url: `/api/system/router/resolver`,
-        method: 'GET',
-        params
     })
 }

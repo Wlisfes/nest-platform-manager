@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const { keyId, collapsed } = useVModels(props, emit)
-        const { state, setState } = useState({ current: 'user' })
+        const { state, setState } = useState({ current: 'rule' })
 
         return () => (
             <common-element class="deploy-system-common-role-container h-full flex flex-col overflow-hidden" radius="var(--border-radius)">
@@ -40,7 +40,7 @@ export default defineComponent({
                                 <n-tab-pane name="user" tab="员工角色">
                                     <deploy-system-common-role-user key-id={keyId.value}></deploy-system-common-role-user>
                                 </n-tab-pane>
-                                <n-tab-pane name="role" tab="角色权限">
+                                <n-tab-pane name="rule" tab="角色权限">
                                     <deploy-system-common-role-rule key-id={keyId.value}></deploy-system-common-role-rule>
                                 </n-tab-pane>
                                 <n-tab-pane name="model" tab="数据权限">
@@ -71,6 +71,7 @@ export default defineComponent({
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
     }
     :deep(.n-tabs-pane-wrapper) {
         position: relative;

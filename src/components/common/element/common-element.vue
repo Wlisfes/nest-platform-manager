@@ -32,7 +32,7 @@ export default defineComponent({
         }))
 
         return () => (
-            <n-element class={className.value} style={{ '--n-element-border-radius': props.radius }}>
+            <n-element class={className.value} style={style.value}>
                 {props.spin ? (
                     <n-spin size={54} show={props.loading} content-class={props.className}>
                         {slots.default && slots.default()}
@@ -67,6 +67,7 @@ export default defineComponent({
     }
     > :deep(.n-spin-container),
     > :deep(.n-spin-content) {
+        position: relative;
         display: flex;
         flex-direction: column;
         flex: 1;

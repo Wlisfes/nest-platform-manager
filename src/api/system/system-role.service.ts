@@ -55,9 +55,9 @@ export function httpBaseSystemColumnRoleWhole() {
 }
 
 /**角色关联用户列表**/
-export function httpBaseSystemColumnRoleUser(data: BodyColumn<Omix>) {
+export function httpBaseSystemJoinColumnRoleUser(data: BodyColumn<Omix>) {
     return request<ResultColumn<Omix>>({
-        url: `/api/system/role/column/user`,
+        url: `/api/system/role/join/column/user`,
         method: 'POST',
         data
     })
@@ -76,6 +76,24 @@ export function httpBaseSystemJoinRoleUser(data: Omix) {
 export function httpBaseSystemJoinRoleUserDelete(data: Omix) {
     return request({
         url: `/api/system/role/join/user/delete`,
+        method: 'POST',
+        data
+    })
+}
+
+/**角色关联菜单列表**/
+export function httpBaseSystemJoinColumnRoleRouter(data: Omix) {
+    return request({
+        url: `/api/system/role/join/column/router`,
+        method: 'POST',
+        data
+    })
+}
+
+/**角色关联菜单**/
+export function httpBaseSystemJoinRoleRouter(data: Omix) {
+    return request({
+        url: `/api/system/role/join/router`,
         method: 'POST',
         data
     })

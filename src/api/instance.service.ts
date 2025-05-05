@@ -1,4 +1,3 @@
 export * from '@/api/system/system-instance.service'
 export * from '@/api/deploy/deploy.service'
 export * from '@/api/system/chunk.service'
-export * from '@/api/system/router.service'

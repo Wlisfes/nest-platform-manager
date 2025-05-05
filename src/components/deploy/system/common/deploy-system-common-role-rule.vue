@@ -10,7 +10,11 @@ export default defineComponent({
         keyId: { type: String }
     },
     setup(props, ctx) {
-        return () => <div></div>
+        return () => (
+            <n-element class="deploy-system-common-role-rule flex flex-col flex-1 p-bs-58">
+                <common-element class="flex-1">都是垃圾的卡拉</common-element>
+            </n-element>
+        )
     }
 })
 </script>

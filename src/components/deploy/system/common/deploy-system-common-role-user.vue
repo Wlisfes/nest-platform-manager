@@ -96,7 +96,7 @@ export default defineComponent({
                         </n-element>
                     </common-database-compute>
                 </div>
-                <div class="flex flex-col flex-1 p-inline-12 p-bs-12 overflow-hidden">
+                <div class="flex flex-col flex-1 p-12 overflow-hidden">
                     <common-database-container element-table v-model:initialize={state.initialize} v-model:loading={state.loading}>
                         <common-database-table
                             loading={state.loading}

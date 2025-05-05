@@ -44,7 +44,7 @@ export default defineComponent({
                                     <deploy-system-common-role-rule key-id={keyId.value}></deploy-system-common-role-rule>
                                 </n-tab-pane>
                                 <n-tab-pane name="model" tab="数据权限">
-                                    <deploy-system-common-role-rule key-id={keyId.value}></deploy-system-common-role-rule>
+                                    <deploy-system-common-role-model key-id={keyId.value}></deploy-system-common-role-model>
                                 </n-tab-pane>
                             </Fragment>
                         )

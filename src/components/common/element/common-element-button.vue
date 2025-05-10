@@ -30,7 +30,11 @@ export default defineComponent({
         }
 
         return () => (
-            <n-button class={{ 'common-element-button': true, 'element-database': props.database }} focusable={false}>
+            <n-button
+                class={{ 'common-element-button': true, 'element-database': props.database }}
+                style={{ '--n-icon-size': props.iconSize + 'px' }}
+                focusable={false}
+            >
                 {{ icon: utils.isEmpty(props.icon) ? undefined : fetchIconRender, default: fetchContentRender }}
             </n-button>
         )

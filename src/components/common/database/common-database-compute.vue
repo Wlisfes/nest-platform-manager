@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, PropType, Fragment } from 'vue'
+import { defineComponent, PropType, VNode, Fragment } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 
@@ -7,6 +7,8 @@ export default defineComponent({
     name: 'CommonDatabaseCompute',
     emits: ['refresh', 'checkboxs', 'update:full', 'update:loading', 'update:columns', 'update:checkboxs'],
     props: {
+        /**页面标题**/
+        title: { type: [String, Object] as PropType<VNode> },
         /**展示操作**/
         keys: { type: Array as PropType<Array<string>>, default: () => [] },
         /**开启全屏**/
@@ -24,36 +26,56 @@ export default defineComponent({
         const { full, loading, columns } = useVModels(props)
 
         return () => (
-            <n-element class="flex gap-10">
+            <n-element class="common-database-compute flex gap-10">
+                {props.title && (
+                    <n-element class="flex items-center">
+                        <n-h3 class="m-0! line-height-22" prefix="bar" style={{ '--n-bar-width': '4px' }}>
+                            {props.title}
+                        </n-h3>
+                    </n-element>
+                )}
                 <n-element class={`flex flex-1 gap-10 ${props.elementClass}`}>{slots.default && slots.default()}</n-element>
                 {props.keys.length > 0 && (
                     <div class="flex items-center">
                         {props.keys.includes('refresh') && (
-                            <common-element-button class="h-full p-inline-8" text disabled={loading.value} onClick={() => emit('refresh')}>
-                                <common-element-icon size={22} name="nest-refresh"></common-element-icon>
-                            </common-element-button>
+                            <Fragment>
+                                <common-element-button
+                                    text
+                                    class="h-full p-inline-6"
+                                    icon="nest-refresh"
+                                    icon-size={22}
+                                    disabled={loading.value}
+                                    loading={loading.value}
+                                    onClick={() => emit('refresh')}
+                                ></common-element-button>
+                                <n-divider class="m-0!" vertical />
+                            </Fragment>
                         )}
+
                         {props.keys.includes('size') && (
                             <Fragment>
-                                <n-divider class="m-0!" vertical />
                                 <common-database-element-size></common-database-element-size>
+                                <n-divider class="m-0!" vertical />
                             </Fragment>
                         )}
                         {props.keys.includes('settings') && (
                             <Fragment>
-                                <n-divider class="m-0!" vertical />
                                 <common-database-settings
                                     v-model:columns={columns.value}
                                     onCheckboxs={(s: Array<Omix<DataTableColumn>>) => emit('checkboxs', s)}
                                 ></common-database-settings>
+                                <n-divider class="m-0!" vertical />
                             </Fragment>
                         )}
                         {props.keys.includes('full') && (
                             <Fragment>
-                                <n-divider class="m-0!" vertical />
-                                <common-element-button class="h-full p-inline-8" text onClick={props.toggle}>
-                                    <common-element-icon size={22} name={full.value ? 'nest-shrink' : 'nest-screen'}></common-element-icon>
-                                </common-element-button>
+                                <common-element-button
+                                    text
+                                    class="h-full p-inline-6"
+                                    icon={full.value ? 'nest-shrink' : 'nest-screen'}
+                                    icon-size={22}
+                                    onClick={props.toggle}
+                                ></common-element-button>
                             </Fragment>
                         )}
                     </div>
@@ -63,3 +85,14 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.common-database-compute {
+    position: relative;
+    :deep(.n-base-loading.n-icon-slot) {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+    }
+}
+</style>

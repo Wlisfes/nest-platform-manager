@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, computed, CSSProperties, nextTick } from 'vue'
+import { defineComponent, ref, Ref, computed, PropType, CSSProperties, nextTick } from 'vue'
 import { PopoverInst } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { enter, fetchWhere, isNotEmpty } from '@/utils/utils-common'
@@ -8,6 +8,8 @@ export default defineComponent({
     name: 'CommonElementSearch',
     emits: ['update:initialize', 'update:loading', 'update:vague', 'update:event', 'submit'],
     props: {
+        /**组件模式**/
+        mode: { type: String as PropType<'input' | 'action'>, default: 'action' },
         /**初始化中**/
         initialize: { type: Boolean, default: true },
         /**加载中**/
@@ -74,39 +76,55 @@ export default defineComponent({
                     placeholder={props.placeholder}
                     clearable
                     onKeyup={fetchKeyup}
-                    prefix={<common-element-icon size={18} name="nest-search"></common-element-icon>}
                 ></form-common-input>
-                <n-popover ref={instance} placement={props.placement} trigger="click" arrow-point-to-center style={{ padding: 0 }}>
-                    {{
-                        trigger: () => (
-                            <common-element-button icon="nest-filter">
-                                <span>筛选</span>
-                            </common-element-button>
-                        ),
-                        default: () => (
-                            <n-element class="flex flex-col" style={elementNodes.value}>
-                                <n-h1 class="m-0 text-16 line-height-24 p-inline-14 p-block-12">高级筛选</n-h1>
-                                <n-scrollbar style={{ maxHeight: props.maxHeight }}>
-                                    <n-form
-                                        class="p-inline-14"
-                                        style={formNodes.value}
-                                        label-width={props.labelWidth}
-                                        label-placement="left"
-                                        show-feedback={false}
-                                    >
-                                        {slots.default && slots.default()}
-                                    </n-form>
-                                </n-scrollbar>
-                                <n-flex justify="center" class="p-inline-14 p-block-14">
-                                    <common-element-button class="min-w-80">重置</common-element-button>
-                                    <common-element-button class="min-w-80" type="primary" onClick={fetchSubmit}>
-                                        确定
-                                    </common-element-button>
-                                </n-flex>
-                            </n-element>
-                        )
-                    }}
-                </n-popover>
+                {props.mode === 'input' ? (
+                    <common-element-button
+                        secondary
+                        class="min-w-80"
+                        type="primary"
+                        content="搜索"
+                        icon="nest-search"
+                        disabled={initialize.value || loading.value}
+                        loading={loading.value}
+                        onClick={() => fetchEvent('input-submit')}
+                    ></common-element-button>
+                ) : (
+                    <n-popover ref={instance} placement={props.placement} trigger="click" arrow-point-to-center style={{ padding: 0 }}>
+                        {{
+                            trigger: () => (
+                                <common-element-button
+                                    secondary
+                                    class="min-w-80"
+                                    type="primary"
+                                    icon="nest-search"
+                                    content="筛选"
+                                ></common-element-button>
+                            ),
+                            default: () => (
+                                <n-element class="flex flex-col" style={elementNodes.value}>
+                                    <n-h1 class="m-0 text-16 line-height-24 p-inline-14 p-block-12">高级筛选</n-h1>
+                                    <n-scrollbar style={{ maxHeight: props.maxHeight }}>
+                                        <n-form
+                                            class="p-inline-14"
+                                            style={formNodes.value}
+                                            label-width={props.labelWidth}
+                                            label-placement="left"
+                                            show-feedback={false}
+                                        >
+                                            {slots.default && slots.default()}
+                                        </n-form>
+                                    </n-scrollbar>
+                                    <n-flex justify="center" class="p-inline-14 p-block-14">
+                                        <common-element-button class="min-w-80">重置</common-element-button>
+                                        <common-element-button class="min-w-80" type="primary" onClick={fetchSubmit}>
+                                            确定
+                                        </common-element-button>
+                                    </n-flex>
+                                </n-element>
+                            )
+                        }}
+                    </n-popover>
+                )}
             </div>
         )
     }

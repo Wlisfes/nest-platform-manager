@@ -35,9 +35,13 @@ export default defineComponent({
             >
                 {{
                     trigger: () => (
-                        <common-element-button class="h-full p-inline-8" text onClick={fetchTrigger}>
-                            <common-element-icon size={22} name="nest-density"></common-element-icon>
-                        </common-element-button>
+                        <common-element-button
+                            text
+                            class="h-full p-inline-6"
+                            icon="nest-density"
+                            icon-size={22}
+                            onClick={fetchTrigger}
+                        ></common-element-button>
                     ),
                     default: (vm: PopoverInst) => (
                         <n-element class="flex flex-col overflow-hidden">

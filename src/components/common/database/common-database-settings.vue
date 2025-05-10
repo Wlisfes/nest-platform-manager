@@ -32,12 +32,13 @@ export default defineComponent({
             <common-element-popover style={{ padding: 0 }} v-model:visible={state.visible} on-update:show={fetchClose}>
                 {{
                     trigger: () => (
-                        <div
-                            class="common-database-settings h-full flex items-center overflow-hidden p-inline-8"
+                        <common-element-button
+                            class="h-full p-inline-6"
+                            text
+                            icon="nest-settings"
+                            icon-size={22}
                             onClick={() => setState({ visible: true })}
-                        >
-                            <common-element-button text icon="nest-settings" icon-size={22}></common-element-button>
-                        </div>
+                        ></common-element-button>
                     ),
                     default: () => (
                         <n-element class="w-220 flex flex-col overflow-hidden">

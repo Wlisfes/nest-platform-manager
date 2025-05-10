@@ -69,8 +69,8 @@ export function fetchKineColumns(data: boolean | Partial<Omix<DataTableColumn>>,
             title: node.title ?? '操作',
             key: node.key ?? 'command',
             align: node.align ?? 'center',
-            width: node.width ?? 134,
-            maxWidth: node.width ?? 134,
+            width: node.width ?? 135,
+            maxWidth: node.width ?? 135,
             fixed: node.fixed ?? 'right',
             checked: node.checked ?? true
         })

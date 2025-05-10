@@ -135,7 +135,7 @@ export default defineComponent({
         position: relative;
         white-space: nowrap;
         overflow: hidden;
-        padding-left: calc(var(--n-td-padding) + 22px);
+        padding-left: calc(var(--n-td-padding) + 24px);
         > .n-data-table-expand-trigger,
         > .n-data-table-expand-placeholder {
             position: absolute;

@@ -50,7 +50,7 @@ export default defineComponent({
                 style={styleNodes.value}
                 class="flex flex-col"
                 content-class="flex flex-col flex-1 overflow-hidden"
-                title-class="text-18 line-height-28 gap-8 select-none p-inline-20! p-block-15!"
+                title-class="text-20! line-height-28 gap-8 select-none p-inline-20! p-block-20!"
                 action-class="flex flex-col overflow-hidden"
                 on-update:show={(show: boolean) => (visible.value = show)}
                 on-after-leave={() => emit('close')}

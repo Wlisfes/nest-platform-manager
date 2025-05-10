@@ -8,7 +8,7 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { root, state, form, full, setState, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
+        const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
             request: (data, base, opts) => Service.httpBaseSystemColumnRouter(opts.body),
             document: '菜单管理自定义表头',
             dynamic: 'base:deploy:system:router',
@@ -33,8 +33,8 @@ export default defineComponent({
                 { title: '路由地址', key: 'router', width: 200, check: true },
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
-                { title: '更新人', key: 'user', width: 100, check: true },
-                { title: '更新时间', key: 'modifyTime', width: 200, check: false }
+                { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
+                { title: '更新时间', key: 'modifyTime', width: 180, check: false }
             ])
         })
 
@@ -102,9 +102,10 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container ref={root} abstract class="absolute inset-0 p-12" class-name="p-12 gap-12 overflow-hidden">
+            <layout-common-container ref={root} abstract class="absolute inset-0" class-name="p-12 gap-12 overflow-hidden">
                 <common-database-compute
-                    element-class="flex-row-reverse justify-between"
+                    title="菜单管理"
+                    element-class="flex-row-reverse justify-start"
                     keys={['refresh', 'settings', 'size', 'full']}
                     v-model:full={full.value}
                     v-model:loading={state.loading}
@@ -134,8 +135,9 @@ export default defineComponent({
                         ></common-element-button>
                     </n-element>
                     <common-element-action
-                        label-width="7.2em"
                         cols={2}
+                        label-width="7.2em"
+                        placeholder="请输入菜单名称、权限标识、路由地址"
                         v-model:initialize={state.initialize}
                         v-model:loading={state.loading}
                         v-model:event={state.event}

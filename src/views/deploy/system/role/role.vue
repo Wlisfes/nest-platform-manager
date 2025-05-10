@@ -10,9 +10,10 @@ export default defineComponent({
         return () => (
             <layout-common-container
                 transition
+                abstract
                 initialize={state.initialize}
-                class="deploy-system-role-container absolute inset-0 p-12"
-                class-name="p-12 gap-12 overflow-hidden"
+                class="deploy-system-role absolute inset-0"
+                class-name="gap-12 overflow-hidden"
             >
                 <n-layout has-sider class="h-full bg-transparent overflow-hidden">
                     <n-layout-sider
@@ -20,7 +21,7 @@ export default defineComponent({
                         collapsed-width={0}
                         collapsed={state.collapsed}
                         class="bg-transparent overflow-hidden box-border"
-                        content-class="p-ie-12 overflow-hidden!"
+                        content-class="overflow-hidden!"
                     >
                         <deploy-system-common-role-sider
                             v-model:key-id={state.keyId}

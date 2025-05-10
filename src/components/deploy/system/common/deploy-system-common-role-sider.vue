@@ -50,10 +50,10 @@ export default defineComponent({
 
         return () => (
             <common-element class="deploy-system-common-role-sider h-full flex flex-col overflow-hidden" radius="var(--border-radius)">
-                <div class="flex items-center justify-between p-inline-12 p-bs-12 p-be-12">
-                    <n-h4 prefix="bar" class="m-0 line-height-20">
-                        部门角色
-                    </n-h4>
+                <div class="flex items-center justify-between p-is-12 p-block-12">
+                    <n-h3 class="m-0! line-height-22" prefix="bar" style={{ '--n-bar-width': '4px' }}>
+                        角色管理
+                    </n-h3>
                     <common-element-button
                         content="新增"
                         type="primary"
@@ -63,7 +63,7 @@ export default defineComponent({
                 </div>
                 <div class="flex flex-col flex-1 overflow-hidden">
                     <n-scrollbar class="flex-1 overflow-hidden">
-                        <common-element-draggable class="flex flex-col gap-6 p-inline-5" animation={150} v-model={state.list}>
+                        <common-element-draggable class="flex flex-col gap-6 p-is-5" animation={150} v-model={state.list}>
                             {state.list.map(item => (
                                 <deploy-system-common-role-column
                                     key={item.keyId}
@@ -80,7 +80,7 @@ export default defineComponent({
                                     部门角色
                                 </n-h4>
                             </div>
-                            <div class="p-inline-5">
+                            <div class="p-is-5">
                                 <n-tree
                                     selectable
                                     block-line

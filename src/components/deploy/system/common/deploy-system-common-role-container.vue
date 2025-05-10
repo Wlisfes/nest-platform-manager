@@ -86,8 +86,8 @@ export default defineComponent({
         position: relative;
         line-height: 20px;
         padding: 12px 12px 11px;
-        border-bottom: 1px solid var(--divider-color);
-        transition: border 0.3s var(--cubic-bezier-ease-in-out);
+        // border-bottom: 1px solid var(--divider-color);
+        // transition: border 0.3s var(--cubic-bezier-ease-in-out);
     }
 }
 </style>

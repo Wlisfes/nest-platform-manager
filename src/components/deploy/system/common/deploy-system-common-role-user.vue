@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, ctx) {
         const { state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
-            root: document.querySelector('.deploy-system-role-container'),
+            root: document.querySelector('.deploy-system-role'),
             request: (data, base, opts) => Service.httpBaseSystemJoinColumnRoleUser({ ...data, keyId: props.keyId }),
             event: 'submit',
             form: { vague: undefined },
@@ -66,7 +66,7 @@ export default defineComponent({
 
         return () => (
             <n-element class="deploy-system-common-role-user flex flex-col flex-1 overflow-hidden">
-                <div class="m-is-304 p-12 flex items-center justify-end relative z-3 overflow-hidden">
+                <div class="m-is-304 p-inline-12 p-block-12 flex items-center justify-end relative z-3 overflow-hidden">
                     <common-database-compute
                         class="flex-1"
                         element-class="flex-row-reverse justify-between"
@@ -96,7 +96,7 @@ export default defineComponent({
                         </n-element>
                     </common-database-compute>
                 </div>
-                <div class="flex flex-col flex-1 p-12 overflow-hidden">
+                <div class="flex flex-col flex-1 p-inline-12 p-be-12 overflow-hidden">
                     <common-database-container element-table v-model:initialize={state.initialize} v-model:loading={state.loading}>
                         <common-database-table
                             pagination

@@ -58,6 +58,10 @@ export default defineComponent({
             })
         }
 
+        function fetchExpandIconRender() {
+            return <common-element-icon size={18} name="nest-double-right"></common-element-icon>
+        }
+
         /**节点渲染**/
         function fetchColumnContentRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
             if (utils.isNotEmpty(slots[base.key])) {
@@ -89,6 +93,7 @@ export default defineComponent({
                 default-checked-row-keys={rowKeys.value}
                 render-cell={fetchColumnContentRender}
                 on-update:checked-row-keys={fetchUpdateChecked}
+                render-expand-icon={() => <common-element-icon size={18} name="nest-double-right"></common-element-icon>}
                 pagination={utils.fetchWhere<boolean | Omix>(!props.pagination, false, {
                     suffix: utils.fetchWhere(props.showQuickJumper, () => <span>页</span>),
                     goto: () => <span>前往</span>,
@@ -125,8 +130,26 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .n-data-table.common-database-table {
-    :deep(.n-data-table-td.n-data-table-td--last-row) {
-        border-bottom-width: 1px;
+    :deep(.n-data-table-tbody .n-data-table-td):has(.n-data-table-expand-trigger),
+    :deep(.n-data-table-tbody .n-data-table-td):has(.n-data-table-expand-placeholder) {
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+        padding-left: calc(var(--n-td-padding) + 22px);
+        > .n-data-table-expand-trigger,
+        > .n-data-table-expand-placeholder {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            margin: 0;
+            left: calc(var(--n-td-padding) * var(--indent-offset) + var(--n-td-padding));
+        }
+        .n-data-table-indent {
+            float: left;
+        }
+    }
+    :deep(.n-data-table-td.n-data-table-td--center-align) > .common-database-chunk {
+        justify-content: center;
     }
     :deep(.n-data-table__pagination .n-pagination-item) {
         border: none;

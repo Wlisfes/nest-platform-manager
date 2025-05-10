@@ -16,5 +16,11 @@ export default [
         name: 'DeploySystemUser',
         meta: { title: '用户管理', AUTH: 'AUTH' },
         component: () => import('@/views/deploy/system/user/user.vue')
+    },
+    {
+        path: '/deploy/system/dept',
+        name: 'DeploySystemDept',
+        meta: { title: '部门组织', AUTH: 'AUTH' },
+        component: () => import('@/views/deploy/system/dept/dept.vue')
     }
 ]

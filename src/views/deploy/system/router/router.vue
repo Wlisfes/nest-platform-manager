@@ -29,12 +29,12 @@ export default defineComponent({
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'iconName', width: 100, align: 'center', check: true },
                 { title: '类型', key: 'typeChunk', width: 100, align: 'center', check: true },
-                { title: '权限标识', key: 'key', width: 240, check: true },
-                { title: '路由地址', key: 'router', width: 240, check: true },
+                { title: '权限标识', key: 'key', width: 200, check: true },
+                { title: '路由地址', key: 'router', width: 200, check: true },
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
-                { title: '更新人', key: 'user', width: 100, align: 'center', check: true },
-                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: false }
+                { title: '更新人', key: 'user', width: 100, check: true },
+                { title: '更新时间', key: 'modifyTime', width: 200, check: false }
             ])
         })
 

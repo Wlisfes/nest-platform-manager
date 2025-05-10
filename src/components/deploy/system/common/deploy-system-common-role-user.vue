@@ -21,7 +21,7 @@ export default defineComponent({
             columns: fetchKineColumns(true, [
                 { title: '头像', key: 'avatar', width: 120, check: true },
                 { title: '员工名称', key: 'name', width: 200, check: true },
-                { title: '操作时间', key: 'modifyTime', width: 200, align: 'center', check: true }
+                { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: true }
             ])
         })
 

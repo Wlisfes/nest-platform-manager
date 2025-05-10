@@ -85,7 +85,7 @@ export default defineComponent({
         z-index: 2;
         position: relative;
         line-height: 20px;
-        padding: 12px 12px 11px;
+        padding: 12px;
         // border-bottom: 1px solid var(--divider-color);
         // transition: border 0.3s var(--cubic-bezier-ease-in-out);
     }

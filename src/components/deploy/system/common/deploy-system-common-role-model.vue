@@ -47,7 +47,7 @@ export default defineComponent({
 
         return () => (
             <common-element class="deploy-system-common-role-model p-bs-58" spin loading={state.initialize}>
-                <n-element class="flex p-inline-12 p-block-12">
+                <n-element class="flex p-inline-12 p-be-12">
                     <n-radio-group
                         class="flex flex-col gap-10"
                         size="large"

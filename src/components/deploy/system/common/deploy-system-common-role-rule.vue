@@ -73,7 +73,7 @@ export default defineComponent({
         return () => (
             <common-element class="deploy-system-common-role-rule p-bs-58 overflow-hidden" spin loading={state.initialize}>
                 <n-scrollbar class="flex-1 overflow-hidden">
-                    <n-element class="p-inline-12 p-block-12 overflow-hidden">
+                    <n-element class="p-inline-12 p-be-12 overflow-hidden">
                         <n-tree
                             class="w-full max-w-680"
                             block-line

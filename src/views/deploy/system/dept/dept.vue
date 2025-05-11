@@ -16,8 +16,8 @@ export default defineComponent({
             columns: fetchKineColumns(true, [
                 { title: '部门名称', key: 'name', width: 180, check: true },
                 { title: '部门简称', key: 'bit', width: 130, check: true },
-                { title: '关联人数', key: 'items', width: 100, align: 'center', check: true },
-                { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
+                { title: '关联人数', key: 'items', width: 130, check: true },
+                { title: '更新人', key: 'user', width: 130, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 180, check: true }
             ])
         })
@@ -36,6 +36,17 @@ export default defineComponent({
             return await feedback.fetchDeploySystemFeedbackDept({
                 command: 'UPDATE',
                 title: '编辑',
+                node: event.node,
+                onSubmit: () => fetchRefresh()
+            })
+        }
+
+        /**关联用户**/
+        async function fetchMouseJoinUser(mouse: MouseEvent, event: Omix) {
+            await event.setState({ visible: false })
+            return await feedback.fetchDeploySystemFeedbackDeptUser({
+                command: 'UPDATE',
+                title: '关联用户',
                 node: event.node,
                 onSubmit: () => fetchRefresh()
             })
@@ -85,12 +96,6 @@ export default defineComponent({
                             icon="nest-plus"
                             onClick={fetchMouseCreate}
                         ></common-element-button>
-                        <common-element-button
-                            content="关联用户"
-                            type="primary"
-                            icon="nest-link"
-                            //onClick={() => fetchCommand({ command: 'CREATE' })}
-                        ></common-element-button>
                     </n-element>
                     <common-element-action
                         mode="input"
@@ -131,17 +136,30 @@ export default defineComponent({
                                         type="primary"
                                         icon="nest-edit"
                                         icon-size={16}
-                                        //onClick={() => fetchCommand({ node, command: 'UPDATE' })}
                                         onClick={(event: MouseEvent) => fetchMouseUpdate(event, { node })}
                                     ></common-element-button>
+                                    {/* <common-element-button
+                                        database
+                                        text
+                                        content="删除"
+                                        type="error"
+                                        icon="nest-delete"
+                                        icon-size={16}
+                                        onClick={(event: MouseEvent) => fetchMouseUpdate(event, { node })}
+                                    ></common-element-button> */}
                                     <common-database-command>
                                         <common-element-button
-                                            database
-                                            text
+                                            quaternary
+                                            content="关联用户"
+                                            type="primary"
+                                            icon="nest-link"
+                                            onClick={(event: MouseEvent, data: Omix) => fetchMouseJoinUser(event, { ...data, node })}
+                                        ></common-element-button>
+                                        <common-element-button
+                                            quaternary
                                             content="删除"
                                             type="error"
                                             icon="nest-delete"
-                                            icon-size={16}
                                             onClick={(event: MouseEvent, data: Omix) => fetchMouseDelete(event, { ...data, node })}
                                         ></common-element-button>
                                     </common-database-command>

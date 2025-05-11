@@ -44,3 +44,12 @@ export function httpBaseSystemDeptColumn(data: Omix) {
         data
     })
 }
+
+/**关联用户**/
+export function httpBaseSystemJoinDeptUser(data: Omix) {
+    return request({
+        url: `/api/system/dept/join/user`,
+        method: 'POST',
+        data
+    })
+}

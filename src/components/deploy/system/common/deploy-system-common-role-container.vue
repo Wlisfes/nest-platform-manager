@@ -37,7 +37,7 @@ export default defineComponent({
                         ),
                         default: () => (
                             <Fragment>
-                                <n-tab-pane name="user" tab="员工角色">
+                                <n-tab-pane name="user" tab="用户角色">
                                     <deploy-system-common-role-user key-id={keyId.value}></deploy-system-common-role-user>
                                 </n-tab-pane>
                                 <n-tab-pane name="rule" tab="角色权限">

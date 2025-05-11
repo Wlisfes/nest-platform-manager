@@ -10,6 +10,32 @@ export function httpBaseSystemDeptCreate(data: Omix) {
     })
 }
 
+/**编辑部门**/
+export function httpBaseSystemDeptUpdate(data: Omix) {
+    return request({
+        url: `/api/system/dept/update`,
+        method: 'POST',
+        data
+    })
+}
+
+/**删除部门**/
+export function httpBaseSystemDeptDelete(data: Omix) {
+    return request({
+        url: `/api/system/dept/delete`,
+        method: 'POST',
+        data
+    })
+}
+
+/**完整部门树**/
+export function httpBaseSystemDeptCascader() {
+    return request({
+        url: `/api/system/dept/cascader`,
+        method: 'POST'
+    })
+}
+
 /**部门列表**/
 export function httpBaseSystemDeptColumn(data: Omix) {
     return request({

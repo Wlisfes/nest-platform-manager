@@ -22,6 +22,49 @@ export default defineComponent({
             ])
         })
 
+        /**新增**/
+        async function fetchMouseCreate(mouse: MouseEvent) {
+            return await feedback.fetchDeploySystemFeedbackDept({
+                command: 'CREATE',
+                title: '新增',
+                onSubmit: () => fetchRefresh()
+            })
+        }
+
+        /**编辑**/
+        async function fetchMouseUpdate(mouse: MouseEvent, event: Omix) {
+            return await feedback.fetchDeploySystemFeedbackDept({
+                command: 'UPDATE',
+                title: '编辑',
+                node: event.node,
+                onSubmit: () => fetchRefresh()
+            })
+        }
+
+        /**删除**/
+        async function fetchMouseDelete(mouse: MouseEvent, event: Omix) {
+            await event.setState({ visible: false })
+            return await fetchDialogService({
+                title: '删除提示',
+                type: 'error',
+                content: `确定删除当前所选部门？`,
+                async onSubmit(done: Function) {
+                    try {
+                        await done({ loading: true })
+                        return await Service.httpBaseSystemDeptDelete({ keyId: event.node.keyId }).then(async response => {
+                            await done({ visible: false })
+                            await fetchNotifyService({ title: response.message })
+                            return await fetchRefresh()
+                        })
+                    } catch (err) {
+                        return await done({ loading: false }).then(async () => {
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        })
+                    }
+                }
+            })
+        }
+
         return () => (
             <layout-common-container ref={root} abstract class="absolute inset-0" class-name="p-12 gap-12 overflow-hidden">
                 <common-database-compute
@@ -40,6 +83,12 @@ export default defineComponent({
                             content="新增"
                             type="primary"
                             icon="nest-plus"
+                            onClick={fetchMouseCreate}
+                        ></common-element-button>
+                        <common-element-button
+                            content="关联用户"
+                            type="primary"
+                            icon="nest-link"
                             //onClick={() => fetchCommand({ command: 'CREATE' })}
                         ></common-element-button>
                     </n-element>
@@ -83,16 +132,19 @@ export default defineComponent({
                                         icon="nest-edit"
                                         icon-size={16}
                                         //onClick={() => fetchCommand({ node, command: 'UPDATE' })}
+                                        onClick={(event: MouseEvent) => fetchMouseUpdate(event, { node })}
                                     ></common-element-button>
-                                    <common-element-button
-                                        database
-                                        text
-                                        content="删除"
-                                        type="error"
-                                        icon="nest-delete"
-                                        icon-size={16}
-                                        //onClick={() => fetchCommand({ node, command: 'DELETE', type: 'error', title: '删除' })}
-                                    ></common-element-button>
+                                    <common-database-command>
+                                        <common-element-button
+                                            database
+                                            text
+                                            content="删除"
+                                            type="error"
+                                            icon="nest-delete"
+                                            icon-size={16}
+                                            onClick={(event: MouseEvent, data: Omix) => fetchMouseDelete(event, { ...data, node })}
+                                        ></common-element-button>
+                                    </common-database-command>
                                 </n-element>
                             )
                         }}

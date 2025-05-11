@@ -20,7 +20,7 @@ export default defineComponent({
             form: { vague: undefined },
             columns: fetchKineColumns(true, [
                 { title: '头像', key: 'avatar', width: 120, check: true },
-                { title: '员工名称', key: 'name', width: 200, check: true },
+                { title: '用户名称', key: 'name', width: 200, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 200, align: 'center', check: true }
             ])
         })
@@ -79,18 +79,19 @@ export default defineComponent({
                         onCheckboxs={fetchCheckboxs}
                     >
                         <n-element class="flex flex-1 gap-12 items-center justify-end">
-                            <form-common-input
-                                class="flex-1 max-w-320"
-                                v-model:value={form.value.vague}
-                                placeholder="请输入员工姓名、工号"
-                                clearable
-                                onKeyup={(e: KeyboardEvent) => enter(e, () => fetchRefresh())}
-                                prefix={<common-element-icon size={18} name="nest-search"></common-element-icon>}
-                            ></form-common-input>
+                            <common-element-action
+                                mode="input"
+                                placeholder="请输入名称、工号"
+                                v-model:initialize={state.initialize}
+                                v-model:loading={state.loading}
+                                v-model:event={state.event}
+                                v-model:vague={form.value.vague}
+                                onSubmit={() => fetchRefresh()}
+                            ></common-element-action>
                             <common-element-button
-                                content="关联员工"
+                                content="关联用户"
                                 type="primary"
-                                icon="nest-plus"
+                                icon="nest-link"
                                 onClick={() => fetchCommand({ command: 'CREATE' })}
                             ></common-element-button>
                         </n-element>

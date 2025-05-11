@@ -4,6 +4,7 @@ import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonElementButton',
+    emits: ['click'],
     props: {
         /**是否表格操作按钮**/
         database: { type: Boolean, default: false },
@@ -12,9 +13,11 @@ export default defineComponent({
         /**图标size**/
         iconSize: { type: Number, default: 18 },
         /**按钮文案**/
-        content: { type: [String, Object] as PropType<string | VNode> }
+        content: { type: [String, Object] as PropType<string | VNode> },
+        /**操作回调函数**/
+        setState: { type: Function as PropType<(e: Omix) => Promise<Omix>>, default: Function }
     },
-    setup(props, { slots }) {
+    setup(props, { emit, slots }) {
         /**渲染图标**/
         function fetchIconRender() {
             if (utils.isEmpty(props.icon)) {
@@ -34,6 +37,7 @@ export default defineComponent({
                 class={{ 'common-element-button': true, 'element-database': props.database }}
                 style={{ '--n-icon-size': props.iconSize + 'px' }}
                 focusable={false}
+                onClick={(event: MouseEvent) => emit('click', event, { setState: props.setState })}
             >
                 {{ icon: utils.isEmpty(props.icon) ? undefined : fetchIconRender, default: fetchContentRender }}
             </n-button>

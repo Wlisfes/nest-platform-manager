@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
 import { useRouter } from 'vue-router'
-import { useManager, useStore } from '@/store'
+import { useGlobal, useStore } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { useProvider } from '@/hooks/hook-provider'
 import { fetchDialogService } from '@/plugins'
@@ -11,7 +11,7 @@ export default defineComponent({
     name: 'LayoutCommonUser',
     setup(props, ctx) {
         const router = useRouter()
-        const { flowUser, fetchReset } = useStore(useManager)
+        const { flowUser, fetchReset } = useStore(useGlobal)
         const { theme, fetchThemeUpdate } = useProvider()
         const { state, setState } = useState({ visible: false, delay: false })
 

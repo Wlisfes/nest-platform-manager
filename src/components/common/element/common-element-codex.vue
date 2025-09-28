@@ -9,7 +9,7 @@ export default defineComponent({
         /**是否禁用**/
         disabled: { type: Boolean },
         /**图形验证码地址**/
-        baseURL: { type: String, default: '/api/system/deploy/codex/token/write' }
+        baseURL: { type: String, default: `/api/windows/auth/codex/write` }
     },
     setup(props, { expose }) {
         const { state, setState } = useState({ initialize: true, loading: false, baseURL: '' })

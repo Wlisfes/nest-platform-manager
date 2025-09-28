@@ -21,3 +21,11 @@ export function httpCommonAuthAccountTokenContinue() {
         method: 'POST'
     })
 }
+
+/**登录账户信息**/
+export function httpCommonAuthAccountTokenResolver() {
+    return request({
+        url: `/api/windows/auth/token/resolver`,
+        method: 'GET'
+    })
+}

@@ -3,6 +3,7 @@ import { createPinia, defineStore, storeToRefs } from 'pinia'
 import Storage from 'pinia-plugin-persistedstate'
 export { useConfiger } from '@/store/modules/configer'
 export { useManager } from '@/store/modules/manager'
+export { useGlobal } from '@/store/modules/global'
 export const store = createPinia()
 store.use(Storage)
 

@@ -1,6 +1,6 @@
 import { App } from 'vue'
 import { createRouter, createWebHistory, Router } from 'vue-router'
-import { useManager, useConfiger } from '@/store'
+import { useGlobal, useManager, useConfiger, useStore } from '@/store'
 import { fetchSetupRouter } from '@/router/modules'
 import * as utils from '@/utils/utils-common'
 import * as cookie from '@/utils/utils-cookie'
@@ -34,8 +34,9 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
 
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
+    const { faseNode, fetchReset, fetchBaseInitialize } = useStore(useGlobal)
     const configer = useConfiger()
-    const manager = useManager()
+
     router.beforeEach(async (to, from, next) => {
         window.$loadingBar.start()
         const token = cookie.getToken()
@@ -46,11 +47,10 @@ export function setupGuardRouter(router: Router) {
                 /**情况token存储**/
                 return next({ replace: true, path: '/login' })
             })
-        } else if (utils.isEmpty(manager.flowUser.uid)) {
+        } else if (utils.isEmpty(faseNode.value.uid)) {
             /**token不为空：用户信息不存在加载用户信息**/
             try {
-                await manager.fetchBaseSystemUserResolver()
-                await manager.fetchBaseSystemUserRouter()
+                await fetchBaseInitialize()
             } catch (err) {
                 /**用户信息加载失败：移除token存储后重定向到登录页面**/
                 return await cookie.delCompose().then(() => {
@@ -68,11 +68,11 @@ export function setupGuardRouter(router: Router) {
     router.afterEach(async (to, from) => {
         document.title = `昆仑服务平台${utils.fetchWhere(!!to.meta.title, ` - ${to.meta.title}`, '')}`
         window.$loadingBar.finish()
-        return await utils.fetchHandler(['AUTH'].includes(to.meta.AUTH as string), async () => {
-            return await configer.fetchMenuRouter(to).then(async menu => {
-                return await configer.setState({ router: to.path })
-            })
-        })
+        // return await utils.fetchHandler(['AUTH'].includes(to.meta.AUTH as string), async () => {
+        //     return await configer.fetchMenuRouter(to).then(async menu => {
+        //         return await configer.setState({ router: to.path })
+        //     })
+        // })
     })
 }
 

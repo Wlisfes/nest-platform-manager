@@ -7,14 +7,17 @@ import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
-    const { setState: fetchState } = useStore(useConfiger)
+    const { setState: fetchStateConfiger } = useStore(useConfiger)
     /**用户信息**/
     const flowUser = ref<Omix>({})
+    const { state, setState } = useState({
+        menuOptions: []
+    })
 
     /**退出登录时重置store数据**/
     async function fetchReset() {
         const { device, collapsed } = utils.fetchScreenResize()
-        return await fetchState({ device, collapsed, router: '/manager', menuRouter: [] }).then(async data => {
+        return await fetchStateConfiger({ device, collapsed, router: '/manager', menuRouter: [] }).then(async data => {
             await delCompose()
             return (flowUser.value = {})
         })
@@ -22,15 +25,31 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
 
     /**初始化**/
     async function fetchBaseInitialize() {
-        return await Promise.all([fetchBaseAuthTokenResolver()])
+        return await Promise.all([fetchCommonAuthAccountTokenResolver(), fetchCommonAuthAccountTokenResource()])
     }
 
     /**登录账户信息**/
-    async function fetchBaseAuthTokenResolver() {
+    async function fetchCommonAuthAccountTokenResolver() {
         return await Service.httpCommonAuthAccountTokenResolver().then(async ({ data }) => {
             return (flowUser.value = data ?? {})
         })
     }
 
-    return { flowUser, fetchReset, fetchBaseInitialize, fetchBaseAuthTokenResolver }
+    /**登录账户权限**/
+    async function fetchCommonAuthAccountTokenResource() {
+        return await Service.httpCommonAuthAccountTokenResource().then(async ({ data }) => {
+            console.log(data)
+        })
+    }
+
+    return {
+        ...toRefs(state),
+        flowUser,
+        setState,
+        fetchStateConfiger,
+        fetchReset,
+        fetchBaseInitialize,
+        fetchCommonAuthAccountTokenResolver,
+        fetchCommonAuthAccountTokenResource
+    }
 })

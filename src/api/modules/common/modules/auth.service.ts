@@ -30,18 +30,10 @@ export function httpCommonAuthAccountTokenResolver() {
     })
 }
 
-/**账户权限菜单**/
-export function httpAuthAccountTokenResource() {
+/**登录账户权限**/
+export function httpCommonAuthAccountTokenResource() {
     return request({
         url: `/api/windows/auth/token/resource`,
-        method: 'GET'
-    })
-}
-
-/**账户权限按钮**/
-export function httpAuthAccountTokenSheet() {
-    return request({
-        url: `/api/windows/auth/token/sheet`,
         method: 'GET'
     })
 }

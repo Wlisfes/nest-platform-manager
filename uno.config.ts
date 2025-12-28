@@ -22,7 +22,8 @@ export default defineConfig({
         ['bg-warning', { 'background-color': 'var(--warning-color)', transition: 'background-color 0.3s var(--cubic-bezier-ease-in-out)' }],
         ['bg-error', { 'background-color': 'var(--error-color)', transition: 'background-color 0.3s var(--cubic-bezier-ease-in-out)' }],
         ['bg-transition', { transition: 'background-color 0.3s var(--cubic-bezier-ease-in-out)' }],
-        [/^grid-columns-(\d+)$/, ([, d]) => ({ display: 'grid', 'grid-template-columns': `repeat(${d}, minmax(0px, 1fr))` })]
+        [/^grid-cols-(\d+)$/, ([, d]) => ({ display: 'grid', 'grid-template-columns': `repeat(${d}, minmax(0px, 1fr))` })],
+        [/^grid-auto-(\d+)$/, ([, d]) => ({ display: 'grid', 'grid-template-columns': `repeat(auto-fit, minmax(${d}px, 1fr))` })]
     ],
     shortcuts: [{ 'border-divider': 'border border-solid border-[var(--divider-color)]' }]
 })

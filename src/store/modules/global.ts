@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { useStore, useConfiger } from '@/store'
 import { useState } from '@/hooks/hook-state'
 import { delCompose } from '@/utils/utils-cookie'
+import { omit } from 'lodash-es'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
@@ -25,20 +26,21 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
 
     /**初始化**/
     async function fetchBaseInitialize() {
-        return await Promise.all([fetchCommonAuthAccountTokenResolver(), fetchCommonAuthAccountTokenResource()])
+        return await Promise.all([fetchAuthAccountTokenResolver(), fetchAuthAccountTokenResource()])
     }
 
     /**登录账户信息**/
-    async function fetchCommonAuthAccountTokenResolver() {
-        return await Service.httpCommonAuthAccountTokenResolver().then(async ({ data }) => {
+    async function fetchAuthAccountTokenResolver() {
+        return await Service.httpAuthAccountTokenResolver().then(async ({ data }) => {
             return (flowUser.value = data ?? {})
         })
     }
 
     /**登录账户权限**/
-    async function fetchCommonAuthAccountTokenResource() {
-        return await Service.httpCommonAuthAccountTokenResource().then(async ({ data }) => {
-            console.log(data)
+    async function fetchAuthAccountTokenResource() {
+        return await Service.httpAuthAccountTokenResource().then(async ({ data }) => {
+            const items = data.list.map((item: Omix) => Object.assign(omit(item, ['icon']), { iconName: item.icon }))
+            return await setState({ menuOptions: items })
         })
     }
 
@@ -49,7 +51,7 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         fetchStateConfiger,
         fetchReset,
         fetchBaseInitialize,
-        fetchCommonAuthAccountTokenResolver,
-        fetchCommonAuthAccountTokenResource
+        fetchAuthAccountTokenResolver,
+        fetchAuthAccountTokenResource
     }
 })

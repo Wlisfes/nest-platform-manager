@@ -1,12 +1,7 @@
 import { request } from '@/utils/utils-request'
 
-/**
- * 账号登录
- * @param data.number   工号,示例值(1234)
- * @param data.password 密码,示例值(MTIzNDU2)
- * @param data.code     验证码,示例值(495673)
- */
-export function httpCommonAuthAccountToken(data: Omix) {
+/**账号登录**/
+export function httpAuthAccountToken(data: Omix) {
     return request({
         url: `/api/windows/auth/token/login`,
         method: 'POST',
@@ -15,7 +10,7 @@ export function httpCommonAuthAccountToken(data: Omix) {
 }
 
 /**登录续时**/
-export function httpCommonAuthAccountTokenContinue() {
+export function httpAuthAccountTokenContinue() {
     return request({
         url: `/api/windows/auth/token/continue`,
         method: 'POST'
@@ -23,7 +18,7 @@ export function httpCommonAuthAccountTokenContinue() {
 }
 
 /**登录账户信息**/
-export function httpCommonAuthAccountTokenResolver() {
+export function httpAuthAccountTokenResolver() {
     return request({
         url: `/api/windows/auth/token/resolver`,
         method: 'GET'
@@ -31,7 +26,7 @@ export function httpCommonAuthAccountTokenResolver() {
 }
 
 /**登录账户权限**/
-export function httpCommonAuthAccountTokenResource() {
+export function httpAuthAccountTokenResource() {
     return request({
         url: `/api/windows/auth/token/resource`,
         method: 'GET'

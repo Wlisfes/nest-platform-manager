@@ -101,7 +101,7 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container ref={root} abstract class="absolute inset-0" class-name="p-12 gap-12 overflow-hidden">
+            <layout-common-container ref={root} abstract class-name="p-12 gap-12 overflow-hidden">
                 <common-database-compute
                     title="菜单管理"
                     element-class="flex-row-reverse justify-start"

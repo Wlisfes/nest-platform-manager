@@ -30,9 +30,8 @@ export default defineComponent({
                 class="layout-common-sider"
                 label-field="name"
                 key-field="router"
-                accordion={true}
-                icon-size={16}
-                root-indent={18}
+                accordion
+                root-indent={14}
                 collapsed-width={64}
                 value={configer.router}
                 options={menuOptions.value}
@@ -46,11 +45,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .layout-common-sider {
-    margin-top: 8px;
-    // --n-font-size: 14px;
-    // --n-item-height: 40px;
-    > :deep(.n-menu-item):first-child {
-        margin-top: 0;
-    }
+    position: relative;
+    --n-item-height: 38px;
 }
 </style>

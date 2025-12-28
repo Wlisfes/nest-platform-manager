@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
         const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
-            request: (data, base, opts) => Service.httpBaseSystemColumnRouter(opts.body),
+            request: (data, base, options) => Service.httpBaseSystemColumnResource(options.body),
             document: '菜单管理自定义表头',
             dynamic: 'base:deploy:system:router',
             form: {
@@ -27,8 +27,7 @@ export default defineComponent({
             columns: fetchKineColumns(true, [
                 { title: '选择框', key: 'selection', type: 'selection', check: true },
                 { title: '菜单名称', key: 'name', width: 180, check: true },
-                { title: '图标', key: 'iconName', width: 100, align: 'center', check: true },
-                { title: '类型', key: 'typeChunk', width: 100, align: 'center', check: true },
+                { title: '图标', key: 'icon', width: 100, align: 'center', check: true },
                 { title: '权限标识', key: 'key', width: 200, check: true },
                 { title: '路由地址', key: 'router', width: 200, check: true },
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },

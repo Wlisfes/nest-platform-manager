@@ -22,30 +22,23 @@ export default defineComponent({
         const { state, form, formRef, setState, setForm, fetchValidater } = useFormService({
             callback: fetchCallback,
             form: {
-                type: props.node.type, //菜单类型
-                name: props.node.name, //菜单名称
+                name: props.node.name ?? '工作台', //菜单名称
                 pid: props.node.pid, //父级菜单
-                version: props.node.version, //版本号
-                status: props.node.status, //状态
-                check: Number(props.node.check ?? 1), //是否可见
+                version: props.node.version ?? 'v1.0.0', //版本号
+                status: props.node.status ?? 'enable', //状态
+                check: props.node.check ?? 'show', //显示状态
                 sort: props.node.sort ?? 10, //排序号
-                key: props.node.key, //权限标识
-                router: props.node.router, //菜单地址
+                key: props.node.key ?? 'chatbok:manager', //权限标识
+                router: props.node.router ?? '/manager', //菜单地址
                 active: props.node.active, //激活路由
-                iconName: props.node.iconName //菜单图标
-            },
-            option: {
-                COMMON_SYSTEM_ROUTER_CHECK: [
-                    { value: 1, name: '显示' },
-                    { value: 0, name: '隐藏' }
-                ]
+                icon: props.node.icon //菜单图标
             },
             rules: {
                 type: { required: true, message: '请选择菜单类型', trigger: 'blur' },
                 name: { required: true, message: '请输入菜单名称', trigger: 'blur' },
                 version: { required: true, message: '请输入版本号', trigger: 'blur' },
                 status: { required: true, message: '请选择状态', trigger: 'blur' },
-                check: { required: true, type: 'number', message: '请选择是否可见', trigger: 'blur' },
+                check: { required: true, message: '请选择显示状态', trigger: 'blur' },
                 sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' },
                 key: { required: true, message: '请输入权限标识', trigger: 'blur' },
                 router: { required: true, message: '请输入菜单地址', trigger: 'blur' }
@@ -56,30 +49,19 @@ export default defineComponent({
             immediate: false
         })
         /**通用字典枚举**/
-        const { fetchRequest, COMMON_SYSTEM_ROUTER_STATUS, COMMON_SYSTEM_ROUTER_TYPE } = useChunkService({
-            immediate: false,
-            COMMON_SYSTEM_ROUTER_STATUS: true,
-            COMMON_SYSTEM_ROUTER_TYPE: true
+        const chunkOptions = useChunkService({
+            immediate: ['CREATE'].includes(props.command),
+            type: ['CHUNK_WINDOWS_RESOUREC_STATUS', 'CHUNK_WINDOWS_RESOUREC_CHECK']
         })
 
         /**表达初始化回调**/
         async function fetchCallback() {
-            return await Promise.all([fetchRequest(), treeOptions.fetchRequest()]).then(async () => {
-                if (utils.isEmpty(form.value.type) && COMMON_SYSTEM_ROUTER_TYPE.value.length > 0) {
-                    await setForm({ type: COMMON_SYSTEM_ROUTER_TYPE.value[0].value })
-                }
-                return await setState({ initialize: false })
-            })
+            return await setState({ initialize: false })
         }
 
-        /**提交参数转换**/
-        async function fetchSubmitParameter(data: typeof form.value) {
-            return await utils.fetchExclude({ ...data, check: Boolean(data.check) })
-        }
-
-        /**创建菜单**/
-        async function fetchBaseSystemRouterCreate(body: Omix) {
-            return await Service.httpBaseSystemRouterCreate(body).then(async ({ message }) => {
+        /**新增菜单资源**/
+        async function fetchBaseSystemCreateResource(body: Omix) {
+            return await Service.httpBaseSystemCreateResource(body).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
                     await emit('submit', { done: setState })
                     return await fetchNotifyService({ title: message })
@@ -88,8 +70,8 @@ export default defineComponent({
         }
 
         /**编辑菜单**/
-        async function fetchBaseSystemRouterUpdate(body: Omix) {
-            return await Service.httpBaseSystemRouterUpdate({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
+        async function fetchBaseSystemUpdateResource(body: Omix) {
+            return await Service.httpBaseSystemUpdateResource(body).then(async ({ message }) => {
                 return await setState({ visible: false }).then(async () => {
                     await emit('submit', { done: setState })
                     return await fetchNotifyService({ title: message })
@@ -99,19 +81,19 @@ export default defineComponent({
 
         /**确定提交表单**/
         async function fetchSubmit() {
-            return await fetchValidater().then(async result => {
-                if (result) {
-                    return await await setState({ loading: false, disabled: false })
-                }
-                return await fetchSubmitParameter(form.value).then(async body => {
+            return await setState({ loading: true }).then(async () => {
+                return await fetchValidater().then(async result => {
+                    if (result) {
+                        return await await setState({ loading: false })
+                    }
                     try {
-                        if (props.command === 'CREATE') {
-                            return await fetchBaseSystemRouterCreate(body)
-                        } else {
-                            return await fetchBaseSystemRouterUpdate(body)
+                        if (['CREATE'].includes(props.command)) {
+                            return await fetchBaseSystemCreateResource(form.value)
+                        } else if (['UPLOAD'].includes(props.command)) {
+                            return await fetchBaseSystemUpdateResource({ ...form.value, keyId: props.node.keyId })
                         }
                     } catch (err) {
-                        return await await setState({ loading: false, disabled: false }).then(async () => {
+                        return await await setState({ loading: false }).then(async () => {
                             return await fetchNotifyService({ type: 'error', title: err.message })
                         })
                     }
@@ -122,7 +104,7 @@ export default defineComponent({
         return () => (
             <common-dialog-provider
                 title={props.title}
-                width={840}
+                width={800}
                 v-model:visible={state.visible}
                 v-model:loading={state.loading}
                 v-model:initialize={state.initialize}
@@ -131,7 +113,7 @@ export default defineComponent({
                 onClose={() => emit('close', { done: setState })}
             >
                 <n-form
-                    class="grid-columns-2 gap-col-20"
+                    class="grid-auto-350 gap-col-20"
                     require-mark-placement="left"
                     size="medium"
                     ref={formRef}
@@ -139,15 +121,6 @@ export default defineComponent({
                     rules={state.rules}
                     disabled={state.loading}
                 >
-                    <n-form-item label="菜单类型" path="type">
-                        <n-select
-                            label-field="name"
-                            value-field="value"
-                            placeholder="请选择菜单类型"
-                            options={COMMON_SYSTEM_ROUTER_TYPE.value}
-                            v-model:value={form.value.type}
-                        ></n-select>
-                    </n-form-item>
                     <n-form-item label="菜单名称" path="name">
                         <n-input maxlength={32} placeholder="请输入菜单名称" v-model:value={form.value.name}></n-input>
                     </n-form-item>
@@ -164,6 +137,29 @@ export default defineComponent({
                     <n-form-item label="权限标识" path="key">
                         <n-input maxlength={128} placeholder="请输入权限标识" v-model:value={form.value.key}></n-input>
                     </n-form-item>
+                    <n-form-item label="菜单地址" path="router">
+                        <n-input maxlength={255} placeholder="请输入菜单地址" v-model:value={form.value.router}></n-input>
+                    </n-form-item>
+                    <n-form-item label="菜单状态" path="status">
+                        <form-chunk-select
+                            placeholder="请选择菜单状态"
+                            options={chunkOptions.CHUNK_WINDOWS_RESOUREC_STATUS.value}
+                            v-model:value={form.value.status}
+                        ></form-chunk-select>
+                    </n-form-item>
+                    <n-form-item label="显示状态" path="check">
+                        <form-chunk-select
+                            placeholder="请选择显示状态"
+                            options={chunkOptions.CHUNK_WINDOWS_RESOUREC_CHECK.value}
+                            v-model:value={form.value.check}
+                        ></form-chunk-select>
+                    </n-form-item>
+                    <n-form-item label="激活路由" path="active">
+                        <n-input maxlength={255} placeholder="请输入激活路由" v-model:value={form.value.active}></n-input>
+                    </n-form-item>
+                    <n-form-item label="菜单图标" path="icon">
+                        <n-input maxlength={255} placeholder="请选择菜单图标" v-model:value={form.value.active}></n-input>
+                    </n-form-item>
                     <n-form-item label="版本号" path="version">
                         <n-input maxlength={32} placeholder="请输入版本号" v-model:value={form.value.version}></n-input>
                     </n-form-item>
@@ -177,37 +173,6 @@ export default defineComponent({
                             v-model:value={form.value.sort}
                         />
                     </n-form-item>
-                    <n-form-item label="状态" path="status">
-                        <n-select
-                            label-field="name"
-                            value-field="value"
-                            placeholder="请选择状态"
-                            options={COMMON_SYSTEM_ROUTER_STATUS.value}
-                            v-model:value={form.value.status}
-                        ></n-select>
-                    </n-form-item>
-                    <n-form-item label="是否可见" path="check">
-                        <n-select
-                            label-field="name"
-                            value-field="value"
-                            placeholder="请选择是否可见"
-                            options={state.COMMON_SYSTEM_ROUTER_CHECK}
-                            v-model:value={form.value.check}
-                        ></n-select>
-                    </n-form-item>
-                    {form.value.type === 'router' && (
-                        <Fragment>
-                            <n-form-item label="菜单地址" path="router">
-                                <n-input maxlength={255} placeholder="请输入菜单地址" v-model:value={form.value.router}></n-input>
-                            </n-form-item>
-                            <n-form-item label="激活路由" path="active">
-                                <n-input maxlength={255} placeholder="请输入激活路由" v-model:value={form.value.active}></n-input>
-                            </n-form-item>
-                            <n-form-item label="菜单图标" path="iconName">
-                                <n-input maxlength={255} placeholder="请输入激活路由" v-model:value={form.value.active}></n-input>
-                            </n-form-item>
-                        </Fragment>
-                    )}
                 </n-form>
             </common-dialog-provider>
         )

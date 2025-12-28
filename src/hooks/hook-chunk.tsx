@@ -1,27 +1,14 @@
 import { toRefs, ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks/hook-state'
-import { SCHEMA_CHUNK_OPTIONS } from '@/interface/instance.resolver'
+import { COMMON_CHUNK_OPTIONS, ChunkName, ChunkCommonOptions, ChunkColumnOptions } from '@/interface/instance.resolver'
 import { ResultResolver } from '@/interface/instance.resolver'
-import { pick, isEmpty, fetchHandler, isNotEmpty } from '@/utils/utils-common'
+import { pick, isEmpty, isNotEmpty } from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
-/**枚举数据格式**/
-export interface BaseChunkOption extends Omix {
-    /**枚举ID**/
-    keyId: string
-    /**枚举数名称**/
-    name: string
-    /**枚举唯一标识**/
-    value: string
-    /**枚举样式类型**/
-    type: string
-    /**枚举其他额外配置**/
-    json: Omix
-}
-/**枚举数类数据格式转换**/
-export interface BaseChunk<T> extends Record<keyof typeof SCHEMA_CHUNK_OPTIONS, T> {}
+
 /**枚举数枚举通用hooks配置**/
-export interface ChunkOption extends Partial<BaseChunk<boolean>> {
+export interface ChunkOptions extends Partial<ChunkCommonOptions<boolean>> {
+    type?: Array<ChunkName>
     /**立即执行**/
     immediate?: boolean
     /**初始化状态**/
@@ -29,61 +16,44 @@ export interface ChunkOption extends Partial<BaseChunk<boolean>> {
     /**加载状态**/
     loading?: boolean
     /**初始化回调事件**/
-    callback?: (data: ChunkState) => void
+    callback?: (data: Omix) => void
     /**数据转换**/
-    transform?: (data: Record<keyof typeof SCHEMA_CHUNK_OPTIONS, Array<BaseChunkOption>>) => Omix
+    transform?: (data: Record<keyof typeof COMMON_CHUNK_OPTIONS, Array<ChunkColumnOptions>>) => Omix<typeof data>
 }
-/**枚举数枚举通用hooks字段配置**/
-export interface ChunkState extends BaseChunk<Array<BaseChunkOption>>, Pick<ChunkOption, 'initialize' | 'loading'> {}
+
 /**初始化字段**/
-export function initState(data: Omix = {}) {
-    const ChunkOmix = Object.keys(SCHEMA_CHUNK_OPTIONS).reduce((ocs: Omix, key: string) => {
-        return { ...ocs, [key]: data[key] ?? [] }
-    }, {})
-    return { ...ChunkOmix, ...data } as ChunkState
-}
-/**枚举数枚举通用hooks**/
-export function useChunkService(options: ChunkOption) {
-    const { state, setState } = useState<ChunkState>(
-        initState({
-            loading: options.loading ?? options.immediate ?? false,
-            initialize: options.initialize ?? options.immediate ?? false
-        })
+export function fetchInitState(options: ChunkOptions) {
+    const obs = Array.from(new Set([...(options.type ?? []), ...Object.keys(pick(options, Object.keys(COMMON_CHUNK_OPTIONS)))])).reduce(
+        (o: Omix, key: string) => ({ ...o, [key]: [] }),
+        {}
     )
+    return useState({
+        ...obs,
+        type: Array.from(new Set([...(options.type ?? []), ...Object.keys(obs)])),
+        loading: options.loading ?? options.immediate ?? false,
+        initialize: options.initialize ?? options.immediate ?? false
+    } as Required<Pick<ChunkOptions, 'loading' | 'initialize' | 'type'> & ChunkCommonOptions<Array<ChunkColumnOptions>>>)
+}
 
-    if (options.immediate) {
+/**枚举数枚举通用hooks**/
+export function useChunkService(options: ChunkOptions) {
+    const { state, setState } = fetchInitState(options)
+
+    if (options.immediate ?? true) {
         fetchRequest()
-    }
-
-    /**数据转换**/
-    async function fetchTransform(data: Omix): Promise<BaseChunk<Array<Omix>>> {
-        if (options.transform) {
-            return ((await options.transform(cloneDeep(data))) ?? {}) as BaseChunk<Array<Omix>>
-        }
-        return (data ?? {}) as BaseChunk<Array<Omix>>
-    }
-
-    /**回调事件**/
-    async function fetchCallback() {
-        return await fetchHandler(!!options.callback, () => {
-            return options.callback!(state)
-        }).then(() => state)
     }
 
     async function fetchRequest() {
         return await setState({ loading: true }).then(async () => {
             try {
-                const chunkData = await Service.httpBaseDeployEnumsCompiler({
-                    type: Object.keys(pick(options, Object.keys(SCHEMA_CHUNK_OPTIONS)))
-                }).then(async ({ data }) => {
-                    return await fetchTransform(data ?? {})
-                })
-                return await setState(initState({ loading: false, initialize: false, ...chunkData })).then(async () => {
-                    return await fetchCallback()
+                const { data } = await Service.httpCommonChunkSelect({ type: state.type })
+                const s = options.transform ? options.transform(cloneDeep(data.data)) ?? {} : data
+                return await setState({ ...s, loading: false, initialize: false }).then(async () => {
+                    return options.callback?.(state)
                 })
             } catch (err) {
-                return await setState(initState({ loading: false, initialize: false })).then(async () => {
-                    return await fetchCallback()
+                return await setState({ loading: false, initialize: false }).then(async () => {
+                    return options.callback?.(state)
                 })
             }
         })

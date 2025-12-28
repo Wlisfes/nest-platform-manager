@@ -69,7 +69,7 @@ export default defineComponent({
                 if (['command'].includes(base.key)) {
                     return slots.command!(data, base)
                 }
-                return slots[base.key]!(value, data, base)
+                // return slots[base.key]!(value, data, base)
             } else if (slots.default) {
                 /**默认插槽**/
                 return slots.default(value, data, base)

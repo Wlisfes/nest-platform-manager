@@ -40,7 +40,7 @@ export function httpBaseSystemRouterDelete(data: Omix) {
 /**菜单列表**/
 export function httpBaseSystemColumnRouter(data: BodyColumn<Omix>) {
     return request<ResultColumn<Omix>>({
-        url: `/api/system/router/column`,
+        url: `/api/windows/system/resource/column`,
         method: 'POST',
         data
     })

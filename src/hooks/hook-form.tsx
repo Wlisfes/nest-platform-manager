@@ -12,28 +12,28 @@ export type FormState<R> = Omix & {
 }
 export type FormOption<T, R, U> = Partial<FormState<R>> & {
     mounted?: boolean
-    option?: Omix<U>
+    options?: Omix<U>
     form: Omix<T>
     callback?: Function
 }
 
 /**自定义表单Hooks**/
-export function useFormService<T extends Omix, R extends FormRules, U extends Omix>(option: FormOption<T, R, U>) {
+export function useFormService<T extends Omix, R extends FormRules, U extends Omix>(options: FormOption<T, R, U>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
-    const form = ref<typeof option.form>(option.form)
+    const form = ref<typeof options.form>(options.form)
     const { state, setState } = useState({
-        initialize: option.initialize ?? true,
-        disabled: option.disabled ?? false,
-        visible: option.visible ?? false,
-        loading: option.loading ?? false,
-        rules: option.rules ?? {},
-        ...(option.option ?? {})
-    } as FormState<R> & typeof option.option)
+        initialize: options.initialize ?? true,
+        disabled: options.disabled ?? false,
+        visible: options.visible ?? false,
+        loading: options.loading ?? false,
+        rules: options.rules ?? {},
+        ...(options.option ?? {})
+    } as FormState<R> & typeof options.options)
 
     onMounted(async () => {
-        return await utils.fetchHandler(Boolean(option.mounted ?? true), async () => {
+        return await utils.fetchHandler(Boolean(options.mounted ?? true), async () => {
             return await setState({ visible: true } as never).then(() => {
-                return option.callback?.()
+                return options.callback?.()
             })
         })
     })

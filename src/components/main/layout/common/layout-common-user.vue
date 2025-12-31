@@ -11,7 +11,7 @@ export default defineComponent({
     name: 'LayoutCommonUser',
     setup(props, ctx) {
         const router = useRouter()
-        const { flowUser, fetchReset } = useStore(useGlobal)
+        const { faseUser, fetchReset } = useStore(useGlobal)
         const { theme, fetchThemeUpdate } = useProvider()
         const { state, setState } = useState({ visible: false, delay: false })
 
@@ -59,12 +59,12 @@ export default defineComponent({
                 v-slots={{
                     trigger: () => (
                         <div class="flex items-center cursor-pointer select-none" onClick={fetchOpenCollapse}>
-                            {utils.isEmpty(flowUser.value.avatar) ? (
+                            {utils.isEmpty(faseUser.value.avatar) ? (
                                 <n-avatar round size={36} color="var(--primary-color)">
-                                    {String(flowUser.value.name ?? '-').slice(0, 1)}
+                                    {String(faseUser.value.name ?? '-').slice(0, 1)}
                                 </n-avatar>
                             ) : (
-                                <n-avatar round size={36} src={flowUser.value.avatar}></n-avatar>
+                                <n-avatar round size={36} src={faseUser.value.avatar}></n-avatar>
                             )}
                         </div>
                     )
@@ -72,19 +72,19 @@ export default defineComponent({
             >
                 <n-element class="flex flex-col overflow-hidden">
                     <div class="flex items-center gap-10 p-16 select-none cursor-pointer border-b border-b-solid border-b-[var(--divider-color)]">
-                        {utils.isEmpty(flowUser.value.avatar) ? (
+                        {utils.isEmpty(faseUser.value.avatar) ? (
                             <n-avatar round size={44} color="var(--primary-color)" class="text-18">
-                                {String(flowUser.value.name ?? '-').slice(0, 1)}
+                                {String(faseUser.value.name ?? '-').slice(0, 1)}
                             </n-avatar>
                         ) : (
-                            <n-avatar round size={44} src={flowUser.value.avatar}></n-avatar>
+                            <n-avatar round size={44} src={faseUser.value.avatar}></n-avatar>
                         )}
                         <div class="flex flex-col flex-1">
                             <n-text depth={1} style={{ fontSize: '16px', lineHeight: '24px' }}>
-                                <n-ellipsis tooltip={false}>{flowUser.value.name}</n-ellipsis>
+                                <n-ellipsis tooltip={false}>{faseUser.value.name}</n-ellipsis>
                             </n-text>
                             <n-text depth={3} style={{ lineHeight: '20px' }}>
-                                <n-ellipsis tooltip={false}>{`UID：${flowUser.value.uid}`}</n-ellipsis>
+                                <n-ellipsis tooltip={false}>{`UID：${faseUser.value.uid}`}</n-ellipsis>
                             </n-text>
                         </div>
                     </div>

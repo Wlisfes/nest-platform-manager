@@ -8,7 +8,7 @@ import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
-    const flowUser = ref<Omix>({})
+    const faseUser = ref<Omix>({})
     const { setState: fetchStateConfiger } = useStore(useConfiger)
     const { state, setState } = useState({
         /**登录权限菜单**/
@@ -20,7 +20,7 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         const { device, collapsed } = utils.fetchScreenResize()
         return await fetchStateConfiger({ device, collapsed, router: '/manager', menuRouter: [] }).then(async data => {
             await delCompose()
-            return (flowUser.value = {})
+            return (faseUser.value = {})
         })
     }
 
@@ -29,10 +29,19 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         return await Promise.all([fetchAuthAccountTokenResolver(), fetchAuthAccountTokenResource()])
     }
 
+    /**登录账户**/
+    async function fetchAuthAccountToken(formState: Omix) {
+        return await Service.httpAuthAccountToken({
+            code: formState.value.code,
+            number: formState.value.number,
+            password: window.btoa(encodeURIComponent(formState.value.password))
+        })
+    }
+
     /**登录账户信息**/
     async function fetchAuthAccountTokenResolver() {
         return await Service.httpAuthAccountTokenResolver().then(async ({ data }) => {
-            return (flowUser.value = data ?? {})
+            return (faseUser.value = data ?? {})
         })
     }
 
@@ -46,10 +55,11 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
 
     return {
         ...toRefs(state),
-        flowUser,
+        faseUser,
         setState,
         fetchReset,
         fetchBaseInitialize,
+        fetchAuthAccountToken,
         fetchAuthAccountTokenResolver,
         fetchAuthAccountTokenResource
     }

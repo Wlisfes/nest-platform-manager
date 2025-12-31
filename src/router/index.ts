@@ -34,7 +34,7 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
 
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
-    const { flowUser, fetchReset, fetchBaseInitialize } = useStore(useGlobal)
+    const { faseUser, fetchReset, fetchBaseInitialize } = useStore(useGlobal)
     const configer = useConfiger()
 
     router.beforeEach(async (to, from, next) => {
@@ -47,7 +47,7 @@ export function setupGuardRouter(router: Router) {
                 /**情况token存储**/
                 return next({ replace: true, path: '/login' })
             })
-        } else if (utils.isEmpty(flowUser.value.uid)) {
+        } else if (utils.isEmpty(faseUser.value.uid)) {
             /**token不为空：用户信息不存在加载用户信息**/
             try {
                 await fetchBaseInitialize()

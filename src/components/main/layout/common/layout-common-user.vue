@@ -2,8 +2,7 @@
 import { defineComponent, Fragment } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGlobal, useStore } from '@/store'
-import { useState } from '@/hooks/hook-state'
-import { useProvider } from '@/hooks/hook-provider'
+import { useState, useProvider } from '@/hooks'
 import { fetchDialogService } from '@/plugins'
 import * as utils from '@/utils/utils-common'
 

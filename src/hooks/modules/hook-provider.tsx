@@ -1,8 +1,7 @@
 import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useConfiger, useStore } from '@/store'
-
-export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
+interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
     '--common-element-bg-color': string
 }
 

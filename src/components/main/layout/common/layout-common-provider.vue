@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { dateZhCN, zhCN } from 'naive-ui'
-import { useProvider } from '@/hooks/hook-provider'
+import { useProvider } from '@/hooks'
 
 export default defineComponent({
     name: 'LayoutCommonProvider',

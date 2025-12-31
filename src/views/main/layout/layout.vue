@@ -9,14 +9,13 @@ export default defineComponent({
 
         return () => (
             <n-layout class="h-full" content-class="flex flex-col overflow-hidden">
-                <n-layout-header bordered class="h-50 p-inline-16 flex items-center gap-24">
+                <n-layout-header class="h-50 p-inline-16 flex items-center gap-24">
                     <layout-common-logo class="h-50"></layout-common-logo>
                     <layout-common-navigate></layout-common-navigate>
                     <layout-common-user></layout-common-user>
                 </n-layout-header>
                 <n-layout has-sider content-class="flex flex-col overflow-hidden">
                     <n-layout-sider
-                        bordered
                         width={240}
                         collapse-mode="width"
                         native-scrollbar={false}
@@ -30,13 +29,10 @@ export default defineComponent({
                     </n-layout-sider>
                     <n-layout content-class="flex flex-col overflow-hidden">
                         <layout-common-store></layout-common-store>
-                        <n-layout-content
-                            class="flex-1 overflow-hidden"
-                            content-class="min-h-full flex flex-col overflow-hidden"
-                            native-scrollbar={false}
-                            scrollbar-props={{ size: 100, trigger: 'none' }}
-                        >
-                            <router-view></router-view>
+                        <n-layout-content class="flex-1 overflow-hidden" content-class="h-full flex flex-col overflow-hidden">
+                            <n-element class="h-full flex flex-col transition-background-color transition-duration-300 bg-[var(--common-element-bg-color)]">
+                                <router-view></router-view>
+                            </n-element>
                         </n-layout-content>
                     </n-layout>
                 </n-layout>

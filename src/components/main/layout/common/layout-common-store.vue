@@ -1,14 +1,14 @@
 <script lang="tsx">
 import { defineComponent, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useConfiger } from '@/store'
+import { useConfiger, useStore } from '@/store'
 import { BScroll } from '@/plugins'
 
 export default defineComponent({
     name: 'LayoutCommonStore',
     setup(props, ctx) {
+        const { menuOptions } = useStore(useConfiger)
         const router = useRouter()
-        const configer = useConfiger()
         const element = ref<HTMLElement>()
 
         async function fetchJumpRouter(data: Omix) {
@@ -34,7 +34,7 @@ export default defineComponent({
             <n-layout-header class="layout-common-store flex gap-10 overflow-hidden p-inline-12 p-be-8">
                 <div ref={element} class="flex-1 whitespace-nowrap overflow-hidden relative  cursor-pointer">
                     <div class="inline-flex gap-10 element-bscrollbar">
-                        {configer.menuRouter.map(item => (
+                        {menuOptions.value.map(item => (
                             <div key={item.fullPath} class="select-none inline-flex element-block">
                                 <common-element-button
                                     secondary

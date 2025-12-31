@@ -16,32 +16,7 @@ export default defineComponent({
         className: { type: String, default: '' }
     },
     setup(props, { slots }) {
-        const elementStyles = computed<CSSProperties>(() => ({
-            '--layout-common-full-opacity': props.opacity,
-            transition: 'background-color 0.3s var(--n-bezier)'
-        }))
-
-        return () => (
-            <n-element class="layout-common-container flex flex-col bg-[var(--common-body-color)]" style={elementStyles.value}>
-                {props.abstract ? (
-                    <div class={`flex flex-col flex-1 relative bg-[var(--card-color)] ${props.className}`} style={elementStyles.value}>
-                        {props.transition ? (
-                            <n-spin size={54} show={props.initialize}>
-                                {slots.default && slots.default()}
-                            </n-spin>
-                        ) : (
-                            <Fragment>{slots.default && slots.default()}</Fragment>
-                        )}
-                    </div>
-                ) : props.transition ? (
-                    <n-spin size={54} show={props.initialize}>
-                        {slots.default && slots.default()}
-                    </n-spin>
-                ) : (
-                    <Fragment>{slots.default && slots.default()}</Fragment>
-                )}
-            </n-element>
-        )
+        return () => <n-element class="layout-common-container flex flex-col"></n-element>
     }
 })
 </script>

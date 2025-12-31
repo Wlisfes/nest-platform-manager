@@ -23,10 +23,15 @@ export const useConfiger = defineStore(
             /**菜单收缩**/
             collapsed: false,
             /**缓存菜单**/
-            menuRouter: [] as Array<Omix>,
+            menuOptions: [] as Array<Omix>,
             /**组件尺寸**/
             elementSize: 'medium'
         })
+
+        /**重载配置**/
+        async function fetchReset() {
+            return await setState({ device: 'PC', collapsed: false, router: '/manager', menuOptions: [] })
+        }
 
         /**主题切换**/
         async function fetchThemeUpdate(theme?: 'light' | 'dark') {
@@ -34,18 +39,19 @@ export const useConfiger = defineStore(
         }
 
         /**缓存菜单**/
-        async function fetchMenuRouter(data: Omix) {
-            if (!state.menuRouter.some(item => item.fullPath === data.fullPath)) {
-                return state.menuRouter.push(utils.omit(data, ['matched']))
+        async function fetchUpdateRouter(data: Omix) {
+            if (!state.menuOptions.some(item => item.fullPath === data.fullPath)) {
+                return state.menuOptions.push(utils.omit(data, ['matched']))
             }
-            return state.menuRouter
+            return state.menuOptions
         }
 
         return {
             ...toRefs(state),
             setState,
+            fetchReset,
             fetchThemeUpdate,
-            fetchMenuRouter,
+            fetchUpdateRouter,
             inverted: computed(() => state.theme === 'dark')
         }
     },

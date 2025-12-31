@@ -49,15 +49,15 @@ export function delToken() {
 }
 
 export async function fetchCompose(data: Omix<{ token: string; secret: string; expires: number }>) {
-    await setToken(data.token, data.expires)
     await setCookie('APP_TOKEN_SECRET', data.secret, data.expires)
-    return await setCookie('APP_TOKEN_EXPIRES', data.expires, data.expires).then(() => {
-        return data
+    return await setCookie('APP_TOKEN_EXPIRES', data.expires, data.expires).then(async () => {
+        return await setToken(data.token, data.expires)
     })
 }
 
-export async function delCompose() {
-    await delToken()
+export async function fetchDestroy() {
     await delCookie('APP_TOKEN_SECRET')
-    return await delCookie('APP_TOKEN_EXPIRES')
+    return await delCookie('APP_TOKEN_EXPIRES').then(async () => {
+        return await delToken()
+    })
 }

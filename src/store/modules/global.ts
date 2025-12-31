@@ -2,14 +2,12 @@ import { ref, toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useStore, useConfiger } from '@/store'
 import { useState } from '@/hooks'
-import { delCompose } from '@/utils/utils-cookie'
+import { fetchDestroy } from '@/utils/utils-cookie'
 import { omit } from 'lodash-es'
-import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
     const faseUser = ref<Omix>({})
-    const { setState: fetchStateConfiger } = useStore(useConfiger)
     const { state, setState } = useState({
         /**登录权限菜单**/
         menuOptions: []
@@ -17,9 +15,8 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
 
     /**退出登录时重置store数据**/
     async function fetchReset() {
-        const { device, collapsed } = utils.fetchScreenResize()
-        return await fetchStateConfiger({ device, collapsed, router: '/manager', menuRouter: [] }).then(async data => {
-            await delCompose()
+        return await fetchDestroy().then(async () => {
+            await useStore(useConfiger).fetchReset()
             return (faseUser.value = {})
         })
     }

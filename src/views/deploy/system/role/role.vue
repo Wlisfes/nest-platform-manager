@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 
 export default defineComponent({
     name: 'DeploySystemRole',

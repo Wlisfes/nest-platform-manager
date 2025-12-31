@@ -1,8 +1,8 @@
 import { ref, toRefs, Ref, onBeforeMount } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useFullscreen } from '@vueuse/core'
-import { useState } from '@/hooks/hook-state'
-import { useKinesService } from '@/hooks/hook-chunk'
+import { useState } from '@/hooks'
+import { useKinesService } from '@/hooks'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import * as utils from '@/utils/utils-common'
 

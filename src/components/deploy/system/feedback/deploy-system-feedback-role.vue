@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useChunkService } from '@/hooks/hook-chunk'
+import { useChunkService } from '@/hooks'
 import { useFormService } from '@/hooks/hook-form'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'

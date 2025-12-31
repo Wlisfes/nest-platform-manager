@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
 import { useVModels } from '@vueuse/core'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 
 export default defineComponent({
     name: 'DeploySystemCommonRoleContainer',

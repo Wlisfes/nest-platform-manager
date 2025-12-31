@@ -1,6 +1,6 @@
 import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, FormRules, FormItemRule } from 'naive-ui'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import * as utils from '@/utils/utils-common'
 
 export type FormState<R> = Omix & {

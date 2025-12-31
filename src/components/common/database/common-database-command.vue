@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, cloneVNode, PropType, Fragment } from 'vue'
 import { ButtonProps } from 'naive-ui'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 
 export default defineComponent({
     name: 'CommonDatabaseCommand',

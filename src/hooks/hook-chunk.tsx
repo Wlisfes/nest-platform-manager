@@ -1,6 +1,6 @@
 import { toRefs, ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { COMMON_CHUNK_OPTIONS, ChunkName, ChunkCommonOptions, ChunkColumnOptions } from '@/interface/instance.resolver'
 import { ResultResolver } from '@/interface/instance.resolver'
 import { pick, isEmpty, isNotEmpty } from '@/utils/utils-common'

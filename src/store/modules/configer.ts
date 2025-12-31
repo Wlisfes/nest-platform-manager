@@ -1,6 +1,6 @@
 import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import * as utils from '@/utils/utils-common'
 
 /**基础缓存配置实例**/

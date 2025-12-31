@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onBeforeMount } from 'vue'
 import { useVModels } from '@vueuse/core'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { isNotEmpty } from '@/utils/utils-common'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'

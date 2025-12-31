@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { pick, fetchHandler } from '@/utils/utils-common'
 
 export default defineComponent({

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, watch } from 'vue'
-import { useState } from '@/hooks/hook-state'
-import { useChunkService } from '@/hooks/hook-chunk'
+import { useState } from '@/hooks'
+import { useChunkService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
 

@@ -1,6 +1,6 @@
 import { toRefs } from 'vue'
 import { isNotEmpty } from 'class-validator'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { cloneDeep, isArray, isObject } from '@/utils/utils-common'
 import { ResultResolver } from '@/interface/instance.resolver'
 

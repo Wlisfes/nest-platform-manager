@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { fetchDelay } from '@/utils/utils-common'
 
 export default defineComponent({

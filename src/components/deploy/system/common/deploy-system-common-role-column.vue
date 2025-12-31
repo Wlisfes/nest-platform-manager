@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { stop } from '@/utils/utils-common'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'

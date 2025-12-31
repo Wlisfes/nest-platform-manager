@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useSelectService } from '@/hooks/hook-chunk'
+import { useSelectService } from '@/hooks'
 import { useFormService } from '@/hooks/hook-form'
 import { fetchNotifyService } from '@/plugins'
 import { stop } from '@/utils/utils-common'

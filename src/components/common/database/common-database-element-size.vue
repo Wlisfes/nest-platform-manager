@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 import { PopoverInst } from 'naive-ui'
 import { useConfiger } from '@/store'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 
 export default defineComponent({
     name: 'CommonDatabaseElementSize',

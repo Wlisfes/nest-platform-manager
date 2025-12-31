@@ -1,7 +1,7 @@
 import { ref, toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useStore, useConfiger } from '@/store'
-import { useState } from '@/hooks/hook-state'
+import { useState } from '@/hooks'
 import { delCompose } from '@/utils/utils-cookie'
 import { omit } from 'lodash-es'
 import * as utils from '@/utils/utils-common'

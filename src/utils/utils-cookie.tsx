@@ -48,7 +48,7 @@ export function delToken() {
     return JsCookie.remove(APP_COOKIE.APP_TOKEN)
 }
 
-export async function setCompose(data: Omix<{ token: string; secret: string; expires: number }>) {
+export async function fetchCompose(data: Omix<{ token: string; secret: string; expires: number }>) {
     await setToken(data.token, data.expires)
     await setCookie('APP_TOKEN_SECRET', data.secret, data.expires)
     return await setCookie('APP_TOKEN_EXPIRES', data.expires, data.expires).then(() => {

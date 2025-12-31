@@ -1,6 +1,6 @@
 import { App } from 'vue'
 import { createRouter, createWebHistory, Router } from 'vue-router'
-import { useGlobal, useManager, useConfiger, useStore } from '@/store'
+import { useGlobal, useConfiger, useStore } from '@/store'
 import { fetchSetupRouter } from '@/router/modules'
 import * as utils from '@/utils/utils-common'
 import * as cookie from '@/utils/utils-cookie'

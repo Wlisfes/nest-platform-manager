@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, h } from 'vue'
 import { useRouter } from 'vue-router'
-import { useManager, useConfiger, useGlobal, useStore } from '@/store'
+import { useConfiger, useGlobal, useStore } from '@/store'
 import * as utils from '@/utils/utils-common'
 
 export default defineComponent({
@@ -9,7 +9,6 @@ export default defineComponent({
 
     setup(props, ctx) {
         const router = useRouter()
-        const manager = useManager()
         const configer = useConfiger()
         const { menuOptions } = useStore(useGlobal)
 
@@ -27,7 +26,7 @@ export default defineComponent({
 
         return () => (
             <n-menu
-                class="layout-common-sider"
+                style={{ '--n-item-height': '40px' }}
                 label-field="name"
                 key-field="router"
                 accordion
@@ -42,10 +41,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.layout-common-sider {
-    position: relative;
-    --n-item-height: 38px;
-}
-</style>

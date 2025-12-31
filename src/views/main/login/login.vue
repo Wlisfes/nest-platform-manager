@@ -2,7 +2,7 @@
 import { defineComponent, ref } from 'vue'
 import { useFormService } from '@/hooks/hook-form'
 import { enter } from '@/utils/utils-common'
-import { setCompose } from '@/utils/utils-cookie'
+import { fetchCompose } from '@/utils/utils-cookie'
 import { router } from '@/router'
 import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
@@ -37,7 +37,7 @@ export default defineComponent({
                         number: form.value.number,
                         password: window.btoa(encodeURIComponent(form.value.password))
                     }).then(async ({ data }) => {
-                        return await setCompose(data).then(async () => {
+                        return await fetchCompose(data).then(async () => {
                             return router.push({ path: '/', replace: true })
                         })
                     })

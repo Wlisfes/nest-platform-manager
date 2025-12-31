@@ -8,10 +8,10 @@ import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
-    const { setState: fetchStateConfiger } = useStore(useConfiger)
-    /**用户信息**/
     const flowUser = ref<Omix>({})
+    const { setState: fetchStateConfiger } = useStore(useConfiger)
     const { state, setState } = useState({
+        /**登录权限菜单**/
         menuOptions: []
     })
 
@@ -48,7 +48,6 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         ...toRefs(state),
         flowUser,
         setState,
-        fetchStateConfiger,
         fetchReset,
         fetchBaseInitialize,
         fetchAuthAccountTokenResolver,

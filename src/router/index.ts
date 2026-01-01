@@ -1,9 +1,8 @@
-import { App } from 'vue'
 import { createRouter, createWebHistory, Router } from 'vue-router'
+import { getToken, fetchDestroy, isEmpty, fetchWherer, fetchHandler } from '@/utils'
 import { useGlobal, useConfiger, useStore } from '@/store'
 import { fetchSetupRouter } from '@/router/modules'
-import { getToken, fetchDestroy } from '@/utils/utils-cookie'
-import { isEmpty, fetchWherer, fetchHandler } from '@/utils/utils-common'
+import { App } from 'vue'
 
 export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

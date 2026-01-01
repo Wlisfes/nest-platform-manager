@@ -4,7 +4,7 @@ import { useSelectService } from '@/hooks/hook-selecter'
 import { useChunkService } from '@/hooks'
 import { useFormService } from '@/hooks/hook-form'
 import { fetchNotifyService } from '@/plugins'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({

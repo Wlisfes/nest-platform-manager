@@ -1,6 +1,6 @@
 import { createApp, createVNode, nextTick, App } from 'vue'
 import { setupStore } from '@/store'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 export interface RestComponent {
     element: HTMLElement

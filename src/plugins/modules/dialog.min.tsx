@@ -1,6 +1,6 @@
 import { createApp, createVNode, render, VNode, CSSProperties } from 'vue'
 import { DialogOptions, DialogReactive } from 'naive-ui'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 export interface BaseDialogServiceOtipns {
     /**弹窗类型**/

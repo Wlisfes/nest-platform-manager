@@ -1,4 +1,4 @@
-import { request } from '@/utils/utils-request'
+import { request } from '@/utils'
 
 /**新增菜单资源**/
 export function httpBaseSystemCreateResource(data: Omix) {

@@ -1,10 +1,8 @@
 <script lang="tsx">
 import { defineComponent, ref } from 'vue'
 import { useFormService } from '@/hooks/hook-form'
-import { enter } from '@/utils/utils-common'
-import { fetchCompose } from '@/utils/utils-cookie'
+import { stop, enter, fetchCompose } from '@/utils'
 import { router } from '@/router'
-import * as utils from '@/utils/utils-common'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -65,7 +63,7 @@ export default defineComponent({
                         rules={state.rules}
                         disabled={state.loading}
                         show-label={false}
-                        onSubmit={utils.stop}
+                        onSubmit={stop}
                     >
                         <n-h2 class="text-28 font-500 text-center">
                             <n-text depth={2}>欢迎登录</n-text>

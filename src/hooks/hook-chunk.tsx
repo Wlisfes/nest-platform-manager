@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks'
 import { COMMON_CHUNK_OPTIONS, ChunkName, ChunkCommonOptions, ChunkColumnOptions } from '@/interface/instance.resolver'
 import { ResultResolver } from '@/interface/instance.resolver'
-import { pick, isEmpty, isNotEmpty } from '@/utils/utils-common'
+import { pick, isEmpty, isNotEmpty } from '@/utils'
 import * as Service from '@/api/instance.service'
 
 /**枚举数枚举通用hooks配置**/

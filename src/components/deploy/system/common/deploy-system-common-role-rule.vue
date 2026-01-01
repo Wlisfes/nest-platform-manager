@@ -3,7 +3,7 @@ import { defineComponent, onBeforeMount } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
-import { tree } from '@/utils/utils-common'
+import { tree } from '@/utils'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({

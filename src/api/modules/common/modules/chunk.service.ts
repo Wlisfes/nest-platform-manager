@@ -1,5 +1,5 @@
-import { request } from '@/utils/utils-request'
 import { ChunkName, ChunkCommonOptions, ChunkColumnOptions } from '@/interface/instance.resolver'
+import { request } from '@/utils'
 
 /**通用下拉字典**/
 export function httpBaseChunkSelect(data: Omix<{ type: Array<ChunkName> }>) {

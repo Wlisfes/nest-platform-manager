@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
 import { useState } from '@/hooks'
-import { fetchDelay } from '@/utils/utils-common'
+import { fetchDelay } from '@/utils'
 
 export default defineComponent({
     name: 'CommonElementCodex',

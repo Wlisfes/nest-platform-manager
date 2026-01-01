@@ -1,4 +1,4 @@
-import { concat } from '@/utils/utils-common'
+import { concat } from '@/utils'
 import deploy from '@/router/modules/deploy'
 
 /**路由列表配置**/

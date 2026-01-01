@@ -1,4 +1,4 @@
-import { createComponent, PropsState } from '@/utils/utils-component'
+import { createComponent, PropsState } from '@/utils'
 
 /**新增、编辑菜单权限**/
 export async function fetchDeploySystemFeedbackRouter(props: PropsState<Omix>) {

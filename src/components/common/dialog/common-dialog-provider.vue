@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, CSSProperties } from 'vue'
 import { useVModels } from '@vueuse/core'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 export default defineComponent({
     name: 'CommonDialogProvider',

@@ -2,7 +2,7 @@ import { ref, toRefs } from 'vue'
 import { defineStore } from 'pinia'
 import { useStore, useConfiger } from '@/store'
 import { useState } from '@/hooks'
-import { fetchDestroy } from '@/utils/utils-cookie'
+import { fetchDestroy } from '@/utils'
 import { omit } from 'lodash-es'
 import * as Service from '@/api/instance.service'
 

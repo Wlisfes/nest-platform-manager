@@ -2,7 +2,7 @@
 import { defineComponent, watch } from 'vue'
 import { useColumnService, fetchKineColumns } from '@/hooks/hook-service'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
-import { enter } from '@/utils/utils-common'
+import { enter } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 

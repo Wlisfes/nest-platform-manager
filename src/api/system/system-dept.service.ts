@@ -1,5 +1,5 @@
-import { request } from '@/utils/utils-request'
 import { BodyColumn, ResultColumn } from '@/interface/instance.resolver'
+import { request } from '@/utils'
 
 /**新增部门**/
 export function httpBaseSystemDeptCreate(data: Omix) {

@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { stop } from '@/utils/utils-common'
+import { stop } from '@/utils'
 
 export default defineComponent({
     name: 'FormChunkCustomSelect',

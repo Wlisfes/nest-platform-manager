@@ -2,7 +2,7 @@
 import { defineComponent, computed, PropType } from 'vue'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks'
-import { stop } from '@/utils/utils-common'
+import { stop } from '@/utils'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'

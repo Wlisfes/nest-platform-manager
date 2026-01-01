@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useGlobal, useStore } from '@/store'
 import { useState, useProvider } from '@/hooks'
 import { fetchDialogService } from '@/plugins'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 export default defineComponent({
     name: 'LayoutCommonUser',

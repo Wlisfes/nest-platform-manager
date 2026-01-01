@@ -1,7 +1,7 @@
 import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { useState } from '@/hooks/modules/hook-state'
-import { isEmpty, fetchHandler } from '@/utils/utils-common'
+import { isEmpty, fetchHandler } from '@/utils'
 interface FormServiceState extends Omix {
     /**初始化状态**/
     initialize: boolean

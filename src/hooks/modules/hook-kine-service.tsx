@@ -1,7 +1,7 @@
 import { toRefs } from 'vue'
 import { isNotEmpty } from 'class-validator'
 import { useState } from '@/hooks/modules/hook-state'
-import { cloneDeep, isArray, isObject } from '@/utils/utils-common'
+import { cloneDeep, isArray, isObject } from '@/utils'
 import { ResultResolver } from '@/interface/instance.resolver'
 interface BaseServiceState {
     /**搜索关键字**/

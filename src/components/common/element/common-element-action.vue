@@ -2,7 +2,7 @@
 import { defineComponent, ref, Ref, computed, PropType, CSSProperties, nextTick } from 'vue'
 import { PopoverInst } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
-import { enter, fetchWherer, isNotEmpty } from '@/utils/utils-common'
+import { enter, fetchWherer, isNotEmpty } from '@/utils'
 
 export default defineComponent({
     name: 'CommonElementSearch',

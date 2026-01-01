@@ -3,7 +3,7 @@ import { defineComponent, PropType } from 'vue'
 import { DataTableColumn } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks'
-import { pick, fetchHandler } from '@/utils/utils-common'
+import { pick, fetchHandler } from '@/utils'
 
 export default defineComponent({
     name: 'CommonDatabaseSettings',

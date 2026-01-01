@@ -1,4 +1,4 @@
-import { request } from '@/utils/utils-request'
+import { request } from '@/utils'
 
 /**获取枚举来源类型**/
 export function httpBaseDeployEnumsColumnTypes() {

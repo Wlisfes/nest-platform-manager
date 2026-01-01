@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType, Fragment } from 'vue'
-import { isEmpty } from '@/utils/utils-common'
+import { isEmpty } from '@/utils'
 
 export default defineComponent({
     name: 'CommonDatabaseChunk',

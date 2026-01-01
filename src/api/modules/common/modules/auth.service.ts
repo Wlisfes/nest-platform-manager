@@ -1,4 +1,4 @@
-import { request } from '@/utils/utils-request'
+import { request } from '@/utils'
 
 /**账号登录**/
 export function httpAuthAccountToken(data: Omix) {

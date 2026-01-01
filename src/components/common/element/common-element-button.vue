@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, h, PropType, VNode } from 'vue'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 export default defineComponent({
     name: 'CommonElementButton',

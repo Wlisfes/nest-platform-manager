@@ -1,7 +1,7 @@
 import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
-import { fetchExclude } from '@/utils/utils-common'
+import { Observer, fetchExclude } from '@/utils'
 import { useState } from '@/hooks'
 
 /**列表缓存对象**/
@@ -47,6 +47,7 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(options.formState)
+    const observer = ref(Observer<Record<string, Omix>>())
     const { state, setState } = useState({
         when: options.when ?? true,
         visible: options.visible ?? false,
@@ -111,6 +112,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         state,
         formRef,
         formState,
+        observer,
         ...toRefs(state),
         setState,
         setForm,

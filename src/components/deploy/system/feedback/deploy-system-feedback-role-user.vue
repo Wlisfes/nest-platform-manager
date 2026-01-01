@@ -3,7 +3,7 @@ import { defineComponent, PropType } from 'vue'
 import { useSelectService } from '@/hooks'
 import { useFormService } from '@/hooks/hook-form'
 import { fetchNotifyService } from '@/plugins'
-import { stop } from '@/utils/utils-common'
+import { stop } from '@/utils'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({

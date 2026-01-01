@@ -4,7 +4,7 @@ import { useFullscreen } from '@vueuse/core'
 import { useState } from '@/hooks'
 import { useKinesService } from '@/hooks'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 /**列表缓存对象**/
 export type ColumnState<T> = Omix & {

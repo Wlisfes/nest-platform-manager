@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { getToken } from '@/utils/utils-cookie'
+import { getToken } from '@/utils'
 
 export const request: AxiosRequest = axios.create({
     timeout: 90000,

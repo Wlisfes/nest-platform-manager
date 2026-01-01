@@ -2,7 +2,7 @@
 import { defineComponent, h } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfiger, useGlobal, useStore } from '@/store'
-import * as utils from '@/utils/utils-common'
+import * as utils from '@/utils'
 
 export default defineComponent({
     name: 'LayoutCommonSider',

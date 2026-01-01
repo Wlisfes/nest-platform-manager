@@ -1,8 +1,8 @@
 <script lang="tsx">
 import { defineComponent, computed, nextTick, onMounted, PropType } from 'vue'
-import { DataTableColumn, PaginationInfo } from 'naive-ui'
+import { fetchWherer, isNotEmpty, isEmpty, fetchDelay } from '@/utils'
 import { useVModels, useCurrentElement } from '@vueuse/core'
-import { fetchWherer, isNotEmpty, isEmpty, fetchDelay } from '@/utils/utils-common'
+import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useState } from '@/hooks'
 
 export default defineComponent({
@@ -15,7 +15,7 @@ export default defineComponent({
         'update:columns',
         'update:data',
         'update:items',
-        'update:check'
+        'update:checked'
     ],
     props: {
         /**表格模式**/
@@ -61,7 +61,6 @@ export default defineComponent({
             }
             return state.clientHeight
         })
-
         /**初始化**/
         onMounted(fetchInitialize)
         async function fetchInitialize() {
@@ -69,12 +68,11 @@ export default defineComponent({
                 return await setState({ clientHeight: element.value.clientHeight })
             })
         }
-
         /**选择列事件**/
-        async function fetchCheckUpdate(keys: Array<string>, data: Array<Omix>) {
+        async function fetchCheckedUpdate(keys: Array<string>, data: Array<Omix>) {
             items.value = data
             return await nextTick().then(() => {
-                return emit('update:check', items)
+                return emit('update:checked', items.value)
             })
         }
         function fetchExpandIconRender() {
@@ -117,6 +115,7 @@ export default defineComponent({
                         data={data.value}
                         columns={columns.value}
                         scrollbar-props={{ size: 100 }}
+                        on-update:checked-row-keys={fetchCheckedUpdate}
                     ></n-data-table>
                 </n-element>
                 {props.pagination && (

@@ -1,10 +1,12 @@
-import { ref, toRefs, onBeforeMount } from 'vue'
-import { DataTableColumn } from 'naive-ui'
+import { ref, Ref, toRefs, onBeforeMount } from 'vue'
+import { FormInst, DataTableColumn } from 'naive-ui'
 import { useState } from '@/hooks'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { fetchExclude } from '@/utils/utils-common'
 /**列表缓存对象**/
 interface BaseServiceState<T> extends Omix {
+    /**折叠表单**/
+    when: boolean
     /**控制器**/
     visible: boolean
     /**初始化状态**/
@@ -43,9 +45,11 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 
 /**列表包装hook**/
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
-    const element = ref<HTMLElement>(options.element as HTMLElement)
+    const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(options.formState)
+    const element = ref<HTMLElement>(options.element as HTMLElement)
     const { state, setState } = useState({
+        when: options.when ?? true,
         visible: options.visible ?? false,
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,
@@ -107,6 +111,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     return {
         state,
         element,
+        formRef,
         formState,
         ...toRefs(state),
         setState,

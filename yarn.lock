@@ -940,6 +940,11 @@
     fast-glob "^3.3.2"
     magic-string "^0.30.10"
 
+"@vicons/carbon@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.npmmirror.com/@vicons/carbon/-/carbon-0.13.0.tgz#a8fbbbbd4c3f51c8b0b00b268369ef6be2df9bd8"
+  integrity sha512-Z/jExyyS4gsXJc66oTqV/j98nsaiX2JlQ0IUwu9Ms3rztf8VOHEQRuX8Jey1/zbxJpFY/tU+bWvKPRFYGIvCWQ==
+
 "@vitejs/plugin-vue-jsx@^4.0.1":
   version "4.1.2"
   resolved "https://registry.npmmirror.com/@vitejs/plugin-vue-jsx/-/plugin-vue-jsx-4.1.2.tgz#7ab813bcba9a514a2bdee5b0e17c30d6e420c748"

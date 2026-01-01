@@ -30,7 +30,7 @@ export default defineComponent({
                     <n-layout content-class="flex flex-col overflow-hidden">
                         <layout-common-store></layout-common-store>
                         <n-layout-content class="flex-1 overflow-hidden" content-class="h-full flex flex-col overflow-hidden">
-                            <n-element class="h-full flex flex-col transition-background-color transition-duration-300 bg-[var(--common-element-bg-color)]">
+                            <n-element class="h-full flex flex-col transition-background-color transition-duration-300 bg-[var(--common-body-bg-color)]">
                                 <router-view></router-view>
                             </n-element>
                         </n-layout-content>

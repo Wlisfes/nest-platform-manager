@@ -1,10 +1,10 @@
 import { computed, ComputedRef } from 'vue'
 import { useThemeVars, darkTheme, lightTheme, GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { useConfiger, useStore } from '@/store'
-interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
-    '--common-element-bg-color': string
+/**全局样式变量**/
+export interface CustomThemeCommonVars extends Omix<ThemeCommonVars> {
+    CommonBodyBgColor: string
 }
-
 export function useProvider() {
     const { theme, primaryColor, fetchThemeUpdate } = useStore(useConfiger)
     const vars = useThemeVars() as ComputedRef<CustomThemeCommonVars>
@@ -39,7 +39,8 @@ export function useProvider() {
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,
             primaryColorSuppl: primaryColor.value,
-            '--common-element-bg-color': '#eef1f5'
+            heightMedium: '32px',
+            CommonBodyBgColor: '#eef1f5'
         },
         Scrollbar: { width: '6px', height: '6px' },
         Tree: { nodeHeight: '36px' }
@@ -50,7 +51,8 @@ export function useProvider() {
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,
             primaryColorSuppl: primaryColor.value,
-            '--common-element-bg-color': '#101014'
+            heightMedium: '32px',
+            CommonBodyBgColor: '#101014'
         },
         Scrollbar: { width: '6px', height: '6px' },
         Tree: { nodeHeight: '36px' }

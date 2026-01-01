@@ -8,7 +8,7 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { element, state } = useColumnService({
+        const { element, formRef, formState, state, fetchRequest } = useColumnService({
             request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
             formState: {}
         })
@@ -106,8 +106,75 @@ export default defineComponent({
         // }
 
         return () => (
-            <layout-common-container ref={element} abstract class-name="p-12 gap-12 overflow-hidden">
-                dsadad
+            <layout-common-container ref={element} abstract class="p-16 gap-16 overflow-hidden">
+                <common-database-search
+                    v-model:when={state.when}
+                    v-model:loading={state.loading}
+                    v-model:formState={formState.value}
+                    onSubmit={fetchRequest}
+                >
+                    <common-database-search-column label="最近跟进时间" span={2}>
+                        <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
+                    </common-database-search-column>
+                    <common-database-search-column label="创建时间" span={2}>
+                        <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
+                    </common-database-search-column>
+                    <common-database-search-column label="供应商编码">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="供应商名称">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="供应商类型">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="是否共享">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="账号类型">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="消费用户导入">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="邮箱">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="账号别名">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="归属人">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="归属人部门">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="对接方式">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="R端签约主体">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="国家/地区">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="区域">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="来源">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="来源标签">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="等级">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                    <common-database-search-column label="标签">
+                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    </common-database-search-column>
+                </common-database-search>
+                <n-card bordered content-class="p-16!" class="flex-1"></n-card>
             </layout-common-container>
         )
 
@@ -154,30 +221,30 @@ export default defineComponent({
         //                 v-model:vague={form.value.vague}
         //                 onSubmit={() => fetchRefresh()}
         //             >
-        //                 <n-form-item label="菜单名称">
+        //                 <common-database-search-column label="菜单名称">
         //                     <n-input v-model:value={form.value.name} placeholder="请输入菜单名称" clearable />
-        //                 </n-form-item>
-        //                 <n-form-item label="权限标识">
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="权限标识">
         //                     <n-input v-model:value={form.value.key} placeholder="请输入权限标识" clearable />
-        //                 </n-form-item>
-        //                 <n-form-item label="路由地址">
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="路由地址">
         //                     <n-input v-model:value={form.value.router} placeholder="请输入路由地址" clearable />
-        //                 </n-form-item>
-        //                 <n-form-item label="版本号">
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="版本号">
         //                     <n-input v-model:value={form.value.version} placeholder="请输入版本号" clearable />
-        //                 </n-form-item>
-        //                 <n-form-item label="上级菜单">
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="上级菜单">
         //                     <n-input v-model:value={form.value.pid} placeholder="请输入上级菜单" />
-        //                 </n-form-item>
-        //                 <n-form-item label="菜单状态">
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="菜单状态">
         //                     <n-input v-model:value={form.value.status} placeholder="请输入状态" />
-        //                 </n-form-item>
-        //                 <n-form-item label="操作人">
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="操作人">
         //                     <n-input v-model:value={form.value.uid} placeholder="请输入操作人" />
-        //                 </n-form-item>
-        //                 <n-form-item label="更新时间" style={{ 'grid-column': 'span 2 / span 2' }}>
+        //                 </common-database-search-column>
+        //                 <common-database-search-column label="更新时间" style={{ 'grid-column': 'span 2 / span 2' }}>
         //                     <n-date-picker type="datetimerange" clearable default-time="13:22:11" class="w-full" />
-        //                 </n-form-item>
+        //                 </common-database-search-column>
         //             </common-element-action>
         //         </common-database-compute>
         //         <common-database-container element-table v-model:initialize={state.initialize} v-model:loading={state.loading}>

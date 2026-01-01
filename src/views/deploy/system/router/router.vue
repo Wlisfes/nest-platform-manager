@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { useColumnService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
@@ -8,9 +8,22 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { element, formRef, formState, state, fetchRequest } = useColumnService({
-            request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
-            formState: {}
+        const { element, formRef, formState, state, fetchRequest, fetchRefresh } = useColumnService({
+            request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
+            formState: {
+                name: '31231'
+            },
+            columns: [
+                { title: '选择框', key: 'selection', type: 'selection', check: true },
+                { title: '菜单名称', key: 'name', width: 180, check: true },
+                { title: '图标', key: 'icon', width: 100, align: 'center', check: true },
+                { title: '权限标识', key: 'key', width: 200, check: true },
+                { title: '路由地址', key: 'router', width: 200, check: true },
+                { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
+                { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
+                { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
+                { title: '更新时间', key: 'modifyTime', width: 180, check: false }
+            ]
         })
 
         // const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
@@ -101,12 +114,12 @@ export default defineComponent({
         //                     })
         //                 }
         //             }
-        //         })
+        //         })class="p-16 gap-16 overflow-hidden"
         //     }
         // }
 
         return () => (
-            <layout-common-container ref={element} abstract class="p-16 gap-16 overflow-hidden">
+            <layout-common-container ref={element} class="gap-14 p-inline-14 p-block-14">
                 <common-database-search
                     v-model:when={state.when}
                     v-model:loading={state.loading}
@@ -174,7 +187,18 @@ export default defineComponent({
                         <n-input placeholder="Input" v-model:value={formState.value.name} />
                     </common-database-search-column>
                 </common-database-search>
-                <n-card bordered content-class="p-16!" class="flex-1"></n-card>
+                <common-database-table
+                    client-mode="fill-table"
+                    v-model:columns={state.columns}
+                    v-model:data={state.dataSource}
+                    v-model:page={state.page}
+                    v-model:size={state.size}
+                    v-model:total={state.total}
+                    v-model:items={state.items}
+                    v-model:loading={state.loading}
+                    onUpdate:page={(page: number) => fetchRefresh()}
+                    onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
+                ></common-database-table>
             </layout-common-container>
         )
 

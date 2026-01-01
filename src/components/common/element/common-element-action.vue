@@ -2,7 +2,7 @@
 import { defineComponent, ref, Ref, computed, PropType, CSSProperties, nextTick } from 'vue'
 import { PopoverInst } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
-import { enter, fetchWhere, isNotEmpty } from '@/utils/utils-common'
+import { enter, fetchWherer, isNotEmpty } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonElementSearch',
@@ -40,7 +40,7 @@ export default defineComponent({
         const { initialize, loading, vague, event } = useVModels(props, emit)
         const elementNodes = computed(() => ({
             width: 'calc(100vw - 20px)',
-            maxWidth: fetchWhere(isNotEmpty(props.maxWidth), props.maxWidth, props.cols === 1 ? '450px' : '800px')
+            maxWidth: fetchWherer(isNotEmpty(props.maxWidth), props.maxWidth, props.cols === 1 ? '450px' : '800px')
         }))
         const formNodes = computed<CSSProperties>(() => ({
             display: 'grid',

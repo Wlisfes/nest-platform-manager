@@ -1,32 +1,43 @@
 <script lang="tsx">
-import { defineComponent, computed, nextTick, PropType } from 'vue'
+import { defineComponent, computed, nextTick, onMounted, PropType } from 'vue'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
-import { useVModels } from '@vueuse/core'
-import { useConfiger } from '@/store'
-import * as utils from '@/utils/utils-common'
+import { useVModels, useCurrentElement } from '@vueuse/core'
+import { fetchWherer, isNotEmpty, isEmpty, fetchDelay } from '@/utils/utils-common'
+import { useState } from '@/hooks'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: ['update:page', 'update:size', 'update:columns', 'update:rowKeys', 'update:rowNodes', 'update:checked'],
+    emits: [
+        'update:page',
+        'update:size',
+        'update:total',
+        'update:loading',
+        'update:columns',
+        'update:data',
+        'update:items',
+        'update:check'
+    ],
     props: {
-        /**表格是否自动分页数据，在异步的状况下你可能需要把它设为 true**/
-        remote: { type: Boolean, default: true },
-        /**是否让表格主体的高度自动适应整个表格区域的高度**/
-        flexHeight: { type: Boolean, default: true },
-        /**开启分页**/
-        pagination: { type: Boolean, default: false },
+        /**表格模式**/
+        clientMode: { type: String as PropType<'fill-table' | 'full-table'>, default: 'fill-table' },
+        /**高度偏移**/
+        offset: { type: Number, default: 86 },
+        /**边距值**/
+        limit: { type: Number, default: 12 },
         /**分页数**/
         page: { type: Number, default: 1 },
         /**分页大小**/
-        size: { type: Number, default: 20 },
+        size: { type: Number, default: 50 },
         /**总条数**/
         total: { type: Number, default: 0 },
-        /**表格内容的横向宽度**/
-        scrollX: { type: Number },
-        /**被选中的行的keyId列表**/
-        rowKeys: { type: Array as PropType<Array<string>>, default: () => [] },
+        /**加载状态**/
+        loading: { type: Boolean, default: true },
+        /**开启分页**/
+        pagination: { type: Boolean, default: true },
+        /**开启边框**/
+        bordered: { type: Boolean, default: true },
         /**被选中的行的对象列表**/
-        rowNodes: { type: Array as PropType<Array<Omix>>, default: () => [] },
+        items: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置**/
         columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
         /**表数据列表**/
@@ -37,34 +48,42 @@ export default defineComponent({
         showSizePicker: { type: Boolean, default: true }
     },
     setup(props, { emit, slots }) {
-        const configer = useConfiger()
-        const { columns, page, size, total, rowKeys, rowNodes } = useVModels(props)
-        /**表头列数据**/
-        const faseColumns = computed(() => columns.value.filter(item => item.checked))
-        /**表格内容的横向宽度**/
-        const width = computed<number>(() => {
-            if (utils.isNotEmpty(props.scrollX)) {
-                return Number(props.scrollX)
+        const element = useCurrentElement<HTMLElement>()
+        const { columns, data, page, size, total, loading, items } = useVModels(props)
+        const { state, setState } = useState({ clientHeight: 100 })
+        /**弹性高度**/
+        const height = computed(() => {
+            const distance = fetchWherer(props.pagination, 40, 0)
+            if (['fill-table'].includes(props.clientMode)) {
+                return Math.floor(state.clientHeight - distance - props.limit * 2)
+            } else if (['full-table'].includes(props.clientMode)) {
+                return Math.floor(window.innerHeight - (distance + 4) - props.offset - props.limit * 4)
             }
-            return faseColumns.value.reduce((num, next) => num + Number(next.width ?? next.minWidth ?? 0), 40)
+            return state.clientHeight
         })
 
-        /**选择列事件**/
-        async function fetchUpdateChecked(keys: Array<string>, items: Array<Omix>) {
-            rowKeys.value = keys
-            rowNodes.value = items
-            return await nextTick().then(() => {
-                return emit('update:checked', keys, items)
+        /**初始化**/
+        onMounted(fetchInitialize)
+        async function fetchInitialize() {
+            return await fetchDelay(0).then(async () => {
+                return await setState({ clientHeight: element.value.clientHeight })
             })
         }
 
+        /**选择列事件**/
+        async function fetchCheckUpdate(keys: Array<string>, data: Array<Omix>) {
+            items.value = data
+            return await nextTick().then(() => {
+                return emit('update:check', items)
+            })
+        }
         function fetchExpandIconRender() {
             return <common-element-icon size={18} name="nest-double-right"></common-element-icon>
         }
 
         /**节点渲染**/
         function fetchColumnContentRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
-            if (utils.isNotEmpty(slots[base.key])) {
+            if (isNotEmpty(slots[base.key])) {
                 /**字段命名插槽**/
                 if (['command'].includes(base.key)) {
                     return slots.command!(data, base)
@@ -73,62 +92,143 @@ export default defineComponent({
             } else if (slots.default) {
                 /**默认插槽**/
                 return slots.default(value, data, base)
-            } else if (utils.isEmpty(value)) {
+            } else if (isEmpty(value)) {
                 return <span>-</span>
             }
             return <common-database-chunk element="text" content={value}></common-database-chunk>
         }
 
         return () => (
-            <n-data-table
-                class="common-database-table"
-                row-key={(row: Omix) => row.keyId}
-                columns={faseColumns.value}
-                size={configer.elementSize}
-                flex-height={props.flexHeight}
-                remote={props.remote}
-                data={props.data}
-                scroll-x={width.value}
-                checked-row-keys={rowKeys.value}
-                default-checked-row-keys={rowKeys.value}
-                render-cell={fetchColumnContentRender}
-                on-update:checked-row-keys={fetchUpdateChecked}
-                render-expand-icon={() => <common-element-icon size={18} name="nest-double-right"></common-element-icon>}
-                pagination={utils.fetchWhere<boolean | Omix>(!props.pagination, false, {
-                    suffix: utils.fetchWhere(props.showQuickJumper, () => <span>页</span>),
-                    goto: () => <span>前往</span>,
-                    prefix: () => <span>{`共 ${total.value} 条`}</span>,
-                    label: (data: Omix<{ node: number; active: boolean }>) => (
-                        <common-element-button size="small" secondary type={data.active ? 'primary' : undefined}>
-                            {data.node}
-                        </common-element-button>
-                    ),
-                    prev: (data: Omix<PaginationInfo>) => (
-                        <common-element-button size="small" secondary disabled={data.page <= 1}>
-                            上一页
-                        </common-element-button>
-                    ),
-                    next: (data: Omix<PaginationInfo>) => (
-                        <common-element-button size="small" secondary disabled={data.page >= data.pageCount}>
-                            下一页
-                        </common-element-button>
-                    ),
-                    showQuickJumper: props.showQuickJumper,
-                    showSizePicker: props.showSizePicker,
-                    itemCount: total.value,
-                    page: page.value,
-                    pageSize: size.value,
-                    pageSizes: [10, 20, 30, 50, 100],
-                    onChange: (value: number) => (page.value = value),
-                    onUpdatePageSize: (value: number) => (size.value = value)
-                })}
-            ></n-data-table>
+            <n-card
+                class="common-database-container flex flex-col flex-1 b-rd-8 overflow-hidden"
+                content-class="flex flex-col flex-1 overflow-hidden"
+                style={{ '--n-padding-bottom': '0px', '--n-padding-left': '0px', '--n-limit-width': `${props.limit}px` }}
+                bordered={props.bordered}
+            >
+                <n-element class={{ 'common-database-table flex flex-col flex-1': true }}>
+                    <n-data-table
+                        remote
+                        flex-height
+                        size="small"
+                        loading={loading.value}
+                        row-key={(e: Omix) => e.keyId}
+                        style={{ height: `${height.value}px` }}
+                        bordered={props.bordered}
+                        data={data.value}
+                        columns={columns.value}
+                        scrollbar-props={{ size: 100 }}
+                    ></n-data-table>
+                </n-element>
+                {props.pagination && (
+                    <n-element class={{ 'common-database-pagination flex justify-end': true, 'is-bordered': props.bordered }}>
+                        <n-pagination
+                            page={page.value}
+                            page-size={size.value}
+                            page-count={total.value}
+                            v-model:page={page.value}
+                            page-sizes={[20, 30, 50, 100, 200, 300]}
+                            show-size-picker={props.showSizePicker}
+                            show-quick-jumper={props.showQuickJumper}
+                            on-update:page={(value: number) => (page.value = value)}
+                            on-update:page-size={(value: number) => (size.value = value)}
+                        >
+                            {{
+                                uffix: fetchWherer(props.showQuickJumper, () => <span>页</span>),
+                                goto: () => <span>前往</span>,
+                                prefix: () => <span class="whitespace-nowrap">{`共 ${total.value} 条`}</span>,
+                                label: (data: Omix<{ node: number; active: boolean }>) => (
+                                    <common-element-button size="small" secondary type={data.active ? 'primary' : undefined}>
+                                        {data.node}
+                                    </common-element-button>
+                                ),
+                                prev: (data: Omix<PaginationInfo>) => (
+                                    <common-element-button size="small" secondary disabled={data.page <= 1}>
+                                        上一页
+                                    </common-element-button>
+                                ),
+                                next: (data: Omix<PaginationInfo>) => (
+                                    <common-element-button size="small" secondary disabled={data.page >= data.pageCount}>
+                                        下一页
+                                    </common-element-button>
+                                )
+                            }}
+                        </n-pagination>
+                    </n-element>
+                )}
+            </n-card>
         )
+
+        // return () => (
+        //     <n-data-table
+        //         class="common-database-table"
+        //         row-key={(row: Omix) => row.keyId}
+        //         columns={faseColumns.value}
+        //         size={configer.elementSize}
+        //         flex-height={props.flexHeight}
+        //         remote={props.remote}
+        //         data={props.data}
+        //         scroll-x={width.value}
+        //         checked-row-keys={rowKeys.value}
+        //         default-checked-row-keys={rowKeys.value}
+        //         render-cell={fetchColumnContentRender}
+        //         on-update:checked-row-keys={fetchUpdateChecked}
+        //         render-expand-icon={() => <common-element-icon size={18} name="nest-double-right"></common-element-icon>}
+        //         pagination={utils.fetchWhere<boolean | Omix>(!props.pagination, false, {
+        //             suffix: utils.fetchWhere(props.showQuickJumper, () => <span>页</span>),
+        //             goto: () => <span>前往</span>,
+        //             prefix: () => <span>{`共 ${total.value} 条`}</span>,
+        //             label: (data: Omix<{ node: number; active: boolean }>) => (
+        //                 <common-element-button size="small" secondary type={data.active ? 'primary' : undefined}>
+        //                     {data.node}
+        //                 </common-element-button>
+        //             ),
+        //             prev: (data: Omix<PaginationInfo>) => (
+        //                 <common-element-button size="small" secondary disabled={data.page <= 1}>
+        //                     上一页
+        //                 </common-element-button>
+        //             ),
+        //             next: (data: Omix<PaginationInfo>) => (
+        //                 <common-element-button size="small" secondary disabled={data.page >= data.pageCount}>
+        //                     下一页
+        //                 </common-element-button>
+        //             ),
+        //             showQuickJumper: props.showQuickJumper,
+        //             showSizePicker: props.showSizePicker,
+        //             itemCount: total.value,
+        //             page: page.value,
+        //             pageSize: size.value,
+        //             pageSizes: [10, 20, 30, 50, 100],
+        //             onChange: (value: number) => (page.value = value),
+        //             onUpdatePageSize: (value: number) => (size.value = value)
+        //         })}
+        //     ></n-data-table>
+        // )
     }
 })
 </script>
 
 <style lang="scss" scoped>
+.common-database-container {
+    position: relative;
+    .n-element.common-database-table {
+        padding: var(--n-limit-width);
+        overflow: hidden;
+        :deep(.n-data-table-loading-wrapper) {
+            font-size: 48px;
+        }
+    }
+    .n-element.common-database-pagination {
+        transition: border-color 0.3s var(--n-bezier);
+        padding: 0 var(--n-limit-width) var(--n-limit-width);
+        overflow: hidden;
+        :deep(.n-pagination > .n-pagination-item--active) {
+            border: none;
+            padding: 0;
+        }
+    }
+}
+</style>
+<!-- <style lang="scss" scoped>
 .n-data-table.common-database-table {
     :deep(.n-data-table-tbody .n-data-table-td):has(.n-data-table-expand-trigger),
     :deep(.n-data-table-tbody .n-data-table-td):has(.n-data-table-expand-placeholder) {
@@ -156,4 +256,4 @@ export default defineComponent({
         padding: 0;
     }
 }
-</style>
+</style> -->

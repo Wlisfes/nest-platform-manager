@@ -37,7 +37,7 @@ export function enter(e: KeyboardEvent, handler?: Function) {
 }
 
 /**根据条件返回不同参数**/
-export function fetchWhere<T>(where: boolean, value: T, defaultValue?: T): T {
+export function fetchWherer<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T
 }
 
@@ -61,14 +61,14 @@ export async function fetchHandler<T>(where: boolean | Function, handler?: Funct
 }
 
 /**对象排除空字段**/
-export function fetchExclude(data: Omix) {
+export function fetchExclude(data: Omix, options: Omix = {}) {
     return Object.keys(data).reduce((merge: Omix, key: string) => {
         if (isNotEmpty(data[key]) && !(isArray(data[key]) && data[key].length === 0)) {
             /**字段不能为空、不能为空数组**/
             merge[key] = data[key]
         }
         return merge
-    }, {})
+    }, options)
 }
 
 /**参数组合函数**/

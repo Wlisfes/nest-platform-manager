@@ -3,7 +3,7 @@ import { createRouter, createWebHistory, Router } from 'vue-router'
 import { useGlobal, useConfiger, useStore } from '@/store'
 import { fetchSetupRouter } from '@/router/modules'
 import { getToken, fetchDestroy } from '@/utils/utils-cookie'
-import { isEmpty, fetchWhere, fetchHandler } from '@/utils/utils-common'
+import { isEmpty, fetchWherer, fetchHandler } from '@/utils/utils-common'
 
 export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,7 +65,7 @@ export function setupGuardRouter(router: Router) {
         }
     })
     router.afterEach(async (to, from) => {
-        document.title = `昆仑服务平台${fetchWhere(!!to.meta.title, ` - ${to.meta.title}`, '')}`
+        document.title = `昆仑服务平台${fetchWherer(!!to.meta.title, ` - ${to.meta.title}`, '')}`
         window.$loadingBar.finish()
         return await fetchHandler(['AUTH'].includes(String(to.meta.AUTH)), async () => {
             return await fetchUpdateRouter(to).then(async menu => {

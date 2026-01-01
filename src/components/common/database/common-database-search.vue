@@ -28,7 +28,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-card class="common-database-search flex flex-col b-rd-8" content-class="p-12!" bordered={props.bordered}>
+            <n-card class="common-database-search flex flex-col b-rd-8" content-class="p-inline-12! p-block-12!" bordered={props.bordered}>
                 <n-collapse-transition show={when.value}>
                     <n-form
                         class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}

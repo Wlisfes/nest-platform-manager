@@ -1,8 +1,9 @@
-import { ref, Ref, toRefs, onBeforeMount } from 'vue'
+import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
-import { useState } from '@/hooks'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { fetchExclude } from '@/utils/utils-common'
+import { useState } from '@/hooks'
+
 /**列表缓存对象**/
 interface BaseServiceState<T> extends Omix {
     /**折叠表单**/
@@ -28,7 +29,6 @@ interface BaseServiceState<T> extends Omix {
 }
 /**列表包装配置**/
 interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
-    element?: Element | HTMLElement
     /**立即执行**/
     immediate?: boolean
     /**额外字段**/
@@ -47,7 +47,6 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(options.formState)
-    const element = ref<HTMLElement>(options.element as HTMLElement)
     const { state, setState } = useState({
         when: options.when ?? true,
         visible: options.visible ?? false,
@@ -63,7 +62,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     } as BaseServiceState<T> & typeof options.options)
 
     /**初始化**/
-    onBeforeMount(fetchInitialize)
+    onMounted(fetchInitialize)
     async function fetchInitialize() {
         if (options.immediate ?? true) {
             // await fetchCheckboxsCompiler()
@@ -95,7 +94,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     async function fetchRequest(opts: Omix = {}) {
         return await setState({ loading: true } as never).then(async () => {
             try {
-                const body = fetchExclude(formState.value)
+                const body = fetchExclude(formState.value, { page: state.page, size: state.size })
                 return await options.request(formState.value, state as never, { body, opts }).then(async ({ data }) => {
                     if (options.transform && typeof options.transform === 'function') {
                         data.list = ((await options.transform(data)) ?? []) as Array<Omix<T>>
@@ -110,7 +109,6 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     return {
         state,
-        element,
         formRef,
         formState,
         ...toRefs(state),

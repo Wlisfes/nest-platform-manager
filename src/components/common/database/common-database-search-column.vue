@@ -12,7 +12,7 @@ export default defineComponent({
     setup(props, { slots }) {
         return () => (
             <n-form-item
-                class={`common-database-search-column grid-col-span-${props.span > 1 ? 2 : 1} `}
+                class={`common-database-search-column ${props.span > 1 ? 'grid-col-span-2' : 'grid-col-span-1'}`}
                 show-feedback={false}
                 label={props.label}
             >

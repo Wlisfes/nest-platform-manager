@@ -1,4 +1,4 @@
-import { ref, Ref, toRefs, onMounted } from 'vue'
+import { ref, Ref, toRefs, provide, computed, onMounted } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { Observer, fetchExclude } from '@/utils'
@@ -6,8 +6,8 @@ import { useState } from '@/hooks'
 
 /**列表缓存对象**/
 interface BaseServiceState<T> extends Omix {
-    /**折叠表单**/
-    when: boolean
+    /**边距值**/
+    limit: number
     /**控制器**/
     visible: boolean
     /**初始化状态**/
@@ -47,9 +47,10 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(options.formState)
+    const faseWhen = ref({ when: true, delay: 0, min: 34 + (options.limit ?? 14) * 2, max: 34 + (options.limit ?? 14) * 2 })
     const observer = ref(Observer<Record<string, Omix>>())
     const { state, setState } = useState({
-        when: options.when ?? true,
+        limit: options.limit ?? 14,
         visible: options.visible ?? false,
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,
@@ -61,6 +62,9 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         dataSource: [] as Array<T>,
         ...(options.options ?? {})
     } as BaseServiceState<T> & typeof options.options)
+
+    /**注入订阅发布实例**/
+    provide('COMMON_DATABASE_FASEWHEN', faseWhen)
 
     /**初始化**/
     onMounted(fetchInitialize)
@@ -112,6 +116,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         state,
         formRef,
         formState,
+        faseWhen,
         observer,
         ...toRefs(state),
         setState,

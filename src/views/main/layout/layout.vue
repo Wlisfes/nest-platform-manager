@@ -35,7 +35,7 @@ export default defineComponent({
                             native-scrollbar={false}
                             scrollbar-props={{ size: 100, trigger: 'none' }}
                         >
-                            <n-element class="flex flex-col flex-1 transition-background-color transition-duration-300 bg-[var(--common-body-bg-color)]">
+                            <n-element class="flex flex-col flex-1 relative transition-background-color transition-duration-300 bg-[var(--common-body-bg-color)]">
                                 <router-view></router-view>
                             </n-element>
                         </n-layout-content>

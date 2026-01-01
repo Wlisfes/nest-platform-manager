@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, nextTick, onMounted, PropType } from 'vue'
+import { defineComponent, inject, ref, computed, nextTick, onMounted, PropType } from 'vue'
 import { fetchWherer, isNotEmpty, isEmpty, fetchDelay } from '@/utils'
 import { useVModels, useCurrentElement } from '@vueuse/core'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
@@ -23,7 +23,7 @@ export default defineComponent({
         /**高度偏移**/
         offset: { type: Number, default: 86 },
         /**边距值**/
-        limit: { type: Number, default: 12 },
+        limit: { type: Number, default: 14 },
         /**分页数**/
         page: { type: Number, default: 1 },
         /**分页大小**/
@@ -48,30 +48,22 @@ export default defineComponent({
         showSizePicker: { type: Boolean, default: true }
     },
     setup(props, { emit, slots }) {
-        const element = useCurrentElement<HTMLElement>()
+        const faseWhen = inject('COMMON_DATABASE_FASEWHEN', ref({ when: true, delay: 0, min: 60, max: 60 }))
         const { columns, data, page, size, total, loading, items } = useVModels(props)
-        const { state, setState } = useState({ clientHeight: 100 })
         /**弹性高度**/
         const height = computed(() => {
-            const distance = fetchWherer(props.pagination, 40, 0)
+            const pag = fetchWherer(props.pagination, 28 + props.limit, 0)
+            const w = fetchWherer(faseWhen.value.when, faseWhen.value.max, faseWhen.value.min)
             if (['fill-table'].includes(props.clientMode)) {
-                return Math.floor(state.clientHeight - distance - props.limit * 2)
+                return Math.floor(window.innerHeight - props.offset - (pag + 2) - w - props.limit * 5)
             } else if (['full-table'].includes(props.clientMode)) {
-                return Math.floor(window.innerHeight - (distance + 4) - props.offset - props.limit * 4)
+                return Math.floor(window.innerHeight - pag - props.offset - props.limit * 4)
             }
-            return state.clientHeight
+            return faseWhen.value.max
         })
-        /**初始化**/
-        onMounted(fetchInitialize)
-        async function fetchInitialize() {
-            return await fetchDelay(0).then(async () => {
-                return await setState({ clientHeight: element.value.clientHeight })
-            })
-        }
         /**选择列事件**/
         async function fetchCheckedUpdate(keys: Array<string>, data: Array<Omix>) {
-            items.value = data
-            return await nextTick().then(() => {
+            return await nextTick(() => (items.value = data)).then(() => {
                 return emit('update:checked', items.value)
             })
         }

@@ -1,14 +1,17 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, onMounted, nextTick, PropType } from 'vue'
 import { Search, Settings, DownToBottom, UpToTop } from '@vicons/carbon'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
+import { fetchDelay } from '@/utils'
 
 export default defineComponent({
     name: 'CommonDatabaseSearch',
-    emits: ['update:when', 'update:loading', 'update:formState', 'submit', 'reset'],
+    emits: ['update:faseWhen', 'update:loading', 'update:formState', 'submit', 'reset'],
     props: {
-        /**表单展开**/
-        when: { type: Boolean, default: true },
+        /**边距值**/
+        limit: { type: Number, default: 14 },
+        /**表单边界配置**/
+        faseWhen: { type: Object as PropType<Omix>, default: () => ({ when: true, delay: 0, min: 60, max: 60 }) },
         /**开启边框**/
         bordered: { type: Boolean, default: true },
         /**开启边框**/
@@ -19,17 +22,36 @@ export default defineComponent({
         labelWidth: { type: Number, default: 100 }
     },
     setup(props, { emit, slots }) {
-        const { width } = useElementSize(useCurrentElement<HTMLElement>())
-        const { when, loading, formState } = useVModels(props, emit)
+        const element = useCurrentElement<HTMLElement>()
+        const { width } = useElementSize(element)
+        const { faseWhen, loading, formState } = useVModels(props, emit)
+        async function fetchWhenUpdate(e: Omix) {
+            return nextTick(() => Object.assign(faseWhen.value, e))
+        }
+        /**初始化**/
+        onMounted(fetchInitialize)
+        async function fetchInitialize() {
+            return await fetchDelay(faseWhen.value.delay).then(async () => {
+                return await fetchWhenUpdate({ max: element.value.clientHeight })
+            })
+        }
 
         /**展开、收起**/
-        async function fetchWhenUpdate() {
-            return (when.value = !when.value)
+        async function fetchClickUpdate() {
+            return await fetchWhenUpdate({ delay: 300, when: !faseWhen.value.when }).then(async () => {
+                return await fetchDelay(faseWhen.value.delay).then(async () => {
+                    return await fetchWhenUpdate({ delay: 0 })
+                })
+            })
         }
 
         return () => (
-            <n-card class="common-database-search flex flex-col b-rd-8" content-class="p-inline-12! p-block-12!" bordered={props.bordered}>
-                <n-collapse-transition show={when.value}>
+            <n-card
+                class="common-database-search flex flex-col b-rd-8"
+                content-style={{ padding: `${props.limit}px` }}
+                bordered={props.bordered}
+            >
+                <n-collapse-transition show={faseWhen.value.when}>
                     <n-form
                         class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
                         label-placement="left"
@@ -39,7 +61,7 @@ export default defineComponent({
                         {slots.default && slots.default()}
                     </n-form>
                 </n-collapse-transition>
-                <div class={{ 'flex items-center justify-end gap-10': true, 'p-bs-10': when.value }}>
+                <div class={{ 'flex items-center justify-end gap-10': true, 'p-bs-10': faseWhen.value.when }}>
                     <n-element class="flex items-center gap-10">
                         <common-element-button
                             class="min-w-80"
@@ -55,8 +77,12 @@ export default defineComponent({
                         <common-element-button class="min-w-80" onClick={(e: MouseEvent) => emit('reset', formState.value)}>
                             重置
                         </common-element-button>
-                        <common-element-button class="min-w-80" icon={when.value ? UpToTop : DownToBottom} onClick={fetchWhenUpdate}>
-                            {when.value ? '收起' : '展开'}
+                        <common-element-button
+                            class="min-w-80"
+                            icon={faseWhen.value.when ? UpToTop : DownToBottom}
+                            onClick={fetchClickUpdate}
+                        >
+                            {faseWhen.value.when ? '收起' : '展开'}
                         </common-element-button>
                         <common-element-button class="min-w-80" icon={Settings}>
                             设置

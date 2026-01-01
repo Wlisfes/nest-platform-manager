@@ -8,8 +8,9 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
-        const { element, formRef, formState, state, fetchRequest, fetchRefresh } = useColumnService({
+        const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
             request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
+            size: 10,
             formState: {
                 name: '31231'
             },
@@ -119,9 +120,10 @@ export default defineComponent({
         // }
 
         return () => (
-            <layout-common-container ref={element} class="gap-14 p-inline-14 p-block-14">
+            <layout-common-container class="gap-14" limit={state.limit} v-model:faseWhen={faseWhen.value}>
                 <common-database-search
-                    v-model:when={state.when}
+                    limit={state.limit}
+                    v-model:faseWhen={faseWhen.value}
                     v-model:loading={state.loading}
                     v-model:formState={formState.value}
                     onSubmit={fetchRequest}
@@ -189,6 +191,7 @@ export default defineComponent({
                 </common-database-search>
                 <common-database-table
                     client-mode="fill-table"
+                    limit={state.limit}
                     v-model:columns={state.columns}
                     v-model:data={state.dataSource}
                     v-model:page={state.page}

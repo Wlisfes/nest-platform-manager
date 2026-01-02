@@ -11,13 +11,13 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         return () => (
-            <n-form-item
+            <form-common-column
                 class={`common-database-search-column ${props.span > 1 ? 'grid-col-span-2' : 'grid-col-span-1'}`}
                 show-feedback={false}
                 label={props.label}
             >
                 {slots.default && slots.default()}
-            </n-form-item>
+            </form-common-column>
         )
     }
 })

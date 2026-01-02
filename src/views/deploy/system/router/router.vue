@@ -12,7 +12,8 @@ export default defineComponent({
         const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
             request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
             formState: {
-                name: '31231'
+                alias: undefined,
+                name: undefined
             },
             columns: [
                 { title: '选择框', key: 'selection', type: 'selection', check: true },
@@ -155,8 +156,8 @@ export default defineComponent({
                     <common-database-search-column label="邮箱">
                         <n-input placeholder="Input" v-model:value={formState.value.name} />
                     </common-database-search-column>
-                    <common-database-search-column label="账号别名">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    <common-database-search-column label="账号别名" prop="alias" v-model:value={formState.value.alias}>
+                        <n-input placeholder="Input" v-model:value={formState.value.alias} />
                     </common-database-search-column>
                     <common-database-search-column label="归属人">
                         <n-input placeholder="Input" v-model:value={formState.value.name} />

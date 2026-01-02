@@ -1,4 +1,4 @@
-import { ref, Ref, toRefs, provide, computed, onMounted } from 'vue'
+import { ref, Ref, toRefs, provide, onMounted } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { Observer, fetchExclude } from '@/utils'
@@ -62,7 +62,8 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         dataSource: [] as Array<T>,
         ...(options.options ?? {})
     } as BaseServiceState<T> & typeof options.options)
-
+    /**注入订阅发布实例**/
+    provide('COMMON_DATABASE_FORMREF', formRef)
     /**注入订阅发布实例**/
     provide('COMMON_DATABASE_FASEWHEN', faseWhen)
 

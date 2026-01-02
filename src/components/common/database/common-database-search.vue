@@ -1,12 +1,14 @@
 <script lang="tsx">
-import { defineComponent, onMounted, onUnmounted, nextTick, PropType } from 'vue'
+import { defineComponent, ref, Ref, inject, onMounted, onUnmounted, nextTick, PropType } from 'vue'
 import { Search, Settings, DownToBottom, UpToTop } from '@vicons/carbon'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
 import { fetchDelay, fetchWherer } from '@/utils'
+import { FormInst } from 'naive-ui'
+import { Collapse } from 'vue-collapsed'
 
 export default defineComponent({
     name: 'CommonDatabaseSearch',
-    emits: ['update:faseWhen', 'update:loading', 'update:formState', 'submit', 'reset'],
+    emits: ['update:faseWhen', 'update:loading', 'update:formState', 'submit', 'restore'],
     props: {
         /**边距值**/
         limit: { type: Number, default: 14 },
@@ -23,6 +25,7 @@ export default defineComponent({
     },
     setup(props, { emit, slots }) {
         const element = useCurrentElement<HTMLElement>()
+        const formRef = inject('COMMON_DATABASE_FORMREF', ref({} as Ref<Omix<FormInst>>))
         const { width } = useElementSize(element)
         const { faseWhen, loading, formState } = useVModels(props, emit)
         async function fetchWhenUpdate(e: Omix) {
@@ -41,6 +44,14 @@ export default defineComponent({
                 return window.addEventListener('resize', fetchInitialize)
             })
         })
+        /**重置**/
+        async function fetchRestore() {
+            return await formRef.value.restore().then(async (formState: Omix) => {
+                console.log(formState)
+                return emit('restore', formState.value)
+            })
+        }
+
         /**展开、收起**/
         async function fetchClickUpdate() {
             return await fetchWhenUpdate({ delay: 300, when: !faseWhen.value.when }).then(async () => {
@@ -59,8 +70,9 @@ export default defineComponent({
                 content-style={{ padding: `${props.limit}px` }}
                 bordered={props.bordered}
             >
-                <n-collapse-transition show={faseWhen.value.when}>
+                <common-element-collapse v-model:when={faseWhen.value.when}>
                     <form-common-container
+                        ref={formRef}
                         class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
                         label-placement="left"
                         model={formState.value}
@@ -68,15 +80,7 @@ export default defineComponent({
                     >
                         {slots.default && slots.default()}
                     </form-common-container>
-                    <n-form
-                        class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
-                        label-placement="left"
-                        model={formState.value}
-                        label-width={props.labelWidth}
-                    >
-                        {slots.default && slots.default()}
-                    </n-form>
-                </n-collapse-transition>
+                </common-element-collapse>
                 <div class={{ 'flex items-center justify-end gap-10': true, 'p-bs-10': faseWhen.value.when }}>
                     <n-element class="flex items-center gap-10">
                         <common-element-button
@@ -90,7 +94,7 @@ export default defineComponent({
                         >
                             查询
                         </common-element-button>
-                        <common-element-button class="min-w-80" onClick={(e: MouseEvent) => emit('reset', formState.value)}>
+                        <common-element-button class="min-w-80" onClick={fetchRestore}>
                             重置
                         </common-element-button>
                         <common-element-button

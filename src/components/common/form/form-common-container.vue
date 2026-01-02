@@ -1,12 +1,67 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref } from 'vue'
+import { defineComponent, provide, ref, Ref, onMounted, nextTick, PropType } from 'vue'
 import { FormInst } from 'naive-ui'
 
 export default defineComponent({
     name: 'FormCommonContainer',
-    props: {},
-    setup(props, { slots }) {
-        const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
+    props: {
+        model: { type: Object as PropType<Omix>, default: () => ({}) }
+    },
+    setup(props, { slots, expose }) {
+        const formOptions = ref({}) as Ref<Omix<FormInst>>
+        const formRef = ref() as Ref<Omix<FormInst>>
+        const fields = ref<Array<Omix>>([])
+        onMounted(() => {
+            formOptions.value.theme = formRef.value.validate
+            formOptions.value.themeOverrides = formRef.value.themeOverrides
+            formOptions.value.builtinThemeOverrides = formRef.value.builtinThemeOverrides
+            formOptions.value.inline = formRef.value.inline
+            formOptions.value.labelWidth = formRef.value.labelWidth
+            formOptions.value.labelAlign = formRef.value.labelAlign
+            formOptions.value.labelPlacement = formRef.value.labelPlacement
+            formOptions.value.model = formRef.value.model
+            formOptions.value.rules = formRef.value.rules
+            formOptions.value.disabled = formRef.value.disabled
+            formOptions.value.size = formRef.value.size
+            formOptions.value.showRequireMark = formRef.value.showRequireMark
+            formOptions.value.requireMarkPlacement = formRef.value.requireMarkPlacement
+            formOptions.value.showFeedback = formRef.value.showFeedback
+            formOptions.value.onSubmit = formRef.value.onSubmit
+            formOptions.value.showLabel = formRef.value.showLabel
+            formOptions.value.validateMessages = formRef.value.validateMessages
+            formOptions.value.mergedClsPrefix = formRef.value.mergedClsPrefix
+            formOptions.value.restoreValidation = formRef.value.restoreValidation
+            formOptions.value.validate = formRef.value.validate
+            formOptions.value.restore = restore
+            formOptions.value.insert = insert
+            formOptions.value.remove = remove
+        })
+
+        /**添加实例**/
+        async function insert(field: Omix) {
+            fields.value.push(field)
+            return fields.value
+        }
+
+        /**移除实例**/
+        async function remove(field: Omix) {
+            if (field.prop) {
+                fields.value.splice(fields.value.indexOf(field), 1)
+            }
+            return fields.value
+        }
+
+        /**重置**/
+        async function restore() {
+            return await nextTick(() => fields.value.forEach(field => field.restore())).then(() => {
+                return props.model
+            })
+        }
+
+        /**注入实例**/
+        provide('FORM_COMMON_INSTANCE', formOptions)
+        /**导出配置**/
+        expose(formOptions.value)
 
         return () => (
             <n-form ref={formRef} class="form-common-container">

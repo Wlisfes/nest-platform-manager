@@ -1,11 +1,12 @@
 <script lang="tsx">
 import { defineComponent, provide, ref, Ref, onMounted, nextTick, PropType } from 'vue'
 import { FormInst } from 'naive-ui'
+import { stop } from '@/utils'
 
 export default defineComponent({
     name: 'FormCommonContainer',
     props: {
-        model: { type: Object as PropType<Omix>, default: () => ({}) }
+        formState: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { slots, expose }) {
         const formOptions = ref({}) as Ref<Omix<FormInst>>
@@ -39,22 +40,18 @@ export default defineComponent({
 
         /**添加实例**/
         async function insert(field: Omix) {
-            fields.value.push(field)
-            return fields.value
+            return fields.value.push(field)
         }
 
         /**移除实例**/
         async function remove(field: Omix) {
-            if (field.prop) {
-                fields.value.splice(fields.value.indexOf(field), 1)
-            }
-            return fields.value
+            return fields.value.splice(fields.value.indexOf(field), 1)
         }
 
         /**重置**/
         async function restore() {
             return await nextTick(() => fields.value.forEach(field => field.restore())).then(() => {
-                return props.model
+                return props.formState
             })
         }
 
@@ -64,7 +61,7 @@ export default defineComponent({
         expose(formOptions.value)
 
         return () => (
-            <n-form ref={formRef} class="form-common-container">
+            <n-form ref={formRef} class="form-common-container" onSubmit={stop}>
                 {slots.default && slots.default()}
             </n-form>
         )

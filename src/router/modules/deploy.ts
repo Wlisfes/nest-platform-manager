@@ -6,6 +6,12 @@ export default [
         component: () => import('@/views/deploy/system/router/router.vue')
     },
     {
+        path: '/deploy/system/resource',
+        name: 'DeploySystemResource',
+        meta: { title: '菜单管理', AUTH: 'AUTH' },
+        component: () => import('@/views/deploy/system/resource/index.vue')
+    },
+    {
         path: '/deploy/system/role',
         name: 'DeploySystemRole',
         meta: { title: '角色管理', AUTH: 'AUTH' },

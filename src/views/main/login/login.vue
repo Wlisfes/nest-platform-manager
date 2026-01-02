@@ -36,7 +36,7 @@ export default defineComponent({
                     })
                 } catch (err) {
                     return await await setState({ loading: false, disabled: false }).then(async () => {
-                        return await fetchNotifyService({ type: 'error', title: err.message })
+                        return await Promise.all([fetchRefresh(), fetchNotifyService({ type: 'error', title: err.message })])
                     })
                 }
             })
@@ -47,8 +47,8 @@ export default defineComponent({
                 <layout-common-stripe></layout-common-stripe>
                 <n-card
                     class="w-full h-full max-w-520 max-h-520 p-24"
-                    style={{ boxShadow: 'var(--box-shadow-1)' }}
                     content-class="p-0 flex flex-col justify-center"
+                    style={{ boxShadow: 'var(--box-shadow-1)' }}
                 >
                     <form-common-container
                         class="w-full max-w-375 m-auto select-none"
@@ -58,7 +58,6 @@ export default defineComponent({
                         rules={state.rules}
                         disabled={state.loading}
                         show-label={false}
-                        onSubmit={stop}
                     >
                         <n-h2 class="text-28 font-500 text-center">
                             <n-text depth={2}>欢迎登录</n-text>

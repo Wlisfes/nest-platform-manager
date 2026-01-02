@@ -29,9 +29,9 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
     /**登录账户**/
     async function fetchAuthAccountToken(formState: Omix) {
         return await Service.httpAuthAccountToken({
-            code: formState.value.code,
-            number: formState.value.number,
-            password: window.btoa(encodeURIComponent(formState.value.password))
+            code: formState.code,
+            number: formState.number,
+            password: window.btoa(encodeURIComponent(formState.password))
         })
     }
 

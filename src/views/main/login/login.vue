@@ -1,16 +1,17 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
-import { useFormService } from '@/hooks/hook-form'
-import { stop, enter, fetchCompose } from '@/utils'
-import { router } from '@/router'
-import * as Service from '@/api/instance.service'
+import { defineComponent } from 'vue'
+import { useFormService, useCodeService } from '@/hooks'
+import { stop, fetchCompose } from '@/utils'
+import { useGlobal, useStore } from '@/store'
+import { fetchNotifyService } from '@/plugins'
 
 export default defineComponent({
     name: 'BaseAuthorize',
     setup(props) {
-        const codexRef = ref<any>()
-        const { formRef, form, state, setState, fetchValidater } = useFormService({
-            form: {
+        const { fetchAuthAccountToken } = useStore(useGlobal)
+        const { link, loading, fetchRefresh, fetchComplete } = useCodeService()
+        const { router, formRef, formState, state, setState, fetchValidater } = useFormService({
+            formState: {
                 number: '',
                 password: '',
                 code: ''
@@ -22,26 +23,20 @@ export default defineComponent({
             }
         })
 
-        async function onSubmit() {
-            return await fetchValidater().then(async result => {
-                if (result) {
-                    return await codexRef.value.fetchRefresh(300).then(() => {
-                        return setState({ loading: false, disabled: false })
-                    })
+        async function fetchSubmit() {
+            return await fetchValidater().then(async error => {
+                if (error) {
+                    return await setState({ loading: false, disabled: false })
                 }
                 try {
-                    return await Service.httpAuthAccountToken({
-                        code: form.value.code,
-                        number: form.value.number,
-                        password: window.btoa(encodeURIComponent(form.value.password))
-                    }).then(async ({ data }) => {
+                    return await fetchAuthAccountToken(formState.value).then(async ({ data }) => {
                         return await fetchCompose(data).then(async () => {
                             return router.push({ path: '/', replace: true })
                         })
                     })
                 } catch (err) {
-                    return await codexRef.value.fetchRefresh(300).then(() => {
-                        return setState({ loading: false, disabled: false })
+                    return await await setState({ loading: false, disabled: false }).then(async () => {
+                        return await fetchNotifyService({ type: 'error', title: err.message })
                     })
                 }
             })
@@ -55,11 +50,11 @@ export default defineComponent({
                     style={{ boxShadow: 'var(--box-shadow-1)' }}
                     content-class="p-0 flex flex-col justify-center"
                 >
-                    <n-form
+                    <form-common-container
                         class="w-full max-w-375 m-auto select-none"
                         size="large"
                         ref={formRef}
-                        model={form.value}
+                        model={formState.value}
                         rules={state.rules}
                         disabled={state.loading}
                         show-label={false}
@@ -73,9 +68,9 @@ export default defineComponent({
                                 maxlength={32}
                                 type="text"
                                 placeholder="请输入登录账号"
-                                v-model:value={form.value.number}
+                                v-model:value={formState.value.number}
                                 input-props={{ autocomplete: 'on' }}
-                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                onSubmit={fetchSubmit}
                                 prefix={<common-element-icon size={22} name="nest-unset-user"></common-element-icon>}
                             ></form-common-input>
                         </n-form-item>
@@ -87,8 +82,8 @@ export default defineComponent({
                                 show-password-on="click"
                                 input-props={{ autocomplete: 'password' }}
                                 style={{ '--input-password-right': '46px' }}
-                                v-model:value={form.value.password}
-                                onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                v-model:value={formState.value.password}
+                                onSubmit={fetchSubmit}
                                 prefix={<common-element-icon size={22} name="nest-unset-ockes"></common-element-icon>}
                             ></form-common-input>
                         </n-form-item>
@@ -99,11 +94,17 @@ export default defineComponent({
                                     type="text"
                                     placeholder="验证码"
                                     maxlength={4}
-                                    v-model:value={form.value.code}
-                                    onKeydown={(evt: KeyboardEvent) => enter(evt, onSubmit)}
+                                    v-model:value={formState.value.code}
+                                    onSubmit={fetchSubmit}
                                     prefix={<common-element-icon size={22} name="nest-unset-codex"></common-element-icon>}
                                 ></form-common-input>
-                                <common-element-codex ref={codexRef} disabled={state.loading}></common-element-codex>
+                                <common-element-codex
+                                    link={link.value}
+                                    loading={loading.value}
+                                    disabled={state.loading}
+                                    onClick={fetchRefresh}
+                                    onComplete={fetchComplete}
+                                ></common-element-codex>
                             </n-flex>
                         </n-form-item>
                         <n-form-item>
@@ -112,7 +113,7 @@ export default defineComponent({
                                 type="info"
                                 disabled={state.loading}
                                 loading={state.loading}
-                                onClick={onSubmit}
+                                onClick={fetchSubmit}
                             >
                                 立即登录
                             </common-element-button>
@@ -128,7 +129,7 @@ export default defineComponent({
                                 <common-element-icon size={44} name="nest-google"></common-element-icon>
                             </common-element-button>
                         </n-flex>
-                    </n-form>
+                    </form-common-container>
                 </n-card>
             </n-element>
         )

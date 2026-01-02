@@ -14,7 +14,7 @@ interface BaseServiceState {
     dataSource: Array<Omix>
 }
 /**hooks基本配置**/
-export interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
+interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
     /**立即执行**/
     immediate?: boolean
     /**额外数据**/
@@ -28,7 +28,7 @@ export interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
 }
 
 /**下拉通用查询接口hook**/
-export function useKineService<T extends Omix, U extends Omix>(options: BaseServiceOptions<T, U>) {
+export function useSelectService<T extends Omix, U extends Omix>(options: BaseServiceOptions<T, U>) {
     const { state, setState } = useState({
         keywords: options.keywords ?? '',
         loading: options.loading ?? true,

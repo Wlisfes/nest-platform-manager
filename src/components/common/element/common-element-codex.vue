@@ -1,50 +1,34 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
-import { useState } from '@/hooks'
-import { fetchDelay } from '@/utils'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'CommonElementCodex',
+    emits: ['click', 'complete'],
     props: {
-        /**是否禁用**/
-        disabled: { type: Boolean },
+        /**加载状态**/
+        loading: { type: Boolean, default: true },
+        /**禁用状态**/
+        disabled: { type: Boolean, default: false },
         /**图形验证码地址**/
-        baseURL: { type: String, default: `/api/windows/auth/codex/write` }
+        link: { type: String, required: true }
     },
-    setup(props, { expose }) {
-        const { state, setState } = useState({ initialize: true, loading: false, baseURL: '' })
-
-        onMounted(async () => {
-            await fetchRepeat()
-            return await setState({ initialize: false })
-        })
-
-        async function fetchRepeat() {
-            return await setState({ loading: true, baseURL: `${props.baseURL}?t=${Math.random()}` })
-        }
-
-        async function fetchState() {
-            await fetchDelay(100)
-            return await setState({ loading: false })
-        }
-
-        async function fetchRefresh(delay: number = 300) {
-            await fetchDelay(delay)
-            return await fetchRepeat()
-        }
-
-        expose({ fetchRefresh })
-
+    setup(props, { emit }) {
         return () => (
-            <n-spin class="common-element-codex" size="small" content-class="flex flex-col" show={state.loading}>
+            <n-spin class="common-element-codex" size="small" content-class="flex flex-col" show={props.loading}>
                 <common-element-button
                     class="p-0"
                     size="large"
                     secondary
-                    disabled={state.initialize || state.loading || props.disabled}
-                    onClick={fetchRepeat}
+                    disabled={props.loading || props.disabled}
+                    onClick={() => emit('click', 0)}
                 >
-                    <n-image class="flex flex-col" preview-disabled src={state.baseURL} on-load={fetchState} on-error={fetchState}>
+                    <n-image
+                        class="flex flex-col"
+                        preview-disabled
+                        src={props.link}
+                        on-load={() => emit('complete', 100)}
+                        on-error={() => emit('complete', 100)}
+                    >
                         {{
                             placeholder: () => (
                                 <n-skeleton width={120} height={40} style={{ borderRadius: 'var(--n-border-radius)' }}></n-skeleton>

@@ -2,6 +2,7 @@ import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { useState } from '@/hooks/modules/hook-state'
 import { isEmpty, fetchHandler } from '@/utils'
+import { useRouter, useRoute } from 'vue-router'
 interface FormServiceState extends Omix {
     /**初始化状态**/
     initialize: boolean
@@ -27,8 +28,10 @@ interface FormServiceOptions<T, R, U> extends Partial<FormServiceState> {
 
 /**自定义表单Hooks**/
 export function useFormService<T extends Omix, R extends FormRules, U extends Omix>(options: FormServiceOptions<T, R, U>) {
+    const route = useRoute()
+    const router = useRouter()
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
-    const formState = ref<typeof options.form>(options.form)
+    const formState = ref<typeof options.formState>(options.formState)
     const { state, setState } = useState({
         initialize: options.initialize ?? true,
         disabled: options.disabled ?? false,
@@ -64,22 +67,23 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
             if (!formRef.value) {
                 return reject('不存在formRef实例')
             }
-            try {
-                await setState({ loading: true, disabled: true } as never)
-                return formRef.value.validate(
-                    errors => {
-                        if (errors) {
-                            return resolve(errors)
-                        }
+            return await setState({ loading: true, disabled: true } as never).then(async () => {
+                try {
+                    return formRef.value.validate(
+                        errors => {
+                            if (errors) {
+                                return resolve(errors)
+                            }
+                            return resolve(false)
+                        },
+                        rule => fetchRuleCheck(keys, rule)
+                    )
+                } catch (err) {
+                    return await setState({ loading: false, disabled: false } as never).then(() => {
                         return resolve(false)
-                    },
-                    rule => fetchRuleCheck(keys, rule)
-                )
-            } catch (err) {
-                return await setState({ loading: false, disabled: false } as never).then(() => {
-                    return resolve(false)
-                })
-            }
+                    })
+                }
+            })
         })
     }
 
@@ -95,6 +99,8 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
 
     return {
         state,
+        route,
+        router,
         formRef,
         formState,
         ...toRefs(state),

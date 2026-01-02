@@ -1,8 +1,8 @@
 <script lang="tsx">
-import { defineComponent, onMounted, nextTick, PropType } from 'vue'
+import { defineComponent, onMounted, onUnmounted, nextTick, PropType } from 'vue'
 import { Search, Settings, DownToBottom, UpToTop } from '@vicons/carbon'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
-import { fetchDelay } from '@/utils'
+import { fetchDelay, fetchWherer } from '@/utils'
 
 export default defineComponent({
     name: 'CommonDatabaseSearch',
@@ -28,19 +28,27 @@ export default defineComponent({
         async function fetchWhenUpdate(e: Omix) {
             return nextTick(() => Object.assign(faseWhen.value, e))
         }
-        /**初始化**/
-        onMounted(fetchInitialize)
         async function fetchInitialize() {
-            return await fetchDelay(faseWhen.value.delay).then(async () => {
+            return await fetchDelay(0).then(async () => {
                 return await fetchWhenUpdate({ max: element.value.clientHeight })
             })
         }
-
+        onUnmounted(async () => {
+            return window.removeEventListener('resize', fetchInitialize)
+        })
+        onMounted(async () => {
+            return await fetchInitialize().then(() => {
+                return window.addEventListener('resize', fetchInitialize)
+            })
+        })
         /**展开、收起**/
         async function fetchClickUpdate() {
             return await fetchWhenUpdate({ delay: 300, when: !faseWhen.value.when }).then(async () => {
                 return await fetchDelay(faseWhen.value.delay).then(async () => {
-                    return await fetchWhenUpdate({ delay: 0 })
+                    return await fetchWhenUpdate({
+                        delay: 0,
+                        max: fetchWherer(faseWhen.value.when, element.value.clientHeight, faseWhen.value.max)
+                    })
                 })
             })
         }
@@ -52,6 +60,14 @@ export default defineComponent({
                 bordered={props.bordered}
             >
                 <n-collapse-transition show={faseWhen.value.when}>
+                    <form-common-container
+                        class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
+                        label-placement="left"
+                        model={formState.value}
+                        label-width={props.labelWidth}
+                    >
+                        {slots.default && slots.default()}
+                    </form-common-container>
                     <n-form
                         class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
                         label-placement="left"

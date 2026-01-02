@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, onMounted } from 'vue'
-import { useColumnService } from '@/hooks'
+import { useProvider, useColumnService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
@@ -8,9 +8,9 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRouter',
     setup(props, ctx) {
+        const { inverted } = useProvider()
         const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
             request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
-            size: 10,
             formState: {
                 name: '31231'
             },

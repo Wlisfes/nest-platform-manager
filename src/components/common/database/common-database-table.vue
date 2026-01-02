@@ -55,6 +55,9 @@ export default defineComponent({
             const pag = fetchWherer(props.pagination, 28 + props.limit, 0)
             const w = fetchWherer(faseWhen.value.when, faseWhen.value.max, faseWhen.value.min)
             if (['fill-table'].includes(props.clientMode)) {
+                if (faseWhen.value.when && faseWhen.value.delay > 0) {
+                    return Math.floor(window.innerHeight - props.offset - (pag + 2) - faseWhen.value.min - props.limit * 5)
+                }
                 return Math.floor(window.innerHeight - props.offset - (pag + 2) - w - props.limit * 5)
             } else if (['full-table'].includes(props.clientMode)) {
                 return Math.floor(window.innerHeight - pag - props.offset - props.limit * 4)
@@ -64,6 +67,7 @@ export default defineComponent({
         /**选择列事件**/
         async function fetchCheckedUpdate(keys: Array<string>, data: Array<Omix>) {
             return await nextTick(() => (items.value = data)).then(() => {
+                console.log(items.value)
                 return emit('update:checked', items.value)
             })
         }
@@ -115,7 +119,7 @@ export default defineComponent({
                         <n-pagination
                             page={page.value}
                             page-size={size.value}
-                            page-count={total.value}
+                            item-count={total.value}
                             v-model:page={page.value}
                             page-sizes={[20, 30, 50, 100, 200, 300]}
                             show-size-picker={props.showSizePicker}
@@ -212,7 +216,7 @@ export default defineComponent({
         transition: border-color 0.3s var(--n-bezier);
         padding: 0 var(--n-limit-width) var(--n-limit-width);
         overflow: hidden;
-        :deep(.n-pagination > .n-pagination-item--active) {
+        :deep(.n-pagination > .n-pagination-item) {
             border: none;
             padding: 0;
         }

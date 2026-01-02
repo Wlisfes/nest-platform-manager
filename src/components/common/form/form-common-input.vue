@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, h, PropType, VNode } from 'vue'
-import { enter } from '@/utils'
+import { enter, fetchWherer, isNotEmpty } from '@/utils'
 
 export default defineComponent({
     name: 'FormCommonInput',
@@ -12,25 +12,15 @@ export default defineComponent({
         suffix: { type: Object as PropType<VNode> }
     },
     setup(props, { emit, slots }) {
-        function fetchPrefixRender() {
-            if (slots.prefix) {
-                return slots.prefix()
-            }
-            return h(props.prefix as VNode)
-        }
-
-        function fetchSuffixRender() {
-            if (slots.suffix) {
-                return slots.suffix()
-            }
-            return h(props.suffix as VNode)
-        }
-
         return () => (
             <n-input class="form-common-input" onKeydown={(event: KeyboardEvent) => enter(event, () => emit('submit', event))}>
                 {{
-                    prefix: slots.prefix || props.prefix ? fetchPrefixRender : undefined,
-                    suffix: slots.suffix || props.suffix ? fetchSuffixRender : undefined
+                    prefix: fetchWherer(isNotEmpty(slots.prefix) || isNotEmpty(props.prefix), () => {
+                        return slots.prefix ? slots.prefix() : h(props.prefix as VNode)
+                    }),
+                    suffix: fetchWherer(isNotEmpty(slots.suffix) || isNotEmpty(props.suffix), () => {
+                        return slots.suffix ? slots.suffix() : h(props.suffix as VNode)
+                    })
                 }}
             </n-input>
         )

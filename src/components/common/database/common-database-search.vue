@@ -109,82 +109,43 @@ export default defineComponent({
                             {columns}
                         </form-common-container>
                     </common-element-collapse>
-                    <n-element class={{ [`flex flex-wrap gap-10 ${props.functionClass}`]: true, 'p-bs-10': faseWhen.value.when }}>
-                        {functions.length > 0 && <Fragment>{functions}</Fragment>}
-                        {props.function.includes('search') && (
-                            <common-element-button
-                                class="min-w-80"
-                                type="primary"
-                                secondary
-                                icon={Search}
-                                loading={loading.value}
-                                disabled={loading.value}
-                                onClick={(e: MouseEvent) => emit('submit', formState.value)}
-                            >
-                                查询
-                            </common-element-button>
-                        )}
-                        {props.function.includes('restore') && (
-                            <common-element-button class="min-w-80" onClick={fetchRestore}>
-                                重置
-                            </common-element-button>
-                        )}
-                        {props.function.includes('collapse') && (
-                            <common-element-button
-                                class="min-w-80"
-                                icon={faseWhen.value.when ? UpToTop : DownToBottom}
-                                onClick={fetchClickUpdate}
-                            >
-                                {faseWhen.value.when ? '收起' : '展开'}
-                            </common-element-button>
-                        )}
-                        {props.function.includes('deploy') && (
-                            <common-element-button class="min-w-80" icon={Settings}>
-                                设置
-                            </common-element-button>
-                        )}
-                    </n-element>
-                    {/* {functions.length + props.function.length > 0 && (
-                        <div class={{ 'flex flex-wrap gap-10': true, 'p-bs-10': faseWhen.value.when }}>
-                            <n-element class="flex flex-1">{functions}</n-element>
-                            {props.function.length > 0 && (
-                                <n-element class="flex items-center gap-10">
-                                    {props.function.includes('search') && (
-                                        <common-element-button
-                                            class="min-w-80"
-                                            type="primary"
-                                            secondary
-                                            icon={Search}
-                                            loading={loading.value}
-                                            disabled={loading.value}
-                                            onClick={(e: MouseEvent) => emit('submit', formState.value)}
-                                        >
-                                            查询
-                                        </common-element-button>
-                                    )}
-                                    {props.function.includes('restore') && (
-                                        <common-element-button class="min-w-80" onClick={fetchRestore}>
-                                            重置
-                                        </common-element-button>
-                                    )}
-                                    {props.function.includes('collapse') && (
-                                        <common-element-button
-                                            class="min-w-80"
-                                            icon={faseWhen.value.when ? UpToTop : DownToBottom}
-                                            onClick={fetchClickUpdate}
-                                        >
-                                            {faseWhen.value.when ? '收起' : '展开'}
-                                        </common-element-button>
-                                    )}
-                                    {props.function.includes('deploy') && (
-                                        <common-element-button class="min-w-80" icon={Settings}>
-                                            设置
-                                        </common-element-button>
-                                    )}
-                                </n-element>
+                    {props.function.length + functions.length > 0 && (
+                        <n-element class={{ [`flex flex-wrap gap-10 ${props.functionClass}`]: true, 'p-bs-10': faseWhen.value.when }}>
+                            {functions.length > 0 && <Fragment>{functions}</Fragment>}
+                            {props.function.includes('search') && (
+                                <common-element-button
+                                    class="min-w-80"
+                                    type="primary"
+                                    secondary
+                                    icon={Search}
+                                    loading={loading.value}
+                                    disabled={loading.value}
+                                    onClick={(e: MouseEvent) => emit('submit', formState.value)}
+                                >
+                                    查询
+                                </common-element-button>
                             )}
-                        </div>
-                    )} */}
+                            {props.function.includes('restore') && (
+                                <common-element-button class="min-w-80" onClick={fetchRestore}>
+                                    重置
+                                </common-element-button>
+                            )}
+                            {props.function.includes('collapse') && (
+                                <common-element-button
+                                    class="min-w-80"
+                                    icon={faseWhen.value.when ? UpToTop : DownToBottom}
+                                    onClick={fetchClickUpdate}
+                                >
+                                    {faseWhen.value.when ? '收起' : '展开'}
+                                </common-element-button>
+                            )}
+                            {props.function.includes('deploy') && (
+                                <common-element-button class="min-w-80" icon={Settings}>
+                                    设置
+                                </common-element-button>
+                            )}
+                        </n-element>
+                    )}
                 </n-card>
             )
         }

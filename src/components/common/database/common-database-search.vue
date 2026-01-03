@@ -1,15 +1,18 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, inject, onMounted, onUnmounted, nextTick, PropType } from 'vue'
+import { defineComponent, ref, Ref, inject, onMounted, onUnmounted, nextTick, Fragment, PropType } from 'vue'
 import { Search, Settings, DownToBottom, UpToTop } from '@vicons/carbon'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
-import { fetchDelay, fetchWherer } from '@/utils'
+import { fetchDelay, fetchWherer, isObject, isEmpty } from '@/utils'
 import { FormInst } from 'naive-ui'
-import { Collapse } from 'vue-collapsed'
 
 export default defineComponent({
     name: 'CommonDatabaseSearch',
     emits: ['update:faseWhen', 'update:loading', 'update:formState', 'submit', 'restore'],
     props: {
+        /**操作功能**/
+        function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy'>>, default: () => [] },
+        /**操作功能根节点样式**/
+        functionClass: { type: String, default: '' },
         /**边距值**/
         limit: { type: Number, default: 14 },
         /**表单边界配置**/
@@ -51,7 +54,6 @@ export default defineComponent({
                 return emit('restore', formState.value)
             })
         }
-
         /**展开、收起**/
         async function fetchClickUpdate() {
             return await fetchWhenUpdate({ delay: 300, when: !faseWhen.value.when }).then(async () => {
@@ -63,54 +65,131 @@ export default defineComponent({
                 })
             })
         }
+        /**节点判断过滤**/
+        function fetchColumnCheck(vnode: Array<Omix>, names: Array<string>) {
+            return vnode.filter(node => {
+                return isObject<Omix>(node.type) ? names.includes(node.type.name) : false
+            })
+        }
+        /**节点判断过滤**/
+        function fetchColumnCheckFunctions<T extends Omix>(vnode: Array<T>): Array<T> {
+            if (isObject<Omix>(vnode[0]?.props) && vnode[0]?.props.abstract) {
+                return (vnode[0]?.children?.default?.() ?? []).flat(1).map((node: Omix) => {
+                    return node
+                })
+            }
+            return vnode
+        }
+        /**子节点分类**/
+        function fetchColumnTransaction(vnode: Array<Omix>) {
+            return {
+                vnode,
+                columns: fetchColumnCheck(vnode, ['CommonDatabaseSearchColumn']),
+                functions: fetchColumnCheckFunctions(fetchColumnCheck(vnode, ['CommonDatabaseSearchFunction']))
+            }
+        }
 
-        return () => (
-            <n-card
-                class="common-database-search flex flex-col b-rd-8"
-                content-style={{ padding: `${props.limit}px` }}
-                bordered={props.bordered}
-            >
-                <common-element-collapse v-model:when={faseWhen.value.when}>
-                    <form-common-container
-                        ref={formRef}
-                        class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
-                        label-placement="left"
-                        model={formState.value}
-                        label-width={props.labelWidth}
+        return () => {
+            const { columns, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
+
+            return (
+                <n-card
+                    class="common-database-search flex flex-col b-rd-8"
+                    content-style={{ padding: `${props.limit}px` }}
+                    bordered={props.bordered}
+                >
+                    <common-element-collapse v-model:when={faseWhen.value.when}>
+                        <form-common-container
+                            ref={formRef}
+                            class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
+                            label-placement="left"
+                            model={formState.value}
+                            label-width={props.labelWidth}
+                        >
+                            {columns}
+                        </form-common-container>
+                    </common-element-collapse>
+                    <n-element
+                        class={{ [`flex flex-wrap gap-10 overflow-hidden ${props.functionClass}`]: true, 'p-bs-10': faseWhen.value.when }}
                     >
-                        {slots.default && slots.default()}
-                    </form-common-container>
-                </common-element-collapse>
-                <div class={{ 'flex items-center justify-end gap-10': true, 'p-bs-10': faseWhen.value.when }}>
-                    <n-element class="flex items-center gap-10">
-                        <common-element-button
-                            class="min-w-80"
-                            type="primary"
-                            secondary
-                            icon={Search}
-                            loading={loading.value}
-                            disabled={loading.value}
-                            onClick={(e: MouseEvent) => emit('submit', formState.value)}
-                        >
-                            查询
-                        </common-element-button>
-                        <common-element-button class="min-w-80" onClick={fetchRestore}>
-                            重置
-                        </common-element-button>
-                        <common-element-button
-                            class="min-w-80"
-                            icon={faseWhen.value.when ? UpToTop : DownToBottom}
-                            onClick={fetchClickUpdate}
-                        >
-                            {faseWhen.value.when ? '收起' : '展开'}
-                        </common-element-button>
-                        <common-element-button class="min-w-80" icon={Settings}>
-                            设置
-                        </common-element-button>
+                        {functions.length > 0 && <Fragment>{functions}</Fragment>}
+                        {props.function.includes('search') && (
+                            <common-element-button
+                                class="min-w-80"
+                                type="primary"
+                                secondary
+                                icon={Search}
+                                loading={loading.value}
+                                disabled={loading.value}
+                                onClick={(e: MouseEvent) => emit('submit', formState.value)}
+                            >
+                                查询
+                            </common-element-button>
+                        )}
+                        {props.function.includes('restore') && (
+                            <common-element-button class="min-w-80" onClick={fetchRestore}>
+                                重置
+                            </common-element-button>
+                        )}
+                        {props.function.includes('collapse') && (
+                            <common-element-button
+                                class="min-w-80"
+                                icon={faseWhen.value.when ? UpToTop : DownToBottom}
+                                onClick={fetchClickUpdate}
+                            >
+                                {faseWhen.value.when ? '收起' : '展开'}
+                            </common-element-button>
+                        )}
+                        {props.function.includes('deploy') && (
+                            <common-element-button class="min-w-80" icon={Settings}>
+                                设置
+                            </common-element-button>
+                        )}
                     </n-element>
-                </div>
-            </n-card>
-        )
+                    {/* {functions.length + props.function.length > 0 && (
+                        <div class={{ 'flex flex-wrap gap-10': true, 'p-bs-10': faseWhen.value.when }}>
+                            <n-element class="flex flex-1">{functions}</n-element>
+                            {props.function.length > 0 && (
+                                <n-element class="flex items-center gap-10">
+                                    {props.function.includes('search') && (
+                                        <common-element-button
+                                            class="min-w-80"
+                                            type="primary"
+                                            secondary
+                                            icon={Search}
+                                            loading={loading.value}
+                                            disabled={loading.value}
+                                            onClick={(e: MouseEvent) => emit('submit', formState.value)}
+                                        >
+                                            查询
+                                        </common-element-button>
+                                    )}
+                                    {props.function.includes('restore') && (
+                                        <common-element-button class="min-w-80" onClick={fetchRestore}>
+                                            重置
+                                        </common-element-button>
+                                    )}
+                                    {props.function.includes('collapse') && (
+                                        <common-element-button
+                                            class="min-w-80"
+                                            icon={faseWhen.value.when ? UpToTop : DownToBottom}
+                                            onClick={fetchClickUpdate}
+                                        >
+                                            {faseWhen.value.when ? '收起' : '展开'}
+                                        </common-element-button>
+                                    )}
+                                    {props.function.includes('deploy') && (
+                                        <common-element-button class="min-w-80" icon={Settings}>
+                                            设置
+                                        </common-element-button>
+                                    )}
+                                </n-element>
+                            )}
+                        </div>
+                    )} */}
+                </n-card>
+            )
+        }
     }
 })
 </script>

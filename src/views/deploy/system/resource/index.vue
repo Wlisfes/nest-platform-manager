@@ -123,6 +123,8 @@ export default defineComponent({
         return () => (
             <layout-common-container class="gap-14" limit={state.limit} v-model:faseWhen={faseWhen.value}>
                 <common-database-search
+                    function-class="justify-end"
+                    function={['search', 'restore', 'collapse', 'deploy']}
                     limit={state.limit}
                     v-model:faseWhen={faseWhen.value}
                     v-model:loading={state.loading}

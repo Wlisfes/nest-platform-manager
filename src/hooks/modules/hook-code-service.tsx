@@ -46,7 +46,7 @@ export function useCodeService<T extends Omix>(options: BaseServiceOptions<T> = 
         return await fetchDelay(delay).then(async () => {
             return await setState({
                 loading: true,
-                link: `${state.url}?inverse=${inverted.value}&t=${Math.random()}`
+                link: `${state.url}?inverse=${Number(inverted.value)}&t=${Math.random()}`
             } as never)
         })
     }

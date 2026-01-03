@@ -3,13 +3,22 @@ import { defineComponent, ref, Ref, reactive, inject, toRefs, onMounted, onUnmou
 import { FormInst, FormItemInst } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { cloneDeep } from 'lodash-es'
+import { isEmpty } from '@/utils'
 
 export default defineComponent({
     name: 'FormCommonColumn',
     emits: ['update:value'],
     props: {
         /**字段名称**/
-        prop: { type: String },
+        prop: {
+            type: String,
+            validator: (value: string) => {
+                if (isEmpty(value)) {
+                    console.warn('请传入prop字段')
+                }
+                return true
+            }
+        },
         /**字段值**/
         value: { type: [Number, String, Boolean, Object, Array] as PropType<any>, default: () => undefined }
     },

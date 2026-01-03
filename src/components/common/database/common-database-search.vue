@@ -140,9 +140,7 @@ export default defineComponent({
                                 </common-element-button>
                             )}
                             {props.function.includes('deploy') && (
-                                <common-element-button class="min-w-80" icon={Settings}>
-                                    设置
-                                </common-element-button>
+                                <common-database-search-settings columns={columns}></common-database-search-settings>
                             )}
                         </n-element>
                     )}

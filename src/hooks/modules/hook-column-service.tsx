@@ -1,7 +1,8 @@
 import { ref, Ref, toRefs, provide, onMounted } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
-import { Observer, fetchExclude } from '@/utils'
+import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
+import { fetchNotifyService } from '@/plugins'
 import { useState } from '@/hooks'
 
 /**列表缓存对象**/
@@ -39,7 +40,7 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
     request: (formState: Omix<U>, base: BaseServiceState<T & Omix<R>>, options: Omix) => Promise<ResultResolver<ResultColumn<T>>>
     /**列表数据转换函数**/
     transform?: (data: ResultColumn<T>) => Array<Omix> | Promise<Array<Omix>>
-    /**初始化回调函数**/
+    /**回调函数**/
     callback?: (formState: Omix<U>, base: BaseServiceState<T & Omix<R>>) => void | any | Promise<any>
 }
 
@@ -96,6 +97,15 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         })
     }
 
+    /**列表接口请求回调执行**/
+    async function fetchCallbackRequest(opts: Omix = {}) {
+        return await setState({ initialize: false, loading: false, ...opts } as never).then(async () => {
+            return await fetchHandler(isNotEmpty(options.callback), async () => {
+                return await options.callback!(formState.value, state as never)
+            }).then(() => state as BaseServiceState<T> & typeof options.options)
+        })
+    }
+
     /**列表接口请求**/
     async function fetchRequest(opts: Omix = {}) {
         return await setState({ loading: true } as never).then(async () => {
@@ -105,10 +115,12 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
                     if (options.transform && typeof options.transform === 'function') {
                         data.list = ((await options.transform(data)) ?? []) as Array<Omix<T>>
                     }
-                    return await setState({ initialize: false, loading: false, total: data.total ?? 0, dataSource: data.list } as never)
+                    return await fetchCallbackRequest({ total: data.total ?? 0, dataSource: data.list })
                 })
             } catch (err) {
-                return await setState({ initialize: false, loading: false, total: 0, dataSource: [] } as never)
+                return await fetchNotifyService({ type: 'error', title: err.message }).then(async () => {
+                    return await fetchCallbackRequest({ total: 0, dataSource: [] })
+                })
             }
         })
     }

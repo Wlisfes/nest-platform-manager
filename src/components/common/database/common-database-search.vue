@@ -109,9 +109,7 @@ export default defineComponent({
                             {columns}
                         </form-common-container>
                     </common-element-collapse>
-                    <n-element
-                        class={{ [`flex flex-wrap gap-10 overflow-hidden ${props.functionClass}`]: true, 'p-bs-10': faseWhen.value.when }}
-                    >
+                    <n-element class={{ [`flex flex-wrap gap-10 ${props.functionClass}`]: true, 'p-bs-10': faseWhen.value.when }}>
                         {functions.length > 0 && <Fragment>{functions}</Fragment>}
                         {props.function.includes('search') && (
                             <common-element-button

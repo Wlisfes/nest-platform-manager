@@ -10,7 +10,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { inverted } = useProvider()
         const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
-            request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
+            request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
             formState: {
                 alias: undefined,
                 name: undefined
@@ -155,7 +155,7 @@ export default defineComponent({
                     <common-database-search-column label="消费用户导入">
                         <n-input placeholder="Input" v-model:value={formState.value.name} />
                     </common-database-search-column>
-                    <common-database-search-column label="邮箱">
+                    <common-database-search-column label="邮箱" v-model:value={formState.value.name}>
                         <n-input placeholder="Input" v-model:value={formState.value.name} />
                     </common-database-search-column>
                     <common-database-search-column label="账号别名" prop="alias" v-model:value={formState.value.alias}>

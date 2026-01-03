@@ -1,9 +1,8 @@
 <script lang="tsx">
-import { defineComponent, inject, ref, computed, nextTick, onMounted, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty, fetchDelay } from '@/utils'
-import { useVModels, useCurrentElement } from '@vueuse/core'
+import { defineComponent, inject, ref, computed, nextTick, PropType } from 'vue'
+import { fetchWherer, isNotEmpty, isEmpty } from '@/utils'
+import { useVModels } from '@vueuse/core'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
-import { useState } from '@/hooks'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
@@ -48,17 +47,25 @@ export default defineComponent({
         showSizePicker: { type: Boolean, default: true }
     },
     setup(props, { emit, slots }) {
+        const element = ref<Omix<{ $el: HTMLElement }>>()
         const faseWhen = inject('COMMON_DATABASE_FASEWHEN', ref({ when: true, delay: 0, min: 60, max: 60 }))
         const { columns, data, page, size, total, loading, items } = useVModels(props)
+        /**表头列数据**/
+        const windowColumns = computed(() => columns.value.filter(item => item.check))
         /**弹性高度**/
         const height = computed(() => {
+            /**页面头部偏移量**/
             const pag = fetchWherer(props.pagination, 28 + props.limit, 0)
+            /**表格头部移量**/
+            const n = fetchWherer(isNotEmpty(element.value), Math.ceil(element.value?.$el?.clientHeight ?? 0), 0)
+            /**搜索栏头移量部**/
             const w = fetchWherer(faseWhen.value.when, faseWhen.value.max, faseWhen.value.min)
             if (['fill-table'].includes(props.clientMode)) {
+                console.log(n)
                 if (faseWhen.value.when && faseWhen.value.delay > 0) {
-                    return Math.floor(window.innerHeight - props.offset - (pag + 2) - faseWhen.value.min - props.limit * 5)
+                    return Math.floor(window.innerHeight - props.offset - n - (pag + 2) - faseWhen.value.min - props.limit * 5)
                 }
-                return Math.floor(window.innerHeight - props.offset - (pag + 2) - w - props.limit * 5)
+                return Math.floor(window.innerHeight - props.offset - n - (pag + 2) - w - props.limit * 5)
             } else if (['full-table'].includes(props.clientMode)) {
                 return Math.floor(window.innerHeight - pag - props.offset - props.limit * 4)
             }
@@ -67,29 +74,17 @@ export default defineComponent({
         /**选择列事件**/
         async function fetchCheckedUpdate(keys: Array<string>, data: Array<Omix>) {
             return await nextTick(() => (items.value = data)).then(() => {
-                console.log(items.value)
                 return emit('update:checked', items.value)
             })
         }
-        function fetchExpandIconRender() {
-            return <common-element-icon size={18} name="nest-double-right"></common-element-icon>
-        }
-
         /**节点渲染**/
-        function fetchColumnContentRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
+        function fetchCellRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
             if (isNotEmpty(slots[base.key])) {
-                /**字段命名插槽**/
-                if (['command'].includes(base.key)) {
-                    return slots.command!(data, base)
-                }
-                // return slots[base.key]!(value, data, base)
-            } else if (slots.default) {
-                /**默认插槽**/
-                return slots.default(value, data, base)
+                return slots[base.key]!(value, data, base)
             } else if (isEmpty(value)) {
                 return <span>-</span>
             }
-            return <common-database-chunk element="text" content={value}></common-database-chunk>
+            return <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '540px', maxHeight: '540px' } }}>{value}</n-ellipsis>
         }
 
         return () => (
@@ -100,17 +95,24 @@ export default defineComponent({
                 bordered={props.bordered}
             >
                 <n-element class={{ 'common-database-table flex flex-col flex-1': true }}>
+                    {slots.default && (
+                        <n-element ref={element} class="flex flex-col line-height-22 overflow-hidden">
+                            {slots.default && slots.default()}
+                        </n-element>
+                    )}
                     <n-data-table
                         remote
                         flex-height
                         size="small"
-                        loading={loading.value}
                         row-key={(e: Omix) => e.keyId}
+                        loading={loading.value}
+                        scroll-x={0}
                         style={{ height: `${height.value}px` }}
                         bordered={props.bordered}
                         data={data.value}
-                        columns={columns.value}
+                        columns={windowColumns.value}
                         scrollbar-props={{ size: 100 }}
+                        render-cell={fetchCellRender}
                         on-update:checked-row-keys={fetchCheckedUpdate}
                     ></n-data-table>
                 </n-element>
@@ -210,6 +212,10 @@ export default defineComponent({
         overflow: hidden;
         :deep(.n-data-table-loading-wrapper) {
             font-size: 48px;
+        }
+        :deep(.n-data-table-td):has(.n-data-table-expand-trigger) {
+            display: flex;
+            align-items: center;
         }
     }
     .n-element.common-database-pagination {

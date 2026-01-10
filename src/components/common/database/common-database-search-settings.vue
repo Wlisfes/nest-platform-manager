@@ -34,13 +34,7 @@ export default defineComponent({
                                 设置
                             </common-element-button>
                         ),
-                        default: () => (
-                            <n-element
-                                class={`min-w-80 flex flex-col overflow-hidden [&>.n-button]:justify-start [&>.n-button]:p-inline-6 ${props.className}`}
-                            >
-                                DSADA
-                            </n-element>
-                        )
+                        default: () => <n-element class="w-220 flex flex-col overflow-hidden">DSADA</n-element>
                     }}
                 </common-element-popover>
             )

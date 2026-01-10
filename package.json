@@ -19,6 +19,7 @@
         "@vueuse/components": "^11.0.3",
         "@vueuse/core": "^11.0.3",
         "axios": "1.7.7",
+        "big.js": "^7.0.1",
         "class-validator": "^0.14.1",
         "dayjs": "^1.11.13",
         "js-cookie": "^3.0.5",
@@ -33,6 +34,7 @@
         "vue-router": "4.4.3"
     },
     "devDependencies": {
+        "@types/big.js": "^6.2.2",
         "@types/js-cookie": "^3.0.6",
         "@types/node": "^22.5.1",
         "@unocss/preset-rem-to-px": "^0.60.4",

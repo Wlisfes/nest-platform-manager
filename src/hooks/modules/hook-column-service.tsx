@@ -48,7 +48,7 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(options.formState)
-    const faseWhen = ref({ when: true, delay: 0, min: 34 + (options.limit ?? 14) * 2, max: 34 + (options.limit ?? 14) * 2 })
+    const faseWhen = ref({ when: true, delay: 0, line: 0, min: 60, max: 60 })
     const observer = ref(Observer<Record<string, Omix>>())
     const { state, setState } = useState({
         limit: options.limit ?? 14,

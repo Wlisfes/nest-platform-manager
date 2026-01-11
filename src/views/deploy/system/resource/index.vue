@@ -10,17 +10,17 @@ export default defineComponent({
     setup(props, ctx) {
         const { inverted } = useProvider()
         const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
-            request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
+            request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
             formState: {
                 alias: undefined,
                 name: undefined
             },
             columns: [
-                { title: '选择框', key: 'selection', type: 'selection', check: true },
+                { title: '选择框', key: 'selection', type: 'selection', width: 40, check: true },
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'icon', width: 100, align: 'center', check: true },
                 { title: '权限标识', key: 'key', width: 200, check: true },
-                { title: '路由地址', key: 'router', width: 200, check: true },
+                { title: '路由地址', key: 'router', minWidth: 200, check: true },
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
                 { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
@@ -193,8 +193,7 @@ export default defineComponent({
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
-                    client-mode="fill-table"
-                    limit={state.limit}
+                    v-model:faseWhen={faseWhen.value}
                     v-model:columns={state.columns}
                     v-model:data={state.dataSource}
                     v-model:page={state.page}

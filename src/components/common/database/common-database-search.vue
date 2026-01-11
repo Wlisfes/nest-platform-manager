@@ -18,7 +18,7 @@ export default defineComponent({
         /**收缩最小显示行**/
         line: { type: Number, default: 2 },
         /**表单边界配置**/
-        faseWhen: { type: Object as PropType<Omix>, default: () => ({ when: true, delay: 0, min: 60, max: 60 }) },
+        faseWhen: { type: Object as PropType<Omix>, default: () => ({}) },
         /**开启边框**/
         bordered: { type: Boolean, default: true },
         /**开启边框**/

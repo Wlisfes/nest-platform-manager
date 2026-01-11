@@ -1,6 +1,6 @@
 <script lang="tsx">
-import { defineComponent, inject, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty } from '@/utils'
+import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
+import { fetchWherer, fetchMinusNumner, isNotEmpty, isEmpty } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 
@@ -14,7 +14,8 @@ export default defineComponent({
         'update:columns',
         'update:data',
         'update:items',
-        'update:checked'
+        'update:checked',
+        'update:faseWhen'
     ],
     props: {
         /**表格模式**/
@@ -44,37 +45,32 @@ export default defineComponent({
         /**分页跳转**/
         showQuickJumper: { type: Boolean, default: false },
         /**分页条数列表**/
-        showSizePicker: { type: Boolean, default: true }
+        showSizePicker: { type: Boolean, default: true },
+        /**表单边界配置**/
+        faseWhen: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit, slots }) {
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
-        const faseWhen = inject('COMMON_DATABASE_FASEWHEN', ref({ when: true, delay: 0, min: 60, max: 60 }))
-        const { columns, data, page, size, total, loading, items } = useVModels(props)
+        const { columns, data, page, size, total, loading, items, faseWhen } = useVModels(props)
         /**表格配置**/
-        const tableNode = computed(() => ({
-            columns: columns.value.filter(item => item.check),
-            style: fetchWherer(['fill-table'].includes(props.clientMode), { flex: 1 }, {})
-        }))
-        /**弹性高度**/
-        const tableHeight = computed(() => {
-            /**页面头部偏移量**/
-            const pag = fetchWherer(props.pagination, 28 + props.limit, 0)
-            /**表格头部移量**/
-            const n = fetchWherer(isNotEmpty(headerRef.value), Math.ceil(headerRef.value?.$el?.clientHeight ?? 0), 0)
-            /**搜索栏头移量部**/
-            const w = fetchWherer(faseWhen.value.when, faseWhen.value.max, faseWhen.value.min)
-            if (['fill-table'].includes(props.clientMode)) {
-                console.log(n)
-                if (faseWhen.value.when && faseWhen.value.delay > 0) {
-                    return Math.floor(window.innerHeight - props.offset - n - (pag + 2) - faseWhen.value.min - props.limit * 5)
-                }
-                return Math.floor(window.innerHeight - props.offset - n - (pag + 2) - w - props.limit * 5)
-            } else if (['full-table'].includes(props.clientMode)) {
-                return Math.floor(window.innerHeight - pag - props.offset - props.limit * 4)
+        const tableNode = computed(() => {
+            return {
+                columns: columns.value.filter(item => item.check),
+                style: fetchWherer(['fill-table'].includes(props.clientMode), { flex: 1 }, { height: `${fetchBaseTableHeight()}px` })
             }
-            return faseWhen.value.max
         })
+        /**计算表格高度**/
+        function fetchBaseTableHeight(): number {
+            /**表格分页偏移量**/
+            const pagination = fetchWherer(props.pagination, 28 + props.limit, 0)
+            /**表格头部偏移量**/
+            const header = fetchWherer(isNotEmpty(headerRef.value), Math.ceil(headerRef.value?.$el?.clientHeight ?? 0), 0)
+            /**偏移量聚合**/
+            const numbers = [props.offset, header, pagination, props.limit * 4]
+            /**高度计算**/
+            return numbers.reduce((max: number, h: number) => fetchMinusNumner(max, h), window.innerHeight)
+        }
         /**选择列事件**/
         async function fetchCheckedUpdate(keys: Array<string>, data: Array<Omix>) {
             return await nextTick(() => (items.value = data)).then(() => {
@@ -160,52 +156,6 @@ export default defineComponent({
                 </n-card>
             </n-element>
         )
-
-        // return () => (
-        //     <n-data-table
-        //         class="common-database-table"
-        //         row-key={(row: Omix) => row.keyId}
-        //         columns={faseColumns.value}
-        //         size={configer.elementSize}
-        //         flex-height={props.flexHeight}
-        //         remote={props.remote}
-        //         data={props.data}
-        //         scroll-x={width.value}
-        //         checked-row-keys={rowKeys.value}
-        //         default-checked-row-keys={rowKeys.value}
-        //         render-cell={fetchColumnContentRender}
-        //         on-update:checked-row-keys={fetchUpdateChecked}
-        //         render-expand-icon={() => <common-element-icon size={18} name="nest-double-right"></common-element-icon>}
-        //         pagination={utils.fetchWhere<boolean | Omix>(!props.pagination, false, {
-        //             suffix: utils.fetchWhere(props.showQuickJumper, () => <span>页</span>),
-        //             goto: () => <span>前往</span>,
-        //             prefix: () => <span>{`共 ${total.value} 条`}</span>,
-        //             label: (data: Omix<{ node: number; active: boolean }>) => (
-        //                 <common-element-button size="small" secondary type={data.active ? 'primary' : undefined}>
-        //                     {data.node}
-        //                 </common-element-button>
-        //             ),
-        //             prev: (data: Omix<PaginationInfo>) => (
-        //                 <common-element-button size="small" secondary disabled={data.page <= 1}>
-        //                     上一页
-        //                 </common-element-button>
-        //             ),
-        //             next: (data: Omix<PaginationInfo>) => (
-        //                 <common-element-button size="small" secondary disabled={data.page >= data.pageCount}>
-        //                     下一页
-        //                 </common-element-button>
-        //             ),
-        //             showQuickJumper: props.showQuickJumper,
-        //             showSizePicker: props.showSizePicker,
-        //             itemCount: total.value,
-        //             page: page.value,
-        //             pageSize: size.value,
-        //             pageSizes: [10, 20, 30, 50, 100],
-        //             onChange: (value: number) => (page.value = value),
-        //             onUpdatePageSize: (value: number) => (size.value = value)
-        //         })}
-        //     ></n-data-table>
-        // )
     }
 })
 </script>
@@ -236,32 +186,3 @@ export default defineComponent({
     }
 }
 </style>
-<!-- <style lang="scss" scoped>
-.n-data-table.common-database-table {
-    :deep(.n-data-table-tbody .n-data-table-td):has(.n-data-table-expand-trigger),
-    :deep(.n-data-table-tbody .n-data-table-td):has(.n-data-table-expand-placeholder) {
-        position: relative;
-        white-space: nowrap;
-        overflow: hidden;
-        padding-left: calc(var(--n-td-padding) + 24px);
-        > .n-data-table-expand-trigger,
-        > .n-data-table-expand-placeholder {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            margin: 0;
-            left: calc(var(--n-td-padding) * var(--indent-offset) + var(--n-td-padding));
-        }
-        .n-data-table-indent {
-            float: left;
-        }
-    }
-    :deep(.n-data-table-td.n-data-table-td--center-align) > .common-database-chunk {
-        justify-content: center;
-    }
-    :deep(.n-data-table__pagination .n-pagination-item) {
-        border: none;
-        padding: 0;
-    }
-}
-</style> -->

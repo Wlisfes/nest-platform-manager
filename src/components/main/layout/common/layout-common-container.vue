@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
     name: 'LayoutCommonContainer',
@@ -8,7 +8,9 @@ export default defineComponent({
         /**边距值**/
         limit: { type: Number, default: 14 },
         /**根节点样式**/
-        className: { type: String, default: '' }
+        className: { type: String, default: '' },
+        /**表单边界配置**/
+        faseWhen: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit, slots }) {
         return () => (

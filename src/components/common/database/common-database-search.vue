@@ -1,8 +1,8 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, inject, onMounted, onUnmounted, nextTick, Fragment, PropType } from 'vue'
-import { Search, Settings, DownToBottom, UpToTop } from '@vicons/carbon'
+import { defineComponent, ref, Ref, inject, computed, onMounted, onUnmounted, nextTick, Fragment, PropType } from 'vue'
+import { Search, DownToBottom, UpToTop } from '@vicons/carbon'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
-import { fetchDelay, fetchWherer, isObject, isEmpty } from '@/utils'
+import { fetchDelay, fetchWherer, isObject } from '@/utils'
 import { FormInst } from 'naive-ui'
 
 export default defineComponent({
@@ -15,6 +15,8 @@ export default defineComponent({
         functionClass: { type: String, default: '' },
         /**边距值**/
         limit: { type: Number, default: 14 },
+        /**收缩最小显示行**/
+        line: { type: Number, default: 2 },
         /**表单边界配置**/
         faseWhen: { type: Object as PropType<Omix>, default: () => ({ when: true, delay: 0, min: 60, max: 60 }) },
         /**开启边框**/
@@ -31,12 +33,18 @@ export default defineComponent({
         const formRef = inject('COMMON_DATABASE_FORMREF', ref({} as Ref<Omix<FormInst>>))
         const { width } = useElementSize(element)
         const { faseWhen, loading, formState } = useVModels(props, emit)
+        /**最小折叠高度**/
+        const baseHeight = computed(() => {
+            return fetchWherer(Boolean(faseWhen.value.line), 10 + 32 * faseWhen.value.line + (faseWhen.value.line - 1) * 10, 0)
+        })
+        /**表单边界配置更新方法**/
         async function fetchWhenUpdate(e: Omix) {
             return nextTick(() => Object.assign(faseWhen.value, e))
         }
+        /**组件初始化**/
         async function fetchInitialize() {
             return await fetchDelay(0).then(async () => {
-                return await fetchWhenUpdate({ max: element.value.clientHeight })
+                return await fetchWhenUpdate({ line: props.line, max: element.value.getBoundingClientRect().height })
             })
         }
         onUnmounted(async () => {
@@ -50,18 +58,21 @@ export default defineComponent({
         /**重置**/
         async function fetchRestore() {
             return await formRef.value.restore().then(async (formState: Omix) => {
-                console.log(formState)
+                console.log(formState, faseWhen.value)
                 return emit('restore', formState.value)
             })
         }
         /**展开、收起**/
         async function fetchClickUpdate() {
             return await fetchWhenUpdate({ delay: 300, when: !faseWhen.value.when }).then(async () => {
+                const { height } = element.value.getBoundingClientRect()
                 return await fetchDelay(faseWhen.value.delay).then(async () => {
-                    return await fetchWhenUpdate({
-                        delay: 0,
-                        max: fetchWherer(faseWhen.value.when, element.value.clientHeight, faseWhen.value.max)
-                    })
+                    const { height: offsetHeight } = element.value.getBoundingClientRect()
+                    if (faseWhen.value.when) {
+                        return await fetchWhenUpdate({ delay: 0, max: offsetHeight })
+                    } else {
+                        return await fetchWhenUpdate({ delay: 0, min: offsetHeight, max: height })
+                    }
                 })
             })
         }
@@ -93,58 +104,56 @@ export default defineComponent({
             const { columns, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
 
             return (
-                <n-card
-                    class="common-database-search flex flex-col b-rd-8"
-                    content-style={{ padding: `${props.limit}px` }}
-                    bordered={props.bordered}
-                >
-                    <common-element-collapse v-model:when={faseWhen.value.when}>
-                        <form-common-container
-                            ref={formRef}
-                            class={{ 'common-database-formstate': true, 'formstate-collapse': width.value < 674 }}
-                            label-placement="left"
-                            model={formState.value}
-                            label-width={props.labelWidth}
-                        >
-                            {columns}
-                        </form-common-container>
-                    </common-element-collapse>
-                    {props.function.length + functions.length > 0 && (
-                        <n-element class={{ [`flex flex-wrap gap-10 ${props.functionClass}`]: true, 'p-bs-10': faseWhen.value.when }}>
-                            {functions.length > 0 && <Fragment>{functions}</Fragment>}
-                            {props.function.includes('search') && (
-                                <common-element-button
-                                    class="min-w-80"
-                                    type="primary"
-                                    secondary
-                                    icon={Search}
-                                    loading={loading.value}
-                                    disabled={loading.value}
-                                    onClick={(e: MouseEvent) => emit('submit', formState.value)}
-                                >
-                                    查询
-                                </common-element-button>
-                            )}
-                            {props.function.includes('restore') && (
-                                <common-element-button class="min-w-80" onClick={fetchRestore}>
-                                    重置
-                                </common-element-button>
-                            )}
-                            {props.function.includes('collapse') && (
-                                <common-element-button
-                                    class="min-w-80"
-                                    icon={faseWhen.value.when ? UpToTop : DownToBottom}
-                                    onClick={fetchClickUpdate}
-                                >
-                                    {faseWhen.value.when ? '收起' : '展开'}
-                                </common-element-button>
-                            )}
-                            {props.function.includes('deploy') && (
-                                <common-database-search-settings columns={columns}></common-database-search-settings>
-                            )}
-                        </n-element>
-                    )}
-                </n-card>
+                <div class="common-database-search flex flex-col overflow-hidden">
+                    <n-card class="flex flex-col b-rd-8" content-style={{ padding: `${props.limit}px` }} bordered={props.bordered}>
+                        <common-element-collapse base-height={baseHeight.value} v-model:when={faseWhen.value.when}>
+                            <form-common-container
+                                ref={formRef}
+                                class={{ 'common-database-formstate p-be-10': true, 'formstate-collapse': width.value < 674 }}
+                                label-placement="left"
+                                model={formState.value}
+                                label-width={props.labelWidth}
+                            >
+                                {columns}
+                            </form-common-container>
+                        </common-element-collapse>
+                        {props.function.length + functions.length > 0 && (
+                            <n-element class={`flex flex-wrap gap-10 ${props.functionClass}`}>
+                                {functions.length > 0 && <Fragment>{functions}</Fragment>}
+                                {props.function.includes('search') && (
+                                    <common-element-button
+                                        class="min-w-80"
+                                        type="primary"
+                                        secondary
+                                        icon={Search}
+                                        loading={loading.value}
+                                        disabled={loading.value}
+                                        onClick={(e: MouseEvent) => emit('submit', formState.value)}
+                                    >
+                                        查询
+                                    </common-element-button>
+                                )}
+                                {props.function.includes('restore') && (
+                                    <common-element-button class="min-w-80" onClick={fetchRestore}>
+                                        重置
+                                    </common-element-button>
+                                )}
+                                {props.function.includes('collapse') && (
+                                    <common-element-button
+                                        class="min-w-80"
+                                        icon={faseWhen.value.when ? UpToTop : DownToBottom}
+                                        onClick={fetchClickUpdate}
+                                    >
+                                        {faseWhen.value.when ? '收起' : '展开'}
+                                    </common-element-button>
+                                )}
+                                {props.function.includes('deploy') && (
+                                    <common-database-search-settings columns={columns}></common-database-search-settings>
+                                )}
+                            </n-element>
+                        )}
+                    </n-card>
+                </div>
             )
         }
     }
@@ -152,6 +161,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.common-database-search {
+    position: relative;
+    padding-inline-start: var(--common-limit-number);
+    padding-inline-end: var(--common-limit-number);
+    padding-block-start: var(--common-limit-number);
+}
 .common-database-formstate {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     grid-auto-flow: row dense;

@@ -10,7 +10,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { inverted } = useProvider()
         const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
-            request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
+            request: (data, base, e) => Service.httpBaseSystemColumnAccount(e.body),
             formState: {
                 alias: undefined,
                 name: undefined
@@ -121,7 +121,7 @@ export default defineComponent({
         // }
 
         return () => (
-            <layout-common-container class="gap-14" limit={state.limit} v-model:faseWhen={faseWhen.value}>
+            <layout-common-container v-model:faseWhen={faseWhen.value}>
                 <common-database-search
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'deploy']}

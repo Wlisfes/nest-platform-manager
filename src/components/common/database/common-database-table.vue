@@ -13,9 +13,8 @@ export default defineComponent({
         'update:loading',
         'update:columns',
         'update:data',
-        'update:items',
-        'update:checked',
-        'update:faseWhen'
+        'update:select',
+        'update:items'
     ],
     props: {
         /**表格模式**/
@@ -37,6 +36,8 @@ export default defineComponent({
         /**开启边框**/
         bordered: { type: Boolean, default: true },
         /**被选中的行的对象列表**/
+        select: { type: Array as PropType<Array<Omix>>, default: () => [] },
+        /**表头配置自定义排版规则**/
         items: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置**/
         columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
@@ -45,14 +46,12 @@ export default defineComponent({
         /**分页跳转**/
         showQuickJumper: { type: Boolean, default: false },
         /**分页条数列表**/
-        showSizePicker: { type: Boolean, default: true },
-        /**表单边界配置**/
-        faseWhen: { type: Object as PropType<Omix>, default: () => ({}) }
+        showSizePicker: { type: Boolean, default: true }
     },
     setup(props, { emit, slots }) {
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
-        const { columns, data, page, size, total, loading, items, faseWhen } = useVModels(props)
+        const { columns, data, page, size, total, loading, select, items } = useVModels(props)
         /**表格配置**/
         const tableNode = computed(() => {
             return {
@@ -72,9 +71,9 @@ export default defineComponent({
             return numbers.reduce((max: number, h: number) => fetchMinusNumner(max, h), window.innerHeight)
         }
         /**选择列事件**/
-        async function fetchCheckedUpdate(keys: Array<string>, data: Array<Omix>) {
-            return await nextTick(() => (items.value = data)).then(() => {
-                return emit('update:checked', items.value)
+        async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
+            return await nextTick(() => (select.value = data)).then(() => {
+                return emit('update:select', select.value)
             })
         }
         /**节点渲染**/
@@ -92,7 +91,7 @@ export default defineComponent({
                 class="common-database-container flex flex-col flex-1 overflow-hidden"
                 style={{ '--limit-width': `${props.limit}px`, padding: 'var(--limit-width)' }}
             >
-                <n-card class="flex flex-col flex-1 b-rd-8 overflow-hidden" content-class="flex flex-col flex-1 overflow-hidden p-0!">
+                <n-card class="flex flex-col flex-1 overflow-hidden" content-class="flex flex-col flex-1 overflow-hidden p-0!">
                     <n-element class="common-database-table flex flex-col flex-1 overflow-hidden">
                         {slots.default && (
                             <n-element ref={headerRef} class="flex flex-col line-height-22 overflow-hidden">
@@ -113,7 +112,7 @@ export default defineComponent({
                                 style={tableNode.value.style}
                                 scrollbar-props={{ size: 100 }}
                                 render-cell={fetchCellRender}
-                                on-update:checked-row-keys={fetchCheckedUpdate}
+                                on-update:checked-row-keys={fetchUpdateSelecter}
                             ></n-data-table>
                         </div>
                     </n-element>

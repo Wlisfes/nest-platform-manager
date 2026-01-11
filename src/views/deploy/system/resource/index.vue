@@ -9,11 +9,19 @@ export default defineComponent({
     name: 'DeploySystemResource',
     setup(props, ctx) {
         const { inverted } = useProvider()
-        const { formState, faseWhen, state, fetchRequest, fetchRefresh } = useColumnService({
+        const { formState, faseWhen, state, fetchRequest, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
             formState: {
+                withStartTime: undefined,
+                withEndTime: undefined,
+                startTime: undefined,
+                endTime: undefined,
+                supplierCode: undefined,
+                supplierName: undefined,
+                email: undefined,
                 alias: undefined,
-                name: undefined
+                staffId: undefined,
+                deptId: undefined
             },
             columns: [
                 { title: '选择框', key: 'selection', type: 'selection', width: 40, check: true },
@@ -120,86 +128,77 @@ export default defineComponent({
         //     }
         // }
 
+        // <common-database-search-column label="对接方式">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="R端签约主体">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="国家/地区">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="区域">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="来源">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="来源标签">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="等级">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+        // <common-database-search-column label="标签">
+        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
+        // </common-database-search-column>
+
         return () => (
             <layout-common-container v-model:faseWhen={faseWhen.value}>
                 <common-database-search
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'deploy']}
                     limit={state.limit}
-                    v-model:faseWhen={faseWhen.value}
                     v-model:loading={state.loading}
+                    v-model:faseWhen={faseWhen.value}
+                    v-model:database={state.database}
                     v-model:formState={formState.value}
+                    on-update:database={fetchUpdateDatabase}
                     onSubmit={fetchRequest}
                 >
-                    <common-database-search-column label="最近跟进时间" span={2}>
+                    <common-database-search-column prop="withStartTime" label="最近跟进时间" span={2}>
                         <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
                     </common-database-search-column>
-                    <common-database-search-column label="创建时间" span={2}>
+                    <common-database-search-column prop="startTime" label="创建时间" span={2}>
                         <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
                     </common-database-search-column>
-                    <common-database-search-column label="供应商编码">
+                    <common-database-search-column prop="supplierCode" label="供应商编码" v-model:value={formState.value.supplierCode}>
+                        <n-input placeholder="Input" v-model:value={formState.value.supplierCode} />
+                    </common-database-search-column>
+                    <common-database-search-column prop="supplierName" label="供应商名称" v-model:value={formState.value.supplierName}>
+                        <n-input placeholder="Input" v-model:value={formState.value.supplierName} />
+                    </common-database-search-column>
+                    <common-database-search-column prop="email" label="邮箱" v-model:value={formState.value.email}>
                         <n-input placeholder="Input" v-model:value={formState.value.name} />
                     </common-database-search-column>
-                    <common-database-search-column label="供应商名称">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="供应商类型">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="是否共享">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="账号类型">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="消费用户导入">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="邮箱" v-model:value={formState.value.name}>
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="账号别名" prop="alias" v-model:value={formState.value.alias}>
+                    <common-database-search-column prop="alias" label="账号别名" v-model:value={formState.value.alias}>
                         <n-input placeholder="Input" v-model:value={formState.value.alias} />
                     </common-database-search-column>
-                    <common-database-search-column label="归属人">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    <common-database-search-column prop="staffId" label="归属人" v-model:value={formState.value.staffId}>
+                        <n-input placeholder="Input" v-model:value={formState.value.staffId} />
                     </common-database-search-column>
-                    <common-database-search-column label="归属人部门">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="对接方式">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="R端签约主体">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="国家/地区">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="区域">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="来源">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="来源标签">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="等级">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column label="标签">
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
+                    <common-database-search-column prop="deptId" label="归属人部门" v-model:value={formState.value.deptId}>
+                        <n-input placeholder="Input" v-model:value={formState.value.deptId} />
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
-                    v-model:faseWhen={faseWhen.value}
                     v-model:columns={state.columns}
                     v-model:data={state.dataSource}
                     v-model:page={state.page}
                     v-model:size={state.size}
                     v-model:total={state.total}
                     v-model:items={state.items}
+                    v-model:select={state.select}
                     v-model:loading={state.loading}
                     onUpdate:page={(page: number) => fetchRefresh()}
                     onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}

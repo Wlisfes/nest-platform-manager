@@ -23,10 +23,14 @@ interface BaseServiceState<T> extends Omix {
     total: number
     /**表头数据**/
     columns: Array<Omix<DataTableColumn>>
-    /**列表勾选对象数组**/
-    items: Array<T>
     /**列表数据**/
     dataSource: Array<T>
+    /**被选中的行的对象列表**/
+    select: Array<T>
+    /**表头配置自定义排版规则**/
+    items: Array<Omix>
+    /**搜索栏字段自定义排版规则**/
+    database: Array<Omix>
 }
 /**列表包装配置**/
 interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
@@ -59,8 +63,10 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         size: options.size ?? 50,
         total: options.total ?? 0,
         columns: options.columns ?? [],
+        dataSource: options.dataSource ?? [],
+        select: options.select ?? [],
         items: options.items ?? [],
-        dataSource: [] as Array<T>,
+        database: options.database ?? [],
         ...(options.options ?? {})
     } as BaseServiceState<T> & typeof options.options)
     /**注入表单组件实例**/
@@ -78,6 +84,11 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         // return await fetchCheckboxsCompiler().then(async () => {
         //     return await setState({ initialize: false, loading: false } as ColumnState<T> & typeof options.option)
         // })
+    }
+
+    /**保存自定义筛选配置**/
+    async function fetchUpdateDatabase(database: Array<Omix>) {
+        console.log(database)
     }
 
     /**修改表单筛选**/
@@ -134,6 +145,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         setForm,
         fetchInitialize,
         fetchRequest,
-        fetchRefresh
+        fetchRefresh,
+        fetchUpdateDatabase
     }
 }

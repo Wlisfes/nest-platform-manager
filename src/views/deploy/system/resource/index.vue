@@ -34,6 +34,16 @@ export default defineComponent({
                 { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
                 { title: '更新时间', key: 'modifyTime', width: 180, check: false }
             ]
+            // database: [
+            //     { uid: 174, prop: 'withStartTime', label: '最近跟进时间', check: true },
+            //     { uid: 193, prop: 'startTime', label: '创建时间', check: true },
+            //     { uid: 212, prop: 'supplierCode', label: '供应商编码', check: false },
+            //     { uid: 216, prop: 'supplierName', label: '供应商名称', check: false },
+            //     { uid: 220, prop: 'email', label: '邮箱', check: false },
+            //     { uid: 224, prop: 'alias', label: '账号别名', check: true },
+            //     { uid: 228, prop: 'staffId', label: '归属人', check: true },
+            //     { uid: 232, prop: 'deptId', label: '归属人部门', check: true }
+            // ]
         })
 
         // const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({

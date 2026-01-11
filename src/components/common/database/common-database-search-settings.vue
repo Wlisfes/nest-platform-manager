@@ -4,21 +4,24 @@ import { stop, fetchDelay, fetchHandler } from '@/utils'
 import { useVModels } from '@vueuse/core'
 import { Settings, Grid } from '@vicons/carbon'
 import { useState } from '@/hooks'
+import { cloneDeep } from 'lodash-es'
 
 export default defineComponent({
     name: 'CommonDatabaseSearchSettings',
-    emits: ['update:database', '-update:database'],
+    emits: ['update:faseWhen', 'update:database', '-update:database'],
     props: {
         /**弹出层容器样式**/
         className: { type: String, default: '' },
+        /**表单边界配置**/
+        faseWhen: { type: Object as PropType<Omix>, default: () => ({}) },
         /**列数据**/
         columns: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**搜索栏字段自定义排版规则**/
         database: { type: Array as PropType<Array<Omix>>, default: () => [] }
     },
-    setup(props, { emit, slots }) {
-        const { database } = useVModels(props, emit)
-        const { state, setState } = useState({ visible: false, checked: true, click: false })
+    setup(props, { emit }) {
+        const { database, faseWhen } = useVModels(props, emit)
+        const { state, setState } = useState({ visible: false, checked: true, click: false, columns: [] as Array<Omix> })
         /**是否全选**/
         const checkedAll = computed(() => database.value.every(item => item.check))
         /**是否半选**/
@@ -26,19 +29,25 @@ export default defineComponent({
             return database.value.every(item => item.check) ? false : database.value.some(item => item.check)
         })
         /**初始化**/
-        onBeforeMount(fetchUpdateDatabase)
-        async function fetchUpdateDatabase(data?: Array<Omix>) {
-            return (database.value = (data ?? props.columns ?? []).map(item => ({
-                uid: item.uid ?? item.component.uid,
-                prop: item.prop ?? item.props.prop,
-                label: item.label ?? item.props.label,
-                check: item.check ?? item.props.check ?? true
-            })))
+        onBeforeMount(fetchInitialize)
+        async function fetchInitialize() {
+            const columns = (props.columns ?? []).map(item => {
+                const node = database.value.find(k => [item.prop, item.props.prop].includes(k.prop)) ?? {}
+                return {
+                    uid: item.uid ?? item.component.uid,
+                    prop: item.prop ?? item.props.prop,
+                    label: item.label ?? item.props.label,
+                    check: node.check ?? item.check ?? item.props.check ?? true
+                }
+            })
+            return await setState({ columns: cloneDeep(columns) }).then(() => {
+                return (database.value = state.columns)
+            })
         }
         /**全选状态变更**/
         async function fetchUpdate(checked: boolean) {
             return await setState({ checked }).then(async () => {
-                return await fetchUpdateDatabase(database.value.map(item => ({ ...item, check: checked })))
+                return await setState({ columns: state.columns.map(item => ({ ...item, check: checked })) })
             })
         }
         /**字段状态变更**/
@@ -50,6 +59,7 @@ export default defineComponent({
         /**异步关闭设置组件**/
         async function fetchClickoutside() {
             return await setState({ visible: false, click: true }).then(async () => {
+                await nextTick(() => (database.value = cloneDeep(state.columns)))
                 return await fetchDelay(0).then(async () => {
                     return await setState({ click: false }).then(() => {
                         return emit('-update:database', database.value)
@@ -61,6 +71,7 @@ export default defineComponent({
         async function fetchState(event: MouseEvent) {
             return await stop(event).then(async () => {
                 return await fetchHandler(!state.visible && !state.click, async () => {
+                    await fetchInitialize()
                     return await setState({ visible: true, checked: checkedAll.value })
                 })
             })
@@ -102,7 +113,7 @@ export default defineComponent({
                                         animation={200}
                                         v-model={database.value}
                                     >
-                                        {database.value.map(item => (
+                                        {state.columns.map(item => (
                                             <n-element
                                                 key={item.uid}
                                                 class="chunk-column flex items-center overflow-hidden p-ie-14 cursor-pointer"

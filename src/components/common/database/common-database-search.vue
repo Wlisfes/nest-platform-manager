@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, h, ref, Ref, inject, computed, onMounted, onUnmounted, nextTick, Fragment, PropType } from 'vue'
+import { defineComponent, ref, Ref, inject, computed, onMounted, onUnmounted, nextTick, Fragment, PropType } from 'vue'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
 import { Search, DownToBottom, UpToTop } from '@vicons/carbon'
 import { fetchDelay, fetchWherer, isObject } from '@/utils'
@@ -103,13 +103,18 @@ export default defineComponent({
         function fetchColumnTransaction(vnode: Array<Omix>) {
             return {
                 vnode,
+                columnsClass: {
+                    'common-database-formstate': true,
+                    'p-be-10': database.value.length > 0 && database.value.some(item => item.check),
+                    'formstate-collapse': width.value < 674
+                },
                 columns: fetchColumnCheckForms(fetchColumnCheck(vnode, ['CommonDatabaseSearchColumn'])),
                 functions: fetchColumnCheckFunctions(fetchColumnCheck(vnode, ['CommonDatabaseSearchFunction']))
             }
         }
 
         return () => {
-            const { columns, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
+            const { columns, columnsClass, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
 
             return (
                 <div class="common-database-search flex flex-col overflow-hidden">
@@ -118,7 +123,7 @@ export default defineComponent({
                             <common-element-collapse base-height={baseHeight.value} v-model:when={faseWhen.value.when}>
                                 <form-common-container
                                     ref={formRef}
-                                    class={{ 'common-database-formstate p-be-10': true, 'formstate-collapse': width.value < 674 }}
+                                    class={columnsClass}
                                     label-placement="left"
                                     model={formState.value}
                                     label-width={props.labelWidth}

@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 import { useProvider, useColumnService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
@@ -164,7 +164,7 @@ export default defineComponent({
         // </common-database-search-column>
 
         return () => (
-            <layout-common-container v-model:faseWhen={faseWhen.value}>
+            <layout-common-container>
                 <common-database-search
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'deploy']}

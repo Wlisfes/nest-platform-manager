@@ -3,6 +3,7 @@ import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
 import { fetchNotifyService } from '@/plugins'
+import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks'
 
 /**列表缓存对象**/
@@ -51,8 +52,8 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 /**列表包装hook**/
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
-    const formState = ref<typeof options.formState>(options.formState)
-    const faseWhen = ref({ when: true, delay: 0, line: 0, min: 75, max: 75 })
+    const formState = ref<typeof options.formState>(cloneDeep(options.formState))
+    const faseWhen = ref({ when: true, line: 0 })
     const observer = ref(Observer<Record<string, Omix>>())
     const { state, setState } = useState({
         limit: options.limit ?? 14,
@@ -94,6 +95,11 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     /**修改表单筛选**/
     async function setForm(value: Partial<Omix<typeof options.formState>> = {}): Promise<Omix<typeof options.formState>> {
         return Object.assign(formState.value, value)
+    }
+
+    /**重置表单**/
+    async function fetchRestore() {
+        return await setForm(cloneDeep(options.formState))
     }
 
     /**刷新**/
@@ -143,9 +149,10 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         ...toRefs(state),
         setState,
         setForm,
-        fetchInitialize,
+        fetchRestore,
         fetchRequest,
         fetchRefresh,
+        fetchInitialize,
         fetchUpdateDatabase
     }
 }

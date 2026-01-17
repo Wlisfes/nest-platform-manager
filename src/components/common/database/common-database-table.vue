@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, fetchMinusNumner, isNotEmpty, isEmpty } from '@/utils'
+import { fetchWherer, isNotEmpty, isEmpty } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 
@@ -17,12 +17,6 @@ export default defineComponent({
         'update:items'
     ],
     props: {
-        /**表格模式**/
-        clientMode: { type: String as PropType<'fill-table' | 'full-table'>, default: 'fill-table' },
-        /**高度偏移**/
-        offset: { type: Number, default: 86 },
-        /**边距值**/
-        limit: { type: Number, default: 14 },
         /**分页数**/
         page: { type: Number, default: 1 },
         /**分页大小**/
@@ -52,24 +46,10 @@ export default defineComponent({
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
         const { columns, data, page, size, total, loading, select, items } = useVModels(props)
-        /**表格配置**/
-        const tableNode = computed(() => {
-            return {
-                columns: columns.value.filter(item => item.check),
-                style: fetchWherer(['fill-table'].includes(props.clientMode), { flex: 1 }, { height: `${fetchBaseTableHeight()}px` })
-            }
+        /**表头配置**/
+        const tableColumns = computed(() => {
+            return columns.value.filter(item => item.check)
         })
-        /**计算表格高度**/
-        function fetchBaseTableHeight(): number {
-            /**表格分页偏移量**/
-            const pagination = fetchWherer(props.pagination, 28 + props.limit, 0)
-            /**表格头部偏移量**/
-            const header = fetchWherer(isNotEmpty(headerRef.value), Math.ceil(headerRef.value?.$el?.clientHeight ?? 0), 0)
-            /**偏移量聚合**/
-            const numbers = [props.offset, header, pagination, props.limit * 4]
-            /**高度计算**/
-            return numbers.reduce((max: number, h: number) => fetchMinusNumner(max, h), window.innerHeight)
-        }
         /**选择列事件**/
         async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
             return await nextTick(() => (select.value = data)).then(() => {
@@ -89,7 +69,7 @@ export default defineComponent({
         return () => (
             <n-element
                 class="common-database-container flex flex-col flex-1 overflow-hidden"
-                style={{ '--limit-width': `${props.limit}px`, padding: 'var(--limit-width)' }}
+                style={{ padding: 'var(--common-limit-width)' }}
             >
                 <n-card class="flex flex-col flex-1 overflow-hidden" content-class="flex flex-col flex-1 overflow-hidden p-0!">
                     <n-element class="common-database-table flex flex-col flex-1 overflow-hidden">
@@ -108,8 +88,8 @@ export default defineComponent({
                                 scroll-x={0}
                                 bordered={props.bordered}
                                 data={data.value}
-                                columns={tableNode.value.columns}
-                                style={tableNode.value.style}
+                                columns={tableColumns.value}
+                                style={{ flex: 1 }}
                                 scrollbar-props={{ size: 100 }}
                                 render-cell={fetchCellRender}
                                 on-update:checked-row-keys={fetchUpdateSelecter}
@@ -162,9 +142,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .common-database-container {
     position: relative;
-    padding: v-bing(--limit);
+    padding: var(--common-limit-width);
     .n-element.common-database-table {
-        padding: var(--limit-width);
+        padding: var(--common-limit-width);
         overflow: hidden;
         :deep(.n-data-table-loading-wrapper) {
             font-size: 48px;
@@ -176,7 +156,7 @@ export default defineComponent({
     }
     .n-element.common-database-pagination {
         transition: border-color 0.3s var(--n-bezier);
-        padding: 0 var(--limit-width) var(--limit-width);
+        padding: 0 var(--common-limit-width) var(--common-limit-width);
         overflow: hidden;
         :deep(.n-pagination > .n-pagination-item) {
             border: none;

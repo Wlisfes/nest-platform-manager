@@ -1,8 +1,8 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, inject, computed, onMounted, onUnmounted, nextTick, Fragment, PropType } from 'vue'
+import { defineComponent, ref, Ref, inject, computed, onMounted, nextTick, Fragment, PropType } from 'vue'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
 import { Search, DownToBottom, UpToTop } from '@vicons/carbon'
-import { fetchDelay, fetchWherer, isObject } from '@/utils'
+import { fetchWherer, isObject } from '@/utils'
 import { FormInst } from 'naive-ui'
 
 export default defineComponent({
@@ -13,8 +13,6 @@ export default defineComponent({
         function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy'>>, default: () => [] },
         /**操作功能根节点样式**/
         functionClass: { type: String, default: '' },
-        /**边距值**/
-        limit: { type: Number, default: 14 },
         /**收缩最小显示行**/
         line: { type: Number, default: 0 },
         /**表单边界配置**/
@@ -39,24 +37,11 @@ export default defineComponent({
         const baseHeight = computed(() => {
             return fetchWherer(Boolean(faseWhen.value.line), 10 + 32 * faseWhen.value.line + (faseWhen.value.line - 1) * 10, 0)
         })
-        /**表单边界配置更新方法**/
-        async function fetchWhenUpdate(e: Omix) {
-            return nextTick(() => Object.assign(faseWhen.value, e))
-        }
         /**组件初始化**/
+        onMounted(fetchInitialize)
         async function fetchInitialize() {
-            return await fetchDelay(0).then(async () => {
-                return await fetchWhenUpdate({ line: props.line, max: element.value.getBoundingClientRect().height })
-            })
+            return await nextTick(() => Object.assign(faseWhen.value, { line: props.line }))
         }
-        onUnmounted(async () => {
-            return window.removeEventListener('resize', fetchInitialize)
-        })
-        onMounted(async () => {
-            return await fetchInitialize().then(() => {
-                return window.addEventListener('resize', fetchInitialize)
-            })
-        })
         /**重置**/
         async function fetchRestore() {
             return await formRef.value.restore().then(async (formState: Omix) => {
@@ -65,17 +50,7 @@ export default defineComponent({
         }
         /**展开、收起**/
         async function fetchClickUpdate() {
-            return await fetchWhenUpdate({ delay: 300, when: !faseWhen.value.when }).then(async () => {
-                const { height } = element.value.getBoundingClientRect()
-                return await fetchDelay(faseWhen.value.delay).then(async () => {
-                    const { height: offsetHeight } = element.value.getBoundingClientRect()
-                    if (faseWhen.value.when) {
-                        return await fetchWhenUpdate({ delay: 0, max: offsetHeight })
-                    } else {
-                        return await fetchWhenUpdate({ delay: 0, min: offsetHeight, max: height })
-                    }
-                })
-            })
+            return await nextTick(() => Object.assign(faseWhen.value, { when: !faseWhen.value.when }))
         }
         /**节点判断过滤**/
         function fetchColumnCheck(vnode: Array<Omix>, names: Array<string>) {
@@ -118,7 +93,7 @@ export default defineComponent({
 
             return (
                 <div class="common-database-search flex flex-col overflow-hidden">
-                    <n-card class="flex flex-col" content-style={{ padding: `${props.limit}px` }} bordered={props.bordered}>
+                    <n-card class="flex flex-col" content-style={{ padding: `var(--common-limit-width)` }} bordered={props.bordered}>
                         {columns.length > 0 && (
                             <common-element-collapse base-height={baseHeight.value} v-model:when={faseWhen.value.when}>
                                 <form-common-container
@@ -182,9 +157,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .common-database-search {
     position: relative;
-    padding-inline-start: var(--common-limit-number);
-    padding-inline-end: var(--common-limit-number);
-    padding-block-start: var(--common-limit-number);
+    padding-inline-start: var(--common-limit-width);
+    padding-inline-end: var(--common-limit-width);
+    padding-block-start: var(--common-limit-width);
 }
 .common-database-formstate {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

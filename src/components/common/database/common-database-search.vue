@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, Ref, inject, computed, onMounted, nextTick, Fragment, PropType } from 'vue'
+import { defineComponent, ref, computed, nextTick, onMounted, Fragment, PropType } from 'vue'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
 import { Search, DownToBottom, UpToTop } from '@vicons/carbon'
 import { fetchWherer, isObject } from '@/utils'
@@ -7,7 +7,7 @@ import { FormInst } from 'naive-ui'
 
 export default defineComponent({
     name: 'CommonDatabaseSearch',
-    emits: ['update:faseWhen', 'update:database', '-update:database', 'update:loading', 'update:formState', 'submit', 'restore'],
+    emits: ['update:when', 'update:database', '-update:database', 'update:loading', 'update:formState', 'submit', 'restore'],
     props: {
         /**操作功能**/
         function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy'>>, default: () => [] },
@@ -15,8 +15,8 @@ export default defineComponent({
         functionClass: { type: String, default: '' },
         /**收缩最小显示行**/
         line: { type: Number, default: 0 },
-        /**表单边界配置**/
-        faseWhen: { type: Object as PropType<Omix>, default: () => ({}) },
+        /**折叠收缩配置**/
+        when: { type: Boolean, default: true },
         /**开启边框**/
         bordered: { type: Boolean, default: true },
         /**开启边框**/
@@ -28,19 +28,20 @@ export default defineComponent({
         /**搜索栏字段自定义排版规则**/
         database: { type: Array as PropType<Array<Omix>>, default: () => [] }
     },
-    setup(props, { emit, slots }) {
+    setup(props, { emit, expose, slots }) {
         const element = useCurrentElement<HTMLElement>()
-        const formRef = inject('COMMON_DATABASE_FORMREF', ref({} as Ref<Omix<FormInst>>))
+        const formOptions = ref<Omix>({})
+        const formRef = ref({} as Omix<FormInst>)
         const { width } = useElementSize(element)
-        const { faseWhen, loading, formState, database } = useVModels(props, emit)
+        const { when, loading, formState, database } = useVModels(props, emit)
         /**最小折叠高度**/
-        const baseHeight = computed(() => {
-            return fetchWherer(Boolean(faseWhen.value.line), 10 + 32 * faseWhen.value.line + (faseWhen.value.line - 1) * 10, 0)
-        })
+        const height = computed(() => fetchWherer(Boolean(props.line), 10 + 32 * props.line + (props.line - 1) * 10, 0))
         /**组件初始化**/
         onMounted(fetchInitialize)
         async function fetchInitialize() {
-            return await nextTick(() => Object.assign(faseWhen.value, { line: props.line }))
+            formOptions.value.restoreValidation = formRef.value.restoreValidation
+            formOptions.value.validate = formRef.value.validate
+            formOptions.value.restore = formRef.value.restore
         }
         /**重置**/
         async function fetchRestore() {
@@ -50,7 +51,7 @@ export default defineComponent({
         }
         /**展开、收起**/
         async function fetchClickUpdate() {
-            return await nextTick(() => Object.assign(faseWhen.value, { when: !faseWhen.value.when }))
+            return await nextTick(() => (when.value = !when.value))
         }
         /**节点判断过滤**/
         function fetchColumnCheck(vnode: Array<Omix>, names: Array<string>) {
@@ -88,6 +89,9 @@ export default defineComponent({
             }
         }
 
+        /**导出配置**/
+        expose(formOptions.value)
+
         return () => {
             const { columns, columnsClass, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
 
@@ -95,7 +99,7 @@ export default defineComponent({
                 <div class="common-database-search flex flex-col overflow-hidden">
                     <n-card class="flex flex-col" content-style={{ padding: `var(--common-limit-width)` }} bordered={props.bordered}>
                         {columns.length > 0 && (
-                            <common-element-collapse base-height={baseHeight.value} v-model:when={faseWhen.value.when}>
+                            <common-element-collapse base-height={height.value} v-model:when={when.value}>
                                 <form-common-container
                                     ref={formRef}
                                     class={columnsClass}
@@ -131,10 +135,10 @@ export default defineComponent({
                                 {props.function.includes('collapse') && columns.length > 0 && (
                                     <common-element-button
                                         class="min-w-80"
-                                        icon={faseWhen.value.when ? UpToTop : DownToBottom}
+                                        icon={when.value ? UpToTop : DownToBottom}
                                         onClick={fetchClickUpdate}
                                     >
-                                        {faseWhen.value.when ? '收起' : '展开'}
+                                        {when.value ? '收起' : '展开'}
                                     </common-element-button>
                                 )}
                                 {props.function.includes('deploy') && columns.length > 0 && (

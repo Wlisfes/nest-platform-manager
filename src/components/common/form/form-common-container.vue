@@ -13,7 +13,7 @@ export default defineComponent({
         const formRef = ref() as Ref<Omix<FormInst>>
         const fields = ref<Array<Omix>>([])
         onMounted(() => {
-            formOptions.value.theme = formRef.value.validate
+            formOptions.value.theme = formRef.value.theme
             formOptions.value.themeOverrides = formRef.value.themeOverrides
             formOptions.value.builtinThemeOverrides = formRef.value.builtinThemeOverrides
             formOptions.value.inline = formRef.value.inline

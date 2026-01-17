@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'DeploySystemResource',
     setup(props, ctx) {
         const { inverted } = useProvider()
-        const { formState, faseWhen, state, fetchRequest, fetchRefresh, fetchUpdateDatabase } = useColumnService({
+        const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
             formState: {
                 withStartTime: undefined,
@@ -168,9 +168,10 @@ export default defineComponent({
                 <common-database-search
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'deploy']}
+                    ref={formRef}
                     limit={state.limit}
                     v-model:loading={state.loading}
-                    v-model:faseWhen={faseWhen.value}
+                    v-model:when={state.when}
                     v-model:database={state.database}
                     v-model:formState={formState.value}
                     on-update:database={fetchUpdateDatabase}

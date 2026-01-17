@@ -8,6 +8,8 @@ import { useState } from '@/hooks'
 
 /**列表缓存对象**/
 interface BaseServiceState<T> extends Omix {
+    /**折叠收缩**/
+    when: boolean
     /**边距值**/
     limit: number
     /**控制器**/
@@ -53,9 +55,9 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
 export function useColumnService<T extends Omix, U extends Omix, R extends Omix>(options: BaseServiceOptions<T, U, R>) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(cloneDeep(options.formState))
-    const faseWhen = ref({ when: true, line: 0 })
     const observer = ref(Observer<Record<string, Omix>>())
     const { state, setState } = useState({
+        when: options.when ?? true,
         limit: options.limit ?? 14,
         visible: options.visible ?? false,
         initialize: options.initialize ?? true,
@@ -70,8 +72,6 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         database: options.database ?? [],
         ...(options.options ?? {})
     } as BaseServiceState<T> & typeof options.options)
-    /**注入表单组件实例**/
-    provide('COMMON_DATABASE_FORMREF', formRef)
 
     /**初始化**/
     onMounted(fetchInitialize)
@@ -144,7 +144,6 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         state,
         formRef,
         formState,
-        faseWhen,
         observer,
         ...toRefs(state),
         setState,

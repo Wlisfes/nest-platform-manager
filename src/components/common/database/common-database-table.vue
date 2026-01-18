@@ -1,21 +1,12 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty } from '@/utils'
+import { fetchWherer, isNotEmpty, isEmpty, concat } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: [
-        'update:page',
-        'update:size',
-        'update:total',
-        'update:loading',
-        'update:columns',
-        'update:data',
-        'update:select',
-        'update:items'
-    ],
+    emits: ['update:page', 'update:size', 'update:loading', 'update:data', 'update:select', 'update:items'],
     props: {
         /**分页数**/
         page: { type: Number, default: 1 },
@@ -33,23 +24,85 @@ export default defineComponent({
         select: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置自定义排版规则**/
         items: { type: Array as PropType<Array<Omix>>, default: () => [] },
-        /**表头配置**/
-        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
         /**表数据列表**/
         data: { type: Array as PropType<Array<Omix>>, default: () => [] },
+        /**表头配置**/
+        columns: { type: Array as PropType<Array<Omix<DataTableColumn>>>, default: () => [] },
         /**分页跳转**/
         showQuickJumper: { type: Boolean, default: false },
         /**分页条数列表**/
-        showSizePicker: { type: Boolean, default: true }
+        showSizePicker: { type: Boolean, default: true },
+        /**列设置**/
+        showSettings: { type: Boolean, default: false },
+        /**操作设置**/
+        showCommand: { type: Boolean, default: false }
     },
     setup(props, { emit, slots }) {
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
-        const { columns, data, page, size, total, loading, select, items } = useVModels(props)
+        const { data, page, size, loading, select, items } = useVModels(props)
         /**表头配置**/
-        const tableColumns = computed(() => {
-            return columns.value.filter(item => item.check)
+        const columns = computed(() => {
+            // return columns.value.filter(item => item.check)
+
+            return fetchBaseColumns(props.columns)
         })
+        /**表头列数据**/
+        const faseColumns = computed(() => {
+            // return fetchBaseColumns().map((item: Omix, index) => {
+            //     if (props.settings && !props.command && index === columns.value.length - 1) {
+            //         /**未开启操作列且开启设置列的时候需要把设置列前一个字段合并单元格**/
+            //         const cols = (item.colSpan ?? (() => 1))() + 1
+            //         return { ...item, align: 'left', colSpan: () => cols }
+            //     }
+            //     return item
+            // })
+        })
+
+        /**默认操作列、设置列配置**/
+        function fetchBaseColumns(columns: Array<Omix<DataTableColumn>>) {
+            return concat(columns, [
+                {
+                    title: '操作',
+                    key: 'command',
+                    fixed: 'right'
+                    //width: 46
+                }
+            ])
+
+            // if (!props.command && props.settings) {
+            //     return utils.concat(columns.value, {
+            //         key: 'settings',
+            //         width: 46,
+            //         fixed: props.fixed,
+            //         title: () => (
+            //             <n-element class="flex items-center justify-center">
+            //                 <common-element-button
+            //                     text
+            //                     icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
+            //                 ></common-element-button>
+            //             </n-element>
+            //         )
+            //     })
+            // }
+            // return utils.concat(columns.value, {
+            //     key: (props.command && props.settings) || props.command ? 'command' : 'settings',
+            //     width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 110 : 46,
+            //     center: props.fixedCenter,
+            //     fixed: props.fixed,
+            //     title: () => (
+            //         <n-element class="flex items-center overflow-hidden" style={{ columnGap: 'var(--n-th-padding)' }}>
+            //             {props.command && <div class={{ 'flex-1 overflow-hidden': true, 'text-center': props.fixedCenter }}>操作</div>}
+            //             {props.settings && (
+            //                 <common-element-button
+            //                     text
+            //                     icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
+            //                 ></common-element-button>
+            //             )}
+            //         </n-element>
+            //     )
+            // })
+        }
         /**选择列事件**/
         async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
             return await nextTick(() => (select.value = data)).then(() => {
@@ -58,8 +111,12 @@ export default defineComponent({
         }
         /**节点渲染**/
         function fetchCellRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
-            if (isNotEmpty(slots[base.key])) {
-                return slots[base.key]!(value, data, base)
+            if (isNotEmpty(base.key) && isNotEmpty(slots[`col_${base.key}`])) {
+                if (['command'].includes(base.key)) {
+                    return slots[`col_${base.key}`]?.(value, data, base)
+                }
+
+                return slots[`col_${base.key}`]?.(value, data, base)
             } else if (isEmpty(value)) {
                 return <span>-</span>
             }
@@ -88,7 +145,7 @@ export default defineComponent({
                                 scroll-x={0}
                                 bordered={props.bordered}
                                 data={data.value}
-                                columns={tableColumns.value}
+                                columns={columns.value}
                                 style={{ flex: 1 }}
                                 scrollbar-props={{ size: 100 }}
                                 render-cell={fetchCellRender}
@@ -100,8 +157,8 @@ export default defineComponent({
                         <n-element class="common-database-pagination flex justify-end">
                             <n-pagination
                                 page={page.value}
+                                item-count={props.total}
                                 page-size={size.value}
-                                item-count={total.value}
                                 v-model:page={page.value}
                                 page-sizes={[20, 30, 50, 100, 200, 300]}
                                 show-size-picker={props.showSizePicker}
@@ -112,7 +169,7 @@ export default defineComponent({
                                 {{
                                     uffix: fetchWherer(props.showQuickJumper, () => <span>页</span>),
                                     goto: () => <span>前往</span>,
-                                    prefix: () => <span class="whitespace-nowrap">{`共 ${total.value} 条`}</span>,
+                                    prefix: () => <span class="whitespace-nowrap">{`共 ${props.total} 条`}</span>,
                                     label: (data: Omix<{ node: number; active: boolean }>) => (
                                         <common-element-button size="small" secondary type={data.active ? 'primary' : undefined}>
                                             {data.node}

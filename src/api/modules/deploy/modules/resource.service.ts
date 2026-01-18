@@ -18,6 +18,15 @@ export function httpBaseSystemUpdateResource(data: Omix) {
     })
 }
 
+/**菜单资源详情**/
+export function httpBaseSystemResourceResolver(data: Omix) {
+    return request({
+        url: `/api/windows/system/resource/resolver`,
+        method: 'POST',
+        data
+    })
+}
+
 /**菜单资源列表**/
 export function httpBaseSystemColumnResource(data: Omix) {
     return request({

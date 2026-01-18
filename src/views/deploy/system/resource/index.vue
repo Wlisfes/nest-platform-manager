@@ -46,6 +46,15 @@ export default defineComponent({
             // ]
         })
 
+        /**新增菜单**/
+        async function fetchDeployCreateResource() {
+            return await feedback.fetchDeploySystemResource({
+                title: '新增菜单',
+                command: 'CREATE',
+                onSubmit: fetchRefresh
+            })
+        }
+
         // const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
         //     request: (data, base, options) => Service.httpBaseSystemColumnResource(options.body),
         //     document: '菜单管理自定义表头',
@@ -175,15 +184,24 @@ export default defineComponent({
                     v-model:database={state.database}
                     v-model:formState={formState.value}
                     on-update:database={fetchUpdateDatabase}
+                    onRestore={fetchRestore}
                     onSubmit={fetchRequest}
                 >
+                    <common-database-search-function>
+                        <common-element-button
+                            content="新增"
+                            type="primary"
+                            icon="nest-plus"
+                            onClick={fetchDeployCreateResource}
+                        ></common-element-button>
+                    </common-database-search-function>
                     <common-database-search-column prop="withStartTime" label="最近跟进时间" span={2}>
                         <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
                     </common-database-search-column>
                     <common-database-search-column prop="startTime" label="创建时间" span={2}>
                         <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
                     </common-database-search-column>
-                    <common-database-search-column prop="supplierCode" label="供应商编码" v-model:value={formState.value.supplierCode}>
+                    <common-database-search-column prop="supplierCode" label="供应商编码">
                         <n-input placeholder="Input" v-model:value={formState.value.supplierCode} />
                     </common-database-search-column>
                     <common-database-search-column prop="supplierName" label="供应商名称" v-model:value={formState.value.supplierName}>
@@ -203,17 +221,48 @@ export default defineComponent({
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
-                    v-model:columns={state.columns}
+                    total={state.total}
+                    columns={state.columns}
                     v-model:data={state.dataSource}
                     v-model:page={state.page}
                     v-model:size={state.size}
-                    v-model:total={state.total}
                     v-model:items={state.items}
                     v-model:select={state.select}
                     v-model:loading={state.loading}
                     onUpdate:page={(page: number) => fetchRefresh()}
                     onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
-                ></common-database-table>
+                >
+                    {{
+                        col_command: (e: Omix) => (
+                            <div class="flex items-center gap-col-10 overflow-hidden">
+                                <common-element-button
+                                    text
+                                    content="编辑"
+                                    type="primary"
+                                    onClick={fetchDeployCreateResource}
+                                ></common-element-button>
+                                <common-element-button
+                                    text
+                                    content="编辑"
+                                    type="primary"
+                                    onClick={fetchDeployCreateResource}
+                                ></common-element-button>
+                                <common-element-button
+                                    text
+                                    content="编辑"
+                                    type="primary"
+                                    onClick={fetchDeployCreateResource}
+                                ></common-element-button>
+                                <common-element-button
+                                    text
+                                    content="编辑"
+                                    type="primary"
+                                    onClick={fetchDeployCreateResource}
+                                ></common-element-button>
+                            </div>
+                        )
+                    }}
+                </common-database-table>
             </layout-common-container>
         )
 

@@ -1,5 +1,6 @@
 import { createApp, createVNode, nextTick, App } from 'vue'
 import { setupStore } from '@/store'
+import { setupRouter } from '@/router'
 import * as utils from '@/utils'
 
 export interface RestComponent {
@@ -57,6 +58,7 @@ export async function createComponent<T extends Omix>(
     }
 
     setupStore(app)
+    setupRouter(app, { interceptor: true })
     nextTick(async () => {
         await mounte()
     })

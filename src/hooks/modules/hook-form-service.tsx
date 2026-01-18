@@ -69,19 +69,12 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
             }
             return await setState({ loading: true, disabled: true } as never).then(async () => {
                 try {
-                    return formRef.value.validate(
-                        errors => {
-                            if (errors) {
-                                return resolve(errors)
-                            }
-                            return resolve(false)
-                        },
+                    return await formRef.value.validate(
+                        errors => (errors ? resolve(errors) : resolve(false)),
                         rule => fetchRuleCheck(keys, rule)
                     )
                 } catch (err) {
-                    return await setState({ loading: false, disabled: false } as never).then(() => {
-                        return resolve(false)
-                    })
+                    return resolve(false)
                 }
             })
         })

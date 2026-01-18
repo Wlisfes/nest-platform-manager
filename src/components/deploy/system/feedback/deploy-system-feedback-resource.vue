@@ -1,10 +1,9 @@
 <script lang="tsx">
-import { defineComponent, PropType, Fragment } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useSelectService } from '@/hooks/hook-selecter'
 import { useChunkService } from '@/hooks'
 import { useFormService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
-import * as utils from '@/utils'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -21,7 +20,19 @@ export default defineComponent({
     setup(props, { emit }) {
         const { formState, formRef, state, setState, setForm, fetchValidater } = useFormService({
             callback: fetchBaseSystemResourceResolver,
-            formState: {},
+            formState: {
+                keyId: props.node.keyId,
+                key: props.node.key,
+                name: props.node.name,
+                router: props.node.router,
+                activeRouter: props.node.activeRouter,
+                icon: props.node.icon,
+                pid: props.node.pid,
+                version: props.node.version,
+                sort: props.node.sort,
+                check: props.node.check,
+                status: props.node.status
+            },
             rules: {
                 key: { required: true, message: '请输入权限标识', trigger: 'blur' },
                 name: { required: true, message: '请输入菜单名称', trigger: 'blur' },
@@ -31,6 +42,10 @@ export default defineComponent({
                 version: { required: true, message: '请输入版本号', trigger: 'blur' },
                 sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' }
             }
+        })
+        /**菜单资源树结构表**/
+        const selectOptions = useSelectService(() => Service.httpBaseSystemSelectResource(), {
+            immediate: ['CREATE'].includes(props.command)
         })
         /**通用字典枚举**/
         const chunkOptions = useChunkService({
@@ -42,16 +57,20 @@ export default defineComponent({
             if (['CREATE'].includes(props.command)) {
                 return await setState({ initialize: false })
             }
-            try {
-                return await Service.httpBaseSystemResourceResolver({}).then(async ({ data }) => {
-                    console.log(data)
-                    return await setState({ initialize: false })
-                })
-            } catch (err) {
-                return await await setState({ initialize: false }).then(async () => {
-                    return await fetchNotifyService({ type: 'error', title: err.message })
-                })
-            }
+            return await setState({ initialize: true }).then(async () => {
+                try {
+                    await Promise.all([selectOptions.fetchRequest(), chunkOptions.fetchRequest()])
+                    return await Service.httpBaseSystemResourceResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
+                        return await setForm(data).then(async () => {
+                            return await setState({ initialize: false })
+                        })
+                    })
+                } catch (err) {
+                    return await await setState({ initialize: false }).then(async () => {
+                        return await fetchNotifyService({ type: 'error', title: err.message })
+                    })
+                }
+            })
         }
         /**确定提交表单**/
         async function fetchSubmit() {
@@ -61,9 +80,14 @@ export default defineComponent({
                 }
                 try {
                     if (['CREATE'].includes(props.command)) {
-                        return await Service.httpBaseSystemCreateResource({})
-                    } else if (['UPLOAD'].includes(props.command)) {
+                        return await Service.httpBaseSystemCreateResource(formState.value)
+                    } else if (['UPDATE'].includes(props.command)) {
+                        await Service.httpBaseSystemUpdateResource({ ...formState.value, keyId: props.node.keyId })
                     }
+                    return await setState({ visible: false }).then(async () => {
+                        await emit('submit', { done: setState })
+                        return await fetchNotifyService({ title: '操作成功' })
+                    })
                 } catch (err) {
                     return await await setState({ loading: false, disabled: false }).then(async () => {
                         return await fetchNotifyService({ type: 'error', title: err.message })
@@ -101,9 +125,20 @@ export default defineComponent({
                     <form-common-column label="菜单地址" path="router">
                         <form-common-column-input maxlength={255} placeholder="请输入菜单地址" v-model:value={formState.value.router} />
                     </form-common-column>
-                    <form-common-column label="父级菜单" path="pid"></form-common-column>
+                    <form-common-column label="父级菜单" path="pid">
+                        <form-common-column-cascader
+                            v-model:value={formState.value.pid}
+                            placeholder="请选择父级菜单"
+                            expand-trigger="click"
+                            options={selectOptions.dataSource.value}
+                        ></form-common-column-cascader>
+                    </form-common-column>
                     <form-common-column label="激活路由" path="activeRouter">
-                        <form-common-column-input maxlength={255} placeholder="请输入激活路由" v-model:value={formState.value.router} />
+                        <form-common-column-input
+                            maxlength={255}
+                            placeholder="请输入激活路由"
+                            v-model:value={formState.value.activeRouter}
+                        />
                     </form-common-column>
                     <form-common-column label="菜单状态" path="status">
                         <form-common-column-select-chunk
@@ -122,7 +157,7 @@ export default defineComponent({
                     <form-common-column label="版本号" path="version">
                         <form-common-column-input maxlength={32} placeholder="请输入版本号" v-model:value={formState.value.version} />
                     </form-common-column>
-                    <form-common-column label="排序号" path="sort">
+                    <form-common-column label="排序号" path="sort" v-model:value={formState.value.sort}>
                         <n-input-number
                             class="w-full"
                             min={1}
@@ -133,7 +168,7 @@ export default defineComponent({
                         />
                     </form-common-column>
                     <form-common-column label="菜单图标" path="icon">
-                        <form-common-column-input maxlength={255} placeholder="请输入版本号" v-model:value={formState.value.version} />
+                        <form-common-column-input maxlength={255} placeholder="请输入菜单图标" v-model:value={formState.value.icon} />
                     </form-common-column>
                 </form-common-container>
             </common-dialog-provider>

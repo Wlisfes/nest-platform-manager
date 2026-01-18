@@ -27,6 +27,14 @@ export function httpBaseSystemResourceResolver(data: Omix) {
     })
 }
 
+/**菜单资源树结构表**/
+export function httpBaseSystemSelectResource() {
+    return request({
+        url: `/api/windows/system/resource/select`,
+        method: 'POST'
+    })
+}
+
 /**菜单资源列表**/
 export function httpBaseSystemColumnResource(data: Omix) {
     return request({

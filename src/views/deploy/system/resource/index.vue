@@ -68,6 +68,15 @@ export default defineComponent({
                 onSubmit: fetchRefresh
             })
         }
+        /**编辑菜单**/
+        async function fetchDeployUpdateResource(node: Omix) {
+            return await feedback.fetchDeploySystemResource({
+                node,
+                title: '编辑菜单',
+                command: 'UPDATE',
+                onSubmit: fetchRefresh
+            })
+        }
 
         // const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
         //     request: (data, base, options) => Service.httpBaseSystemColumnResource(options.body),
@@ -249,44 +258,16 @@ export default defineComponent({
                     onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                 >
                     {{
-                        col_command: (e: Omix) => {
-                            return (
-                                <div class="flex items-center gap-col-10 overflow-hidden">
-                                    {e.keyId > 1 && (
-                                        <common-element-button
-                                            text
-                                            content="编辑"
-                                            type="primary"
-                                            onClick={fetchDeployCreateResource}
-                                        ></common-element-button>
-                                    )}
-                                    {e.keyId > 2 && (
-                                        <common-element-button
-                                            text
-                                            content="编辑菜单"
-                                            type="primary"
-                                            onClick={fetchDeployCreateResource}
-                                        ></common-element-button>
-                                    )}
-                                    {e.keyId > 3 && (
-                                        <common-element-button
-                                            text
-                                            content="编辑菜单状态"
-                                            type="primary"
-                                            onClick={fetchDeployCreateResource}
-                                        ></common-element-button>
-                                    )}
-                                    {e.keyId > 4 && (
-                                        <common-element-button
-                                            text
-                                            content="编辑菜单显示状态"
-                                            type="primary"
-                                            onClick={fetchDeployCreateResource}
-                                        ></common-element-button>
-                                    )}
-                                </div>
-                            )
-                        }
+                        col_command: (data: Omix) => (
+                            <div class="flex items-center gap-col-10 overflow-hidden">
+                                <common-element-button
+                                    text
+                                    content="编辑"
+                                    type="primary"
+                                    onClick={() => fetchDeployUpdateResource(data)}
+                                ></common-element-button>
+                            </div>
+                        )
                     }}
                 </common-database-table>
             </layout-common-container>

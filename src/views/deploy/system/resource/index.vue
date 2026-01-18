@@ -32,7 +32,21 @@ export default defineComponent({
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
                 { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
-                { title: '更新时间', key: 'modifyTime', width: 180, check: false }
+                {
+                    title: '更新时间',
+                    key: 'modifyTime',
+                    width: 180,
+                    check: false
+
+                    //colSpan: () => 2
+                }
+                // {
+                //     key: 'show-settings',
+                //     fixed: 'right',
+                //     colSpan: () => 0,
+                //     width: 38,
+                //     title: () => <common-database-table-settings></common-database-table-settings>
+                // }
             ]
             // database: [
             //     { uid: 174, prop: 'withStartTime', label: '最近跟进时间', check: true },
@@ -221,6 +235,8 @@ export default defineComponent({
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
+                    show-command
+                    show-settings
                     total={state.total}
                     columns={state.columns}
                     v-model:data={state.dataSource}
@@ -233,34 +249,44 @@ export default defineComponent({
                     onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                 >
                     {{
-                        col_command: (e: Omix) => (
-                            <div class="flex items-center gap-col-10 overflow-hidden">
-                                <common-element-button
-                                    text
-                                    content="编辑"
-                                    type="primary"
-                                    onClick={fetchDeployCreateResource}
-                                ></common-element-button>
-                                <common-element-button
-                                    text
-                                    content="编辑"
-                                    type="primary"
-                                    onClick={fetchDeployCreateResource}
-                                ></common-element-button>
-                                <common-element-button
-                                    text
-                                    content="编辑"
-                                    type="primary"
-                                    onClick={fetchDeployCreateResource}
-                                ></common-element-button>
-                                <common-element-button
-                                    text
-                                    content="编辑"
-                                    type="primary"
-                                    onClick={fetchDeployCreateResource}
-                                ></common-element-button>
-                            </div>
-                        )
+                        col_command: (e: Omix) => {
+                            return (
+                                <div class="flex items-center gap-col-10 overflow-hidden">
+                                    {e.keyId > 1 && (
+                                        <common-element-button
+                                            text
+                                            content="编辑"
+                                            type="primary"
+                                            onClick={fetchDeployCreateResource}
+                                        ></common-element-button>
+                                    )}
+                                    {e.keyId > 2 && (
+                                        <common-element-button
+                                            text
+                                            content="编辑菜单"
+                                            type="primary"
+                                            onClick={fetchDeployCreateResource}
+                                        ></common-element-button>
+                                    )}
+                                    {e.keyId > 3 && (
+                                        <common-element-button
+                                            text
+                                            content="编辑菜单状态"
+                                            type="primary"
+                                            onClick={fetchDeployCreateResource}
+                                        ></common-element-button>
+                                    )}
+                                    {e.keyId > 4 && (
+                                        <common-element-button
+                                            text
+                                            content="编辑菜单显示状态"
+                                            type="primary"
+                                            onClick={fetchDeployCreateResource}
+                                        ></common-element-button>
+                                    )}
+                                </div>
+                            )
+                        }
                     }}
                 </common-database-table>
             </layout-common-container>

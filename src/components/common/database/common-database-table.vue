@@ -1,8 +1,10 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty, concat } from '@/utils'
+import { fetchWherer, isNotEmpty, isEmpty } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
+import { useState } from '@/hooks'
+import { cloneDeep } from 'lodash-es'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
@@ -41,67 +43,50 @@ export default defineComponent({
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
         const { data, page, size, loading, select, items } = useVModels(props)
+        const { state } = useState({ width: 84 })
         /**表头配置**/
-        const columns = computed(() => {
-            // return columns.value.filter(item => item.check)
-
-            return fetchBaseColumns(props.columns)
-        })
-        /**表头列数据**/
         const faseColumns = computed(() => {
-            // return fetchBaseColumns().map((item: Omix, index) => {
-            //     if (props.settings && !props.command && index === columns.value.length - 1) {
-            //         /**未开启操作列且开启设置列的时候需要把设置列前一个字段合并单元格**/
-            //         const cols = (item.colSpan ?? (() => 1))() + 1
-            //         return { ...item, align: 'left', colSpan: () => cols }
-            //     }
-            //     return item
-            // })
+            return fetchBaseColumns(props.columns).filter(item => item.check)
         })
-
         /**默认操作列、设置列配置**/
-        function fetchBaseColumns(columns: Array<Omix<DataTableColumn>>) {
-            return concat(columns, [
-                {
-                    title: '操作',
+        function fetchBaseColumns(data: Array<Omix<DataTableColumn>>) {
+            const columns = cloneDeep(data)
+            if (props.showSettings && !props.showCommand) {
+                columns.push({
+                    key: 'settings',
+                    fixed: 'right',
+                    width: 38,
+                    check: true,
+                    title: () => <common-database-table-settings></common-database-table-settings>
+                })
+                return columns.map((item, index) => {
+                    if (index === columns.length - 2) {
+                        item.colSpan = () => 2
+                    }
+                    return item
+                })
+            } else if (props.showSettings && props.showCommand) {
+                columns.push({
                     key: 'command',
-                    fixed: 'right'
-                    //width: 46
-                }
-            ])
-
-            // if (!props.command && props.settings) {
-            //     return utils.concat(columns.value, {
-            //         key: 'settings',
-            //         width: 46,
-            //         fixed: props.fixed,
-            //         title: () => (
-            //             <n-element class="flex items-center justify-center">
-            //                 <common-element-button
-            //                     text
-            //                     icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
-            //                 ></common-element-button>
-            //             </n-element>
-            //         )
-            //     })
-            // }
-            // return utils.concat(columns.value, {
-            //     key: (props.command && props.settings) || props.command ? 'command' : 'settings',
-            //     width: (props.command && props.settings) || props.command ? props.fixedWidth ?? 110 : 46,
-            //     center: props.fixedCenter,
-            //     fixed: props.fixed,
-            //     title: () => (
-            //         <n-element class="flex items-center overflow-hidden" style={{ columnGap: 'var(--n-th-padding)' }}>
-            //             {props.command && <div class={{ 'flex-1 overflow-hidden': true, 'text-center': props.fixedCenter }}>操作</div>}
-            //             {props.settings && (
-            //                 <common-element-button
-            //                     text
-            //                     icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
-            //                 ></common-element-button>
-            //             )}
-            //         </n-element>
-            //     )
-            // })
+                    fixed: 'right',
+                    check: true,
+                    width: Math.max(46, state.width),
+                    className: 'chunk-command',
+                    title: () => (
+                        <div class="common-database-table-command flex items-center overflow-hidden">
+                            <div class="flex-1 p-[var(--n-th-padding)] overflow-hidden">
+                                <n-ellipsis tooltip={false}>操作</n-ellipsis>
+                            </div>
+                            <common-database-table-settings
+                                class="p-[var(--n-th-padding)]"
+                                columns={props.columns}
+                                v-model:items={items.value}
+                            ></common-database-table-settings>
+                        </div>
+                    )
+                })
+            }
+            return columns
         }
         /**选择列事件**/
         async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
@@ -112,11 +97,7 @@ export default defineComponent({
         /**节点渲染**/
         function fetchCellRender(value: any, data: Omix, base: Omix<DataTableColumn>) {
             if (isNotEmpty(base.key) && isNotEmpty(slots[`col_${base.key}`])) {
-                if (['command'].includes(base.key)) {
-                    return slots[`col_${base.key}`]?.(value, data, base)
-                }
-
-                return slots[`col_${base.key}`]?.(value, data, base)
+                return slots[`col_${base.key}`]?.(data, base) ?? <span>-</span>
             } else if (isEmpty(value)) {
                 return <span>-</span>
             }
@@ -136,6 +117,15 @@ export default defineComponent({
                             </n-element>
                         )}
                         <div ref={tableRef} class="common-database-table-container flex flex-col flex-1 overflow-hidden">
+                            {props.showCommand && data.value.length > 0 && (
+                                <common-database-table-visibility
+                                    show-settings={props.showSettings}
+                                    v-model:data={data.value}
+                                    v-model:width={state.width}
+                                >
+                                    {{ default: slots.col_command }}
+                                </common-database-table-visibility>
+                            )}
                             <n-data-table
                                 remote
                                 flex-height
@@ -144,8 +134,9 @@ export default defineComponent({
                                 loading={loading.value}
                                 scroll-x={0}
                                 bordered={props.bordered}
+                                single-line={false}
                                 data={data.value}
-                                columns={columns.value}
+                                columns={faseColumns.value}
                                 style={{ flex: 1 }}
                                 scrollbar-props={{ size: 100 }}
                                 render-cell={fetchCellRender}
@@ -209,6 +200,9 @@ export default defineComponent({
         :deep(.n-data-table-td):has(.n-data-table-expand-trigger) {
             display: flex;
             align-items: center;
+        }
+        :deep(.n-data-table-th.chunk-command) {
+            padding: 0;
         }
     }
     .n-element.common-database-pagination {

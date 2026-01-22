@@ -219,10 +219,20 @@ export default defineComponent({
                         ></common-element-button>
                     </common-database-search-function>
                     <common-database-search-column prop="withStartTime" label="最近跟进时间" span={2}>
-                        <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
+                        <form-common-column-date-picker
+                            type="datetimerange"
+                            default-time={['00:00:00', '23:59:59']}
+                            v-model:startTime={formState.value.withStartTime}
+                            v-model:endTime={formState.value.withEndTime}
+                        ></form-common-column-date-picker>
                     </common-database-search-column>
                     <common-database-search-column prop="startTime" label="创建时间" span={2}>
-                        <n-date-picker class="w-full" type="datetimerange" clearable default-time={['13:22:11', '16:00:00']} />
+                        <form-common-column-date-picker
+                            type="daterange"
+                            default-time={['00:00:00', '23:59:59']}
+                            v-model:startTime={formState.value.startTime}
+                            v-model:endTime={formState.value.endTime}
+                        ></form-common-column-date-picker>
                     </common-database-search-column>
                     <common-database-search-column prop="supplierCode" label="供应商编码">
                         <n-input placeholder="Input" v-model:value={formState.value.supplierCode} />
@@ -243,6 +253,7 @@ export default defineComponent({
                         <n-input placeholder="Input" v-model:value={formState.value.deptId} />
                     </common-database-search-column>
                 </common-database-search>
+                {JSON.stringify(formState.value)}
                 <common-database-table
                     show-command
                     show-settings

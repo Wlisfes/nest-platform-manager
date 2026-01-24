@@ -7,6 +7,13 @@ export async function fetchDeploySystemResource(props: PropsState<Omix>) {
     })
 }
 
+/**新增、编辑权限按钮**/
+export async function fetchDeploySystemSheet(props: PropsState<Omix>) {
+    return await import('@/components/deploy/system/feedback/deploy-system-feedback-sheet.vue').then(component => {
+        return createComponent(component.default, props)
+    })
+}
+
 /**新增、编辑菜单权限**/
 export async function fetchDeploySystemFeedbackRouter(props: PropsState<Omix>) {
     return await import('@/components/deploy/system/feedback/deploy-system-feedback-router.vue').then(component => {

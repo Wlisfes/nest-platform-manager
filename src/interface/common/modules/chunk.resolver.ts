@@ -12,6 +12,18 @@ export interface ChunkColumnOptions extends Omix {
 }
 /**通用下拉字典**/
 export const COMMON_CHUNK_OPTIONS = {
+    CHUNK_WINDOWS_SHEET_CHECK: {
+        value: 'CHUNK_WINDOWS_SHEET_CHECK',
+        name: '菜单显示状态'
+    },
+    CHUNK_WINDOWS_SHEET_CHUNK: {
+        value: 'CHUNK_WINDOWS_SHEET_CHUNK',
+        name: '菜单类型'
+    },
+    CHUNK_WINDOWS_SHEET_STATUS: {
+        value: 'CHUNK_WINDOWS_SHEET_STATUS',
+        name: '菜单状态'
+    },
     CHUNK_WINDOWS_RESOUREC_STATUS: {
         value: 'CHUNK_WINDOWS_RESOUREC_STATUS',
         name: '菜单状态'
@@ -19,5 +31,9 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_WINDOWS_RESOUREC_CHECK: {
         value: 'CHUNK_WINDOWS_RESOUREC_STATUS',
         name: '菜单显示状态'
+    },
+    COMMON_WINDOWS_RESOUREC_SHEET: {
+        value: 'COMMON_WINDOWS_RESOUREC_SHEET',
+        name: '按钮状态'
     }
 }

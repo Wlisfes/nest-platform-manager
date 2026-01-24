@@ -43,3 +43,49 @@ export function httpBaseSystemColumnResource(data: Omix) {
         data
     })
 }
+
+/***************************************************************************************************/
+/**添加菜单**/
+export function httpBaseSystemCreateSheetResource(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/create/resource`,
+        method: 'POST',
+        data
+    })
+}
+
+/**菜单列表**/
+export function httpBaseSystemColumnSheetResource(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/column/resource`,
+        method: 'POST',
+        data
+    })
+}
+
+/**菜单、按钮详情**/
+export function httpBaseSystemSheetResolver(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/resolver`,
+        method: 'POST',
+        data
+    })
+}
+
+/**添加权限按钮**/
+export function httpBaseSystemCreateSheetAuthorize(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/create/authorize`,
+        method: 'POST',
+        data
+    })
+}
+
+/**编辑权限按钮**/
+export function httpBaseSystemUpdateSheetAuthorize(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/update/authorize`,
+        method: 'POST',
+        data
+    })
+}

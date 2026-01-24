@@ -18,7 +18,7 @@ export default defineComponent({
                 <common-element-button
                     style={{ '--n-icon-size': '22px' }}
                     text
-                    icon={<common-element-icon size={22} name="nest-settings"></common-element-icon>}
+                    icon={<common-element-icon size={20} name="nest-settings"></common-element-icon>}
                 ></common-element-button>
             </div>
         )

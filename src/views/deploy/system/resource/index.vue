@@ -10,7 +10,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { inverted } = useProvider()
         const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
-            request: (data, base, e) => Service.httpBaseSystemColumnResource(e.body),
+            request: (data, base, e) => Service.httpBaseSystemColumnSheetResource(e.body),
             formState: {
                 withStartTime: undefined,
                 withEndTime: undefined,
@@ -24,10 +24,10 @@ export default defineComponent({
                 deptId: undefined
             },
             columns: [
-                { title: '选择框', key: 'selection', type: 'selection', width: 40, check: true },
+                //{ title: '选择框', key: 'selection', type: 'selection', width: 40, check: true },
                 { title: '菜单名称', key: 'name', width: 180, check: true },
-                { title: '图标', key: 'icon', width: 100, align: 'center', check: true },
-                { title: '权限标识', key: 'key', width: 200, check: true },
+                { title: '图标', key: 'iconName', width: 100, align: 'center', check: true },
+                { title: '权限标识', key: 'keyName', width: 200, check: true },
                 { title: '路由地址', key: 'router', minWidth: 200, check: true },
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
@@ -74,6 +74,15 @@ export default defineComponent({
                 node,
                 title: '编辑菜单',
                 command: 'UPDATE',
+                onSubmit: fetchRefresh
+            })
+        }
+
+        /**新增、编辑权限按钮**/
+        async function fetchDeploySheetUpdate(data: Omix) {
+            return await feedback.fetchDeploySystemSheet({
+                title: '添加按钮',
+                command: 'CREATE',
                 onSubmit: fetchRefresh
             })
         }
@@ -212,6 +221,7 @@ export default defineComponent({
                 >
                     <common-database-search-function>
                         <common-element-button
+                            size="small"
                             content="新增"
                             type="primary"
                             icon="nest-plus"
@@ -253,7 +263,6 @@ export default defineComponent({
                         <n-input placeholder="Input" v-model:value={formState.value.deptId} />
                     </common-database-search-column>
                 </common-database-search>
-                {JSON.stringify(formState.value)}
                 <common-database-table
                     show-command
                     show-settings
@@ -270,12 +279,14 @@ export default defineComponent({
                 >
                     {{
                         col_command: (data: Omix) => (
-                            <div class="flex items-center gap-col-10 overflow-hidden">
+                            <div class="flex items-center gap-col-8 overflow-hidden">
                                 <common-element-button
-                                    text
-                                    content="编辑"
-                                    type="primary"
+                                    {...{ text: true, content: '编辑', type: 'primary' }}
                                     onClick={() => fetchDeployUpdateResource(data)}
+                                ></common-element-button>
+                                <common-element-button
+                                    {...{ text: true, content: '添加按钮', type: 'primary' }}
+                                    onClick={() => fetchDeploySheetUpdate(data)}
                                 ></common-element-button>
                             </div>
                         )

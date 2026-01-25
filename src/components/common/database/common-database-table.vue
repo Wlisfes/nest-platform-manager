@@ -52,7 +52,7 @@ export default defineComponent({
         })
         /**表头配置**/
         const faseColumns = computed(() => {
-            return fetchBaseColumns(props.columns).filter(item => item.check)
+            return fetchBaseColumns(props.columns).filter(item => item.check ?? true)
         })
         /**默认操作列、设置列配置**/
         function fetchBaseColumns(data: Array<Omix<DataTableColumn>>) {

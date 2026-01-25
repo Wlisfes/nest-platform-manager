@@ -25,13 +25,15 @@ export default defineComponent({
             },
             columns: [
                 { title: '菜单名称', key: 'name', width: 180, check: true },
-                { title: '图标', key: 'iconName', width: 100, align: 'center', check: true },
-                { title: '权限标识', key: 'keyName', width: 200, check: true },
-                { title: '路由地址', key: 'router', minWidth: 200, check: true },
-                { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
-                { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
-                { title: '创建人', key: 'createBy', width: 130, align: 'center', check: true },
-                { title: '更新人', key: 'modifyBy', width: 130, align: 'center', check: true },
+                { title: '图标', key: 'iconName', className: 'p-block-0!', width: 100, align: 'center', check: true },
+                { title: '类型', key: 'chunk', width: 100, check: true },
+                { title: '权限标识', key: 'keyName', minWidth: 240, check: true },
+                { title: '路由地址', key: 'router', minWidth: 240, check: true },
+                { title: '排序号', key: 'sort', width: 100, check: true },
+                { title: '状态', key: 'statusChunk', width: 100, check: true },
+                { title: '创建人', key: 'createBy', width: 130, check: true },
+                { title: '创建时间', key: 'createTime', width: 160, check: true },
+                { title: '更新人', key: 'modifyBy', width: 130, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]
             // database: [

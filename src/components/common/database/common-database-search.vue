@@ -81,7 +81,7 @@ export default defineComponent({
                 vnode,
                 columnsClass: {
                     'common-database-formstate': true,
-                    'p-be-10': database.value.length > 0 && database.value.some(item => item.check),
+                    'p-be-12': database.value.length > 0 && database.value.some(item => item.check),
                     'formstate-collapse': width.value < 674
                 },
                 columns: fetchColumnCheckForms(fetchColumnCheck(vnode, ['CommonDatabaseSearchColumn'])),
@@ -161,9 +161,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .common-database-search {
     position: relative;
-    //padding-inline-start: var(--common-limit-width);
-    //padding-inline-end: var(--common-limit-width);
-    //padding-block-start: var(--common-limit-width);
+    padding-inline-start: var(--common-limit-width);
+    padding-inline-end: var(--common-limit-width);
+    padding-block-start: var(--common-limit-width);
 }
 .common-database-formstate {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

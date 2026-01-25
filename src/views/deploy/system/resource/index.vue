@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, Fragment } from 'vue'
 import { useProvider, useColumnService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
@@ -30,23 +30,9 @@ export default defineComponent({
                 { title: '路由地址', key: 'router', minWidth: 200, check: true },
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
-                { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
-                { title: '更新时间', key: 'modifyTime', width: 160, align: 'center', check: true },
-                {
-                    title: '更新时间',
-                    key: 'modifyTime',
-                    width: 180,
-                    check: false
-
-                    //colSpan: () => 2
-                }
-                // {
-                //     key: 'show-settings',
-                //     fixed: 'right',
-                //     colSpan: () => 0,
-                //     width: 38,
-                //     title: () => <common-database-table-settings></common-database-table-settings>
-                // }
+                { title: '创建人', key: 'createBy', width: 130, align: 'center', check: true },
+                { title: '更新人', key: 'modifyBy', width: 130, align: 'center', check: true },
+                { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]
             // database: [
             //     { uid: 174, prop: 'withStartTime', label: '最近跟进时间', check: true },
@@ -61,9 +47,10 @@ export default defineComponent({
         })
 
         /**新增、编辑菜单**/
-        async function fetchDeployResource(chunk: 'CREATE' | 'UPDATE', data: Omix = {}) {
-            if (['CREATE'].includes(chunk)) {
+        async function fetchDeploySheetResource(command: 'CREATE' | 'UPDATE', data: Omix = {}) {
+            if (['CREATE'].includes(command)) {
                 return await feedback.fetchDeploySystemResource({
+                    node: data,
                     title: '新增菜单',
                     command: 'CREATE',
                     onSubmit: fetchRefresh
@@ -78,10 +65,19 @@ export default defineComponent({
         }
 
         /**新增、编辑权限按钮**/
-        async function fetchDeploySheetUpdate(data: Omix) {
+        async function fetchDeploySheetAuthorize(command: 'CREATE' | 'UPDATE', data: Omix = {}) {
+            if (['CREATE'].includes(command)) {
+                return await feedback.fetchDeploySystemSheet({
+                    node: data,
+                    title: '添加按钮',
+                    command: 'CREATE',
+                    onSubmit: fetchRefresh
+                })
+            }
             return await feedback.fetchDeploySystemSheet({
-                title: '添加按钮',
-                command: 'CREATE',
+                node: data,
+                title: '编辑按钮',
+                command: 'UPDATE',
                 onSubmit: fetchRefresh
             })
         }
@@ -218,11 +214,18 @@ export default defineComponent({
                     onRestore={fetchRestore}
                     onSubmit={fetchRequest}
                 >
-                    <common-database-search-function>
+                    <common-database-search-function class="flex gap-col-10">
                         <common-element-button
+                            secondary
                             content="添加菜单"
                             type="primary"
-                            onClick={(event: MouseEvent) => fetchDeployResource('CREATE')}
+                            onClick={(event: MouseEvent) => fetchDeploySheetResource('CREATE')}
+                        ></common-element-button>
+                        <common-element-button
+                            secondary
+                            content="添加按钮"
+                            type="primary"
+                            onClick={(event: MouseEvent) => fetchDeploySheetAuthorize('CREATE')}
                         ></common-element-button>
                     </common-database-search-function>
                     <common-database-search-column prop="withStartTime" label="最近跟进时间" span={2}>
@@ -278,14 +281,37 @@ export default defineComponent({
                     {{
                         col_command: (data: Omix) => (
                             <div class="flex items-center gap-col-8 overflow-hidden">
-                                <common-element-button
-                                    {...{ text: true, content: '编辑', type: 'primary' }}
-                                    onClick={() => fetchDeployResource('UPDATE', data)}
-                                ></common-element-button>
-                                <common-element-button
-                                    {...{ text: true, content: '添加按钮', type: 'primary' }}
-                                    onClick={() => fetchDeploySheetUpdate(data)}
-                                ></common-element-button>
+                                {['resource'].includes(data.chunk) ? (
+                                    <Fragment>
+                                        <common-element-button
+                                            text
+                                            type="primary"
+                                            content="编辑"
+                                            onClick={() => fetchDeploySheetResource('UPDATE', data)}
+                                        ></common-element-button>
+                                        <common-element-button
+                                            text
+                                            type="primary"
+                                            content="添加按钮"
+                                            onClick={() => fetchDeploySheetResource('UPDATE', data)}
+                                        ></common-element-button>
+                                    </Fragment>
+                                ) : (
+                                    <Fragment>
+                                        <common-element-button
+                                            text
+                                            type="primary"
+                                            content="编辑"
+                                            onClick={() => fetchDeploySheetAuthorize('UPDATE', data)}
+                                        ></common-element-button>
+                                        <common-element-button
+                                            text
+                                            type="error"
+                                            content="删除"
+                                            onClick={() => fetchDeploySheetAuthorize('UPDATE', data)}
+                                        ></common-element-button>
+                                    </Fragment>
+                                )}
                             </div>
                         )
                     }}

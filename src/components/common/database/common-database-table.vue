@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty } from '@/utils'
+import { fetchWherer, isNotEmpty, isEmpty, fetchPlusNumber } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks'
@@ -46,6 +46,10 @@ export default defineComponent({
         const tableRef = ref<HTMLElement>()
         const { data, page, size, loading, select, items } = useVModels(props)
         const { state } = useState({ width: 84 })
+        /**最小滚动宽度**/
+        const width = computed(() => {
+            return fetchBaseColumns(props.columns).reduce((a, b) => fetchPlusNumber(a, b.width ?? b.minWidth ?? 0), 0)
+        })
         /**表头配置**/
         const faseColumns = computed(() => {
             return fetchBaseColumns(props.columns).filter(item => item.check)
@@ -137,7 +141,7 @@ export default defineComponent({
                                 size="small"
                                 row-key={(e: Omix) => e.keyId}
                                 loading={loading.value}
-                                scroll-x={0}
+                                scroll-x={width.value}
                                 bordered={props.bordered}
                                 single-line={false}
                                 data={data.value}

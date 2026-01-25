@@ -12,15 +12,13 @@ export default defineComponent({
     props: {
         /**标题**/
         title: { type: String, required: true },
-        /**归属ID**/
-        pid: {},
         /**操作指令**/
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
         /**编辑操作详情数据**/
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const { formState, formRef, state, setState, setForm, fetchValidater } = useFormService({
+        const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemSheetResolver,
             formState: {
                 keyName: props.node.keyName,
@@ -48,8 +46,8 @@ export default defineComponent({
             return await setState({ initialize: true }).then(async () => {
                 try {
                     await Promise.all([chunkOptions.fetchRequest()])
-                    return await Service.httpBaseSystemSheetResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
-                        return await setForm(data).then(async () => {
+                    return await Service.httpBaseSystemSheetResolver({ id: props.node.id }).then(async ({ data }) => {
+                        return await setForm(fetchReste(data)).then(async () => {
                             return await setState({ initialize: false })
                         })
                     })

@@ -34,9 +34,11 @@ export default defineComponent({
         showQuickJumper: { type: Boolean, default: false },
         /**分页条数列表**/
         showSizePicker: { type: Boolean, default: true },
-        /**列设置**/
+        /**开启复选框**/
+        showSelect: { type: Boolean, default: false },
+        /**开启列设置**/
         showSettings: { type: Boolean, default: false },
-        /**操作设置**/
+        /**开启操作列**/
         showCommand: { type: Boolean, default: false }
     },
     setup(props, { emit, slots }) {
@@ -51,6 +53,9 @@ export default defineComponent({
         /**默认操作列、设置列配置**/
         function fetchBaseColumns(data: Array<Omix<DataTableColumn>>) {
             const columns = cloneDeep(data)
+            if (props.showSelect) {
+                columns.unshift({ title: '选择框', key: 'selection', type: 'selection', width: 40, check: true })
+            }
             if (props.showSettings && !props.showCommand) {
                 columns.push({
                     key: 'settings',

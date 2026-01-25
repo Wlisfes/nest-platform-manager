@@ -18,18 +18,18 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const { formState, formRef, state, setState, setForm, fetchValidater } = useFormService({
+        const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemSheetResolver,
             formState: {
-                keyName: props.node.keyName,
-                name: props.node.name,
-                router: props.node.router,
-                version: props.node.version,
-                sort: props.node.sort ?? 10,
-                status: props.node.status,
-                check: props.node.check,
-                iconName: props.node.iconName,
-                pid: props.node.pid
+                keyName: props.node.keyName, //权限标识
+                name: props.node.name, //菜单名称
+                router: props.node.router, //菜单地址
+                version: props.node.version, //版本号
+                sort: props.node.sort ?? 10, //排序号
+                status: props.node.status, //菜单状态
+                check: props.node.check, //显示状态
+                iconName: props.node.iconName, //菜单图标
+                pid: props.node.pid //父级菜单
             },
             rules: {
                 keyName: { required: true, message: '请输入权限标识', trigger: 'blur' },
@@ -42,7 +42,7 @@ export default defineComponent({
             }
         })
         /**菜单资源树结构表**/
-        const selectOptions = useSelectService(() => Service.httpBaseSystemSelectResource(), {
+        const sheetOptions = useSelectService(() => Service.httpBaseSystemTreeSheetResource(), {
             immediate: ['CREATE'].includes(props.command)
         })
         /**通用字典枚举**/
@@ -57,9 +57,9 @@ export default defineComponent({
             }
             return await setState({ initialize: true }).then(async () => {
                 try {
-                    await Promise.all([selectOptions.fetchRequest(), chunkOptions.fetchRequest()])
+                    await Promise.all([sheetOptions.fetchRequest(), chunkOptions.fetchRequest()])
                     return await Service.httpBaseSystemSheetResolver({ id: props.node.id }).then(async ({ data }) => {
-                        return await setForm(data).then(async () => {
+                        return await setForm(fetchReste(data)).then(async () => {
                             return await setState({ initialize: false })
                         })
                     })
@@ -80,7 +80,7 @@ export default defineComponent({
                     if (['CREATE'].includes(props.command)) {
                         await Service.httpBaseSystemCreateSheetResource(formState.value)
                     } else if (['UPDATE'].includes(props.command)) {
-                        await Service.httpBaseSystemCreateSheetResource({ ...formState.value, id: props.node.id })
+                        await Service.httpBaseSystemUpdateSheetResource({ ...formState.value, id: props.node.id })
                     }
                     return await setState({ visible: false }).then(async () => {
                         await emit('submit', { done: setState })
@@ -128,8 +128,11 @@ export default defineComponent({
                             v-model:value={formState.value.pid}
                             placeholder="请选择父级菜单"
                             expand-trigger="click"
-                            options={selectOptions.dataSource.value}
+                            options={sheetOptions.dataSource.value}
                         ></form-common-column-cascader>
+                    </form-common-column>
+                    <form-common-column label="菜单图标" path="iconName">
+                        <form-common-column-input maxlength={255} placeholder="请输入菜单图标" v-model:value={formState.value.iconName} />
                     </form-common-column>
                     <form-common-column label="菜单状态" path="status">
                         <form-common-column-select-chunk
@@ -157,9 +160,6 @@ export default defineComponent({
                             placeholder="请输入排序号"
                             v-model:value={formState.value.sort}
                         />
-                    </form-common-column>
-                    <form-common-column label="菜单图标" path="icon">
-                        <form-common-column-input maxlength={255} placeholder="请输入菜单图标" v-model:value={formState.value.icon} />
                     </form-common-column>
                 </form-common-container>
             </common-dialog-provider>

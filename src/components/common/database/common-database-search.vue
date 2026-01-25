@@ -161,9 +161,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .common-database-search {
     position: relative;
-    padding-inline-start: var(--common-limit-width);
-    padding-inline-end: var(--common-limit-width);
-    padding-block-start: var(--common-limit-width);
+    //padding-inline-start: var(--common-limit-width);
+    //padding-inline-end: var(--common-limit-width);
+    //padding-block-start: var(--common-limit-width);
 }
 .common-database-formstate {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

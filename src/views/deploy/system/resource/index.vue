@@ -24,7 +24,6 @@ export default defineComponent({
                 deptId: undefined
             },
             columns: [
-                //{ title: '选择框', key: 'selection', type: 'selection', width: 40, check: true },
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'iconName', width: 100, align: 'center', check: true },
                 { title: '权限标识', key: 'keyName', width: 200, check: true },
@@ -32,6 +31,7 @@ export default defineComponent({
                 { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
                 { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
                 { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
+                { title: '更新时间', key: 'modifyTime', width: 160, align: 'center', check: true },
                 {
                     title: '更新时间',
                     key: 'modifyTime',
@@ -60,18 +60,17 @@ export default defineComponent({
             // ]
         })
 
-        /**新增菜单**/
-        async function fetchDeployCreateResource() {
+        /**新增、编辑菜单**/
+        async function fetchDeployResource(chunk: 'CREATE' | 'UPDATE', data: Omix = {}) {
+            if (['CREATE'].includes(chunk)) {
+                return await feedback.fetchDeploySystemResource({
+                    title: '新增菜单',
+                    command: 'CREATE',
+                    onSubmit: fetchRefresh
+                })
+            }
             return await feedback.fetchDeploySystemResource({
-                title: '新增菜单',
-                command: 'CREATE',
-                onSubmit: fetchRefresh
-            })
-        }
-        /**编辑菜单**/
-        async function fetchDeployUpdateResource(node: Omix) {
-            return await feedback.fetchDeploySystemResource({
-                node,
+                node: data,
                 title: '编辑菜单',
                 command: 'UPDATE',
                 onSubmit: fetchRefresh
@@ -221,11 +220,9 @@ export default defineComponent({
                 >
                     <common-database-search-function>
                         <common-element-button
-                            size="small"
-                            content="新增"
+                            content="添加菜单"
                             type="primary"
-                            icon="nest-plus"
-                            onClick={fetchDeployCreateResource}
+                            onClick={(event: MouseEvent) => fetchDeployResource('CREATE')}
                         ></common-element-button>
                     </common-database-search-function>
                     <common-database-search-column prop="withStartTime" label="最近跟进时间" span={2}>
@@ -264,6 +261,7 @@ export default defineComponent({
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
+                    //show-select
                     show-command
                     show-settings
                     total={state.total}
@@ -282,7 +280,7 @@ export default defineComponent({
                             <div class="flex items-center gap-col-8 overflow-hidden">
                                 <common-element-button
                                     {...{ text: true, content: '编辑', type: 'primary' }}
-                                    onClick={() => fetchDeployUpdateResource(data)}
+                                    onClick={() => fetchDeployResource('UPDATE', data)}
                                 ></common-element-button>
                                 <common-element-button
                                     {...{ text: true, content: '添加按钮', type: 'primary' }}

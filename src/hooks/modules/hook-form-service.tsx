@@ -3,6 +3,7 @@ import { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { useState } from '@/hooks/modules/hook-state'
 import { isEmpty, fetchHandler } from '@/utils'
 import { useRouter, useRoute } from 'vue-router'
+import { cloneDeep } from 'lodash-es'
 interface FormServiceState extends Omix {
     /**初始化状态**/
     initialize: boolean
@@ -53,6 +54,24 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
         return Object.assign(formState.value, data)
     }
 
+    /**重置表单对象数据**/
+    function fetchReste(data: Omix = {}) {
+        const clone = cloneDeep(options.formState ?? {})
+        return Object.keys(options.formState).reduce((node, key: string) => {
+            return { ...node, [key]: data[key] ?? clone[key] }
+        }, {})
+    }
+
+    /**重置表单校验结果**/
+    function fetchRestore() {
+        return new Promise((resolve, reject) => {
+            if (!formRef.value) {
+                return reject('不存在formRef实例')
+            }
+            return resolve(formRef.value.restoreValidation())
+        })
+    }
+
     /**批量验证表单字段**/
     function fetchRuleCheck(keys: Array<string>, rule: FormItemRule) {
         if (keys.length === 0 || isEmpty(rule.key)) {
@@ -80,16 +99,6 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
         })
     }
 
-    /**重置表单校验结果**/
-    function fetchRestore() {
-        return new Promise((resolve, reject) => {
-            if (!formRef.value) {
-                return reject('不存在formRef实例')
-            }
-            return resolve(formRef.value.restoreValidation())
-        })
-    }
-
     return {
         state,
         route,
@@ -99,7 +108,8 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
         ...toRefs(state),
         setState,
         setForm,
-        fetchValidater,
-        fetchRestore
+        fetchReste,
+        fetchRestore,
+        fetchValidater
     }
 }

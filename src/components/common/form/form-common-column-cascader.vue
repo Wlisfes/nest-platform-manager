@@ -7,7 +7,7 @@ export default defineComponent({
         /**选项label的字段名**/
         labelField: { type: String, default: 'name' },
         /**选项value的字段名**/
-        labelValue: { type: String, default: 'keyId' }
+        labelValue: { type: String, default: 'id' }
     },
     setup(props) {
         return () => (

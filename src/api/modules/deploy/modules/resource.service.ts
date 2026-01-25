@@ -54,12 +54,29 @@ export function httpBaseSystemCreateSheetResource(data: Omix) {
     })
 }
 
+/**编辑菜单**/
+export function httpBaseSystemUpdateSheetResource(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/update/resource`,
+        method: 'POST',
+        data
+    })
+}
+
 /**菜单列表**/
 export function httpBaseSystemColumnSheetResource(data: Omix) {
     return request({
         url: `/api/windows/system/sheet/column/resource`,
         method: 'POST',
         data
+    })
+}
+
+/**菜单树结构**/
+export function httpBaseSystemTreeSheetResource() {
+    return request({
+        url: `/api/windows/system/sheet/tree/resource`,
+        method: 'POST'
     })
 }
 

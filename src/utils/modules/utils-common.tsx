@@ -61,14 +61,14 @@ export async function fetchHandler<T>(where: boolean | Function, handler?: Funct
 }
 
 /**对象排除空字段**/
-export function fetchExclude(data: Omix, options: Omix = {}) {
+export function fetchExclude<T>(data: Omix, options: Omix = {}): Omix<T> {
     return Object.keys(data).reduce((merge: Omix, key: string) => {
         if (isNotEmpty(data[key]) && !(isArray(data[key]) && data[key].length === 0)) {
             /**字段不能为空、不能为空数组**/
             merge[key] = data[key]
         }
         return merge
-    }, options)
+    }, options) as Omix<T>
 }
 
 /**参数组合函数**/

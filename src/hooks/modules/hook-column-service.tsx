@@ -3,7 +3,7 @@ import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
 import { fetchNotifyService } from '@/plugins'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, pick } from 'lodash-es'
 import { useState } from '@/hooks'
 
 /**列表缓存对象**/
@@ -44,7 +44,7 @@ interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
     /**筛选条件表单**/
     formState: Omix<U>
     /**列表接口**/
-    request: (formState: Omix<U>, base: BaseServiceState<T & Omix<R>>, options: Omix) => Promise<ResultResolver<ResultColumn<T>>>
+    request: (base: BaseServiceState<T & Omix<R>>, body: Omix<U>, options: Omix) => Promise<ResultResolver<ResultColumn<T>>>
     /**列表数据转换函数**/
     transform?: (data: ResultColumn<T>) => Array<Omix> | Promise<Array<Omix>>
     /**回调函数**/
@@ -97,9 +97,14 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         return Object.assign(formState.value, value)
     }
 
-    /**重置表单**/
-    async function fetchRestore() {
-        return await setForm(cloneDeep(options.formState))
+    /**重置表单对象数据**/
+    async function fetchRestore(data: Omix = {}) {
+        const clone = cloneDeep(options.formState ?? {})
+        return await setForm(
+            Object.keys(options.formState).reduce((node, key: string) => {
+                return { ...node, [key]: data[key] ?? clone[key] ?? null }
+            }, {})
+        )
     }
 
     /**刷新**/
@@ -125,8 +130,8 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     async function fetchRequest(opts: Omix = {}) {
         return await setState({ loading: true } as never).then(async () => {
             try {
-                const body = fetchExclude(formState.value, { page: state.page, size: state.size })
-                return await options.request(formState.value, state as never, { body, opts }).then(async ({ data }) => {
+                const body = fetchExclude<U>(formState.value, pick(state, ['page', 'size']))
+                return await options.request(state as BaseServiceState<T & Omix<R>>, body, opts).then(async ({ data }) => {
                     if (options.transform && typeof options.transform === 'function') {
                         data.list = ((await options.transform(data)) ?? []) as Array<Omix<T>>
                     }

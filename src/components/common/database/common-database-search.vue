@@ -10,7 +10,7 @@ export default defineComponent({
     emits: ['update:when', 'update:database', '-update:database', 'update:loading', 'update:formState', 'submit', 'restore'],
     props: {
         /**操作功能**/
-        function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy'>>, default: () => [] },
+        function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy' | 'abstract'>>, default: () => [] },
         /**操作功能根节点样式**/
         functionClass: { type: String, default: '' },
         /**收缩最小显示行**/
@@ -24,7 +24,7 @@ export default defineComponent({
         /**表单对象**/
         formState: { type: Object as PropType<Omix>, default: () => ({}) },
         /**文案描述宽度**/
-        labelWidth: { type: Number, default: 100 },
+        labelWidth: { type: Number, default: 80 },
         /**搜索栏字段自定义排版规则**/
         database: { type: Array as PropType<Array<Omix>>, default: () => [] }
     },
@@ -114,6 +114,7 @@ export default defineComponent({
                         {props.function.length + functions.length > 0 && (
                             <n-element class={`flex flex-wrap gap-10 ${props.functionClass}`}>
                                 {functions.length > 0 && <Fragment>{functions}</Fragment>}
+                                {props.function.includes('abstract') && <n-divider vertical class="h-[var(--height-medium)]! m-0!" />}
                                 {props.function.includes('search') && (
                                     <common-element-button
                                         class="min-w-80"
@@ -161,15 +162,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .common-database-search {
     position: relative;
-    padding-inline-start: var(--common-limit-width);
-    padding-inline-end: var(--common-limit-width);
-    padding-block-start: var(--common-limit-width);
+    // padding-inline-start: var(--common-limit-width);
+    // padding-inline-end: var(--common-limit-width);
+    // padding-block-start: var(--common-limit-width);
 }
 .common-database-formstate {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    grid-auto-flow: row dense;
-    display: grid;
     gap: 10px;
+    display: grid;
+    grid-auto-flow: row dense;
+    grid-template-columns: repeat(5, minmax(320px, 1fr));
     &.formstate-collapse :deep(.common-database-search-column.grid-col-span-2) {
         grid-column: span 1 / span 1 !important;
     }

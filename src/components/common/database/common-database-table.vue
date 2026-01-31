@@ -63,7 +63,6 @@ export default defineComponent({
             if (props.showSettings && !props.showCommand) {
                 columns.push({
                     key: 'settings',
-                    fixed: 'right',
                     width: 38,
                     check: true,
                     title: () => <common-database-table-settings></common-database-table-settings>

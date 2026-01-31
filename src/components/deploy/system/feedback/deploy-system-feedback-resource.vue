@@ -83,7 +83,7 @@ export default defineComponent({
                         await Service.httpBaseSystemUpdateSheetResource({ ...formState.value, id: props.node.id })
                     }
                     return await setState({ visible: false }).then(async () => {
-                        await emit('submit', { done: setState })
+                        await emit('submit', { setState })
                         return await fetchNotifyService({ title: '操作成功' })
                     })
                 } catch (err) {
@@ -103,7 +103,7 @@ export default defineComponent({
                 v-model:initialize={state.initialize}
                 onSubmit={fetchSubmit}
                 onCancel={() => setState({ visible: false })}
-                onClose={() => emit('close', { done: setState })}
+                onClose={() => emit('close', { setState })}
             >
                 <form-common-container
                     class="grid-auto-350 gap-col-20"

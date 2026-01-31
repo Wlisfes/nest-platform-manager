@@ -10,19 +10,7 @@ export default defineComponent({
     setup(props, ctx) {
         const { inverted } = useProvider()
         const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
-            request: (data, base, e) => Service.httpBaseSystemColumnSheetResource(e.body),
-            formState: {
-                withStartTime: undefined,
-                withEndTime: undefined,
-                startTime: undefined,
-                endTime: undefined,
-                supplierCode: undefined,
-                supplierName: undefined,
-                email: undefined,
-                alias: undefined,
-                staffId: undefined,
-                deptId: undefined
-            },
+            request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),
             columns: [
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'iconName', className: 'p-block-0!', width: 100, align: 'center', check: true },
@@ -35,17 +23,16 @@ export default defineComponent({
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新人', key: 'modifyBy', width: 130, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
-            ]
-            // database: [
-            //     { uid: 174, prop: 'withStartTime', label: '最近跟进时间', check: true },
-            //     { uid: 193, prop: 'startTime', label: '创建时间', check: true },
-            //     { uid: 212, prop: 'supplierCode', label: '供应商编码', check: false },
-            //     { uid: 216, prop: 'supplierName', label: '供应商名称', check: false },
-            //     { uid: 220, prop: 'email', label: '邮箱', check: false },
-            //     { uid: 224, prop: 'alias', label: '账号别名', check: true },
-            //     { uid: 228, prop: 'staffId', label: '归属人', check: true },
-            //     { uid: 232, prop: 'deptId', label: '归属人部门', check: true }
-            // ]
+            ],
+            formState: {
+                name: undefined, //菜单名称
+                keyName: undefined, //权限标识
+                pid: undefined, //父级ID
+                router: undefined, //菜单地址
+                version: undefined, //版本号
+                chunk: undefined, //类型
+                status: undefined //状态
+            }
         })
 
         /**新增、编辑菜单**/
@@ -84,128 +71,11 @@ export default defineComponent({
             })
         }
 
-        // const { root, state, form, full, toggle, fetchCheckboxs, fetchRefresh } = useColumnService({
-        //     request: (data, base, options) => Service.httpBaseSystemColumnResource(options.body),
-        //     document: '菜单管理自定义表头',
-        //     dynamic: 'base:deploy:system:router',
-        //     form: {
-        //         vague: undefined,
-        //         name: undefined,
-        //         key: undefined,
-        //         router: undefined,
-        //         version: undefined,
-        //         pid: undefined,
-        //         status: undefined,
-        //         uid: undefined,
-        //         startTime: undefined,
-        //         endTime: undefined
-        //     },
-        //     columns: fetchKineColumns(true, [
-        //         { title: '选择框', key: 'selection', type: 'selection', check: true },
-        //         { title: '菜单名称', key: 'name', width: 180, check: true },
-        //         { title: '图标', key: 'icon', width: 100, align: 'center', check: true },
-        //         { title: '权限标识', key: 'key', width: 200, check: true },
-        //         { title: '路由地址', key: 'router', width: 200, check: true },
-        //         { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
-        //         { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
-        //         { title: '更新人', key: 'user', width: 130, align: 'center', check: true },
-        //         { title: '更新时间', key: 'modifyTime', width: 180, check: false }
-        //     ])
-        // })
-
-        // /**操作指令回调函数**/
-        // async function fetchCommand(event: Omix) {
-        //     if (event.command === 'CREATE') {
-        //         return await feedback.fetchDeploySystemFeedbackRouter({
-        //             command: event.command,
-        //             title: '新增菜单',
-        //             onSubmit: () => fetchRefresh()
-        //         })
-        //     }
-        //     if (event.command === 'UPDATE') {
-        //         return await feedback.fetchDeploySystemFeedbackRouter({
-        //             command: event.command,
-        //             node: event.node,
-        //             title: '编辑菜单',
-        //             onSubmit: () => fetchRefresh()
-        //         })
-        //     }
-        //     if (event.command === 'DELETE') {
-        //         return await fetchDialogService({
-        //             type: event.type,
-        //             title: `${event.title}提示`,
-        //             content: `确定${event.title}当前所选菜单？`,
-        //             async onSubmit(done: Function) {
-        //                 try {
-        //                     await done({ loading: true })
-        //                     return await Service.httpBaseSystemRouterDelete({ keyId: event.node.keyId }).then(async response => {
-        //                         await done({ visible: false })
-        //                         await fetchNotifyService({ title: response.message })
-        //                         return await fetchRefresh()
-        //                     })
-        //                 } catch (err) {
-        //                     return await done({ loading: false }).then(async () => {
-        //                         return await fetchNotifyService({ type: 'error', title: err.message })
-        //                     })
-        //                 }
-        //             }
-        //         })
-        //     }
-        //     if (event.command === 'SWITCH') {
-        //         return await fetchDialogService({
-        //             type: event.type,
-        //             title: `${event.title}提示`,
-        //             content: `确定${event.title}当前所选菜单？`,
-        //             async onSubmit(done: Function) {
-        //                 try {
-        //                     await done({ loading: true })
-        //                     return await Service.httpBaseSystemSwitchRouter({ status: event.status, keys: state.rowKeys }).then(
-        //                         async response => {
-        //                             await done({ visible: false })
-        //                             await fetchNotifyService({ title: response.message })
-        //                             return await fetchRefresh()
-        //                         }
-        //                     )
-        //                 } catch (err) {
-        //                     return await done({ loading: false }).then(async () => {
-        //                         return await fetchNotifyService({ type: 'error', title: err.message })
-        //                     })
-        //                 }
-        //             }
-        //         })class="p-16 gap-16 overflow-hidden"
-        //     }
-        // }
-
-        // <common-database-search-column label="对接方式">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="R端签约主体">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="国家/地区">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="区域">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="来源">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="来源标签">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="等级">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-        // <common-database-search-column label="标签">
-        //     <n-input placeholder="Input" v-model:value={formState.value.name} />
-        // </common-database-search-column>
-
         return () => (
             <layout-common-container>
                 <common-database-search
                     function-class="justify-end"
-                    function={['search', 'restore', 'collapse', 'deploy']}
+                    function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
                     ref={formRef}
                     limit={state.limit}
                     v-model:loading={state.loading}
@@ -216,58 +86,37 @@ export default defineComponent({
                     onRestore={fetchRestore}
                     onSubmit={fetchRequest}
                 >
-                    <common-database-search-function class="flex gap-col-10">
+                    <common-database-search-function abstract class="flex gap-col-10">
                         <common-element-button
-                            secondary
                             content="添加菜单"
                             type="primary"
                             onClick={(event: MouseEvent) => fetchDeploySheetResource('CREATE')}
                         ></common-element-button>
                         <common-element-button
-                            secondary
                             content="添加按钮"
                             type="primary"
                             onClick={(event: MouseEvent) => fetchDeploySheetAuthorize('CREATE')}
                         ></common-element-button>
                     </common-database-search-function>
-                    <common-database-search-column prop="withStartTime" label="最近跟进时间" span={2}>
-                        <form-common-column-date-picker
-                            type="datetimerange"
-                            default-time={['00:00:00', '23:59:59']}
-                            v-model:startTime={formState.value.withStartTime}
-                            v-model:endTime={formState.value.withEndTime}
-                        ></form-common-column-date-picker>
+                    <common-database-search-column prop="name" label="菜单名称">
+                        <n-input placeholder="请输入菜单名称" v-model:value={formState.value.name} />
                     </common-database-search-column>
-                    <common-database-search-column prop="startTime" label="创建时间" span={2}>
-                        <form-common-column-date-picker
-                            type="daterange"
-                            default-time={['00:00:00', '23:59:59']}
-                            v-model:startTime={formState.value.startTime}
-                            v-model:endTime={formState.value.endTime}
-                        ></form-common-column-date-picker>
+                    <common-database-search-column prop="keyName" label="权限标识">
+                        <n-input placeholder="请输入权限标识" v-model:value={formState.value.keyName} />
                     </common-database-search-column>
-                    <common-database-search-column prop="supplierCode" label="供应商编码">
-                        <n-input placeholder="Input" v-model:value={formState.value.supplierCode} />
+                    <common-database-search-column prop="router" label="菜单地址">
+                        <n-input placeholder="请输入菜单地址" v-model:value={formState.value.router} />
                     </common-database-search-column>
-                    <common-database-search-column prop="supplierName" label="供应商名称" v-model:value={formState.value.supplierName}>
-                        <n-input placeholder="Input" v-model:value={formState.value.supplierName} />
+                    <common-database-search-column prop="version" label="版本号">
+                        <n-input placeholder="请输入版本号" v-model:value={formState.value.version} />
                     </common-database-search-column>
-                    <common-database-search-column prop="email" label="邮箱" v-model:value={formState.value.email}>
-                        <n-input placeholder="Input" v-model:value={formState.value.name} />
-                    </common-database-search-column>
-                    <common-database-search-column prop="alias" label="账号别名" v-model:value={formState.value.alias}>
-                        <n-input placeholder="Input" v-model:value={formState.value.alias} />
-                    </common-database-search-column>
-                    <common-database-search-column prop="staffId" label="归属人" v-model:value={formState.value.staffId}>
-                        <n-input placeholder="Input" v-model:value={formState.value.staffId} />
-                    </common-database-search-column>
-                    <common-database-search-column prop="deptId" label="归属人部门" v-model:value={formState.value.deptId}>
-                        <n-input placeholder="Input" v-model:value={formState.value.deptId} />
+                    <common-database-search-column prop="status" label="状态">
+                        <n-input placeholder="请输入状态" v-model:value={formState.value.status} />
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
                     //show-select
-                    show-command
+                    //show-command
                     show-settings
                     total={state.total}
                     columns={state.columns}
@@ -279,45 +128,7 @@ export default defineComponent({
                     v-model:loading={state.loading}
                     onUpdate:page={(page: number) => fetchRefresh()}
                     onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
-                >
-                    {{
-                        col_command: (data: Omix) => (
-                            <div class="flex items-center gap-col-8 overflow-hidden">
-                                {['resource'].includes(data.chunk) ? (
-                                    <Fragment>
-                                        <common-element-button
-                                            text
-                                            type="primary"
-                                            content="编辑"
-                                            onClick={() => fetchDeploySheetResource('UPDATE', data)}
-                                        ></common-element-button>
-                                        <common-element-button
-                                            text
-                                            type="primary"
-                                            content="添加按钮"
-                                            onClick={() => fetchDeploySheetResource('UPDATE', data)}
-                                        ></common-element-button>
-                                    </Fragment>
-                                ) : (
-                                    <Fragment>
-                                        <common-element-button
-                                            text
-                                            type="primary"
-                                            content="编辑"
-                                            onClick={() => fetchDeploySheetAuthorize('UPDATE', data)}
-                                        ></common-element-button>
-                                        <common-element-button
-                                            text
-                                            type="error"
-                                            content="删除"
-                                            onClick={() => fetchDeploySheetAuthorize('UPDATE', data)}
-                                        ></common-element-button>
-                                    </Fragment>
-                                )}
-                            </div>
-                        )
-                    }}
-                </common-database-table>
+                ></common-database-table>
             </layout-common-container>
         )
 

@@ -6,7 +6,7 @@ import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'DeploySystemResource',
+    name: 'DeploySystemSheet',
     setup(props, ctx) {
         /**菜单树结构**/
         const sheetOptions = useSelectService(Service.httpBaseSystemTreeSheetResource)
@@ -14,7 +14,6 @@ export default defineComponent({
         const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),
             columns: [
-                // { title: 'ID', key: 'id', width: 240, check: true },
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'iconName', className: 'p-block-0!', width: 100, align: 'center', check: true },
                 { title: '类型', key: 'chunk', width: 100, check: true },

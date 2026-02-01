@@ -166,7 +166,7 @@ export default defineComponent({
                                 on-update:page-size={(value: number) => (size.value = value)}
                             >
                                 {{
-                                    uffix: fetchWherer(props.showQuickJumper, () => <span>页</span>),
+                                    suffix: fetchWherer(props.showQuickJumper, () => <span>页</span>),
                                     goto: () => <span>前往</span>,
                                     prefix: () => <span class="whitespace-nowrap">{`共 ${props.total} 条`}</span>,
                                     label: (data: Omix<{ node: number; active: boolean }>) => (

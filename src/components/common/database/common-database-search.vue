@@ -150,6 +150,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.common-database-search {
+    position: relative;
+    padding-inline-start: var(--common-limit-width);
+    padding-inline-end: var(--common-limit-width);
+    padding-block-start: var(--common-limit-width);
+}
 .common-database-formstate {
     gap: 10px;
     display: grid;

@@ -3,7 +3,7 @@ import { defineComponent, nextTick } from 'vue'
 import { useVModels } from '@vueuse/core'
 
 export default defineComponent({
-    name: 'FormCommonColumnCascader',
+    name: 'FormCommonColumnTreeSelect',
     emits: ['update:value', '-change:value'],
     props: {
         /**绑定数据**/
@@ -11,7 +11,7 @@ export default defineComponent({
         /**选项label的字段名**/
         labelField: { type: String, default: 'name' },
         /**选项value的字段名**/
-        labelValue: { type: String, default: 'id' },
+        keyField: { type: String, default: 'id' },
         /**选项children的字段名**/
         childrenField: { type: String, default: 'children' }
     },
@@ -25,14 +25,14 @@ export default defineComponent({
         }
 
         return () => (
-            <n-cascader
-                class="form-common-column-cascader"
+            <n-tree-select
+                class="form-common-column-tree-select"
                 label-field={props.labelField}
-                value-field={props.labelValue}
+                key-field={props.keyField}
                 children-field={props.childrenField}
                 v-model:value={value.value}
                 on-update:value={fetchUpdate}
-            ></n-cascader>
+            ></n-tree-select>
         )
     }
 })

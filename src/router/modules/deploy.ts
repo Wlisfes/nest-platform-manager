@@ -6,10 +6,10 @@ export default [
         component: () => import('@/views/deploy/system/router/router.vue')
     },
     {
-        path: '/deploy/system/resource',
-        name: 'DeploySystemResource',
+        path: '/deploy/system/sheet',
+        name: 'DeploySystemSheet',
         meta: { title: '菜单管理', AUTH: 'AUTH' },
-        component: () => import('@/views/deploy/system/resource/index.vue')
+        component: () => import('@/views/deploy/system/sheet/index.vue')
     },
     {
         path: '/deploy/system/role',

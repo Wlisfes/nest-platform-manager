@@ -30,7 +30,7 @@ interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
 /**下拉通用查询接口hook**/
 export function useSelectService<T extends Omix, U extends Omix>(
     request: BaseServiceOptions<T, U>['request'],
-    options: Omit<BaseServiceOptions<T, U>, 'request'>
+    options: Omit<BaseServiceOptions<T, U>, 'request'> = {}
 ) {
     const { state, setState } = useState({
         keywords: options.keywords ?? '',

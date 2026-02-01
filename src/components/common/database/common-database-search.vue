@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, computed, nextTick, onMounted, Fragment, PropType } from 'vue'
+import { defineComponent, ref, computed, nextTick, Fragment, PropType } from 'vue'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
 import { Search, DownToBottom, UpToTop } from '@vicons/carbon'
 import { fetchWherer, isObject } from '@/utils'
@@ -35,20 +35,15 @@ export default defineComponent({
         const { width } = useElementSize(element)
         const { when, loading, formState, database } = useVModels(props, emit)
         /**最小折叠高度**/
-        const height = computed(() => fetchWherer(Boolean(props.line), 10 + 32 * props.line + (props.line - 1) * 10, 0))
-        /**组件初始化**/
-        onMounted(fetchInitialize)
-        async function fetchInitialize() {
-            formOptions.value.restoreValidation = formRef.value.restoreValidation
-            formOptions.value.validate = formRef.value.validate
-            formOptions.value.restore = formRef.value.restore
-        }
-        /**重置**/
-        async function fetchRestore() {
-            return await formRef.value.restore().then(async (formState: Omix) => {
-                return emit('restore', formState.value)
-            })
-        }
+        const height = computed(() => {
+            return fetchWherer(Boolean(props.line), 10 + 32 * props.line + (props.line - 1) * 10, 0)
+        })
+        /**表单样式**/
+        const formClass = computed(() => ({
+            'common-database-formstate': true,
+            'p-be-12': database.value.length > 0 && database.value.some(item => item.check),
+            'formstate-collapse': width.value < 674
+        }))
         /**展开、收起**/
         async function fetchClickUpdate() {
             return await nextTick(() => (when.value = !when.value))
@@ -79,11 +74,6 @@ export default defineComponent({
         function fetchColumnTransaction(vnode: Array<Omix>) {
             return {
                 vnode,
-                columnsClass: {
-                    'common-database-formstate': true,
-                    'p-be-12': database.value.length > 0 && database.value.some(item => item.check),
-                    'formstate-collapse': width.value < 674
-                },
                 columns: fetchColumnCheckForms(fetchColumnCheck(vnode, ['CommonDatabaseSearchColumn'])),
                 functions: fetchColumnCheckFunctions(fetchColumnCheck(vnode, ['CommonDatabaseSearchFunction']))
             }
@@ -93,7 +83,7 @@ export default defineComponent({
         expose(formOptions.value)
 
         return () => {
-            const { columns, columnsClass, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
+            const { columns, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
 
             return (
                 <div class="common-database-search flex flex-col overflow-hidden">
@@ -102,7 +92,7 @@ export default defineComponent({
                             <common-element-collapse base-height={height.value} v-model:when={when.value}>
                                 <form-common-container
                                     ref={formRef}
-                                    class={columnsClass}
+                                    class={formClass.value}
                                     label-placement="left"
                                     model={formState.value}
                                     label-width={props.labelWidth}
@@ -129,7 +119,7 @@ export default defineComponent({
                                     </common-element-button>
                                 )}
                                 {props.function.includes('restore') && columns.length > 0 && (
-                                    <common-element-button class="min-w-80" onClick={fetchRestore}>
+                                    <common-element-button class="min-w-80" onClick={() => emit('restore', formState.value)}>
                                         重置
                                     </common-element-button>
                                 )}
@@ -160,17 +150,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.common-database-search {
-    position: relative;
-    // padding-inline-start: var(--common-limit-width);
-    // padding-inline-end: var(--common-limit-width);
-    // padding-block-start: var(--common-limit-width);
-}
 .common-database-formstate {
     gap: 10px;
     display: grid;
     grid-auto-flow: row dense;
-    grid-template-columns: repeat(5, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     &.formstate-collapse :deep(.common-database-search-column.grid-col-span-2) {
         grid-column: span 1 / span 1 !important;
     }

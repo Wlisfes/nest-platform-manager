@@ -28,7 +28,10 @@ interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
 }
 
 /**下拉通用查询接口hook**/
-export function useSelectService<T extends Omix, U extends Omix>(options: BaseServiceOptions<T, U>) {
+export function useSelectService<T extends Omix, U extends Omix>(
+    request: BaseServiceOptions<T, U>['request'],
+    options: Omit<BaseServiceOptions<T, U>, 'request'>
+) {
     const { state, setState } = useState({
         keywords: options.keywords ?? '',
         loading: options.loading ?? true,
@@ -64,7 +67,7 @@ export function useSelectService<T extends Omix, U extends Omix>(options: BaseSe
     async function fetchRequest() {
         return await setState({ loading: true } as never).then(async () => {
             try {
-                const list = await options.request(state).then(({ data }) => {
+                const list = await request(state).then(({ data }) => {
                     if (data && isArray(data)) {
                         return fetchTransform(data ?? [])
                     } else if (isObject(data)) {

@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, Fragment } from 'vue'
-import { useProvider, useColumnService } from '@/hooks'
+import { useProvider, useColumnService, useSelectService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
@@ -9,14 +9,20 @@ export default defineComponent({
     name: 'DeploySystemResource',
     setup(props, ctx) {
         const { inverted } = useProvider()
+
+        // const httpBaseSystemTreeSheetResource
+
         const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),
+            immediate: false,
             columns: [
+                // { title: 'ID', key: 'id', width: 240, check: true },
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'iconName', className: 'p-block-0!', width: 100, align: 'center', check: true },
                 { title: '类型', key: 'chunk', width: 100, check: true },
                 { title: '权限标识', key: 'keyName', minWidth: 240, check: true },
                 { title: '路由地址', key: 'router', minWidth: 240, check: true },
+                { title: '版本号', key: 'version', width: 100, check: true },
                 { title: '排序号', key: 'sort', width: 100, check: true },
                 { title: '状态', key: 'statusChunk', width: 100, check: true },
                 { title: '创建人', key: 'createBy', width: 130, check: true },
@@ -27,12 +33,14 @@ export default defineComponent({
             formState: {
                 name: undefined, //菜单名称
                 keyName: undefined, //权限标识
-                pid: undefined, //父级ID
                 router: undefined, //菜单地址
                 version: undefined, //版本号
-                chunk: undefined, //类型
                 status: undefined //状态
             }
+        })
+        /**菜单树结构**/
+        const treeOptions = useSelectService(Service.httpBaseSystemTreeSheetResource, {
+            callback: fetchRequest
         })
 
         /**新增、编辑菜单**/
@@ -72,7 +80,7 @@ export default defineComponent({
         }
 
         return () => (
-            <layout-common-container>
+            <layout-common-container initialize={state.initialize}>
                 <common-database-search
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
@@ -114,6 +122,7 @@ export default defineComponent({
                         <n-input placeholder="请输入状态" v-model:value={formState.value.status} />
                     </common-database-search-column>
                 </common-database-search>
+
                 <common-database-table
                     //show-select
                     //show-command

@@ -2,7 +2,7 @@
 import { defineComponent, h } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfiger, useGlobal, useStore } from '@/store'
-import * as utils from '@/utils'
+import { isEmpty } from '@/utils'
 
 export default defineComponent({
     name: 'LayoutCommonSider',
@@ -18,10 +18,7 @@ export default defineComponent({
 
         /**渲染图标**/
         function fetchIconRender(data: Omix) {
-            if (utils.isEmpty(data.iconName)) {
-                return null
-            }
-            return h(<common-element-icon name={data.iconName}></common-element-icon>)
+            return isEmpty(data.iconName) ? null : h(<common-element-icon name={data.iconName}></common-element-icon>)
         }
 
         return () => (

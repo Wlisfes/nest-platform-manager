@@ -109,11 +109,15 @@ export default defineComponent({
             } else if (isEmpty(value)) {
                 return <span>-</span>
             }
-            return (
-                <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '540px', maxHeight: '540px' } }}>
-                    {isObject(value) ? JSON.stringify(value) : value}
-                </n-ellipsis>
-            )
+            try {
+                return (
+                    <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '540px', maxHeight: '540px' } }}>
+                        {isObject(value) ? JSON.stringify(value) : value}
+                    </n-ellipsis>
+                )
+            } catch (err) {
+                return <span>-</span>
+            }
         }
 
         return () => (

@@ -45,8 +45,7 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
     /**登录账户权限**/
     async function fetchAuthAccountTokenResource() {
         return await Service.httpAuthAccountTokenResource().then(async ({ data }) => {
-            const items = data.list.map((item: Omix) => Object.assign(omit(item, ['icon']), { iconName: item.icon }))
-            return await setState({ menuOptions: items })
+            return await setState({ menuOptions: data.list ?? [] })
         })
     }
 

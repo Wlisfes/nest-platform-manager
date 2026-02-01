@@ -1,7 +1,8 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
-import { useProvider, useColumnService, useSelectService } from '@/hooks'
+import { defineComponent } from 'vue'
+import { useChunkService, useColumnService, useSelectService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
+import { isEmpty } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -10,21 +11,23 @@ export default defineComponent({
     setup(props, ctx) {
         /**菜单树结构**/
         const sheetOptions = useSelectService(Service.httpBaseSystemTreeSheetResource)
+        /**通用字典枚举**/
+        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_RESOUREC_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'] })
         /**表格实例**/
         const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),
             columns: [
                 { title: '菜单名称', key: 'name', width: 180, check: true },
-                { title: '图标', key: 'iconName', className: 'p-block-0!', width: 100, align: 'center', check: true },
-                { title: '类型', key: 'chunk', width: 100, check: true },
-                { title: '权限标识', key: 'keyName', minWidth: 240, check: true },
-                { title: '路由地址', key: 'router', minWidth: 240, check: true },
-                { title: '版本号', key: 'version', width: 100, check: true },
-                { title: '排序号', key: 'sort', width: 100, check: true },
-                { title: '状态', key: 'statusChunk', width: 100, check: true },
-                { title: '创建人', key: 'createBy', width: 130, check: true },
+                { title: '图标', key: 'iconName', align: 'center', className: 'p-block-0!', width: 100, check: true },
+                { title: '类型', key: 'chunk', align: 'center', width: 100, check: true },
+                { title: '权限标识', key: 'keyName', minWidth: 200, check: true },
+                { title: '路由地址', key: 'router', minWidth: 200, check: true },
+                { title: '版本号', key: 'version', align: 'center', width: 100, check: true },
+                { title: '排序号', key: 'sort', align: 'center', width: 100, check: true },
+                { title: '状态', key: 'status', align: 'center', width: 100, check: true },
+                { title: '创建人', key: 'createBy', width: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
-                { title: '更新人', key: 'modifyBy', width: 130, check: true },
+                { title: '更新人', key: 'modifyBy', width: 120, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ],
             formState: {
@@ -155,15 +158,46 @@ export default defineComponent({
                     onUpdate:size={(size: number) => fetchRefresh({ page: 1 })}
                 >
                     {{
+                        col_iconName: (data: Omix) => (
+                            <div class="flex items-center justify-center">
+                                {isEmpty(data.iconName) ? (
+                                    <span>-</span>
+                                ) : (
+                                    <common-element-icon size={26} name={data.iconName}></common-element-icon>
+                                )}
+                            </div>
+                        ),
+                        col_createBy: (data: Omix) => (
+                            <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
+                        ),
+                        col_modifyBy: (data: Omix) => (
+                            <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                        ),
+                        col_chunk: (data: Omix) => (
+                            <common-database-table-chunk
+                                element="chunk"
+                                value={data.chunk}
+                                options={chunkOptions.CHUNK_WINDOWS_SHEET_CHUNK.value}
+                            ></common-database-table-chunk>
+                        ),
+                        col_status: (data: Omix) => (
+                            <common-database-table-chunk
+                                element="chunk"
+                                value={data.status}
+                                options={chunkOptions.CHUNK_WINDOWS_RESOUREC_STATUS.value}
+                            ></common-database-table-chunk>
+                        ),
                         col_command: (data: Omix) => (
                             <div class="flex items-center gap-col-8 overflow-hidden">
-                                <common-element-button
-                                    text
-                                    type="primary"
-                                    content="编辑"
-                                    onClick={() => fetchDeploySheetUpdate(data)}
-                                ></common-element-button>
-                                <common-element-button text type="error" content="删除"></common-element-button>
+                                <common-element-button text type="primary" onClick={() => fetchDeploySheetUpdate(data)}>
+                                    编辑
+                                </common-element-button>
+                                {/* <common-element-button text type="primary">
+                                    {['enable'].includes(data.status) ? '禁用' : '启用'}
+                                </common-element-button> */}
+                                <common-element-button text type="error">
+                                    删除
+                                </common-element-button>
                             </div>
                         )
                     }}

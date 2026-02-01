@@ -46,7 +46,7 @@ export function useChunkService(options: ChunkServiceOptions) {
         return await setState({ loading: true }).then(async () => {
             try {
                 const { data } = await Service.httpBaseChunkSelect({ type: state.type })
-                const s = options.transform ? options.transform(cloneDeep(data.data)) ?? {} : data
+                const s = options.transform ? (options.transform(cloneDeep(data.data)) ?? {}) : data
                 return await setState({ ...s, loading: false, initialize: false }).then(async () => {
                     return options.callback?.(state)
                 })
@@ -59,7 +59,7 @@ export function useChunkService(options: ChunkServiceOptions) {
     }
 
     return {
-        chunk: state,
+        chunkState: state,
         ...toRefs(state),
         setState,
         fetchRequest

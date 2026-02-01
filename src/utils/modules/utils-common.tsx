@@ -41,6 +41,11 @@ export function fetchWherer<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T
 }
 
+/**对象查找**/
+export function fetchCurrent<T>(data: Array<T>, callback: (e: T) => boolean) {
+    return (data.find(item => callback(item)) ?? {}) as T
+}
+
 /**延时方法**/
 export function fetchDelay<T>(delay = 100, handler?: Function): Promise<T> {
     return new Promise(resolve => {

@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty, fetchPlusNumber } from '@/utils'
+import { fetchWherer, isNotEmpty, isEmpty, isObject, fetchPlusNumber } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks'
@@ -109,7 +109,11 @@ export default defineComponent({
             } else if (isEmpty(value)) {
                 return <span>-</span>
             }
-            return <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '540px', maxHeight: '540px' } }}>{value}</n-ellipsis>
+            return (
+                <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '540px', maxHeight: '540px' } }}>
+                    {isObject(value) ? JSON.stringify(value) : value}
+                </n-ellipsis>
+            )
         }
 
         return () => (

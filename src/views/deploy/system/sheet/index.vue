@@ -57,6 +57,24 @@ export default defineComponent({
             })
         }
 
+        /**克隆菜单、按钮**/
+        async function fetchDeploySheetClone(data: Omix) {
+            if (['resource'].includes(data.chunk)) {
+                return await feedback.fetchDeploySystemSheetResource({
+                    node: data,
+                    title: '克隆菜单',
+                    command: 'CLONE',
+                    onSubmit: fetchRefresh
+                })
+            }
+            return await feedback.fetchDeploySystemSheetAuthorize({
+                node: data,
+                title: '克隆按钮',
+                command: 'CLONE',
+                onSubmit: fetchRefresh
+            })
+        }
+
         /**编辑菜单、按钮**/
         async function fetchDeploySheetUpdate(data: Omix) {
             if (['resource'].includes(data.chunk)) {
@@ -91,16 +109,12 @@ export default defineComponent({
                     onSubmit={fetchRequest}
                 >
                     <common-database-search-function abstract class="flex gap-col-10">
-                        <common-element-button
-                            content="添加菜单"
-                            type="primary"
-                            onClick={fetchDeploySheetCreateResource}
-                        ></common-element-button>
-                        <common-element-button
-                            content="添加按钮"
-                            type="primary"
-                            onClick={fetchDeploySheetCreateAuthorize}
-                        ></common-element-button>
+                        <common-element-button type="primary" onClick={fetchDeploySheetCreateResource}>
+                            添加菜单
+                        </common-element-button>
+                        <common-element-button type="primary" onClick={fetchDeploySheetCreateAuthorize}>
+                            添加按钮
+                        </common-element-button>
                     </common-database-search-function>
                     <common-database-search-column prop="name" label="菜单名称">
                         <form-common-column-input
@@ -192,9 +206,9 @@ export default defineComponent({
                                 <common-element-button text type="primary" onClick={() => fetchDeploySheetUpdate(data)}>
                                     编辑
                                 </common-element-button>
-                                {/* <common-element-button text type="primary">
-                                    {['enable'].includes(data.status) ? '禁用' : '启用'}
-                                </common-element-button> */}
+                                <common-element-button text type="primary" onClick={() => fetchDeploySheetClone(data)}>
+                                    克隆
+                                </common-element-button>
                                 <common-element-button text type="error">
                                     删除
                                 </common-element-button>

@@ -13,7 +13,7 @@ export default defineComponent({
         /**标题**/
         title: { type: String, required: true },
         /**操作指令**/
-        command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
+        command: { type: String as PropType<'CREATE' | 'CLONE' | 'UPDATE'>, default: 'CREATE' },
         /**编辑操作详情数据**/
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
@@ -70,7 +70,7 @@ export default defineComponent({
                     return await setState({ loading: false, disabled: false })
                 }
                 try {
-                    if (['CREATE'].includes(props.command)) {
+                    if (['CREATE', 'CLONE'].includes(props.command)) {
                         return await Service.httpBaseSystemCreateSheetAuthorize(formState.value)
                     } else if (['UPDATE'].includes(props.command)) {
                         await Service.httpBaseSystemUpdateSheetAuthorize({ ...formState.value, id: props.node.id })

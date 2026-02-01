@@ -7,7 +7,7 @@ import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'DeploySystemFeedbackSheet',
+    name: 'DeploySystemFeedbackSheetAuthorize',
     emits: ['close', 'submit'],
     props: {
         /**标题**/
@@ -31,10 +31,15 @@ export default defineComponent({
             rules: {
                 keyName: { required: true, message: '请输入权限标识', trigger: 'blur' },
                 name: { required: true, message: '请输入按钮名称', trigger: 'blur' },
+                pid: { required: true, message: '请选择父级菜单', trigger: 'blur' },
                 status: { required: true, message: '请选择按钮状态', trigger: 'blur' },
                 version: { required: true, message: '请输入版本号', trigger: 'blur' },
                 sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' }
             }
+        })
+        /**菜单资源树结构表**/
+        const sheetOptions = useSelectService(() => Service.httpBaseSystemTreeSheetResource(), {
+            immediate: ['CREATE'].includes(props.command)
         })
         /**通用字典枚举**/
         const chunkOptions = useChunkService({ immediate: ['CREATE'].includes(props.command), type: ['CHUNK_WINDOWS_RESOUREC_STATUS'] })
@@ -45,7 +50,7 @@ export default defineComponent({
             }
             return await setState({ initialize: true }).then(async () => {
                 try {
-                    await Promise.all([chunkOptions.fetchRequest()])
+                    await Promise.all([chunkOptions.fetchRequest(), sheetOptions.fetchRequest()])
                     return await Service.httpBaseSystemSheetResolver({ id: props.node.id }).then(async ({ data }) => {
                         return await setForm(fetchReste(data)).then(async () => {
                             return await setState({ initialize: false })
@@ -106,6 +111,13 @@ export default defineComponent({
                     </form-common-column>
                     <form-common-column label="按钮名称" path="name">
                         <form-common-column-input maxlength={32} placeholder="请输入按钮名称" v-model:value={formState.value.name} />
+                    </form-common-column>
+                    <form-common-column label="父级菜单" path="pid">
+                        <form-common-column-cascader
+                            v-model:value={formState.value.pid}
+                            placeholder="请选择父级菜单"
+                            options={sheetOptions.dataSource.value}
+                        />
                     </form-common-column>
                     <form-common-column label="按钮状态" path="status">
                         <form-common-column-select-chunk

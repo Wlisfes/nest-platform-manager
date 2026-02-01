@@ -38,7 +38,7 @@ export default defineComponent({
 
         /**添加菜单**/
         async function fetchDeploySheetCreateResource() {
-            return await feedback.fetchDeploySystemResource({
+            return await feedback.fetchDeploySystemSheetResource({
                 title: '新增菜单',
                 command: 'CREATE',
                 onSubmit: fetchRefresh
@@ -47,7 +47,7 @@ export default defineComponent({
 
         /**添加按钮**/
         async function fetchDeploySheetCreateAuthorize() {
-            return await feedback.fetchDeploySystemSheet({
+            return await feedback.fetchDeploySystemSheetAuthorize({
                 title: '添加按钮',
                 command: 'CREATE',
                 onSubmit: fetchRefresh
@@ -57,14 +57,14 @@ export default defineComponent({
         /**编辑菜单、按钮**/
         async function fetchDeploySheetUpdate(data: Omix) {
             if (['resource'].includes(data.chunk)) {
-                return await feedback.fetchDeploySystemResource({
+                return await feedback.fetchDeploySystemSheetResource({
                     node: data,
                     title: '编辑菜单',
                     command: 'UPDATE',
                     onSubmit: fetchRefresh
                 })
             }
-            return await feedback.fetchDeploySystemSheet({
+            return await feedback.fetchDeploySystemSheetAuthorize({
                 node: data,
                 title: '编辑按钮',
                 command: 'UPDATE',

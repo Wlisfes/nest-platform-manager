@@ -1,15 +1,15 @@
 import { createComponent, PropsState } from '@/utils'
 
 /**新增、编辑菜单**/
-export async function fetchDeploySystemResource(props: PropsState<Omix>) {
+export async function fetchDeploySystemSheetResource(props: PropsState<Omix>) {
     return await import('@/components/deploy/system/feedback/deploy-system-feedback-resource.vue').then(component => {
         return createComponent(component.default, props)
     })
 }
 
 /**新增、编辑权限按钮**/
-export async function fetchDeploySystemSheet(props: PropsState<Omix>) {
-    return await import('@/components/deploy/system/feedback/deploy-system-feedback-sheet.vue').then(component => {
+export async function fetchDeploySystemSheetAuthorize(props: PropsState<Omix>) {
+    return await import('@/components/deploy/system/feedback/deploy-system-feedback-sheet-authorize.vue').then(component => {
         return createComponent(component.default, props)
     })
 }

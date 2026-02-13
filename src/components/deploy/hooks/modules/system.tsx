@@ -2,7 +2,7 @@ import { createComponent, PropsState } from '@/utils'
 
 /**新增、编辑菜单**/
 export async function fetchDeploySystemSheetResource(props: PropsState<Omix>) {
-    return await import('@/components/deploy/system/feedback/deploy-system-feedback-resource.vue').then(component => {
+    return await import('@/components/deploy/system/feedback/deploy-system-feedback-sheet-resource.vue').then(component => {
         return createComponent(component.default, props)
     })
 }

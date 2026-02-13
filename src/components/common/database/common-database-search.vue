@@ -15,6 +15,8 @@ export default defineComponent({
         functionClass: { type: String, default: '' },
         /**收缩最小显示行**/
         line: { type: Number, default: 0 },
+        /**边距值**/
+        limit: { type: Number, default: 14 },
         /**折叠收缩配置**/
         when: { type: Boolean, default: true },
         /**开启边框**/
@@ -86,8 +88,12 @@ export default defineComponent({
             const { columns, functions } = fetchColumnTransaction((slots.default?.() ?? []) as Array<Omix>)
 
             return (
-                <div class="common-database-search flex flex-col overflow-hidden">
-                    <n-card class="flex flex-col" content-style={{ padding: `var(--common-limit-width)` }} bordered={props.bordered}>
+                <div class="common-database-search flex flex-col overflow-hidden" style={{ [`--common-limit-width`]: `${props.limit}px` }}>
+                    <n-card
+                        class="flex flex-col overflow-hidden"
+                        content-style={{ padding: `var(--common-limit-width)` }}
+                        bordered={props.bordered}
+                    >
                         {columns.length > 0 && (
                             <common-element-collapse base-height={height.value} v-model:when={when.value}>
                                 <form-common-container

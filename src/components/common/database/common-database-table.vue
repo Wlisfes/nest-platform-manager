@@ -10,6 +10,8 @@ export default defineComponent({
     name: 'CommonDatabaseTable',
     emits: ['update:page', 'update:size', 'update:loading', 'update:data', 'update:select', 'update:items'],
     props: {
+        /**边距值**/
+        limit: { type: Number, default: 14 },
         /**分页数**/
         page: { type: Number, default: 1 },
         /**分页大小**/
@@ -123,7 +125,7 @@ export default defineComponent({
         return () => (
             <n-element
                 class="common-database-container flex flex-col flex-1 overflow-hidden"
-                style={{ padding: 'var(--common-limit-width)' }}
+                style={{ [`--common-limit-width`]: `${props.limit}px`, padding: 'var(--common-limit-width)' }}
             >
                 <n-card class="flex flex-col flex-1 overflow-hidden" content-class="flex flex-col flex-1 overflow-hidden p-0!">
                     <n-element class="common-database-table flex flex-col flex-1 overflow-hidden">

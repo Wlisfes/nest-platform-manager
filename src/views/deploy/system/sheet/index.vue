@@ -203,12 +203,12 @@ export default defineComponent({
                             limit={state.limit}
                             total={state.total}
                             columns={state.columns}
-                            v-model:data={state.dataSource}
                             v-model:page={state.page}
                             v-model:size={state.size}
-                            v-model:items={state.items}
                             v-model:select={state.select}
                             v-model:loading={state.loading}
+                            v-model:data={state.dataSource}
+                            v-model:customize={state.customize}
                             onUpdate:page={(page: number) => fetchRefresh({ page })}
                             onUpdate:size={(size: number) => fetchRefresh({ page: 1, size })}
                         >

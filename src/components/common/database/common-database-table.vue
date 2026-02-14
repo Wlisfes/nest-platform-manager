@@ -8,7 +8,7 @@ import { cloneDeep } from 'lodash-es'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: ['update:page', 'update:size', 'update:loading', 'update:data', 'update:select', 'update:items'],
+    emits: ['update:page', 'update:size', 'update:loading', 'update:data', 'update:select', 'update:customize', '-update:customize'],
     props: {
         /**边距值**/
         limit: { type: Number, default: 14 },
@@ -27,7 +27,7 @@ export default defineComponent({
         /**被选中的行的对象列表**/
         select: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置自定义排版规则**/
-        items: { type: Array as PropType<Array<Omix>>, default: () => [] },
+        customize: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表数据列表**/
         data: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**表头配置**/
@@ -46,7 +46,7 @@ export default defineComponent({
     setup(props, { emit, slots }) {
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
-        const { data, page, size, loading, select, items } = useVModels(props)
+        const { data, page, size, loading, select, customize } = useVModels(props)
         const { state } = useState({ width: 86 })
         /**最小滚动宽度**/
         const width = computed(() => {
@@ -54,8 +54,22 @@ export default defineComponent({
         })
         /**表头配置**/
         const faseColumns = computed(() => {
-            return fetchBaseColumns(props.columns).filter(item => item.check ?? true)
+            return fetchBaseColumns(fetchColumnsCustomize(props.columns)).filter(item => item.check ?? true)
         })
+        /**按自定义排版规则排序列**/
+        function fetchColumnsCustomize(data: Array<Omix<DataTableColumn>>) {
+            if (customize.value.length === 0) return data
+            const columns = cloneDeep(data).map(item => {
+                const node = customize.value.find(c => c.key === item.key)
+                if (node) item.check = node.check ?? item.check ?? true
+                return item
+            })
+            return columns.sort((a, b) => {
+                const aIndex = customize.value.findIndex(c => c.key === a.key)
+                const bIndex = customize.value.findIndex(c => c.key === b.key)
+                return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex)
+            })
+        }
         /**默认操作列、设置列配置**/
         function fetchBaseColumns(data: Array<Omix<DataTableColumn>>) {
             const columns = cloneDeep(data)
@@ -68,7 +82,13 @@ export default defineComponent({
                     fixed: 'right',
                     width: 40,
                     check: true,
-                    title: () => <common-database-table-settings></common-database-table-settings>
+                    title: () => (
+                        <common-database-table-settings
+                            columns={props.columns}
+                            v-model:customize={customize.value}
+                            on-update:customize={(...args: Array<any>) => emit('-update:customize', ...args)}
+                        ></common-database-table-settings>
+                    )
                 })
                 return columns.map((item, index) => {
                     if (index === columns.length - 2) {
@@ -91,7 +111,8 @@ export default defineComponent({
                             <common-database-table-settings
                                 class="p-[var(--n-th-padding)]"
                                 columns={props.columns}
-                                v-model:items={items.value}
+                                v-model:customize={customize.value}
+                                on-update:customize={(...args: Array<any>) => emit('-update:customize', ...args)}
                             ></common-database-table-settings>
                         </div>
                     )

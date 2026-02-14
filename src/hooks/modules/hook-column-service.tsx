@@ -31,7 +31,7 @@ interface BaseServiceState<T> extends Omix {
     /**被选中的行的对象列表**/
     select: Array<T>
     /**表头配置自定义排版规则**/
-    items: Array<Omix>
+    customize: Array<Omix>
     /**搜索栏字段自定义排版规则**/
     database: Array<Omix>
 }
@@ -68,7 +68,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         columns: options.columns ?? [],
         dataSource: options.dataSource ?? [],
         select: options.select ?? [],
-        items: options.items ?? [],
+        customize: options.customize ?? [],
         database: options.database ?? [],
         ...(options.options ?? {})
     } as BaseServiceState<T> & typeof options.options)

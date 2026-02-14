@@ -23,10 +23,10 @@ export default defineComponent({
         const { database, faseWhen } = useVModels(props, emit)
         const { state, setState } = useState({ visible: false, checked: true, click: false, columns: [] as Array<Omix> })
         /**是否全选**/
-        const checkedAll = computed(() => database.value.every(item => item.check))
+        const checkedAll = computed(() => state.columns.every(item => item.check))
         /**是否半选**/
         const indeterminate = computed(() => {
-            return database.value.every(item => item.check) ? false : database.value.some(item => item.check)
+            return state.columns.every(item => item.check) ? false : state.columns.some(item => item.check)
         })
         /**初始化**/
         onBeforeMount(fetchInitialize)
@@ -40,12 +40,11 @@ export default defineComponent({
             let columns: Array<Omix> = []
             if (database.value.length > 0) {
                 /**保留已有排序顺序并合并新字段**/
-                const ordered = database.value
-                    .map(db => {
-                        const col = allColumns.find(c => c.prop === db.prop)
-                        return col ? { ...col, check: db.check ?? col.check } : null
-                    })
-                    .filter(Boolean) as Array<Omix>
+                const mapped = database.value.map(db => {
+                    const col = allColumns.find(c => c.prop === db.prop)
+                    return col ? { ...col, check: db.check ?? col.check } : null
+                })
+                const ordered = mapped.filter(Boolean) as Array<Omix>
                 const newCols = allColumns.filter(c => !database.value.find(db => db.prop === c.prop))
                 columns = [...ordered, ...newCols]
             } else {

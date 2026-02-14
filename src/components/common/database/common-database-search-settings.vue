@@ -35,14 +35,15 @@ export default defineComponent({
                 uid: item.uid ?? item.component.uid,
                 prop: item.prop ?? item.props.prop,
                 label: item.label ?? item.props.label,
-                check: item.check ?? item.props.check ?? true
+                disabled: item.disabled ?? item.props.disabled ?? false,
+                check: (item.disabled ?? item.props.disabled) ? true : (item.check ?? item.props.check ?? true)
             }))
             let columns: Array<Omix> = []
             if (database.value.length > 0) {
                 /**保留已有排序顺序并合并新字段**/
                 const mapped = database.value.map(db => {
                     const col = allColumns.find(c => c.prop === db.prop)
-                    return col ? { ...col, check: db.check ?? col.check } : null
+                    return col ? { ...col, check: col.disabled ? true : (db.check ?? col.check) } : null
                 })
                 const ordered = mapped.filter(Boolean) as Array<Omix>
                 const newCols = allColumns.filter(c => !database.value.find(db => db.prop === c.prop))
@@ -57,7 +58,8 @@ export default defineComponent({
         /**全选状态变更**/
         async function fetchUpdate(checked: boolean) {
             return await setState({ checked }).then(async () => {
-                return await setState({ columns: state.columns.map(item => ({ ...item, check: checked })) }).then(fetchSyncDatabase)
+                const columns = state.columns.map(item => ({ ...item, check: item.disabled ? true : checked }))
+                return await setState({ columns }).then(fetchSyncDatabase)
             })
         }
         /**字段状态变更**/
@@ -76,6 +78,7 @@ export default defineComponent({
                 uid: item.uid ?? item.component.uid,
                 prop: item.prop ?? item.props.prop,
                 label: item.label ?? item.props.label,
+                disabled: item.disabled ?? item.props.disabled ?? false,
                 check: true
             }))
             return await setState({ columns: cloneDeep(columns), checked: true }).then(fetchSyncDatabase)
@@ -154,6 +157,7 @@ export default defineComponent({
                                                 </div>
                                                 <n-checkbox
                                                     focusable={false}
+                                                    disabled={item.disabled}
                                                     v-model:checked={item.check}
                                                     on-update:checked={(c: boolean) => fetchChnage(c, item)}
                                                 >

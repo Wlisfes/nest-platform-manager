@@ -54,7 +54,7 @@ export default defineComponent({
         })
         /**表头配置**/
         const faseColumns = computed(() => {
-            return fetchBaseColumns(fetchColumnsCustomize(props.columns)).filter(item => item.check ?? true)
+            return fetchBaseColumns(fetchColumnsCustomize(props.columns)).filter(item => item.disabled || (item.check ?? true))
         })
         /**按自定义排版规则排序列**/
         function fetchColumnsCustomize(data: Array<Omix<DataTableColumn>>) {

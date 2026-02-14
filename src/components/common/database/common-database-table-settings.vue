@@ -30,14 +30,15 @@ export default defineComponent({
             const allColumns = (props.columns ?? []).map(item => ({
                 key: item.key,
                 title: typeof item.title === 'function' ? item.key : item.title,
-                check: item.check ?? true
+                disabled: item.disabled ?? false,
+                check: item.disabled ? true : (item.check ?? true)
             }))
             let columns: Array<Omix> = []
             if (customize.value.length > 0) {
                 /**保留已有排序顺序并合并新字段**/
                 const mapped = customize.value.map(db => {
                     const col = allColumns.find(c => c.key === db.key)
-                    return col ? { ...col, check: db.check ?? col.check } : null
+                    return col ? { ...col, check: col.disabled ? true : (db.check ?? col.check) } : null
                 })
                 const ordered = mapped.filter(Boolean) as Array<Omix>
                 const newCols = allColumns.filter(c => !customize.value.find(db => db.key === c.key))
@@ -52,7 +53,8 @@ export default defineComponent({
         /**全选状态变更**/
         async function fetchUpdate(checked: boolean) {
             return await setState({ checked }).then(async () => {
-                return await setState({ columns: state.columns.map(item => ({ ...item, check: checked })) }).then(fetchSyncCustomize)
+                const columns = state.columns.map(item => ({ ...item, check: item.disabled ? true : checked }))
+                return await setState({ columns }).then(fetchSyncCustomize)
             })
         }
         /**字段状态变更**/
@@ -70,6 +72,7 @@ export default defineComponent({
             const columns = (props.columns ?? []).map(item => ({
                 key: item.key,
                 title: typeof item.title === 'function' ? item.key : item.title,
+                disabled: item.disabled ?? false,
                 check: true
             }))
             return await setState({ columns: cloneDeep(columns), checked: true }).then(fetchSyncCustomize)
@@ -153,6 +156,7 @@ export default defineComponent({
                                                 </div>
                                                 <n-checkbox
                                                     focusable={false}
+                                                    disabled={item.disabled}
                                                     v-model:checked={item.check}
                                                     on-update:checked={(c: boolean) => fetchChnage(c, item)}
                                                 >

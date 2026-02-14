@@ -29,7 +29,7 @@ export default defineComponent({
                 version: undefined //版本号
             },
             columns: [
-                { title: '菜单名称', key: 'name', width: 180, check: true },
+                { title: '菜单名称', key: 'name', minWidth: 180, disabled: true },
                 { title: '图标', key: 'iconName', align: 'center', className: 'p-block-0!', width: 100, check: true },
                 { title: '类型', key: 'chunk', align: 'center', width: 100, check: true },
                 { title: '权限标识', key: 'keyName', minWidth: 200, check: true },
@@ -161,7 +161,7 @@ export default defineComponent({
                                     添加按钮
                                 </common-element-button>
                             </common-database-search-function>
-                            <common-database-search-column prop="name" label="菜单名称">
+                            <common-database-search-column disabled prop="name" label="菜单名称">
                                 <form-common-column-input
                                     clearable
                                     placeholder="请输入菜单名称"

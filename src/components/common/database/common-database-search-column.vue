@@ -9,6 +9,8 @@ export default defineComponent({
         prop: { type: String, required: true },
         /**单位格数量**/
         span: { type: Number, default: 1 },
+        /**禁止取消、固定展示**/
+        disabled: { type: Boolean, default: false },
         /**默认显示状态**/
         check: { type: Boolean, default: true },
         /**描述**/

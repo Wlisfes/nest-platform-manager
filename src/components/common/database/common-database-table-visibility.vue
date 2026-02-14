@@ -9,7 +9,7 @@ export default defineComponent({
         /**列设置**/
         showSettings: { type: Boolean, default: false },
         /**自定义宽度**/
-        width: { type: Number, default: 46 },
+        width: { type: Number, default: 48 },
         /**表数据列表**/
         data: { type: Array as PropType<Array<Omix>>, default: () => [] }
     },
@@ -20,9 +20,9 @@ export default defineComponent({
         watch(() => element.width.value, fetchCurrentWatcher, { immediate: true })
         function fetchCurrentWatcher() {
             if (props.showSettings) {
-                return (width.value = Math.max(84, Math.max(46, element.width.value + 16)))
+                return (width.value = Math.max(86, Math.max(48, element.width.value + 16)))
             }
-            return (width.value = Math.max(84, element.width.value + 16))
+            return (width.value = Math.max(86, element.width.value + 16))
         }
 
         return () => (

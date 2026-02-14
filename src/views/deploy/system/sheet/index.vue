@@ -3,20 +3,31 @@ import { defineComponent, h } from 'vue'
 import { useChunkService, useColumnService, useSelectService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import { SendFilled } from '@vicons/carbon'
-import { isEmpty } from '@/utils'
+import { isEmpty, fetchHandler } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
     name: 'DeploySystemSheet',
     setup(props, ctx) {
-        /**菜单树结构**/
-        const sheetOptions = useSelectService(Service.httpBaseSystemSheetTreeStructure)
         /**通用字典枚举**/
         const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_RESOUREC_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'] })
+        /**菜单树结构**/
+        const sheetOptions = useSelectService(e => Service.httpBaseSystemSheetTreeStructure(), {
+            options: { selectedKeys: [] as Array<string>, expandedKeys: [] as Array<string> },
+            callback: fetchReadyCallback
+        })
         /**表格实例**/
-        const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
+        const { formRef, formState, state, setForm, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),
+            immediate: false,
+            formState: {
+                pid: undefined, //父级ID
+                name: undefined, //菜单名称
+                keyName: undefined, //权限标识
+                router: undefined, //菜单地址
+                version: undefined //版本号
+            },
             columns: [
                 { title: '菜单名称', key: 'name', width: 180, check: true },
                 { title: '图标', key: 'iconName', align: 'center', className: 'p-block-0!', width: 100, check: true },
@@ -30,15 +41,19 @@ export default defineComponent({
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新人', key: 'modifyBy', width: 120, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
-            ],
-            formState: {
-                name: undefined, //菜单名称
-                keyName: undefined, //权限标识
-                pid: undefined, //父级ID
-                router: undefined, //菜单地址
-                version: undefined //版本号
-            }
+            ]
         })
+
+        /**初始化回调**/
+        async function fetchReadyCallback(data: Omix) {
+            const expandeds = data.dataSource.map((item: Omix) => item.id)
+            const selecteds = expandeds.filter((e: Omix, index: number) => [0].includes(index))
+            return await sheetOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async (event: Omix) => {
+                return await setForm({ pid: selecteds[0] ?? undefined }).then(async () => {
+                    return await fetchRequest()
+                })
+            })
+        }
 
         /**添加菜单**/
         async function fetchDeploySheetCreateResource() {
@@ -107,15 +122,17 @@ export default defineComponent({
                         <n-card class="flex-1 overflow-hidden" content-class="p-14!">
                             <n-tree
                                 block-line
-                                expand-on-click
+                                //expand-on-click
                                 cancelable={false}
-                                default-selected-keys={['2391294997824569344']}
+                                selected-keys={sheetOptions.state.selectedKeys}
+                                expanded-keys={sheetOptions.state.expandedKeys}
                                 key-field="id"
                                 label-field="name"
                                 children-field="children"
-                                data={state.dataSource}
+                                data={sheetOptions.dataSource.value}
                                 render-switcher-icon={() => h(SendFilled)}
-                                on-update:selected-keys={(keys: Array<string>) => console.log(keys)}
+                                on-update:expanded-keys={(keys: Array<string>) => sheetOptions.setState({ expandedKeys: keys })}
+                                on-update:selected-keys={(keys: Array<string>) => sheetOptions.setState({ selectedKeys: keys })}
                             />
                         </n-card>
                     </n-element>
@@ -182,7 +199,6 @@ export default defineComponent({
                         <common-database-table
                             class="p-0!"
                             show-select
-                            show-command
                             show-settings
                             limit={state.limit}
                             total={state.total}
@@ -225,19 +241,6 @@ export default defineComponent({
                                         value={data.status}
                                         options={chunkOptions.CHUNK_WINDOWS_RESOUREC_STATUS.value}
                                     ></common-database-table-chunk>
-                                ),
-                                col_command: (data: Omix) => (
-                                    <div class="flex items-center gap-col-8 overflow-hidden">
-                                        <common-element-button text type="primary" onClick={() => fetchDeploySheetUpdate(data)}>
-                                            编辑
-                                        </common-element-button>
-                                        <common-element-button text type="primary" onClick={() => fetchDeploySheetClone(data)}>
-                                            克隆
-                                        </common-element-button>
-                                        <common-element-button text type="error">
-                                            删除
-                                        </common-element-button>
-                                    </div>
                                 )
                             }}
                         </common-database-table>

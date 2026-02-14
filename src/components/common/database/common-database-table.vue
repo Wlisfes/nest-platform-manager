@@ -47,7 +47,7 @@ export default defineComponent({
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
         const { data, page, size, loading, select, items } = useVModels(props)
-        const { state } = useState({ width: 84 })
+        const { state } = useState({ width: 86 })
         /**最小滚动宽度**/
         const width = computed(() => {
             return fetchBaseColumns(props.columns).reduce((a, b) => fetchPlusNumber(a, b.width ?? b.minWidth ?? 0), 0)
@@ -60,12 +60,13 @@ export default defineComponent({
         function fetchBaseColumns(data: Array<Omix<DataTableColumn>>) {
             const columns = cloneDeep(data)
             if (props.showSelect) {
-                columns.unshift({ title: '选择框', key: 'selection', type: 'selection', width: 40, check: true })
+                columns.unshift({ title: '选择框', key: 'selection', type: 'selection', fixed: 'left', width: 40, check: true })
             }
             if (props.showSettings && !props.showCommand) {
                 columns.push({
                     key: 'settings',
-                    width: 38,
+                    fixed: 'right',
+                    width: 40,
                     check: true,
                     title: () => <common-database-table-settings></common-database-table-settings>
                 })
@@ -80,7 +81,7 @@ export default defineComponent({
                     key: 'command',
                     fixed: 'right',
                     check: true,
-                    width: Math.max(46, state.width),
+                    width: Math.max(48, state.width),
                     className: 'chunk-command',
                     title: () => (
                         <div class="common-database-table-command flex items-center overflow-hidden">
@@ -221,6 +222,13 @@ export default defineComponent({
         }
         :deep(.n-data-table-th.chunk-command) {
             padding: 0;
+        }
+        :deep(.n-data-table:not(.n-data-table--single-line) .n-data-table-base-table-body) {
+            .n-scrollbar-container:has(~ .n-scrollbar-rail.n-scrollbar-rail--vertical--right.n-scrollbar-rail--disabled) {
+                .n-data-table-tbody > tr:last-child > td {
+                    border-bottom: 1px solid var(--n-merged-border-color);
+                }
+            }
         }
     }
     .n-element.common-database-pagination {

@@ -28,9 +28,9 @@ export function httpBaseSystemColumnSheetResource(data: Omix) {
 }
 
 /**菜单树结构**/
-export function httpBaseSystemTreeSheetResource() {
+export function httpBaseSystemSheetTreeStructure() {
     return request({
-        url: `/api/windows/system/sheet/tree/resource`,
+        url: `/api/windows/system/sheet/tree/structure`,
         method: 'POST'
     })
 }

@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'DeploySystemResource',
     setup(props, ctx) {
         /**菜单树结构**/
-        const sheetOptions = useSelectService(Service.httpBaseSystemTreeSheetResource)
+        const sheetOptions = useSelectService(Service.httpBaseSystemSheetTreeStructure)
         /**表格实例**/
         const { formRef, formState, state, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),

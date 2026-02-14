@@ -36,7 +36,7 @@ export default defineComponent({
             }
         })
         /**菜单资源树结构表**/
-        const sheetOptions = useSelectService(() => Service.httpBaseSystemTreeSheetResource(), {
+        const sheetOptions = useSelectService(() => Service.httpBaseSystemSheetTreeStructure(), {
             immediate: ['CREATE'].includes(props.command)
         })
         /**通用字典枚举**/

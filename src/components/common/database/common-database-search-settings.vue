@@ -31,15 +31,26 @@ export default defineComponent({
         /**初始化**/
         onBeforeMount(fetchInitialize)
         async function fetchInitialize() {
-            const columns = (props.columns ?? []).map(item => {
-                const node = database.value.find(k => [item.prop, item.props.prop].includes(k.prop)) ?? {}
-                return {
-                    uid: item.uid ?? item.component.uid,
-                    prop: item.prop ?? item.props.prop,
-                    label: item.label ?? item.props.label,
-                    check: node.check ?? item.check ?? item.props.check ?? true
-                }
-            })
+            const allColumns = (props.columns ?? []).map(item => ({
+                uid: item.uid ?? item.component.uid,
+                prop: item.prop ?? item.props.prop,
+                label: item.label ?? item.props.label,
+                check: item.check ?? item.props.check ?? true
+            }))
+            let columns: Array<Omix> = []
+            if (database.value.length > 0) {
+                /**保留已有排序顺序并合并新字段**/
+                const ordered = database.value
+                    .map(db => {
+                        const col = allColumns.find(c => c.prop === db.prop)
+                        return col ? { ...col, check: db.check ?? col.check } : null
+                    })
+                    .filter(Boolean) as Array<Omix>
+                const newCols = allColumns.filter(c => !database.value.find(db => db.prop === c.prop))
+                columns = [...ordered, ...newCols]
+            } else {
+                columns = allColumns
+            }
             return await setState({ columns: cloneDeep(columns) }).then(() => {
                 return (database.value = state.columns)
             })
@@ -47,14 +58,32 @@ export default defineComponent({
         /**全选状态变更**/
         async function fetchUpdate(checked: boolean) {
             return await setState({ checked }).then(async () => {
-                return await setState({ columns: state.columns.map(item => ({ ...item, check: checked })) })
+                return await setState({ columns: state.columns.map(item => ({ ...item, check: checked })) }).then(fetchSyncDatabase)
             })
         }
         /**字段状态变更**/
         async function fetchChnage(checked: boolean, node: Omix) {
             return await nextTick(() => (node.check = checked)).then(async () => {
-                return await setState({ checked: checkedAll.value })
+                return await setState({ checked: checkedAll.value }).then(fetchSyncDatabase)
             })
+        }
+        /**实时同步排版规则到父组件**/
+        async function fetchSyncDatabase() {
+            return await nextTick(() => (database.value = cloneDeep(state.columns)))
+        }
+        /**重置排版规则**/
+        async function fetchReset() {
+            const columns = (props.columns ?? []).map(item => ({
+                uid: item.uid ?? item.component.uid,
+                prop: item.prop ?? item.props.prop,
+                label: item.label ?? item.props.label,
+                check: true
+            }))
+            return await setState({ columns: cloneDeep(columns), checked: true }).then(fetchSyncDatabase)
+        }
+        /**拖动排序变更后实时生效**/
+        async function fetchDragUpdate() {
+            return await fetchSyncDatabase()
         }
         /**异步关闭设置组件**/
         async function fetchClickoutside() {
@@ -102,7 +131,7 @@ export default defineComponent({
                                     >
                                         全选
                                     </n-checkbox>
-                                    <common-element-button text onClick={fetchState}>
+                                    <common-element-button text onClick={fetchReset}>
                                         重置
                                     </common-element-button>
                                 </div>
@@ -111,7 +140,8 @@ export default defineComponent({
                                         class="w-220 flex flex-col p-be-6 overflow-hidden"
                                         handle=".cursor-move"
                                         animation={200}
-                                        v-model={database.value}
+                                        v-model={state.columns}
+                                        onUpdate={fetchDragUpdate}
                                     >
                                         {state.columns.map(item => (
                                             <n-element

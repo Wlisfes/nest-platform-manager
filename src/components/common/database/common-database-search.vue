@@ -58,10 +58,16 @@ export default defineComponent({
         }
         /**表单字段节点判断过滤**/
         function fetchColumnCheckForms<T extends Omix>(vnode: Array<T>): Array<T> {
-            return vnode.map(node => {
-                node.props.database = database.value
-                return node
-            })
+            return vnode
+                .map(node => {
+                    node.props.database = database.value
+                    return node
+                })
+                .sort((a, b) => {
+                    const aIndex = database.value.findIndex(item => item.prop === (a.prop ?? a.props.prop))
+                    const bIndex = database.value.findIndex(item => item.prop === (b.prop ?? b.props.prop))
+                    return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex)
+                })
         }
         /**操作功能节点判断过滤**/
         function fetchColumnCheckFunctions<T extends Omix>(vnode: Array<T>): Array<T> {

@@ -48,9 +48,7 @@ export default defineComponent({
         const { width } = useElementSize(element)
         const { when, loading, formState, database } = useVModels(props, emit)
         /**最小折叠高度**/
-        const height = computed(() => {
-            return fetchWherer(Boolean(props.line), 10 + 32 * props.line + (props.line - 1) * 10, 0)
-        })
+        const height = computed(() => fetchWherer(Boolean(props.line), 10 + 32 * props.line + (props.line - 1) * 10, 0))
         /**表单样式**/
         const formClass = computed(() => ({
             'common-database-formstate': true,
@@ -119,7 +117,7 @@ export default defineComponent({
                                     model={formState.value}
                                     label-width={props.labelWidth}
                                 >
-                                    {columns}
+                                    <Fragment>{columns}</Fragment>
                                 </form-common-container>
                             </common-element-collapse>
                         )}

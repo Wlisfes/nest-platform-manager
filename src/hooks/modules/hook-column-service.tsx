@@ -176,14 +176,8 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         })
     }
 
-    // const
-
-    return {
-        state,
-        formRef,
-        formState,
-        observer,
-        ...toRefs(state),
+    /**函数聚合**/
+    const instOptions = {
         setState,
         setForm,
         fetchRestore,
@@ -192,5 +186,15 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         fetchInitialize,
         fetchUpdateDatabase,
         fetchUpdateCustomize
+    }
+
+    return {
+        state,
+        formRef,
+        formState,
+        observer,
+        instOptions,
+        ...instOptions,
+        ...toRefs(state)
     }
 }

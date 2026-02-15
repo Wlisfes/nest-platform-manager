@@ -37,6 +37,8 @@ interface BaseServiceState<T> extends Omix {
 }
 /**列表包装配置**/
 interface BaseServiceOptions<T, U, R> extends Partial<BaseServiceState<T>> {
+    /**权限标识**/
+    keyName?: string
     /**立即执行**/
     immediate?: boolean
     /**额外字段**/
@@ -87,9 +89,14 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         // })
     }
 
-    /**保存自定义筛选配置**/
-    async function fetchUpdateDatabase(database: Array<Omix>) {
-        console.log(database)
+    /**保存搜索栏字段自定义排版规则**/
+    async function fetchUpdateDatabase(items: Array<Omix>) {
+        console.log(items)
+    }
+
+    /**保存表头配置自定义排版规则**/
+    async function fetchUpdateCustomize(items: Array<Omix>) {
+        console.log(items)
     }
 
     /**修改表单筛选**/
@@ -142,6 +149,8 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         })
     }
 
+    // const
+
     return {
         state,
         formRef,
@@ -154,6 +163,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         fetchRequest,
         fetchRefresh,
         fetchInitialize,
-        fetchUpdateDatabase
+        fetchUpdateDatabase,
+        fetchUpdateCustomize
     }
 }

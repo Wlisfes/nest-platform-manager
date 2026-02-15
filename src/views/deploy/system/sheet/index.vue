@@ -18,31 +18,33 @@ export default defineComponent({
             callback: fetchReadyCallback
         })
         /**表格实例**/
-        const { formRef, formState, state, setForm, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase } = useColumnService({
-            request: (base, payload) => Service.httpBaseSystemColumnSheetResource(payload),
-            immediate: false,
-            formState: {
-                pid: undefined, //父级ID
-                name: undefined, //菜单名称
-                keyName: undefined, //权限标识
-                router: undefined, //菜单地址
-                version: undefined //版本号
-            },
-            columns: [
-                { title: '菜单名称', key: 'name', minWidth: 180, disabled: true },
-                { title: '图标', key: 'iconName', align: 'center', className: 'p-block-0!', width: 100, check: true },
-                { title: '类型', key: 'chunk', align: 'center', width: 100, check: true },
-                { title: '权限标识', key: 'keyName', minWidth: 200, check: true },
-                { title: '路由地址', key: 'router', minWidth: 200, check: true },
-                { title: '版本号', key: 'version', align: 'center', width: 100, check: true },
-                { title: '排序号', key: 'sort', align: 'center', width: 100, check: true },
-                { title: '状态', key: 'status', align: 'center', width: 100, check: true },
-                { title: '创建人', key: 'createBy', width: 120, check: true },
-                { title: '创建时间', key: 'createTime', width: 160, check: true },
-                { title: '更新人', key: 'modifyBy', width: 120, check: true },
-                { title: '更新时间', key: 'modifyTime', width: 160, check: true }
-            ]
-        })
+        const { formRef, formState, state, setForm, fetchRequest, fetchRestore, fetchRefresh, fetchUpdateDatabase, fetchUpdateCustomize } =
+            useColumnService({
+                request: (base, payload) => Service.httpBaseSystemColumnSheet(payload),
+                keyName: 'chatbok:deploy:system:sheet',
+                immediate: false,
+                formState: {
+                    pid: undefined, //父级ID
+                    name: undefined, //菜单名称
+                    keyName: undefined, //权限标识
+                    router: undefined, //菜单地址
+                    version: undefined //版本号
+                },
+                columns: [
+                    { title: '菜单名称', key: 'name', minWidth: 160, disabled: true },
+                    { title: '图标', key: 'iconName', width: 100, align: 'center', className: 'p-block-0!', check: true },
+                    { title: '类型', key: 'chunk', align: 'center', width: 100, check: true },
+                    { title: '权限标识', key: 'keyName', minWidth: 200, check: true },
+                    { title: '路由地址', key: 'router', minWidth: 200, check: true },
+                    { title: '版本号', key: 'version', align: 'center', width: 100, check: true },
+                    { title: '排序号', key: 'sort', align: 'center', width: 100, check: true },
+                    { title: '状态', key: 'status', align: 'center', width: 100, check: true },
+                    { title: '创建人', key: 'createBy', width: 120, check: true },
+                    { title: '创建时间', key: 'createTime', width: 160, check: true },
+                    { title: '更新人', key: 'modifyBy', width: 120, check: true },
+                    { title: '更新时间', key: 'modifyTime', width: 160, check: true }
+                ]
+            })
 
         /**初始化回调**/
         async function fetchReadyCallback(data: Omix) {
@@ -150,8 +152,8 @@ export default defineComponent({
                             v-model:database={state.database}
                             v-model:formState={formState.value}
                             on-update:database={fetchUpdateDatabase}
-                            onRestore={fetchRestore}
-                            onSubmit={fetchRequest}
+                            on-restore={fetchRestore}
+                            on-submit={fetchRequest}
                         >
                             <common-database-search-function abstract class="flex gap-col-10">
                                 <common-element-button type="primary" onClick={fetchDeploySheetCreateResource}>
@@ -209,8 +211,9 @@ export default defineComponent({
                             v-model:loading={state.loading}
                             v-model:data={state.dataSource}
                             v-model:customize={state.customize}
-                            onUpdate:page={(page: number) => fetchRefresh({ page })}
-                            onUpdate:size={(size: number) => fetchRefresh({ page: 1, size })}
+                            on-update:customize={fetchUpdateCustomize}
+                            on-update:page={(page: number) => fetchRefresh({ page })}
+                            on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                         >
                             {{
                                 col_iconName: (data: Omix) => (

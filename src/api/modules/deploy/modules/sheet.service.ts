@@ -18,10 +18,10 @@ export function httpBaseSystemUpdateSheetResource(data: Omix) {
     })
 }
 
-/**菜单列表**/
-export function httpBaseSystemColumnSheetResource(data: Omix) {
+/**分页列表查询**/
+export function httpBaseSystemColumnSheet(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/column/resource`,
+        url: `/api/windows/system/sheet/column`,
         method: 'POST',
         data
     })

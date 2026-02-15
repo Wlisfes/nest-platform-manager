@@ -7,7 +7,18 @@ import { FormInst } from 'naive-ui'
 
 export default defineComponent({
     name: 'CommonDatabaseSearch',
-    emits: ['update:when', 'update:database', '-update:database', 'update:loading', 'update:formState', 'submit', 'restore'],
+    emits: [
+        'update:when',
+        '-update:when',
+        'update:database',
+        '-update:database',
+        'update:loading',
+        '-update:loading',
+        'update:formState',
+        '-update:formState',
+        '-submit',
+        '-restore'
+    ],
     props: {
         /**操作功能**/
         function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy' | 'abstract'>>, default: () => [] },
@@ -124,13 +135,13 @@ export default defineComponent({
                                         icon={Search}
                                         loading={loading.value}
                                         disabled={loading.value}
-                                        onClick={(e: MouseEvent) => emit('submit', formState.value)}
+                                        onClick={(e: MouseEvent) => emit('-submit', formState.value)}
                                     >
                                         查询
                                     </common-element-button>
                                 )}
                                 {props.function.includes('restore') && columns.length > 0 && (
-                                    <common-element-button class="min-w-80" onClick={() => emit('restore', formState.value)}>
+                                    <common-element-button class="min-w-80" onClick={() => emit('-restore', formState.value)}>
                                         重置
                                     </common-element-button>
                                 )}

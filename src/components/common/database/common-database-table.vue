@@ -8,7 +8,20 @@ import { cloneDeep } from 'lodash-es'
 
 export default defineComponent({
     name: 'CommonDatabaseTable',
-    emits: ['update:page', 'update:size', 'update:loading', 'update:data', 'update:select', 'update:customize', '-update:customize'],
+    emits: [
+        'update:page',
+        '-update:page',
+        'update:size',
+        '-update:size',
+        'update:loading',
+        '-update:loading',
+        'update:data',
+        '-update:data',
+        'update:select',
+        '-update:select',
+        'update:customize',
+        '-update:customize'
+    ],
     props: {
         /**边距值**/
         limit: { type: Number, default: 14 },
@@ -122,8 +135,23 @@ export default defineComponent({
         }
         /**选择列事件**/
         async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
-            return await nextTick(() => (select.value = data)).then(() => {
-                return emit('update:select', select.value)
+            return await nextTick(() => (select.value = data)).then(async () => {
+                await emit('update:select', select.value)
+                return await emit('-update:select', select.value)
+            })
+        }
+        /**分页page变更**/
+        async function fetchUpdatePage(value: number) {
+            return await nextTick(() => (page.value = value)).then(async () => {
+                await emit('update:page', page.value)
+                return await emit('-update:page', page.value)
+            })
+        }
+        /**分页size变更**/
+        async function fetchUpdateSize(value: number) {
+            return await nextTick(() => (size.value = value)).then(async () => {
+                await emit('update:size', size.value)
+                return await emit('-update:size', size.value)
             })
         }
         /**节点渲染**/
@@ -178,7 +206,7 @@ export default defineComponent({
                                 data={data.value}
                                 columns={faseColumns.value}
                                 style={{ flex: 1 }}
-                                scrollbar-props={{ size: 100 }}
+                                scrollbar-props={{ size: 100, trigger: 'none' }}
                                 render-cell={fetchCellRender}
                                 on-update:checked-row-keys={fetchUpdateSelecter}
                             ></n-data-table>
@@ -194,8 +222,8 @@ export default defineComponent({
                                 page-sizes={[20, 30, 50, 100, 200, 300]}
                                 show-size-picker={props.showSizePicker}
                                 show-quick-jumper={props.showQuickJumper}
-                                on-update:page={(value: number) => (page.value = value)}
-                                on-update:page-size={(value: number) => (size.value = value)}
+                                on-update:page={fetchUpdatePage}
+                                on-update:page-size={fetchUpdateSize}
                             >
                                 {{
                                     suffix: fetchWherer(props.showQuickJumper, () => <span>页</span>),

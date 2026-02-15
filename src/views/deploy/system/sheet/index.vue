@@ -58,6 +58,7 @@ export default defineComponent({
 
         /**左侧树选中变更回调**/
         async function fetchUpdateSelected(keys: Array<string>) {
+            await sheetOptions.setState({ selectedKeys: keys })
             return await setForm({ pid: keys[0] as never }).then(() => {
                 return fetchRefresh({ page: 1, size: state.size })
             })
@@ -105,7 +106,7 @@ export default defineComponent({
                         <n-card class="flex-1 overflow-hidden" content-class="p-14!">
                             <n-tree
                                 block-line
-                                expand-on-click
+                                //expand-on-click
                                 cancelable={false}
                                 selected-keys={sheetOptions.state.selectedKeys}
                                 expanded-keys={sheetOptions.state.expandedKeys}

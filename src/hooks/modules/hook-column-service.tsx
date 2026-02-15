@@ -150,7 +150,12 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
 
     /**列表接口请求回调执行**/
     async function fetchCallbackRequest(opts: Omix = {}) {
-        return await setState({ initialize: false, loading: false, ...opts } as never).then(async () => {
+        return await setState({
+            initialize: false,
+            loading: false,
+            select: [],
+            ...opts
+        } as never).then(async () => {
             return await fetchHandler(isNotEmpty(options.callback), async () => {
                 return await options.callback!(formState.value, state as never)
             }).then(() => state as BaseServiceState<T> & typeof options.options)

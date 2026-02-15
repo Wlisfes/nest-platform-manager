@@ -141,9 +141,10 @@ export default defineComponent({
                         rule={{ required: ['authorize'].includes(formState.value.chunk), trigger: 'blur', message: '请选择父级菜单/按钮' }}
                     >
                         <form-common-column-cascader
-                            v-model:value={formState.value.pid}
-                            placeholder="请选择父级菜单/按钮"
+                            clearable
                             expand-trigger="click"
+                            placeholder="请选择父级菜单/按钮"
+                            v-model:value={formState.value.pid}
                             options={sheetOptions.dataSource.value}
                         ></form-common-column-cascader>
                     </form-common-column>

@@ -63,56 +63,31 @@ export default defineComponent({
             })
         }
 
-        /**添加菜单**/
-        async function fetchDeploySheetCreateResource() {
-            return await feedback.fetchDeploySystemSheetResource({
-                title: '新增菜单',
+        /**新增菜单/按钮**/
+        async function fetchDeploySheetCreate() {
+            return await feedback.fetchDeploySystemSheet({
+                title: '新增菜单/按钮',
                 command: 'CREATE',
-                onSubmit: fetchRefresh
-            })
-        }
-
-        /**添加按钮**/
-        async function fetchDeploySheetCreateAuthorize() {
-            return await feedback.fetchDeploySystemSheetAuthorize({
-                title: '添加按钮',
-                command: 'CREATE',
-                onSubmit: fetchRefresh
-            })
-        }
-
-        /**克隆菜单、按钮**/
-        async function fetchDeploySheetClone(data: Omix) {
-            if (['resource'].includes(data.chunk)) {
-                return await feedback.fetchDeploySystemSheetResource({
-                    node: data,
-                    title: '克隆菜单',
-                    command: 'CLONE',
-                    onSubmit: fetchRefresh
-                })
-            }
-            return await feedback.fetchDeploySystemSheetAuthorize({
-                node: data,
-                title: '克隆按钮',
-                command: 'CLONE',
                 onSubmit: fetchRefresh
             })
         }
 
         /**编辑菜单、按钮**/
-        async function fetchDeploySheetUpdate(data: Omix) {
-            if (['resource'].includes(data.chunk)) {
-                return await feedback.fetchDeploySystemSheetResource({
-                    node: data,
-                    title: '编辑菜单',
-                    command: 'UPDATE',
-                    onSubmit: fetchRefresh
-                })
-            }
-            return await feedback.fetchDeploySystemSheetAuthorize({
-                node: data,
-                title: '编辑按钮',
+        async function fetchDeploySheetUpdate() {
+            return await feedback.fetchDeploySystemSheet({
+                title: '编辑菜单/按钮',
                 command: 'UPDATE',
+                node: state.select[0],
+                onSubmit: fetchRefresh
+            })
+        }
+
+        /**克隆菜单、按钮**/
+        async function fetchDeploySheetClone() {
+            return await feedback.fetchDeploySystemSheet({
+                title: '克隆菜单/按钮',
+                command: 'CLONE',
+                node: state.select[0],
                 onSubmit: fetchRefresh
             })
         }
@@ -162,11 +137,23 @@ export default defineComponent({
                             on-submit={fetchRequest}
                         >
                             <common-database-search-function abstract class="flex gap-col-10">
-                                <common-element-button type="primary" onClick={fetchDeploySheetCreateResource}>
-                                    添加菜单
+                                <common-element-button type="primary" onClick={fetchDeploySheetCreate}>
+                                    新增
                                 </common-element-button>
-                                <common-element-button type="primary" onClick={fetchDeploySheetCreateAuthorize}>
-                                    添加按钮
+                                <common-element-button
+                                    {...{ secondary: true, type: 'primary', disabled: state.select.length !== 1 }}
+                                    onClick={fetchDeploySheetUpdate}
+                                >
+                                    编辑
+                                </common-element-button>
+                                <common-element-button
+                                    {...{ secondary: true, type: 'primary', disabled: state.select.length !== 1 }}
+                                    onClick={fetchDeploySheetClone}
+                                >
+                                    克隆
+                                </common-element-button>
+                                <common-element-button {...{ secondary: true, type: 'error', disabled: state.select.length === 0 }}>
+                                    删除
                                 </common-element-button>
                             </common-database-search-function>
                             <common-database-search-column disabled prop="name" label="菜单名称">

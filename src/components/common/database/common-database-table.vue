@@ -65,6 +65,10 @@ export default defineComponent({
         const width = computed(() => {
             return fetchBaseColumns(props.columns).reduce((a, b) => fetchPlusNumber(a, b.width ?? b.minWidth ?? 0), 0)
         })
+        /**复选框选中id列表**/
+        const faseSelect = computed(() => {
+            return select.value.map(item => item.keyId)
+        })
         /**表头配置**/
         const faseColumns = computed(() => {
             return fetchBaseColumns(fetchColumnsCustomize(props.columns)).filter(item => item.disabled || (item.check ?? true))
@@ -135,7 +139,6 @@ export default defineComponent({
         }
         /**选择列事件**/
         async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
-            console.log(keys)
             return await nextTick(() => (select.value = data)).then(async () => {
                 await emit('update:select', select.value)
                 return await emit('-update:select', select.value)
@@ -199,6 +202,7 @@ export default defineComponent({
                                 remote
                                 flex-height
                                 size="small"
+                                style={{ flex: 1 }}
                                 row-key={(e: Omix) => e.keyId}
                                 loading={loading.value}
                                 scroll-x={width.value}
@@ -206,7 +210,7 @@ export default defineComponent({
                                 single-line={false}
                                 data={data.value}
                                 columns={faseColumns.value}
-                                style={{ flex: 1 }}
+                                checked-row-keys={faseSelect.value}
                                 scrollbar-props={{ size: 100, trigger: 'none' }}
                                 render-cell={fetchCellRender}
                                 on-update:checked-row-keys={fetchUpdateSelecter}

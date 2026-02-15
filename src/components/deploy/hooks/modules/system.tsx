@@ -15,7 +15,7 @@ export async function fetchDeploySystemFeedbackRole(props: PropsState<Omix>) {
 }
 
 /**新增、编辑部门**/
-export async function fetchDeploySystemFeedbackDept(props: PropsState<Omix>) {
+export async function fetchDeploySystemDepartment(props: PropsState<Omix>) {
     return await import('@/components/deploy/system/feedback/deploy-system-feedback-dept.vue').then(component => {
         return createComponent(component.default, props)
     })

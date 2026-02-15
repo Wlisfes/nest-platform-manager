@@ -26,7 +26,7 @@ export default [
     {
         path: '/deploy/system/dept',
         name: 'DeploySystemDepartment',
-        meta: { title: '部门管理', AUTH: 'AUTH' },
+        meta: { title: '部门组织', AUTH: 'AUTH' },
         component: () => import('@/views/deploy/system/dept/index.vue')
     }
 ]

@@ -1,41 +1,30 @@
 <script lang="tsx">
 import { defineComponent, h } from 'vue'
-import { useChunkService, useColumnService, useSelectService } from '@/hooks'
-import { fetchDialogService, fetchNotifyService } from '@/plugins'
+import { useColumnService, useSelectService } from '@/hooks'
 import { SendFilled } from '@vicons/carbon'
-import { isEmpty, fetchHandler } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
     name: 'DeploySystemDepartment',
     setup(props, ctx) {
-        /**通用字典枚举**/
-        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_RESOUREC_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'] })
-        /**菜单树结构**/
-        const sheetOptions = useSelectService(e => Service.httpBaseSystemSheetTreeStructure(), {
+        /**部门树结构**/
+        const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
             options: { selectedKeys: [] as Array<string>, expandedKeys: [] as Array<string> },
             callback: fetchReadyCallback
         })
         /**表格实例**/
         const { formRef, formState, state, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
-            request: (base, payload) => Service.httpBaseSystemColumnSheet(payload),
-            keyName: 'chatbok:deploy:system:sheet',
+            request: (base, payload) => Service.httpBaseSystemColumnDepartment(payload),
+            keyName: 'chatbok:deploy:system:dept',
             immediate: false,
             formState: {
                 pid: undefined, //父级ID
-                name: undefined, //菜单名称
-                keyName: undefined, //权限标识
-                router: undefined, //菜单地址
-                version: undefined //版本号
+                name: undefined //部门名称
             },
             columns: [
-                { title: '部门名称', key: 'name', width: 150, disabled: true },
-                { title: '别名简称', key: 'alias', minWidth: 200, check: true },
-                { title: '路由地址', key: 'router', minWidth: 200, check: true },
-                { title: '版本号', key: 'version', width: 100, align: 'center', check: true },
-                { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
-                { title: '状态', key: 'status', width: 100, align: 'center', check: true },
+                { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
+                { title: '别名简称', key: 'alias', width: 120, check: true },
                 { title: '创建人', key: 'createBy', width: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新人', key: 'modifyBy', width: 120, check: true },
@@ -45,9 +34,12 @@ export default defineComponent({
 
         /**初始化回调**/
         async function fetchReadyCallback(data: Omix) {
+            if (deptOptions.selectedKeys.value.length > 0) {
+                return false
+            }
             const expandeds = data.dataSource.map((item: Omix) => item.keyId)
             const selecteds = expandeds.filter((e: Omix, index: number) => [0].includes(index))
-            return await sheetOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async (event: Omix) => {
+            return await deptOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async () => {
                 return await setForm({ pid: selecteds[0] ?? undefined }).then(async () => {
                     return await fetchRequest()
                 })
@@ -56,84 +48,132 @@ export default defineComponent({
 
         /**左侧树选中变更回调**/
         async function fetchUpdateSelected(keys: Array<string>) {
-            await sheetOptions.setState({ selectedKeys: keys })
+            await deptOptions.setState({ selectedKeys: keys })
             return await setForm({ pid: keys[0] as never }).then(() => {
                 return fetchRefresh({ page: 1, size: state.size })
             })
         }
 
-        /**新增菜单/按钮**/
-        async function fetchDeploySheetCreate() {
-            return await feedback.fetchDeploySystemSheet({
-                title: '新增菜单/按钮',
+        /**新增部门**/
+        async function fetchDeployDepartmentCreate() {
+            return await feedback.fetchDeploySystemDepartment({
+                title: '新增部门',
                 command: 'CREATE',
-                onSubmit: fetchRefresh
+                async onSubmit() {
+                    return await Promise.all([deptOptions.fetchRequest(), fetchRefresh()])
+                }
             })
         }
 
-        /**编辑菜单、按钮**/
-        async function fetchDeploySheetUpdate() {
-            return await feedback.fetchDeploySystemSheet({
-                title: '编辑菜单/按钮',
+        /**编辑部门**/
+        async function fetchDeployDepartmentUpdate() {
+            return await feedback.fetchDeploySystemDepartment({
+                title: '编辑部门',
                 command: 'UPDATE',
                 node: state.select[0],
-                onSubmit: fetchRefresh
-            })
-        }
-
-        /**克隆菜单、按钮**/
-        async function fetchDeploySheetClone() {
-            return await feedback.fetchDeploySystemSheet({
-                title: '克隆菜单/按钮',
-                command: 'CLONE',
-                node: state.select[0],
-                onSubmit: fetchRefresh
+                async onSubmit() {
+                    return await Promise.all([deptOptions.fetchRequest(), fetchRefresh()])
+                }
             })
         }
 
         return () => (
-            <layout-common-container>
-                <common-database-search
-                    class="p-0!"
-                    function-class="justify-end"
-                    function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
-                    ref={formRef}
-                    limit={state.limit}
-                    v-model:loading={state.loading}
-                    v-model:when={state.when}
-                    v-model:database={state.database}
-                    v-model:formState={formState.value}
-                    on-update:database={instOptions.fetchUpdateDatabase}
-                    on-restore={fetchRestore}
-                    on-submit={fetchRequest}
+            <n-layout has-sider class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
+                <n-layout-sider
+                    width={320}
+                    collapsed-width={0}
+                    show-collapsed-content={false}
+                    class="flex flex-col bg-transparent"
+                    content-class="flex flex-col flex-1 overflow-hidden"
                 >
-                    <common-database-search-column disabled prop="name" label="菜单名称">
-                        <form-common-column-input
-                            clearable
-                            placeholder="请输入菜单名称"
-                            v-model:value={formState.value.name}
-                            on-submit={fetchRefresh}
-                        />
-                    </common-database-search-column>
-                </common-database-search>
-                <common-database-table
-                    class="p-0!"
-                    show-select
-                    show-settings
-                    limit={state.limit}
-                    total={state.total}
-                    columns={state.columns}
-                    v-model:page={state.page}
-                    v-model:size={state.size}
-                    v-model:select={state.select}
-                    v-model:loading={state.loading}
-                    v-model:data={state.dataSource}
-                    v-model:customize={state.customize}
-                    on-update:customize={instOptions.fetchUpdateCustomize}
-                    on-update:page={(page: number) => fetchRefresh({ page })}
-                    on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
-                ></common-database-table>
-            </layout-common-container>
+                    <n-element class="flex flex-col flex-1 p-block-14 p-is-14 overflow-hidden">
+                        <n-card class="flex-1 overflow-hidden" content-class="p-14!">
+                            <n-tree
+                                block-line
+                                cancelable={false}
+                                selected-keys={deptOptions.state.selectedKeys}
+                                expanded-keys={deptOptions.state.expandedKeys}
+                                key-field="keyId"
+                                label-field="name"
+                                children-field="children"
+                                data={deptOptions.dataSource.value}
+                                render-switcher-icon={() => h(SendFilled)}
+                                on-update:selected-keys={fetchUpdateSelected}
+                                on-update:expanded-keys={(keys: Array<string>) => deptOptions.setState({ expandedKeys: keys })}
+                            />
+                        </n-card>
+                    </n-element>
+                </n-layout-sider>
+                <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden">
+                    <n-layout-header class="bg-transparent">
+                        <common-database-search
+                            class="p-0!"
+                            function-class="justify-end"
+                            function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
+                            ref={formRef}
+                            limit={state.limit}
+                            v-model:loading={state.loading}
+                            v-model:when={state.when}
+                            v-model:database={state.database}
+                            v-model:formState={formState.value}
+                            on-update:database={instOptions.fetchUpdateDatabase}
+                            on-restore={fetchRestore}
+                            on-submit={fetchRequest}
+                        >
+                            <common-database-search-function abstract class="flex gap-col-10">
+                                <common-element-button type="primary" onClick={fetchDeployDepartmentCreate}>
+                                    新增
+                                </common-element-button>
+                                <common-element-button
+                                    {...{ secondary: true, type: 'primary', disabled: state.select.length !== 1 }}
+                                    onClick={fetchDeployDepartmentUpdate}
+                                >
+                                    编辑
+                                </common-element-button>
+                                <common-element-button {...{ secondary: true, type: 'error', disabled: state.select.length === 0 }}>
+                                    删除
+                                </common-element-button>
+                            </common-database-search-function>
+                            <common-database-search-column disabled prop="name" label="部门名称">
+                                <form-common-column-input
+                                    clearable
+                                    placeholder="请输入部门名称"
+                                    v-model:value={formState.value.name}
+                                    on-submit={fetchRefresh}
+                                />
+                            </common-database-search-column>
+                        </common-database-search>
+                    </n-layout-header>
+                    <n-layout-content class="flex flex-col flex-1 bg-transparent" content-class="flex flex-col flex-1">
+                        <common-database-table
+                            class="p-0!"
+                            show-select
+                            show-settings
+                            limit={state.limit}
+                            total={state.total}
+                            columns={state.columns}
+                            v-model:page={state.page}
+                            v-model:size={state.size}
+                            v-model:select={state.select}
+                            v-model:loading={state.loading}
+                            v-model:data={state.dataSource}
+                            v-model:customize={state.customize}
+                            on-update:customize={instOptions.fetchUpdateCustomize}
+                            on-update:page={(page: number) => fetchRefresh({ page })}
+                            on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
+                        >
+                            {{
+                                col_createBy: (data: Omix) => (
+                                    <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
+                                ),
+                                col_modifyBy: (data: Omix) => (
+                                    <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                                )
+                            }}
+                        </common-database-table>
+                    </n-layout-content>
+                </n-layout>
+            </n-layout>
         )
     }
 })

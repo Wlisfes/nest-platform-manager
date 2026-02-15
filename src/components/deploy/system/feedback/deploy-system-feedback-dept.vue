@@ -1,7 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useSelectService } from '@/hooks/hook-selecter'
-import { useFormService } from '@/hooks/hook-form'
+import { useFormService, useSelectService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
 
@@ -17,64 +16,59 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const { state, form, formRef, setState, fetchValidater } = useFormService({
-            callback: fetchCallback,
-            form: {
-                name: props.node.name,
-                bit: props.node.bit,
-                pid: props.node.pid
+        const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
+            callback: fetchBaseSystemDeptResolver,
+            formState: {
+                name: props.node.name, //部门名称
+                alias: props.node.alias, //别名简称
+                pid: props.node.pid //上级部门
             },
             rules: {
-                pid: { required: true, trigger: 'blur', message: '选择上级部门' },
-                name: { required: true, trigger: 'blur', message: '请输入角色名称' }
+                name: { required: true, message: '请输入部门名称', trigger: 'blur' }
             }
         })
-        /**上级部门Options**/
-        const { dataSource, fetchRequest } = useSelectService(() => Service.httpBaseSystemDeptCascader(), {
-            immediate: false
+        /**部门树结构**/
+        const deptTreeOptions = useSelectService(() => Service.httpBaseSystemDepartmentTreeStructure(), {
+            immediate: ['CREATE'].includes(props.command)
         })
-
-        /**表达初始化回调**/
-        async function fetchCallback() {
-            return await fetchRequest().then(async () => {
+        /**部门详情**/
+        async function fetchBaseSystemDeptResolver() {
+            if (['CREATE'].includes(props.command)) {
                 return await setState({ initialize: false })
+            }
+            return await setState({ initialize: true }).then(async () => {
+                try {
+                    await deptTreeOptions.fetchRequest()
+                    return await Service.httpBaseSystemDepartmentResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
+                        return await setForm(fetchReste(data)).then(async () => {
+                            return await setState({ initialize: false })
+                        })
+                    })
+                } catch (err) {
+                    return await setState({ initialize: false }).then(async () => {
+                        return await fetchNotifyService({ type: 'error', title: err.message })
+                    })
+                }
             })
         }
-
-        /**创建**/
-        async function fetchBaseCreate(body: Omix) {
-            return await Service.httpBaseSystemDeptCreate({ ...body }).then(async ({ message }) => {
-                return await setState({ visible: false }).then(async () => {
-                    await emit('submit', { done: setState })
-                    return await fetchNotifyService({ title: message })
-                })
-            })
-        }
-
-        /**编辑**/
-        async function fetchBaseUpdate(body: Omix) {
-            return await Service.httpBaseSystemDeptUpdate({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
-                return await setState({ visible: false }).then(async () => {
-                    await emit('submit', { done: setState })
-                    return await fetchNotifyService({ title: message })
-                })
-            })
-        }
-
         /**确定提交表单**/
         async function fetchSubmit() {
-            return await fetchValidater().then(async result => {
-                if (result) {
-                    return await await setState({ loading: false, disabled: false })
+            return await fetchValidater().then(async error => {
+                if (error) {
+                    return await setState({ loading: false, disabled: false })
                 }
                 try {
-                    if (props.command === 'CREATE') {
-                        return await fetchBaseCreate(form.value)
-                    } else {
-                        return await fetchBaseUpdate(form.value)
+                    if (['CREATE'].includes(props.command)) {
+                        await Service.httpBaseSystemCreateDepartment(formState.value)
+                    } else if (['UPDATE'].includes(props.command)) {
+                        await Service.httpBaseSystemUpdateDepartment({ ...formState.value, keyId: props.node.keyId })
                     }
+                    return await setState({ visible: false }).then(async () => {
+                        await emit('submit', { done: setState })
+                        return await fetchNotifyService({ title: '操作成功' })
+                    })
                 } catch (err) {
-                    return await await setState({ loading: false, disabled: false }).then(async () => {
+                    return await setState({ loading: false, disabled: false }).then(async () => {
                         return await fetchNotifyService({ type: 'error', title: err.message })
                     })
                 }
@@ -84,7 +78,7 @@ export default defineComponent({
         return () => (
             <common-dialog-provider
                 title={props.title}
-                width={640}
+                width={540}
                 v-model:visible={state.visible}
                 v-model:loading={state.loading}
                 v-model:initialize={state.initialize}
@@ -92,31 +86,29 @@ export default defineComponent({
                 onCancel={() => setState({ visible: false })}
                 onClose={() => emit('close', { done: setState })}
             >
-                <n-form
+                <form-common-container
                     require-mark-placement="left"
                     size="medium"
                     ref={formRef}
-                    model={form.value}
+                    model={formState.value}
                     rules={state.rules}
                     disabled={state.loading}
                 >
-                    <n-form-item label="上级部门" path="pid">
-                        <n-cascader
-                            v-model:value={form.value.pid}
-                            placeholder="请选择父级菜单"
+                    <form-common-column label="上级部门" path="pid">
+                        <form-common-column-cascader
+                            v-model:value={formState.value.pid}
+                            placeholder="请选择上级部门"
                             expand-trigger="click"
-                            label-field="name"
-                            value-field="keyId"
-                            options={dataSource.value}
-                        ></n-cascader>
-                    </n-form-item>
-                    <n-form-item label="角色名称" path="name">
-                        <n-input placeholder="请输入菜单名称" maxlength={32} v-model:value={form.value.name}></n-input>
-                    </n-form-item>
-                    <n-form-item label="部门简称" path="bit">
-                        <n-input placeholder="请输入部门简称" maxlength={4} v-model:value={form.value.bit}></n-input>
-                    </n-form-item>
-                </n-form>
+                            options={deptTreeOptions.dataSource.value}
+                        />
+                    </form-common-column>
+                    <form-common-column label="部门名称" path="name">
+                        <form-common-column-input maxlength={32} placeholder="请输入部门名称" v-model:value={formState.value.name} />
+                    </form-common-column>
+                    <form-common-column label="别名简称" path="alias">
+                        <form-common-column-input maxlength={4} placeholder="请输入别名简称" v-model:value={formState.value.alias} />
+                    </form-common-column>
+                </form-common-container>
             </common-dialog-provider>
         )
     }

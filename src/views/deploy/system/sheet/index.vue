@@ -47,7 +47,7 @@ export default defineComponent({
 
         /**初始化回调**/
         async function fetchReadyCallback(data: Omix) {
-            const expandeds = data.dataSource.map((item: Omix) => item.id)
+            const expandeds = data.dataSource.map((item: Omix) => item.keyId)
             const selecteds = expandeds.filter((e: Omix, index: number) => [0].includes(index))
             return await sheetOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async (event: Omix) => {
                 return await setForm({ pid: selecteds[0] ?? undefined }).then(async () => {
@@ -110,7 +110,7 @@ export default defineComponent({
                                 cancelable={false}
                                 selected-keys={sheetOptions.state.selectedKeys}
                                 expanded-keys={sheetOptions.state.expandedKeys}
-                                key-field="id"
+                                key-field="keyId"
                                 label-field="name"
                                 children-field="children"
                                 data={sheetOptions.dataSource.value}

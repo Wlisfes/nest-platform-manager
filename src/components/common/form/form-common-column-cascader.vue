@@ -11,7 +11,7 @@ export default defineComponent({
         /**选项label的字段名**/
         labelField: { type: String, default: 'name' },
         /**选项value的字段名**/
-        labelValue: { type: String, default: 'id' },
+        labelValue: { type: String, default: 'keyId' },
         /**选项children的字段名**/
         childrenField: { type: String, default: 'children' }
     },

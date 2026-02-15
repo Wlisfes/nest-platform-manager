@@ -135,6 +135,7 @@ export default defineComponent({
         }
         /**选择列事件**/
         async function fetchUpdateSelecter(keys: Array<string>, data: Array<Omix>) {
+            console.log(keys)
             return await nextTick(() => (select.value = data)).then(async () => {
                 await emit('update:select', select.value)
                 return await emit('-update:select', select.value)

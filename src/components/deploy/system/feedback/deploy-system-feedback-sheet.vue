@@ -59,7 +59,7 @@ export default defineComponent({
                 }
                 return await setState({ initialize: true }).then(async () => {
                     try {
-                        return await Service.httpBaseSystemSheetResolver({ id: props.node.id }).then(async ({ data }) => {
+                        return await Service.httpBaseSystemSheetResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
                             return await setForm(fetchReste(data)).then(async () => {
                                 return await setState({ initialize: false })
                             })
@@ -83,13 +83,13 @@ export default defineComponent({
                         if (['CREATE', 'CLONE'].includes(props.command)) {
                             await Service.httpBaseSystemCreateSheetResource(formState.value)
                         } else if (['UPDATE'].includes(props.command)) {
-                            await Service.httpBaseSystemUpdateSheetResource({ ...formState.value, id: props.node.id })
+                            await Service.httpBaseSystemUpdateSheetResource({ ...formState.value, keyId: props.node.keyId })
                         }
                     } else {
                         if (['CREATE', 'CLONE'].includes(props.command)) {
                             await Service.httpBaseSystemCreateSheetAuthorize(formState.value)
                         } else if (['UPDATE'].includes(props.command)) {
-                            await Service.httpBaseSystemUpdateSheetAuthorize({ ...formState.value, id: props.node.id })
+                            await Service.httpBaseSystemUpdateSheetAuthorize({ ...formState.value, keyId: props.node.keyId })
                         }
                     }
                     return await setState({ visible: false }).then(async () => {
@@ -138,7 +138,12 @@ export default defineComponent({
                         label="父级菜单/按钮"
                         path="pid"
                         key={formState.value.chunk}
-                        rule={{ required: ['authorize'].includes(formState.value.chunk), trigger: 'blur', message: '请选择父级菜单/按钮' }}
+                        rule={{
+                            required: ['authorize'].includes(formState.value.chunk),
+                            type: 'number',
+                            trigger: 'blur',
+                            message: '请选择父级菜单/按钮'
+                        }}
                     >
                         <form-common-column-cascader
                             clearable

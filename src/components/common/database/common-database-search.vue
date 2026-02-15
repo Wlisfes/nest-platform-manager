@@ -54,7 +54,7 @@ export default defineComponent({
         /**表单样式**/
         const formClass = computed(() => ({
             'common-database-formstate': true,
-            'p-be-12': database.value.length > 0 && database.value.some(item => item.check),
+            'p-be-12': when.value || (database.value.length > 0 && database.value.some(item => item.check)),
             'formstate-collapse': width.value < 674
         }))
         /**展开、收起**/

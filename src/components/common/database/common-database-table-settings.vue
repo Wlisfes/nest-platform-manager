@@ -29,6 +29,7 @@ export default defineComponent({
         async function fetchInitialize() {
             const allColumns = (props.columns ?? []).map(item => ({
                 key: item.key,
+                prop: item.key,
                 title: typeof item.title === 'function' ? item.key : item.title,
                 disabled: item.disabled ?? false,
                 check: item.disabled ? true : (item.check ?? true)
@@ -37,11 +38,12 @@ export default defineComponent({
             if (customize.value.length > 0) {
                 /**保留已有排序顺序并合并新字段**/
                 const mapped = customize.value.map(db => {
-                    const col = allColumns.find(c => c.key === db.key)
+                    const dbKey = db.key ?? db.prop
+                    const col = allColumns.find(c => c.key === dbKey)
                     return col ? { ...col, check: col.disabled ? true : (db.check ?? col.check) } : null
                 })
                 const ordered = mapped.filter(Boolean) as Array<Omix>
-                const newCols = allColumns.filter(c => !customize.value.find(db => db.key === c.key))
+                const newCols = allColumns.filter(c => !customize.value.find(db => (db.key ?? db.prop) === c.key))
                 columns = [...ordered, ...newCols]
             } else {
                 columns = allColumns
@@ -71,6 +73,7 @@ export default defineComponent({
         async function fetchReset() {
             const columns = (props.columns ?? []).map(item => ({
                 key: item.key,
+                prop: item.key,
                 title: typeof item.title === 'function' ? item.key : item.title,
                 disabled: item.disabled ?? false,
                 check: true

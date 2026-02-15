@@ -73,13 +73,13 @@ export default defineComponent({
         function fetchColumnsCustomize(data: Array<Omix<DataTableColumn>>) {
             if (customize.value.length === 0) return data
             const columns = cloneDeep(data).map(item => {
-                const node = customize.value.find(c => c.key === item.key)
+                const node = customize.value.find(c => (c.key ?? c.prop) === item.key)
                 if (node) item.check = node.check ?? item.check ?? true
                 return item
             })
             return columns.sort((a, b) => {
-                const aIndex = customize.value.findIndex(c => c.key === a.key)
-                const bIndex = customize.value.findIndex(c => c.key === b.key)
+                const aIndex = customize.value.findIndex(c => (c.key ?? c.prop) === a.key)
+                const bIndex = customize.value.findIndex(c => (c.key ?? c.prop) === b.key)
                 return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex)
             })
         }

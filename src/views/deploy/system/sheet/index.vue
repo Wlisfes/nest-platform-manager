@@ -31,14 +31,14 @@ export default defineComponent({
                     version: undefined //版本号
                 },
                 columns: [
-                    { title: '菜单名称', key: 'name', minWidth: 160, disabled: true },
+                    { title: '菜单名称', key: 'name', width: 150, disabled: true },
                     { title: '图标', key: 'iconName', width: 100, align: 'center', className: 'p-block-0!', check: true },
-                    { title: '类型', key: 'chunk', align: 'center', width: 100, check: true },
+                    { title: '类型', key: 'chunk', width: 100, align: 'center', check: true },
                     { title: '权限标识', key: 'keyName', minWidth: 200, check: true },
                     { title: '路由地址', key: 'router', minWidth: 200, check: true },
-                    { title: '版本号', key: 'version', align: 'center', width: 100, check: true },
-                    { title: '排序号', key: 'sort', align: 'center', width: 100, check: true },
-                    { title: '状态', key: 'status', align: 'center', width: 100, check: true },
+                    { title: '版本号', key: 'version', width: 100, align: 'center', check: true },
+                    { title: '排序号', key: 'sort', width: 100, align: 'center', check: true },
+                    { title: '状态', key: 'status', width: 100, align: 'center', check: true },
                     { title: '创建人', key: 'createBy', width: 120, check: true },
                     { title: '创建时间', key: 'createTime', width: 160, check: true },
                     { title: '更新人', key: 'modifyBy', width: 120, check: true },
@@ -54,6 +54,13 @@ export default defineComponent({
                 return await setForm({ pid: selecteds[0] ?? undefined }).then(async () => {
                     return await fetchRequest()
                 })
+            })
+        }
+
+        /**左侧树选中变更回调**/
+        async function fetchUpdateSelected(keys: Array<string>) {
+            return await setForm({ pid: keys[0] as never }).then(() => {
+                return fetchRefresh({ page: 1, size: state.size })
             })
         }
 
@@ -124,7 +131,7 @@ export default defineComponent({
                         <n-card class="flex-1 overflow-hidden" content-class="p-14!">
                             <n-tree
                                 block-line
-                                //expand-on-click
+                                expand-on-click
                                 cancelable={false}
                                 selected-keys={sheetOptions.state.selectedKeys}
                                 expanded-keys={sheetOptions.state.expandedKeys}
@@ -133,8 +140,8 @@ export default defineComponent({
                                 children-field="children"
                                 data={sheetOptions.dataSource.value}
                                 render-switcher-icon={() => h(SendFilled)}
+                                on-update:selected-keys={fetchUpdateSelected}
                                 on-update:expanded-keys={(keys: Array<string>) => sheetOptions.setState({ expandedKeys: keys })}
-                                on-update:selected-keys={(keys: Array<string>) => sheetOptions.setState({ selectedKeys: keys })}
                             />
                         </n-card>
                     </n-element>

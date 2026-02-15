@@ -52,6 +52,7 @@ export default defineComponent({
                 columns = allColumns
             }
             return await setState({ columns: cloneDeep(columns) }).then(() => {
+                console.log(database.value)
                 return (database.value = state.columns)
             })
         }

@@ -1,10 +1,11 @@
-import { ref, Ref, toRefs, provide, onMounted } from 'vue'
+import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
 import { fetchNotifyService } from '@/plugins'
 import { cloneDeep, pick } from 'lodash-es'
 import { useState } from '@/hooks'
+import * as Service from '@/api/instance.service'
 
 /**列表缓存对象**/
 interface BaseServiceState<T> extends Omix {
@@ -78,25 +79,51 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     /**初始化**/
     onMounted(fetchInitialize)
     async function fetchInitialize() {
-        if (options.immediate ?? true) {
-            // await fetchCheckboxsCompiler()
-            return await fetchRequest().then(() => {
-                return options.callback?.(formState.value, state as never)
-            })
+        const tasks: Array<any> = []
+        if (isNotEmpty(options.keyName)) {
+            tasks.push(fetchBaseColumnChunkCustomize(String(options.keyName)))
         }
-        // return await fetchCheckboxsCompiler().then(async () => {
-        //     return await setState({ initialize: false, loading: false } as ColumnState<T> & typeof options.option)
-        // })
+        if (options.immediate ?? true) {
+            tasks.push(fetchRequest())
+        }
+        return await Promise.all(tasks).then(() => {
+            return options.callback?.(formState.value, state as never)
+        })
+    }
+
+    /**查询字段配置**/
+    async function fetchBaseColumnChunkCustomize(keyName: string) {
+        try {
+            return await Service.httpBaseColumnChunkCustomize({ keyName }).then(async ({ data }) => {
+                return await setState({ customize: data.customize ?? [], database: data.database ?? [] } as never)
+            })
+        } catch (err) {
+            return await setState({ customize: [], database: [] } as never)
+        }
     }
 
     /**保存搜索栏字段自定义排版规则**/
     async function fetchUpdateDatabase(items: Array<Omix>) {
-        console.log(items)
+        try {
+            return await Service.httpBaseUpdateChunkSearch({
+                keyName: String(options.keyName),
+                fields: items.map(e => ({ check: e.check, prop: e.prop, label: e.label }))
+            })
+        } catch (err) {
+            return await fetchNotifyService({ type: 'error', title: err.message })
+        }
     }
 
     /**保存表头配置自定义排版规则**/
     async function fetchUpdateCustomize(items: Array<Omix>) {
-        console.log(items)
+        try {
+            return await Service.httpBaseUpdateChunkColumns({
+                keyName: String(options.keyName),
+                fields: items.map(e => ({ check: e.check, prop: e.key, label: e.title }))
+            })
+        } catch (err) {
+            return await fetchNotifyService({ type: 'error', title: err.message })
+        }
     }
 
     /**修改表单筛选**/

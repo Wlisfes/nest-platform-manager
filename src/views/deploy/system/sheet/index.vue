@@ -18,7 +18,7 @@ export default defineComponent({
             callback: fetchReadyCallback
         })
         /**表格实例**/
-        const { formRef, formState, state, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheet(payload),
             keyName: 'chatbok:deploy:system:sheet',
             immediate: false,
@@ -161,18 +161,22 @@ export default defineComponent({
                                     新增
                                 </common-element-button>
                                 <common-element-button
-                                    {...{ secondary: true, type: 'primary', disabled: state.select.length !== 1 }}
+                                    dashed
+                                    type="primary"
+                                    disabled={instState.value.isUpdate}
                                     onClick={fetchDeploySheetUpdate}
                                 >
                                     编辑
                                 </common-element-button>
                                 <common-element-button
-                                    {...{ secondary: true, type: 'primary', disabled: state.select.length !== 1 }}
+                                    dashed
+                                    type="primary"
+                                    disabled={instState.value.isClone}
                                     onClick={fetchDeploySheetClone}
                                 >
                                     克隆
                                 </common-element-button>
-                                <common-element-button {...{ secondary: true, type: 'error', disabled: state.select.length === 0 }}>
+                                <common-element-button dashed type="error" disabled={instState.value.isDelete}>
                                     删除
                                 </common-element-button>
                             </common-database-search-function>

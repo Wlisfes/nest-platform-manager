@@ -1,4 +1,4 @@
-import { ref, Ref, toRefs, onMounted } from 'vue'
+import { ref, Ref, toRefs, onMounted, computed } from 'vue'
 import { FormInst, DataTableColumn } from 'naive-ui'
 import { ResultResolver, ResultColumn } from '@/interface/instance.resolver'
 import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
@@ -181,6 +181,16 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         })
     }
 
+    /**通用配置聚合**/
+    const instState = computed(() => ({
+        /**克隆按钮禁用状态**/
+        isClone: state.select.length !== 1,
+        /**编辑按钮禁用状态**/
+        isUpdate: state.select.length !== 1,
+        /**删除按钮禁用状态**/
+        isDelete: state.select.length === 0
+    }))
+
     /**函数聚合**/
     const instOptions = {
         setState,
@@ -198,6 +208,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
         formRef,
         formState,
         observer,
+        instState,
         instOptions,
         ...instOptions,
         ...toRefs(state)

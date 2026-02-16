@@ -47,6 +47,9 @@ export default defineComponent({
 
         /**初始化回调**/
         async function fetchReadyCallback(data: Omix) {
+            if (sheetOptions.selectedKeys.value.length > 0) {
+                return false
+            }
             const expandeds = data.dataSource.map((item: Omix) => item.keyId)
             const selecteds = expandeds.filter((e: Omix, index: number) => [0].includes(index))
             return await sheetOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async (event: Omix) => {
@@ -54,6 +57,11 @@ export default defineComponent({
                     return await fetchRequest()
                 })
             })
+        }
+
+        /**左侧树展开变更回调**/
+        async function fetchUpdateExpanded(keys: Array<string>) {
+            return await sheetOptions.setState({ expandedKeys: keys as never })
         }
 
         /**左侧树选中变更回调**/
@@ -69,7 +77,9 @@ export default defineComponent({
             return await feedback.fetchDeploySystemSheet({
                 title: '新增菜单/按钮',
                 command: 'CREATE',
-                onSubmit: fetchRefresh
+                async onSubmit() {
+                    return await Promise.all([sheetOptions.fetchRequest(), fetchRefresh()])
+                }
             })
         }
 
@@ -79,7 +89,9 @@ export default defineComponent({
                 title: '编辑菜单/按钮',
                 command: 'UPDATE',
                 node: state.select[0],
-                onSubmit: fetchRefresh
+                async onSubmit() {
+                    return await Promise.all([sheetOptions.fetchRequest(), fetchRefresh()])
+                }
             })
         }
 
@@ -89,37 +101,44 @@ export default defineComponent({
                 title: '克隆菜单/按钮',
                 command: 'CLONE',
                 node: state.select[0],
-                onSubmit: fetchRefresh
+                async onSubmit() {
+                    return await Promise.all([sheetOptions.fetchRequest(), fetchRefresh()])
+                }
             })
         }
 
         return () => (
             <n-layout has-sider class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
                 <n-layout-sider
-                    width={320}
+                    width={360}
                     collapsed-width={0}
                     show-collapsed-content={false}
                     class="flex flex-col bg-transparent"
-                    content-class="flex flex-col flex-1 overflow-hidden"
+                    content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
-                    <n-element class="flex flex-col flex-1 p-block-14 p-is-14 overflow-hidden">
-                        <n-card class="flex-1 overflow-hidden" content-class="p-14!">
-                            <n-tree
-                                block-line
-                                //expand-on-click
-                                cancelable={false}
-                                selected-keys={sheetOptions.state.selectedKeys}
-                                expanded-keys={sheetOptions.state.expandedKeys}
-                                key-field="keyId"
-                                label-field="name"
-                                children-field="children"
-                                data={sheetOptions.dataSource.value}
-                                render-switcher-icon={() => h(SendFilled)}
-                                on-update:selected-keys={fetchUpdateSelected}
-                                on-update:expanded-keys={(keys: Array<string>) => sheetOptions.setState({ expandedKeys: keys })}
-                            />
-                        </n-card>
-                    </n-element>
+                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-inline-0! p-block-14! overflow-hidden">
+                        <common-element-spiner opacity={0} loading={sheetOptions.state.loading}>
+                            <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
+                                <n-element class="p-inline-14">
+                                    <n-tree
+                                        block-line
+                                        cancelable={false}
+                                        key-field="keyId"
+                                        label-field="name"
+                                        children-field="children"
+                                        pattern={sheetOptions.state.pattern}
+                                        selected-keys={sheetOptions.state.selectedKeys}
+                                        expanded-keys={sheetOptions.state.expandedKeys}
+                                        data={sheetOptions.dataSource.value}
+                                        render-switcher-icon={() => h(SendFilled)}
+                                        on-update:selected-keys={fetchUpdateSelected}
+                                        on-update:expanded-keys={fetchUpdateExpanded}
+                                        filter={(vague: string, node: Omix) => node.name.includes(vague)}
+                                    />
+                                </n-element>
+                            </n-scrollbar>
+                        </common-element-spiner>
+                    </n-card>
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden">
                     <n-layout-header class="bg-transparent">

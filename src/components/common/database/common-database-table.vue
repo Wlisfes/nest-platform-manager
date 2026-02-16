@@ -13,6 +13,8 @@ export default defineComponent({
         '-update:page',
         'update:size',
         '-update:size',
+        'update:initialize',
+        '-update:initialize',
         'update:loading',
         '-update:loading',
         'update:data',
@@ -31,6 +33,8 @@ export default defineComponent({
         size: { type: Number, default: 50 },
         /**总条数**/
         total: { type: Number, default: 0 },
+        /**初始化状态**/
+        initialize: { type: Boolean, default: true },
         /**加载状态**/
         loading: { type: Boolean, default: true },
         /**开启分页**/
@@ -59,7 +63,7 @@ export default defineComponent({
     setup(props, { emit, slots }) {
         const headerRef = ref<Omix<{ $el: HTMLElement }>>()
         const tableRef = ref<HTMLElement>()
-        const { data, page, size, loading, select, customize } = useVModels(props)
+        const { data, page, size, initialize, loading, select, customize } = useVModels(props)
         const { state } = useState({ width: 86 })
         /**最小滚动宽度**/
         const width = computed(() => {
@@ -202,7 +206,7 @@ export default defineComponent({
                                 remote
                                 flex-height
                                 size="small"
-                                style={{ flex: 1 }}
+                                style={{ flex: 1, '--n-opacity-loading': initialize.value ? 0 : 0.5 }}
                                 row-key={(e: Omix) => e.keyId}
                                 loading={loading.value}
                                 scroll-x={width.value}

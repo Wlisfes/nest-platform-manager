@@ -2,6 +2,7 @@
 import { defineComponent, h } from 'vue'
 import { useColumnService, useSelectService } from '@/hooks'
 import { SendFilled } from '@vicons/carbon'
+import { TreeOption } from 'naive-ui'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -10,7 +11,7 @@ export default defineComponent({
     setup(props, ctx) {
         /**部门树结构**/
         const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
-            options: { selectedKeys: [] as Array<string>, expandedKeys: [] as Array<string> },
+            options: { pattern: undefined, selectedKeys: [], expandedKeys: [] },
             callback: fetchReadyCallback
         })
         /**表格实例**/
@@ -37,18 +38,22 @@ export default defineComponent({
             if (deptOptions.selectedKeys.value.length > 0) {
                 return false
             }
-            const expandeds = data.dataSource.map((item: Omix) => item.keyId)
-            const selecteds = expandeds.filter((e: Omix, index: number) => [0].includes(index))
+            const items = data.dataSource.map((item: Omix) => item.keyId)
+            const selecteds = items.filter((e: Omix, index: number) => index === 0)
+            const expandeds = items.filter((e: Omix, index: number) => index === 0)
             return await deptOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async () => {
                 return await setForm({ pid: selecteds[0] ?? undefined }).then(async () => {
                     return await fetchRequest()
                 })
             })
         }
-
+        /**左侧树展开变更回调**/
+        async function fetchUpdateExpanded(keys: Array<string>) {
+            return await deptOptions.setState({ expandedKeys: keys as never })
+        }
         /**左侧树选中变更回调**/
         async function fetchUpdateSelected(keys: Array<string>) {
-            await deptOptions.setState({ selectedKeys: keys })
+            await deptOptions.setState({ selectedKeys: keys as never })
             return await setForm({ pid: keys[0] as never }).then(() => {
                 return fetchRefresh({ page: 1, size: state.size })
             })
@@ -78,31 +83,37 @@ export default defineComponent({
         }
 
         return () => (
-            <n-layout has-sider class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
+            <n-layout has-sider position="absolute" class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
                 <n-layout-sider
-                    width={320}
+                    width={360}
                     collapsed-width={0}
                     show-collapsed-content={false}
                     class="flex flex-col bg-transparent"
-                    content-class="flex flex-col flex-1 overflow-hidden"
+                    content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
-                    <n-element class="flex flex-col flex-1 p-block-14 p-is-14 overflow-hidden">
-                        <n-card class="flex-1 overflow-hidden" content-class="p-14!">
-                            <n-tree
-                                block-line
-                                cancelable={false}
-                                selected-keys={deptOptions.state.selectedKeys}
-                                expanded-keys={deptOptions.state.expandedKeys}
-                                key-field="keyId"
-                                label-field="name"
-                                children-field="children"
-                                data={deptOptions.dataSource.value}
-                                render-switcher-icon={() => h(SendFilled)}
-                                on-update:selected-keys={fetchUpdateSelected}
-                                on-update:expanded-keys={(keys: Array<string>) => deptOptions.setState({ expandedKeys: keys })}
-                            />
-                        </n-card>
-                    </n-element>
+                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-inline-0! p-block-14! overflow-hidden">
+                        <common-element-spiner opacity={0} loading={deptOptions.state.loading}>
+                            <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
+                                <n-element class="p-inline-14">
+                                    <n-tree
+                                        block-line
+                                        cancelable={false}
+                                        key-field="keyId"
+                                        label-field="name"
+                                        children-field="children"
+                                        pattern={deptOptions.state.pattern}
+                                        selected-keys={deptOptions.state.selectedKeys}
+                                        expanded-keys={deptOptions.state.expandedKeys}
+                                        data={deptOptions.dataSource.value}
+                                        render-switcher-icon={() => h(SendFilled)}
+                                        on-update:selected-keys={fetchUpdateSelected}
+                                        on-update:expanded-keys={fetchUpdateExpanded}
+                                        filter={(vague: string, node: Omix) => node.name.includes(vague)}
+                                    />
+                                </n-element>
+                            </n-scrollbar>
+                        </common-element-spiner>
+                    </n-card>
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden">
                     <n-layout-header class="bg-transparent">
@@ -155,8 +166,9 @@ export default defineComponent({
                             v-model:page={state.page}
                             v-model:size={state.size}
                             v-model:select={state.select}
-                            v-model:loading={state.loading}
                             v-model:data={state.dataSource}
+                            v-model:loading={state.loading}
+                            v-model:initialize={state.initialize}
                             v-model:customize={state.customize}
                             on-update:customize={instOptions.fetchUpdateCustomize}
                             on-update:page={(page: number) => fetchRefresh({ page })}

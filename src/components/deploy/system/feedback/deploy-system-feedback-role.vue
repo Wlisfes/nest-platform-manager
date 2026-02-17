@@ -1,7 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useChunkService } from '@/hooks'
-import { useFormService } from '@/hooks/hook-form'
+import { useFormService, useSelectService, useChunkService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
 
@@ -13,66 +12,85 @@ export default defineComponent({
         title: { type: String, required: true },
         /**操作指令**/
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
+        /**角色类型：common-通用角色、department-部门角色**/
+        chunk: { type: String as PropType<'common' | 'department'>, default: 'common' },
         /**编辑操作详情数据**/
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const { state, form, formRef, setState, fetchValidater } = useFormService({
-            callback: fetchCallback,
-            form: {
-                name: props.node.name,
-                status: props.node.status,
-                comment: props.node.comment
+        const isDepartment = props.chunk === 'department'
+        const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
+            callback: fetchBaseSystemRoleResolver,
+            formState: {
+                name: props.node.name, //角色名称
+                comment: props.node.comment, //角色描述
+                sort: props.node.sort ?? 10, //排序号
+                model: props.node.model, //数据权限
+                deptId: props.node.deptId //所属部门（仅部门角色需要）
             },
             rules: {
-                name: { required: true, trigger: 'blur', message: '请输入菜单名称' },
-                status: { required: true, trigger: 'blur', message: '请选择角色状态' }
+                name: { required: true, message: '请输入角色名称', trigger: 'blur' },
+                model: { required: true, message: '请选择数据权限', trigger: 'blur' },
+                sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' },
+                deptId: { required: true, type: 'number', message: '请选择所属部门', trigger: 'blur' }
             }
         })
         /**通用字典枚举**/
-        const { chunk, fetchRequest } = useChunkService({ COMMON_SYSTEM_ROLE_STATUS: true })
-
-        /**表达初始化回调**/
-        async function fetchCallback() {
-            return await fetchRequest().then(async () => {
-                return await setState({ initialize: false })
-            })
-        }
-
-        /**创建角色**/
-        async function fetchBaseSystemRoleCreate(body: Omix) {
-            return await Service.httpBaseSystemRoleCreate({ ...body }).then(async ({ message }) => {
-                return await setState({ visible: false }).then(async () => {
-                    await emit('submit', { done: setState })
-                    return await fetchNotifyService({ title: message })
+        const chunkOptions = useChunkService({
+            immediate: false,
+            type: ['CHUNK_WINDOWS_ROLE_MODEL', 'CHUNK_WINDOWS_ROLE_CHUNK']
+        })
+        /**部门树结构（仅部门角色需要）**/
+        const deptOptions = useSelectService(() => Service.httpBaseSystemDepartmentTreeStructure(), {
+            immediate: false
+        })
+        /**角色详情**/
+        async function fetchBaseSystemRoleResolver() {
+            return await Promise.all([deptOptions.fetchRequest(), chunkOptions.fetchRequest()]).then(async () => {
+                if (['CREATE'].includes(props.command)) {
+                    return await setState({ initialize: false })
+                }
+                return await setState({ initialize: true }).then(async () => {
+                    try {
+                        return await Service.httpBaseSystemRoleResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
+                            return await setForm(fetchReste(data)).then(async () => {
+                                return await setState({ initialize: false })
+                            })
+                        })
+                    } catch (err) {
+                        return await setState({ initialize: false }).then(async () => {
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        })
+                    }
                 })
             })
         }
-
-        /**编辑角色**/
-        async function fetchBaseSystemRoleUpdate(body: Omix) {
-            return await Service.httpBaseSystemRoleUpdate({ ...body, keyId: props.node.keyId }).then(async ({ message }) => {
-                return await setState({ visible: false }).then(async () => {
-                    await emit('submit', { done: setState })
-                    return await fetchNotifyService({ title: message })
-                })
-            })
-        }
-
         /**确定提交表单**/
         async function fetchSubmit() {
-            return await fetchValidater().then(async result => {
-                if (result) {
-                    return await await setState({ loading: false, disabled: false })
+            return await fetchValidater().then(async error => {
+                if (error) {
+                    return await setState({ loading: false, disabled: false })
                 }
                 try {
-                    if (props.command === 'CREATE') {
-                        return await fetchBaseSystemRoleCreate(form.value)
-                    } else {
-                        return await fetchBaseSystemRoleUpdate(form.value)
+                    if (['CREATE'].includes(props.command)) {
+                        if (isDepartment) {
+                            await Service.httpBaseSystemCreateDepartmentRole(formState.value)
+                        } else {
+                            await Service.httpBaseSystemCreateCommonRole(formState.value)
+                        }
+                    } else if (['UPDATE'].includes(props.command)) {
+                        if (isDepartment) {
+                            await Service.httpBaseSystemUpdateDepartmentRole({ ...formState.value, keyId: props.node.keyId })
+                        } else {
+                            await Service.httpBaseSystemUpdateCommonRole({ ...formState.value, keyId: props.node.keyId })
+                        }
                     }
+                    return await setState({ visible: false }).then(async () => {
+                        await emit('submit', { done: setState })
+                        return await fetchNotifyService({ title: '操作成功' })
+                    })
                 } catch (err) {
-                    return await await setState({ loading: false, disabled: false }).then(async () => {
+                    return await setState({ loading: false, disabled: false }).then(async () => {
                         return await fetchNotifyService({ type: 'error', title: err.message })
                     })
                 }
@@ -90,34 +108,47 @@ export default defineComponent({
                 onCancel={() => setState({ visible: false })}
                 onClose={() => emit('close', { done: setState })}
             >
-                <n-form
+                <form-common-container
                     require-mark-placement="left"
                     size="medium"
                     ref={formRef}
-                    model={form.value}
+                    model={formState.value}
                     rules={state.rules}
                     disabled={state.loading}
                 >
-                    <n-form-item label="角色名称" path="name">
-                        <n-input placeholder="请输入菜单名称" maxlength={32} v-model:value={form.value.name}></n-input>
-                    </n-form-item>
-                    <n-form-item label="角色状态" path="status">
-                        <form-chunk-custom-select
-                            placeholder="请选择角色状态"
-                            options={chunk.COMMON_SYSTEM_ROLE_STATUS}
-                            v-model:value={form.value.status}
-                        ></form-chunk-custom-select>
-                    </n-form-item>
-                    <n-form-item label="角色描述" path="comment">
+                    <form-common-column label="角色名称" path="name">
+                        <form-common-column-input maxlength={32} placeholder="请输入角色名称" v-model:value={formState.value.name} />
+                    </form-common-column>
+                    {isDepartment && (
+                        <form-common-column label="所属部门" path="deptId">
+                            <form-common-column-cascader
+                                v-model:value={formState.value.deptId}
+                                placeholder="请选择所属部门"
+                                expand-trigger="click"
+                                options={deptOptions.dataSource.value}
+                            />
+                        </form-common-column>
+                    )}
+                    <form-common-column label="数据权限" path="model">
+                        <form-common-column-select-chunk
+                            placeholder="请选择数据权限"
+                            options={chunkOptions.CHUNK_WINDOWS_ROLE_MODEL.value}
+                            v-model:value={formState.value.model}
+                        />
+                    </form-common-column>
+                    <form-common-column label="排序号" path="sort">
+                        <n-input-number class="w-full" placeholder="请输入排序号" v-model:value={formState.value.sort} />
+                    </form-common-column>
+                    <form-common-column label="角色描述" path="comment">
                         <n-input
                             type="textarea"
                             placeholder="请输入角色描述"
                             maxlength={128}
                             autosize={{ minRows: 2, maxRows: 5 }}
-                            v-model:value={form.value.comment}
-                        ></n-input>
-                    </n-form-item>
-                </n-form>
+                            v-model:value={formState.value.comment}
+                        />
+                    </form-common-column>
+                </form-common-container>
             </common-dialog-provider>
         )
     }

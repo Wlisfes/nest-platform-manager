@@ -8,7 +8,7 @@ export async function fetchDeploySystemSheet(props: PropsState<Omix>) {
 }
 
 /**新增、编辑角色**/
-export async function fetchDeploySystemFeedbackRole(props: PropsState<Omix>) {
+export async function fetchDeploySystemRole(props: PropsState<Omix>) {
     return await import('@/components/deploy/system/feedback/deploy-system-feedback-role.vue').then(component => {
         return createComponent(component.default, props)
     })

@@ -35,5 +35,13 @@ export const COMMON_CHUNK_OPTIONS = {
     COMMON_WINDOWS_RESOUREC_SHEET: {
         value: 'COMMON_WINDOWS_RESOUREC_SHEET',
         name: '按钮状态'
+    },
+    CHUNK_WINDOWS_ROLE_CHUNK: {
+        value: 'CHUNK_WINDOWS_ROLE_CHUNK',
+        name: '角色类型'
+    },
+    CHUNK_WINDOWS_ROLE_MODEL: {
+        value: 'CHUNK_WINDOWS_ROLE_MODEL',
+        name: '角色数据权限'
     }
 }

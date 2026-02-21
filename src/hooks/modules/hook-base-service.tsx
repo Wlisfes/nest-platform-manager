@@ -23,9 +23,12 @@ interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
 }
 
 /**详情包装hook**/
-export function useBaseService<T extends Omix, U extends Omix>(options: BaseServiceOptions<T, U>) {
+export function useBaseService<T extends Omix, U extends Omix>(
+    request: BaseServiceOptions<T, U>['request'],
+    options: Omit<BaseServiceOptions<T, U>, 'request'> = {}
+) {
     const faseNode = ref<T>({} as T) as Ref<T>
-    const { state, setState } = useState({
+    const { state: faseState, setState } = useState({
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,
         message: '',
@@ -39,7 +42,7 @@ export function useBaseService<T extends Omix, U extends Omix>(options: BaseServ
     /**初始化**/
     async function fetchInitialize() {
         return await fetchRequest().then(() => {
-            return options.callback?.(faseNode.value, state as never)
+            return options.callback?.(faseNode.value, faseState as never)
         })
     }
 
@@ -59,25 +62,17 @@ export function useBaseService<T extends Omix, U extends Omix>(options: BaseServ
     async function fetchRequest(opt: Omix = {}) {
         return await setState({ loading: true } as never).then(async () => {
             try {
-                const { data } = await options.request(faseNode.value, state as never, opt)
+                const { data } = await request(faseNode.value, faseState as never, opt)
                 return await fetchUpdate(data ?? {}).then(async () => {
-                    return await setState({
-                        initialize: false,
-                        loading: false,
-                        message: ''
-                    } as never)
+                    return await setState({ initialize: false, loading: false, message: '' } as never)
                 })
             } catch (err) {
                 return await fetchUpdate({} as T).then(async () => {
-                    return await setState({
-                        initialize: false,
-                        loading: false,
-                        message: err.message
-                    } as never)
+                    return await setState({ initialize: false, loading: false, message: err.message } as never)
                 })
             }
         })
     }
 
-    return { faseNode, state, ...toRefs(state), setState, fetchUpdate, fetchInitialize, fetchRequest, fetchRefresh }
+    return { faseNode, faseState, ...toRefs(faseState), setState, fetchUpdate, fetchInitialize, fetchRequest, fetchRefresh }
 }

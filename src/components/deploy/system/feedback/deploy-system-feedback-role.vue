@@ -2,7 +2,8 @@
 import { defineComponent, PropType } from 'vue'
 import { useFormService, useSelectService, useChunkService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
-import * as Service from '@/api/instance.service'
+import { httpBaseSystemDepartmentTreeStructure } from '@/api/modules/deploy/modules/dept.service'
+import * as Service from '@/api/modules/deploy/modules/role.service'
 
 export default defineComponent({
     name: 'DeploySystemFeedbackRole',
@@ -12,27 +13,22 @@ export default defineComponent({
         title: { type: String, required: true },
         /**操作指令**/
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
-        /**角色类型：common-通用角色、department-部门角色**/
-        chunk: { type: String as PropType<'common' | 'department'>, default: 'common' },
         /**编辑操作详情数据**/
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        const isDepartment = props.chunk === 'department'
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemRoleResolver,
             formState: {
                 name: props.node.name, //角色名称
                 comment: props.node.comment, //角色描述
                 sort: props.node.sort ?? 10, //排序号
-                model: props.node.model, //数据权限
-                deptId: props.node.deptId //所属部门（仅部门角色需要）
+                model: props.node.model //数据权限
             },
             rules: {
                 name: { required: true, message: '请输入角色名称', trigger: 'blur' },
                 model: { required: true, message: '请选择数据权限', trigger: 'blur' },
-                sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' },
-                deptId: { required: true, type: 'number', message: '请选择所属部门', trigger: 'blur' }
+                sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' }
             }
         })
         /**通用字典枚举**/
@@ -41,7 +37,7 @@ export default defineComponent({
             type: ['CHUNK_WINDOWS_ROLE_MODEL', 'CHUNK_WINDOWS_ROLE_CHUNK']
         })
         /**部门树结构（仅部门角色需要）**/
-        const deptOptions = useSelectService(() => Service.httpBaseSystemDepartmentTreeStructure(), {
+        const deptOptions = useSelectService(() => httpBaseSystemDepartmentTreeStructure(), {
             immediate: false
         })
         /**角色详情**/
@@ -73,17 +69,9 @@ export default defineComponent({
                 }
                 try {
                     if (['CREATE'].includes(props.command)) {
-                        if (isDepartment) {
-                            await Service.httpBaseSystemCreateDepartmentRole(formState.value)
-                        } else {
-                            await Service.httpBaseSystemCreateCommonRole(formState.value)
-                        }
+                        await Service.httpBaseSystemCreateCommonRole(formState.value)
                     } else if (['UPDATE'].includes(props.command)) {
-                        if (isDepartment) {
-                            await Service.httpBaseSystemUpdateDepartmentRole({ ...formState.value, keyId: props.node.keyId })
-                        } else {
-                            await Service.httpBaseSystemUpdateCommonRole({ ...formState.value, keyId: props.node.keyId })
-                        }
+                        await Service.httpBaseSystemUpdateCommonRole({ ...formState.value, keyId: props.node.keyId })
                     }
                     return await setState({ visible: false }).then(async () => {
                         await emit('submit', { done: setState })
@@ -119,16 +107,6 @@ export default defineComponent({
                     <form-common-column label="角色名称" path="name">
                         <form-common-column-input maxlength={32} placeholder="请输入角色名称" v-model:value={formState.value.name} />
                     </form-common-column>
-                    {isDepartment && (
-                        <form-common-column label="所属部门" path="deptId">
-                            <form-common-column-cascader
-                                v-model:value={formState.value.deptId}
-                                placeholder="请选择所属部门"
-                                expand-trigger="click"
-                                options={deptOptions.dataSource.value}
-                            />
-                        </form-common-column>
-                    )}
                     <form-common-column label="数据权限" path="model">
                         <form-common-column-select-chunk
                             placeholder="请选择数据权限"

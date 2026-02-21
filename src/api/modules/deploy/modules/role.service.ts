@@ -9,28 +9,10 @@ export function httpBaseSystemCreateCommonRole(data: Omix) {
     })
 }
 
-/**添加部门角色**/
-export function httpBaseSystemCreateDepartmentRole(data: Omix) {
-    return request({
-        url: `/api/windows/system/role/create/department`,
-        method: 'POST',
-        data
-    })
-}
-
 /**编辑通用角色**/
 export function httpBaseSystemUpdateCommonRole(data: Omix) {
     return request({
         url: `/api/windows/system/role/update/common`,
-        method: 'POST',
-        data
-    })
-}
-
-/**编辑部门角色**/
-export function httpBaseSystemUpdateDepartmentRole(data: Omix) {
-    return request({
-        url: `/api/windows/system/role/update/department`,
         method: 'POST',
         data
     })
@@ -45,19 +27,10 @@ export function httpBaseSystemRoleResolver(data: Omix) {
     })
 }
 
-/**通用角色列表查询**/
-export function httpBaseSystemColumnCommonRole(data: Omix) {
+/**角色列表查询**/
+export function httpBaseSystemColumnRole(data?: Omix) {
     return request({
-        url: `/api/windows/system/role/column/common`,
-        method: 'POST',
-        data
-    })
-}
-
-/**部门角色列表查询**/
-export function httpBaseSystemColumnDepartmentRole(data: Omix) {
-    return request({
-        url: `/api/windows/system/role/column/department`,
+        url: `/api/windows/system/role/column`,
         method: 'POST',
         data
     })

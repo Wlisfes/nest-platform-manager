@@ -1,158 +1,57 @@
 <script lang="tsx">
 import { defineComponent, h } from 'vue'
-import { useSelectService } from '@/hooks'
-import { useState } from '@/hooks'
-import { SendFilled } from '@vicons/carbon'
+import { useState, useSelectService, useBaseService } from '@/hooks'
+import { SendFilled, Grid } from '@vicons/carbon'
+import { stop, isEmpty } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
     name: 'DeploySystemRole',
     setup(props, ctx) {
-        /**页面状态**/
-        const { state, setState } = useState({
-            activeTab: 'account' as 'account' | 'permission',
-            selectedRole: undefined as Omix | undefined,
-            accountLoading: false,
-            accountList: [] as Array<Omix>,
-            sheetLoading: false,
-            sheetCheckedKeys: [] as Array<number>
-        })
-
-        /**通用角色列表**/
-        const commonRoleOptions = useSelectService(e => Service.httpBaseSystemColumnCommonRole({ page: 1, size: 999 }), {
-            callback: fetchCommonReadyCallback
-        })
-        /**部门角色列表**/
-        const departmentRoleOptions = useSelectService(e => Service.httpBaseSystemColumnDepartmentRole({ page: 1, size: 999 }), {
-            immediate: true
-        })
-        /**菜单树结构**/
-        const sheetTreeOptions = useSelectService(e => Service.httpBaseSystemSheetTreeStructure(), {
-            options: { expandedKeys: [] as Array<string> },
-            immediate: true
-        })
-
-        /**通用角色初始化回调：默认选中第一个**/
-        async function fetchCommonReadyCallback(data: Omix) {
-            if (state.selectedRole) return false
-            const first = data.dataSource?.[0]
-            if (first) {
-                return await fetchSelectRole(first)
+        /**角色列表**/
+        const { faseNode, faseState, setState, fetchRefresh } = useBaseService(() => Service.httpBaseSystemColumnRole(), {
+            callback: fetchReadyCallback,
+            immediate: true,
+            options: {
+                selectedKeys: [] as Array<number>,
+                expandedKeys: [] as Array<number>
             }
-        }
-
-        /**选中角色**/
-        async function fetchSelectRole(role: Omix) {
-            return await setState({ selectedRole: role }).then(async () => {
-                return await fetchLoadTabData()
-            })
-        }
-
-        /**加载当前tab数据**/
-        async function fetchLoadTabData() {
-            if (!state.selectedRole) return
-            const roleId = state.selectedRole.keyId
-            if (state.activeTab === 'account') {
-                return await fetchLoadRoleAccount(roleId)
-            } else {
-                return await fetchLoadRoleSheet(roleId)
+        })
+        /**初始化回调**/
+        async function fetchReadyCallback(data: Omix) {
+            if (data.list.length === 0 || faseState.selectedKeys.length > 0) {
+                return false
             }
+            return await setState({ expandedKeys: [], selectedKeys: [data.list[0].keyId] })
         }
-
-        /**加载角色关联账号**/
-        async function fetchLoadRoleAccount(roleId: number) {
-            await setState({ accountLoading: true })
-            try {
-                const { data } = await Service.httpBaseSystemColumnRoleAccount({ roleId })
-                return await setState({ accountList: data.list ?? [], accountLoading: false })
-            } catch (err) {
-                return await setState({ accountList: [], accountLoading: false })
-            }
-        }
-
-        /**加载角色菜单权限**/
-        async function fetchLoadRoleSheet(roleId: number) {
-            await setState({ sheetLoading: true })
-            try {
-                const { data } = await Service.httpBaseSystemColumnRoleSheet({ roleId })
-                const checkedKeys = (data.list ?? []).map((item: Omix) => item.sheetId)
-                return await setState({ sheetCheckedKeys: checkedKeys, sheetLoading: false })
-            } catch (err) {
-                return await setState({ sheetCheckedKeys: [], sheetLoading: false })
-            }
-        }
-
-        /**切换tab**/
-        async function fetchUpdateTab(tab: string) {
-            return await setState({ activeTab: tab as typeof state.activeTab }).then(async () => {
-                return await fetchLoadTabData()
-            })
-        }
-
         /**左侧树展开变更回调**/
-        async function fetchUpdateSheetExpanded(keys: Array<string>) {
-            return await sheetTreeOptions.setState({ expandedKeys: keys as never })
+        async function fetchUpdateExpanded(keys: Array<number>) {
+            return await setState({ expandedKeys: keys })
+        }
+        /**左侧树选中变更回调**/
+        async function fetchUpdateSelected(keys: Array<number>) {
+            return await setState({ selectedKeys: keys })
         }
 
-        /**新增通用角色**/
-        async function fetchCreateCommonRole() {
-            return await feedback.fetchDeploySystemRole({
-                title: '新增通用角色',
-                command: 'CREATE',
-                chunk: 'common',
-                async onSubmit() {
-                    return await commonRoleOptions.fetchRequest()
+        /**添加、编辑岗位角色**/
+        async function fetchDeployUpdateSystemRole(event: MouseEvent, node: Omix = {}) {
+            return await stop(event).then(async () => {
+                console.log(node)
+                if (isEmpty(node.keyId)) {
+                    return await feedback.fetchDeploySystemRole({
+                        title: '添加岗位角色',
+                        command: 'CREATE',
+                        onSubmit: fetchRefresh
+                    })
                 }
+                return await feedback.fetchDeploySystemRole({
+                    node,
+                    title: '编辑岗位角色',
+                    command: 'UPDATE',
+                    onSubmit: fetchRefresh
+                })
             })
-        }
-
-        /**新增部门角色**/
-        async function fetchCreateDepartmentRole() {
-            return await feedback.fetchDeploySystemRole({
-                title: '新增部门角色',
-                command: 'CREATE',
-                chunk: 'department',
-                async onSubmit() {
-                    return await departmentRoleOptions.fetchRequest()
-                }
-            })
-        }
-
-        /**编辑角色**/
-        async function fetchUpdateRole() {
-            if (!state.selectedRole) return
-            const chunk = state.selectedRole.chunk as 'common' | 'department'
-            const title = chunk === 'common' ? '编辑通用角色' : '编辑部门角色'
-            return await feedback.fetchDeploySystemRole({
-                title,
-                command: 'UPDATE',
-                chunk,
-                node: state.selectedRole,
-                async onSubmit() {
-                    if (chunk === 'common') {
-                        return await commonRoleOptions.fetchRequest()
-                    }
-                    return await departmentRoleOptions.fetchRequest()
-                }
-            })
-        }
-
-        /**渲染角色列表项**/
-        function renderRoleItem(role: Omix) {
-            const isSelected = state.selectedRole?.keyId === role.keyId
-            return (
-                <n-element
-                    key={role.keyId}
-                    class={[
-                        'p-inline-14 p-block-10 cursor-pointer rounded-6 transition-colors',
-                        isSelected ? 'bg-[var(--primary-color-hover)] text-white' : 'hover:bg-[var(--hover-color)]'
-                    ]}
-                    onClick={() => fetchSelectRole(role)}
-                >
-                    <n-text class={isSelected ? 'text-white!' : ''}>{role.name}</n-text>
-                </n-element>
-            )
         }
 
         return () => (
@@ -164,116 +63,111 @@ export default defineComponent({
                     class="flex flex-col bg-transparent"
                     content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
-                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-inline-0! p-block-0! overflow-hidden">
-                        <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
-                            <n-element class="p-inline-14 p-block-14">
-                                <div class="flex items-center justify-between m-be-10">
-                                    <n-text strong>通用角色</n-text>
-                                    <common-element-button size="small" type="primary" onClick={fetchCreateCommonRole}>
-                                        新增
-                                    </common-element-button>
-                                </div>
-                                <common-element-spiner opacity={0} loading={commonRoleOptions.state.loading}>
-                                    <div class="flex flex-col gap-4">
-                                        {commonRoleOptions.dataSource.value.map((role: Omix) => renderRoleItem(role))}
-                                        {!commonRoleOptions.state.loading && commonRoleOptions.dataSource.value.length === 0 && (
-                                            <n-empty description="暂无通用角色" size="small" />
+                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-inline-0! p-block-14! overflow-hidden">
+                        <common-element-spiner opacity={0} loading={faseState.initialize}>
+                            <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
+                                <n-element class="p-inline-14 flex flex-col gap-20 overflow-hidden">
+                                    <div class="flex flex-col overflow-hidden">
+                                        <div class="flex items-center justify-between m-be-5">
+                                            <n-h4 class="line-height-24 m-block-0!">岗位角色</n-h4>
+                                            <common-element-button
+                                                {...{ text: true, type: 'primary' }}
+                                                onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
+                                            >
+                                                添加角色
+                                            </common-element-button>
+                                        </div>
+                                        {(faseNode.value.list ?? []).length > 0 && (
+                                            <n-radio-group
+                                                class="chunk-block flex flex-col overflow-hidden"
+                                                value={faseState.selectedKeys[0]}
+                                                on-update:value={(keyId: number) => fetchUpdateSelected([keyId])}
+                                            >
+                                                <common-element-draggable
+                                                    class="flex flex-col overflow-hidden"
+                                                    handle=".cursor-move"
+                                                    animation={200}
+                                                    v-model={faseNode.value.list}
+                                                >
+                                                    {(faseNode.value.list ?? []).map((item: Omix) => (
+                                                        <n-radio class="chunk-block-element" key={item.keyId} value={item.keyId}>
+                                                            <div class="flex items-center p-inline-7 cursor-move overflow-hidden">
+                                                                <n-icon size={16} color="var(--primary-color)">
+                                                                    <Grid />
+                                                                </n-icon>
+                                                            </div>
+                                                            <div title={item.name} class="flex-1 overflow-hidden">
+                                                                {item.name}
+                                                            </div>
+                                                            <div class="flex items-center p-inline-7 overflow-hidden" title="编辑角色">
+                                                                <common-element-button
+                                                                    {...{ text: true, iconSize: 16, icon: 'nest-settings' }}
+                                                                    onClick={(e: MouseEvent) => fetchDeployUpdateSystemRole(e, item)}
+                                                                ></common-element-button>
+                                                            </div>
+                                                        </n-radio>
+                                                    ))}
+                                                </common-element-draggable>
+                                            </n-radio-group>
                                         )}
                                     </div>
-                                </common-element-spiner>
-                                <n-divider class="m-block-14!" />
-                                <div class="flex items-center justify-between m-be-10">
-                                    <n-text strong>部门角色</n-text>
-                                    <common-element-button size="small" type="primary" onClick={fetchCreateDepartmentRole}>
-                                        新增
-                                    </common-element-button>
-                                </div>
-                                <common-element-spiner opacity={0} loading={departmentRoleOptions.state.loading}>
-                                    <div class="flex flex-col gap-4">
-                                        {departmentRoleOptions.dataSource.value.map((role: Omix) => renderRoleItem(role))}
-                                        {!departmentRoleOptions.state.loading && departmentRoleOptions.dataSource.value.length === 0 && (
-                                            <n-empty description="暂无部门角色" size="small" />
-                                        )}
+                                    <div class="flex flex-col overflow-hidden">
+                                        <n-h4 class="m-be-5 line-height-24">部门角色</n-h4>
+                                        <n-tree
+                                            block-line
+                                            cancelable={false}
+                                            key-field="keyId"
+                                            label-field="name"
+                                            children-field="children"
+                                            selected-keys={faseState.selectedKeys}
+                                            expanded-keys={faseState.expandedKeys}
+                                            data={faseNode.value.dept ?? []}
+                                            render-switcher-icon={() => h(SendFilled)}
+                                            on-update:selected-keys={fetchUpdateSelected}
+                                            on-update:expanded-keys={fetchUpdateExpanded}
+                                        />
                                     </div>
-                                </common-element-spiner>
-                            </n-element>
-                        </n-scrollbar>
+                                </n-element>
+                            </n-scrollbar>
+                        </common-element-spiner>
                     </n-card>
                 </n-layout-sider>
-                <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden">
-                    {state.selectedRole ? (
-                        <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-block-0! overflow-hidden">
-                            <div class="flex items-center justify-between m-be-14">
-                                <n-text strong class="text-16">
-                                    {state.selectedRole.name}
-                                </n-text>
-                                <common-element-button dashed type="primary" onClick={fetchUpdateRole}>
-                                    编辑角色
-                                </common-element-button>
-                            </div>
-                            <n-tabs type="line" value={state.activeTab} on-update:value={fetchUpdateTab}>
-                                <n-tab-pane name="account" tab="关联账号">
-                                    <common-element-spiner opacity={0} loading={state.accountLoading}>
-                                        <n-scrollbar trigger="none" style={{ maxHeight: '100%' }}>
-                                            {state.accountList.length > 0 ? (
-                                                <n-table bordered single-line size="small">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>账号UID</th>
-                                                            <th>昵称</th>
-                                                            <th>关联时间</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {state.accountList.map((item: Omix) => (
-                                                            <tr key={item.keyId}>
-                                                                <td>{item.uid?.uid ?? item.uid}</td>
-                                                                <td>{item.uid?.nickname ?? '-'}</td>
-                                                                <td>{item.createTime}</td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </n-table>
-                                            ) : (
-                                                <n-empty description="暂无关联账号" />
-                                            )}
-                                        </n-scrollbar>
-                                    </common-element-spiner>
-                                </n-tab-pane>
-                                <n-tab-pane name="permission" tab="角色权限">
-                                    <common-element-spiner opacity={0} loading={state.sheetLoading || sheetTreeOptions.state.loading}>
-                                        <n-scrollbar trigger="none" style={{ maxHeight: '100%' }}>
-                                            {sheetTreeOptions.dataSource.value.length > 0 ? (
-                                                <n-tree
-                                                    block-line
-                                                    cascade
-                                                    checkable
-                                                    selectable={false}
-                                                    key-field="keyId"
-                                                    label-field="name"
-                                                    children-field="children"
-                                                    expanded-keys={sheetTreeOptions.state.expandedKeys}
-                                                    checked-keys={state.sheetCheckedKeys}
-                                                    data={sheetTreeOptions.dataSource.value}
-                                                    render-switcher-icon={() => h(SendFilled)}
-                                                    on-update:expanded-keys={fetchUpdateSheetExpanded}
-                                                />
-                                            ) : (
-                                                <n-empty description="暂无菜单数据" />
-                                            )}
-                                        </n-scrollbar>
-                                    </common-element-spiner>
-                                </n-tab-pane>
-                            </n-tabs>
-                        </n-card>
-                    ) : (
-                        <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 items-center justify-center">
-                            <n-empty description="请在左侧选择一个角色" />
-                        </n-card>
-                    )}
-                </n-layout>
+                <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden"></n-layout>
             </n-layout>
         )
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.chunk-block {
+    --chunk-block-height: 36px;
+    --chunk-block-line-height: 30px;
+    position: relative;
+    :deep(.n-radio__dot-wrapper) {
+        display: none;
+    }
+    :deep(.n-radio__label) {
+        width: 100%;
+        display: flex;
+        padding-inline-start: 0;
+        padding-inline-end: 0;
+        height: var(--chunk-block-line-height);
+        line-height: var(--chunk-block-line-height);
+        border-radius: var(--border-radius-small);
+        transition: background-color 0.3s var(--n-bezier);
+    }
+    :deep(.chunk-block-element) {
+        height: var(--chunk-block-height);
+        padding-block-start: 3px;
+        padding-block-end: 3px;
+        box-sizing: border-box;
+        &:hover .n-radio__label {
+            background-color: var(--hover-color);
+        }
+        &:has(.n-radio__dot--checked) .n-radio__label {
+            background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
+        }
+    }
+}
+</style>

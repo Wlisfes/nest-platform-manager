@@ -1,11 +1,5 @@
 export default [
     {
-        path: '/deploy/system/router',
-        name: 'DeploySystemRouter',
-        meta: { title: '菜单管理', AUTH: 'AUTH' },
-        component: () => import('@/views/deploy/system/router/router.vue')
-    },
-    {
         path: '/deploy/system/sheet',
         name: 'DeploySystemSheet',
         meta: { title: '菜单管理', AUTH: 'AUTH' },

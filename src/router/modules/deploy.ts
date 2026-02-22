@@ -9,7 +9,7 @@ export default [
         path: '/deploy/system/role',
         name: 'DeploySystemRole',
         meta: { title: '角色管理', AUTH: 'AUTH' },
-        component: () => import('@/views/deploy/system/role/role.vue')
+        component: () => import('@/views/deploy/system/role/index.vue')
     },
     {
         path: '/deploy/system/user',

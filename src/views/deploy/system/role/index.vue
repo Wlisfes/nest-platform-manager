@@ -14,6 +14,7 @@ export default defineComponent({
             callback: fetchReadyCallback,
             immediate: true,
             options: {
+                active: 'account',
                 selectedKeys: [] as Array<number>,
                 expandedKeys: [] as Array<number>
             }
@@ -68,8 +69,8 @@ export default defineComponent({
                             <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
                                 <n-element class="p-inline-14 flex flex-col gap-20 overflow-hidden">
                                     <div class="flex flex-col overflow-hidden">
-                                        <div class="flex items-center justify-between m-be-5">
-                                            <n-h4 class="line-height-24 m-block-0!">岗位角色</n-h4>
+                                        <div class="flex items-center justify-between m-be-10">
+                                            <n-h4 class="line-height-22 m-block-0!">岗位角色</n-h4>
                                             <common-element-button
                                                 {...{ text: true, type: 'primary' }}
                                                 onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
@@ -112,7 +113,7 @@ export default defineComponent({
                                         )}
                                     </div>
                                     <div class="flex flex-col overflow-hidden">
-                                        <n-h4 class="m-be-5 line-height-24">部门角色</n-h4>
+                                        <n-h4 class="line-height-22 m-be-10">部门角色</n-h4>
                                         <n-tree
                                             block-line
                                             cancelable={false}
@@ -132,7 +133,27 @@ export default defineComponent({
                         </common-element-spiner>
                     </n-card>
                 </n-layout-sider>
-                <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden"></n-layout>
+                <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 overflow-hidden">
+                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-0! overflow-hidden">
+                        <n-tabs
+                            class="chunk-wrapper h-full overflow-hidden"
+                            type="line"
+                            default-value="account"
+                            animated
+                            v-model:value={faseState.active}
+                        >
+                            <n-tab-pane name="account" tab="关联账号">
+                                Wonderwall
+                            </n-tab-pane>
+                            <n-tab-pane name="sheet" tab="菜单权限">
+                                Hey Jude
+                            </n-tab-pane>
+                            <n-tab-pane name="model" tab="数据权限">
+                                七里香
+                            </n-tab-pane>
+                        </n-tabs>
+                    </n-card>
+                </n-layout>
             </n-layout>
         )
     }
@@ -140,7 +161,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chunk-block {
+.chunk-wrapper.n-tabs {
+    --n-tab-gap: 24px;
+    position: relative;
+    :deep(.n-tabs-wrapper) {
+        padding-inline-start: 14px;
+        padding-inline-end: 14px;
+    }
+    :deep(.n-tabs-pane-wrapper),
+    :deep(.n-tab-pane) {
+        overflow: hidden;
+        flex-direction: column;
+        display: flex;
+        flex: 1;
+        padding: 0;
+    }
+}
+.chunk-block.n-radio-group {
     --chunk-block-height: 36px;
     --chunk-block-line-height: 30px;
     position: relative;

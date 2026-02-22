@@ -1,6 +1,6 @@
 import { request } from '@/utils'
 
-/**添加菜单**/
+/**新增菜单**/
 export function httpBaseSystemCreateSheetResource(data: Omix) {
     return request({
         url: `/api/windows/system/sheet/create/resource`,
@@ -44,7 +44,7 @@ export function httpBaseSystemSheetResolver(data: Omix) {
     })
 }
 
-/**添加权限按钮**/
+/**新增权限按钮**/
 export function httpBaseSystemCreateSheetAuthorize(data: Omix) {
     return request({
         url: `/api/windows/system/sheet/create/authorize`,

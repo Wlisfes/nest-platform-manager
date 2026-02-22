@@ -1,6 +1,6 @@
 import { request } from '@/utils'
 
-/**添加岗位角色**/
+/**新增岗位角色**/
 export function httpBaseSystemCreateRole(data: Omix) {
     return request({
         url: `/api/windows/system/role/create`,

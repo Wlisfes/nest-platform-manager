@@ -38,7 +38,7 @@ export default defineComponent({
             formOptions.value.remove = remove
         })
 
-        /**添加实例**/
+        /**新增实例**/
         async function insert(field: Omix) {
             return fields.value.push(field)
         }

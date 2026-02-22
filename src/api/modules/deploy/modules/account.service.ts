@@ -1,6 +1,6 @@
 import { request } from '@/utils'
 
-/**添加账号**/
+/**新增账号**/
 export function httpBaseSystemCreateAccount(data: Omix) {
     return request({
         url: `/api/windows/system/account/create`,

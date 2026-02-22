@@ -134,7 +134,7 @@ export default defineComponent({
                         >
                             <common-database-search-function abstract class="flex gap-col-10">
                                 <common-element-button type="primary" onClick={fetchDeployDepartmentCreate}>
-                                    添加
+                                    新增
                                 </common-element-button>
                                 <common-element-button
                                     dashed

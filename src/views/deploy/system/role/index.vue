@@ -35,13 +35,13 @@ export default defineComponent({
             return await setState({ selectedKeys: keys })
         }
 
-        /**添加、编辑岗位角色**/
+        /**新增、编辑岗位角色**/
         async function fetchDeployUpdateSystemRole(event: MouseEvent, node: Omix = {}) {
             return await stop(event).then(async () => {
                 console.log(node)
                 if (isEmpty(node.keyId)) {
                     return await feedback.fetchDeploySystemRole({
-                        title: '添加岗位角色',
+                        title: '新增岗位角色',
                         command: 'CREATE',
                         onSubmit: fetchRefresh
                     })
@@ -75,7 +75,7 @@ export default defineComponent({
                                                 {...{ text: true, type: 'primary' }}
                                                 onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
                                             >
-                                                添加角色
+                                                新增角色
                                             </common-element-button>
                                         </div>
                                         {(faseNode.value.list ?? []).length > 0 && (

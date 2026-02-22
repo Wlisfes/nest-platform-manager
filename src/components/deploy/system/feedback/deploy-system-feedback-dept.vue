@@ -100,13 +100,21 @@ export default defineComponent({
                             placeholder="请选择上级部门"
                             expand-trigger="click"
                             options={deptTreeOptions.dataSource.value}
-                        />
+                        ></form-common-column-cascader>
                     </form-common-column>
                     <form-common-column label="部门名称" path="name">
-                        <form-common-column-input maxlength={32} placeholder="请输入部门名称" v-model:value={formState.value.name} />
+                        <form-common-column-input
+                            maxlength={32}
+                            placeholder="请输入部门名称"
+                            v-model:value={formState.value.name}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="别名简称" path="alias">
-                        <form-common-column-input maxlength={4} placeholder="请输入别名简称" v-model:value={formState.value.alias} />
+                        <form-common-column-input
+                            maxlength={4}
+                            placeholder="请输入别名简称"
+                            v-model:value={formState.value.alias}
+                        ></form-common-column-input>
                     </form-common-column>
                 </form-common-container>
             </common-dialog-provider>

@@ -105,7 +105,11 @@ export default defineComponent({
                     disabled={state.loading}
                 >
                     <form-common-column label="角色名称" path="name">
-                        <form-common-column-input maxlength={32} placeholder="请输入角色名称" v-model:value={formState.value.name} />
+                        <form-common-column-input
+                            maxlength={32}
+                            placeholder="请输入角色名称"
+                            v-model:value={formState.value.name}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="数据权限" path="model">
                         <form-common-column-select
@@ -118,13 +122,13 @@ export default defineComponent({
                         <n-input-number class="w-full" placeholder="请输入排序号" v-model:value={formState.value.sort} />
                     </form-common-column>
                     <form-common-column label="角色描述" path="comment">
-                        <n-input
+                        <form-common-column-input
                             type="textarea"
                             placeholder="请输入角色描述"
                             maxlength={128}
                             autosize={{ minRows: 2, maxRows: 5 }}
                             v-model:value={formState.value.comment}
-                        />
+                        ></form-common-column-input>
                     </form-common-column>
                 </form-common-container>
             </common-dialog-provider>

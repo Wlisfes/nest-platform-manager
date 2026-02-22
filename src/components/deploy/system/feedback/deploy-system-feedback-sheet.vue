@@ -132,7 +132,11 @@ export default defineComponent({
                         ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="权限标识" path="keyName">
-                        <form-common-column-input maxlength={255} placeholder="请输入权限标识" v-model:value={formState.value.keyName} />
+                        <form-common-column-input
+                            maxlength={255}
+                            placeholder="请输入权限标识"
+                            v-model:value={formState.value.keyName}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column
                         label="父级菜单/按钮"
@@ -154,7 +158,11 @@ export default defineComponent({
                         ></form-common-column-cascader>
                     </form-common-column>
                     <form-common-column label="菜单/按钮名称" path="name">
-                        <form-common-column-input maxlength={32} placeholder="请输入菜单/按钮名称" v-model:value={formState.value.name} />
+                        <form-common-column-input
+                            maxlength={32}
+                            placeholder="请输入菜单/按钮名称"
+                            v-model:value={formState.value.name}
+                        ></form-common-column-input>
                     </form-common-column>
                     {['resource'].includes(formState.value.chunk) && (
                         <Fragment>
@@ -163,14 +171,14 @@ export default defineComponent({
                                     maxlength={255}
                                     placeholder="请输入菜单地址"
                                     v-model:value={formState.value.router}
-                                />
+                                ></form-common-column-input>
                             </form-common-column>
                             <form-common-column label="菜单图标" path="iconName">
                                 <form-common-column-input
                                     maxlength={255}
                                     placeholder="请输入菜单图标"
                                     v-model:value={formState.value.iconName}
-                                />
+                                ></form-common-column-input>
                             </form-common-column>
                             <form-common-column label="菜单显示状态" path="check">
                                 <form-common-column-select
@@ -189,7 +197,11 @@ export default defineComponent({
                         ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="版本号" path="version">
-                        <form-common-column-input maxlength={32} placeholder="请输入版本号" v-model:value={formState.value.version} />
+                        <form-common-column-input
+                            maxlength={32}
+                            placeholder="请输入版本号"
+                            v-model:value={formState.value.version}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="排序号" path="sort" v-model:value={formState.value.sort}>
                         <n-input-number

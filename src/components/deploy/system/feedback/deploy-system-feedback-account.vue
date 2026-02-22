@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useFormService } from '@/hooks'
+import { useFormService, useChunkService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
 
@@ -14,7 +14,11 @@ export default defineComponent({
         command: { type: String as PropType<'CREATE'>, default: 'CREATE' }
     },
     setup(props, { emit }) {
+        /**通用字典枚举**/
+        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_ACCOUNT_STATUS'], immediate: false })
+        /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
+            callback: fetchBaseSystemAccountResolver,
             formState: {
                 name: undefined, //姓名
                 number: undefined, //工号
@@ -22,7 +26,7 @@ export default defineComponent({
                 email: undefined, //邮箱
                 password: undefined, //密码
                 avatar: undefined, //头像
-                status: 'online' //状态
+                status: undefined //状态
             },
             rules: {
                 name: { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -32,6 +36,27 @@ export default defineComponent({
                 status: { required: true, message: '请选择状态', trigger: 'blur' }
             }
         })
+        /**部门详情**/
+        async function fetchBaseSystemAccountResolver() {
+            if (['CREATE'].includes(props.command)) {
+                return await setState({ initialize: false })
+            }
+            // httpBaseSystemAccountResolver
+            // return await setState({ initialize: true }).then(async () => {
+            //     try {
+            //         await deptTreeOptions.fetchRequest()
+            //         return await Service.httpBaseSystemDepartmentResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
+            //             return await setForm(fetchReste(data)).then(async () => {
+            //                 return await setState({ initialize: false })
+            //             })
+            //         })
+            //     } catch (err) {
+            //         return await setState({ initialize: false }).then(async () => {
+            //             return await fetchNotifyService({ type: 'error', title: err.message })
+            //         })
+            //     }
+            // })
+        }
 
         /**确定提交表单**/
         async function fetchSubmit() {
@@ -111,14 +136,11 @@ export default defineComponent({
                         ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="状态" path="status">
-                        <n-select
+                        <form-common-column-select
                             placeholder="请选择状态"
+                            options={chunkOptions.CHUNK_WINDOWS_ACCOUNT_STATUS.value}
                             v-model:value={formState.value.status}
-                            options={[
-                                { label: '在职', value: 'online' },
-                                { label: '离职', value: 'disable' }
-                            ]}
-                        />
+                        ></form-common-column-select>
                     </form-common-column>
                 </form-common-container>
             </common-dialog-provider>

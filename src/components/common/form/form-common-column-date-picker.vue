@@ -5,7 +5,7 @@ import { useVModels } from '@vueuse/core'
 
 export default defineComponent({
     name: 'FormCommonColumnDatePicker',
-    emits: ['update:startTime', 'update:endTime', 'update:value', '-update:value'],
+    emits: ['update:startTime', 'update:endTime', 'update:value', '-change:value'],
     props: {
         /**Date Picker 的类型**/
         type: { type: String as PropType<string | 'daterange' | 'datetimerange'>, default: 'daterange' },
@@ -35,7 +35,7 @@ export default defineComponent({
                 endTime.value = null as never
             }
             return await nextTick().then(() => {
-                return emit('-update:value', { startTime: startTime.value, endTime: endTime.value })
+                return emit('-change:value', { startTime: startTime.value, endTime: endTime.value })
             })
         }
 

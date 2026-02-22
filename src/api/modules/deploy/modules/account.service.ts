@@ -17,3 +17,12 @@ export function httpBaseSystemColumnAccount(data: Omix) {
         data
     })
 }
+
+/**账号详情**/
+export function httpBaseSystemAccountResolver(data: Omix) {
+    return request({
+        url: `/api/windows/system/account/resolver`,
+        method: 'POST',
+        data
+    })
+}

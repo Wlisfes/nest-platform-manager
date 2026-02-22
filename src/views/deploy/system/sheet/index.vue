@@ -186,7 +186,7 @@ export default defineComponent({
                                     placeholder="请输入菜单名称"
                                     v-model:value={formState.value.name}
                                     on-submit={fetchRefresh}
-                                />
+                                ></form-common-column-input>
                             </common-database-search-column>
                             <common-database-search-column prop="keyName" label="权限标识">
                                 <form-common-column-input
@@ -194,7 +194,7 @@ export default defineComponent({
                                     placeholder="请输入权限标识"
                                     v-model:value={formState.value.keyName}
                                     on-submit={fetchRefresh}
-                                />
+                                ></form-common-column-input>
                             </common-database-search-column>
                             <common-database-search-column prop="router" label="菜单地址">
                                 <form-common-column-input
@@ -202,7 +202,7 @@ export default defineComponent({
                                     placeholder="请输入菜单地址"
                                     v-model:value={formState.value.router}
                                     on-submit={fetchRefresh}
-                                />
+                                ></form-common-column-input>
                             </common-database-search-column>
                             <common-database-search-column prop="version" label="版本号">
                                 <form-common-column-input
@@ -210,7 +210,7 @@ export default defineComponent({
                                     placeholder="请输入版本号"
                                     v-model:value={formState.value.version}
                                     on-submit={fetchRefresh}
-                                />
+                                ></form-common-column-input>
                             </common-database-search-column>
                         </common-database-search>
                     </n-layout-header>

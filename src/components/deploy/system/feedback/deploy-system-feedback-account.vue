@@ -76,25 +76,39 @@ export default defineComponent({
                     disabled={state.loading}
                 >
                     <form-common-column label="姓名" path="name">
-                        <form-common-column-input maxlength={32} placeholder="请输入姓名" v-model:value={formState.value.name} />
+                        <form-common-column-input
+                            maxlength={32}
+                            placeholder="请输入姓名"
+                            v-model:value={formState.value.name}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="工号" path="number">
-                        <form-common-column-input maxlength={4} placeholder="请输入工号（4位）" v-model:value={formState.value.number} />
+                        <form-common-column-input
+                            maxlength={4}
+                            placeholder="请输入工号（4位）"
+                            v-model:value={formState.value.number}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="手机号" path="phone">
-                        <form-common-column-input maxlength={11} placeholder="请输入手机号" v-model:value={formState.value.phone} />
+                        <form-common-column-input
+                            maxlength={11}
+                            placeholder="请输入手机号"
+                            v-model:value={formState.value.phone}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="邮箱" path="email">
-                        <form-common-column-input maxlength={128} placeholder="请输入邮箱" v-model:value={formState.value.email} />
+                        <form-common-column-input
+                            maxlength={128}
+                            placeholder="请输入邮箱"
+                            v-model:value={formState.value.email}
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="密码" path="password">
-                        <n-input
-                            type="password"
-                            show-password-on="click"
+                        <form-common-column-input
                             maxlength={32}
                             placeholder="请输入密码（6~32位）"
                             v-model:value={formState.value.password}
-                        />
+                        ></form-common-column-input>
                     </form-common-column>
                     <form-common-column label="状态" path="status">
                         <n-select

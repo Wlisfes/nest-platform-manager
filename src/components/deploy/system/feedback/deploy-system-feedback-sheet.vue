@@ -125,11 +125,11 @@ export default defineComponent({
                     disabled={state.loading}
                 >
                     <form-common-column label="类型" path="chunk">
-                        <form-common-column-select-chunk
+                        <form-common-column-select
                             placeholder="请选择类型"
                             options={chunkOptions.CHUNK_WINDOWS_SHEET_CHUNK.value}
                             v-model:value={formState.value.chunk}
-                        ></form-common-column-select-chunk>
+                        ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="权限标识" path="keyName">
                         <form-common-column-input maxlength={255} placeholder="请输入权限标识" v-model:value={formState.value.keyName} />
@@ -173,20 +173,20 @@ export default defineComponent({
                                 />
                             </form-common-column>
                             <form-common-column label="菜单显示状态" path="check">
-                                <form-common-column-select-chunk
+                                <form-common-column-select
                                     placeholder="请选择菜单显示状态"
                                     options={chunkOptions.CHUNK_WINDOWS_SHEET_CHECK.value}
                                     v-model:value={formState.value.check}
-                                ></form-common-column-select-chunk>
+                                ></form-common-column-select>
                             </form-common-column>
                         </Fragment>
                     )}
                     <form-common-column label="菜单/按钮状态" path="status">
-                        <form-common-column-select-chunk
+                        <form-common-column-select
                             placeholder="请选择菜单/按钮状态"
                             options={chunkOptions.CHUNK_WINDOWS_SHEET_STATUS.value}
                             v-model:value={formState.value.status}
-                        ></form-common-column-select-chunk>
+                        ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="版本号" path="version">
                         <form-common-column-input maxlength={32} placeholder="请输入版本号" v-model:value={formState.value.version} />

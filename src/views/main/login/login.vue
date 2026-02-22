@@ -63,7 +63,7 @@ export default defineComponent({
                             <n-text depth={2}>欢迎登录</n-text>
                         </n-h2>
                         <n-form-item path="number">
-                            <form-common-input
+                            <form-common-column-input
                                 maxlength={32}
                                 type="text"
                                 placeholder="请输入登录账号"
@@ -71,10 +71,10 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'on' }}
                                 onSubmit={fetchSubmit}
                                 prefix={<common-element-icon size={22} name="nest-unset-user"></common-element-icon>}
-                            ></form-common-input>
+                            ></form-common-column-input>
                         </n-form-item>
                         <n-form-item path="password">
-                            <form-common-input
+                            <form-common-column-input
                                 maxlength={32}
                                 placeholder="请输入登录密码"
                                 type="password"
@@ -84,11 +84,11 @@ export default defineComponent({
                                 v-model:value={formState.value.password}
                                 onSubmit={fetchSubmit}
                                 prefix={<common-element-icon size={22} name="nest-unset-ockes"></common-element-icon>}
-                            ></form-common-input>
+                            ></form-common-column-input>
                         </n-form-item>
                         <n-form-item path="code">
                             <n-flex class="w-full">
-                                <form-common-input
+                                <form-common-column-input
                                     class="flex-1"
                                     type="text"
                                     placeholder="验证码"
@@ -96,7 +96,7 @@ export default defineComponent({
                                     v-model:value={formState.value.code}
                                     onSubmit={fetchSubmit}
                                     prefix={<common-element-icon size={22} name="nest-unset-codex"></common-element-icon>}
-                                ></form-common-input>
+                                ></form-common-column-input>
                                 <common-element-codex
                                     link={link.value}
                                     loading={loading.value}
@@ -140,7 +140,9 @@ export default defineComponent({
 .login-element {
     overflow: hidden;
     box-sizing: border-box;
-    transition: padding 0.3s var(--cubic-bezier-ease-in-out), background-color 0.3s var(--cubic-bezier-ease-in-out);
+    transition:
+        padding 0.3s var(--cubic-bezier-ease-in-out),
+        background-color 0.3s var(--cubic-bezier-ease-in-out);
     background-image: url('@/assets/images/nest-element-login.jpg');
     background-repeat: no-repeat;
     background-size: cover;

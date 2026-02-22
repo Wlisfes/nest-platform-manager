@@ -108,11 +108,11 @@ export default defineComponent({
                         <form-common-column-input maxlength={32} placeholder="请输入角色名称" v-model:value={formState.value.name} />
                     </form-common-column>
                     <form-common-column label="数据权限" path="model">
-                        <form-common-column-select-chunk
+                        <form-common-column-select
                             placeholder="请选择数据权限"
                             options={chunkOptions.CHUNK_WINDOWS_ROLE_MODEL.value}
                             v-model:value={formState.value.model}
-                        />
+                        ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="排序号" path="sort">
                         <n-input-number class="w-full" placeholder="请输入排序号" v-model:value={formState.value.sort} />

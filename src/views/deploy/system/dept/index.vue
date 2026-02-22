@@ -21,7 +21,8 @@ export default defineComponent({
             immediate: false,
             formState: {
                 pid: undefined, //父级ID
-                name: undefined //部门名称
+                name: undefined, //部门名称
+                alias: undefined //别名简称
             },
             columns: [
                 { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
@@ -153,7 +154,15 @@ export default defineComponent({
                                     placeholder="请输入部门名称"
                                     v-model:value={formState.value.name}
                                     on-submit={fetchRefresh}
-                                />
+                                ></form-common-column-input>
+                            </common-database-search-column>
+                            <common-database-search-column prop="alias" label="别名简称">
+                                <form-common-column-input
+                                    clearable
+                                    placeholder="请输入别名简称"
+                                    v-model:value={formState.value.alias}
+                                    on-submit={fetchRefresh}
+                                ></form-common-column-input>
                             </common-database-search-column>
                         </common-database-search>
                     </n-layout-header>

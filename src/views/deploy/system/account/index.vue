@@ -2,12 +2,11 @@
 import { defineComponent, h } from 'vue'
 import { useColumnService, useSelectService } from '@/hooks'
 import { SendFilled } from '@vicons/carbon'
-import { TreeOption } from 'naive-ui'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'DeploySystemDepartment',
+    name: 'DeploySystemAccount',
     setup(props, ctx) {
         /**部门树结构**/
         const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
@@ -16,20 +15,23 @@ export default defineComponent({
         })
         /**表格实例**/
         const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
-            request: (base, payload) => Service.httpBaseSystemColumnDepartment(payload),
-            keyName: 'chatbok:deploy:system:dept',
+            request: (base, payload) => Service.httpBaseSystemColumnAccount(payload),
+            keyName: 'chatbok:deploy:system:account',
             immediate: false,
             formState: {
                 pid: undefined, //父级ID
                 name: undefined //部门名称
             },
             columns: [
-                { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
-                { title: '别名简称', key: 'alias', width: 120, check: true },
-                { title: '创建人', key: 'createBy', width: 120, check: true },
-                { title: '创建时间', key: 'createTime', width: 160, check: true },
-                { title: '更新人', key: 'modifyBy', width: 120, check: true },
-                { title: '更新时间', key: 'modifyTime', width: 160, check: true }
+                { title: '名称', key: 'name', width: 120, disabled: true },
+                { title: '工号', key: 'number', width: 120, disabled: true },
+                { title: '头像', key: 'avatar', width: 100, align: 'center', check: true },
+                { title: '邮箱', key: 'email', minWidth: 200, check: true },
+                { title: '手机号', key: 'phone', minWidth: 150, check: true },
+                { title: '归属部门', key: 'depts', minWidth: 150, check: true },
+                { title: '已关联角色', key: 'roles', minWidth: 150, check: true },
+                { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
+                { title: '入职时间', key: 'createTime', width: 160, check: true }
             ]
         })
 

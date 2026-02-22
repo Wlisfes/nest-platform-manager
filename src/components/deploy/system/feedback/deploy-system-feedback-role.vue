@@ -69,9 +69,9 @@ export default defineComponent({
                 }
                 try {
                     if (['CREATE'].includes(props.command)) {
-                        await Service.httpBaseSystemCreateCommonRole(formState.value)
+                        await Service.httpBaseSystemCreateRole(formState.value)
                     } else if (['UPDATE'].includes(props.command)) {
-                        await Service.httpBaseSystemUpdateCommonRole({ ...formState.value, keyId: props.node.keyId })
+                        await Service.httpBaseSystemUpdateRole({ ...formState.value, keyId: props.node.keyId })
                     }
                     return await setState({ visible: false }).then(async () => {
                         await emit('submit', { done: setState })

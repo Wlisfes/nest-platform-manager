@@ -18,6 +18,7 @@ export default defineComponent({
             <n-spin
                 class={`common-element-spiner ${props.className}`}
                 style={{ '--n-opacity-spinning': props.opacity }}
+                content-class="flex flex-col flex-1 overflow-hidden"
                 size={props.size}
                 show={props.loading}
             >

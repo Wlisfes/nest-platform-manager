@@ -2,7 +2,7 @@
 import { defineComponent, h } from 'vue'
 import { useState, useSelectService, useBaseService } from '@/hooks'
 import { SendFilled, Grid } from '@vicons/carbon'
-import { stop, isEmpty } from '@/utils'
+import { stop, isEmpty, isNotEmpty } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -64,13 +64,13 @@ export default defineComponent({
                     class="flex flex-col bg-transparent"
                     content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
-                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-inline-0! p-block-14! overflow-hidden">
+                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-0! overflow-hidden">
                         <common-element-spiner opacity={0} loading={faseState.initialize}>
                             <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
-                                <n-element class="p-inline-14 flex flex-col gap-20 overflow-hidden">
-                                    <div class="flex flex-col overflow-hidden">
-                                        <div class="flex items-center justify-between m-be-10">
-                                            <n-h4 class="line-height-22 m-block-0!">岗位角色</n-h4>
+                                <n-element class="flex flex-col gap-10 overflow-hidden">
+                                    <div class="flex flex-col p-inline-14 overflow-hidden">
+                                        <div class="flex items-center justify-between p-block-14 overflow-hidden">
+                                            <n-h4 class="line-height-21 m-0">岗位角色</n-h4>
                                             <common-element-button
                                                 {...{ text: true, type: 'primary' }}
                                                 onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
@@ -112,8 +112,8 @@ export default defineComponent({
                                             </n-radio-group>
                                         )}
                                     </div>
-                                    <div class="flex flex-col overflow-hidden">
-                                        <n-h4 class="line-height-22 m-be-10">部门角色</n-h4>
+                                    <div class="flex flex-col p-inline-14 overflow-hidden">
+                                        <n-h4 class="line-height-21 m-0 p-block-14">部门角色</n-h4>
                                         <n-tree
                                             block-line
                                             cancelable={false}
@@ -135,23 +135,30 @@ export default defineComponent({
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 overflow-hidden">
                     <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-0! overflow-hidden">
-                        <n-tabs
-                            class="chunk-wrapper h-full overflow-hidden"
-                            type="line"
-                            default-value="account"
-                            animated
-                            v-model:value={faseState.active}
-                        >
-                            <n-tab-pane name="account" tab="关联账号">
-                                Wonderwall
-                            </n-tab-pane>
-                            <n-tab-pane name="sheet" tab="菜单权限">
-                                Hey Jude
-                            </n-tab-pane>
-                            <n-tab-pane name="model" tab="数据权限">
-                                七里香
-                            </n-tab-pane>
-                        </n-tabs>
+                        <common-element-spiner opacity={0} loading={faseState.initialize}>
+                            <n-tabs
+                                animated
+                                type="line"
+                                default-value="account"
+                                class="chunk-wrapper h-full overflow-hidden"
+                                v-model:value={faseState.active}
+                            >
+                                <n-tab-pane name="account" tab="关联账号" display-directive="if">
+                                    {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                        <deploy-system-role-account
+                                            active={faseState.active}
+                                            role-id={faseState.selectedKeys[0]}
+                                        ></deploy-system-role-account>
+                                    )}
+                                </n-tab-pane>
+                                <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
+                                    Hey Jude
+                                </n-tab-pane>
+                                <n-tab-pane name="model" tab="数据权限" display-directive="show:lazy">
+                                    七里香
+                                </n-tab-pane>
+                            </n-tabs>
+                        </common-element-spiner>
                     </n-card>
                 </n-layout>
             </n-layout>
@@ -162,18 +169,22 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chunk-wrapper.n-tabs {
+    --n-tab-padding: 14px 0;
     --n-tab-gap: 24px;
     position: relative;
     :deep(.n-tabs-wrapper) {
         padding-inline-start: 14px;
         padding-inline-end: 14px;
     }
-    :deep(.n-tabs-pane-wrapper),
-    :deep(.n-tab-pane) {
+    :deep(.n-tabs-pane-wrapper) {
+        position: relative;
         overflow: hidden;
-        flex-direction: column;
-        display: flex;
         flex: 1;
+    }
+    :deep(.n-tab-pane) {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
         padding: 0;
     }
 }

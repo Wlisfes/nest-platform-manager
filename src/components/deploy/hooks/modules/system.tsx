@@ -20,3 +20,10 @@ export async function fetchDeploySystemDepartment(props: PropsState<Omix>) {
         return createComponent(component.default, props)
     })
 }
+
+/**新增账号**/
+export async function fetchDeploySystemAccount(props: PropsState<Omix>) {
+    return await import('@/components/deploy/system/feedback/deploy-system-feedback-account.vue').then(component => {
+        return createComponent(component.default, props)
+    })
+}

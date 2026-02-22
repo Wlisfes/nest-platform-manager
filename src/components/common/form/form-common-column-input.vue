@@ -30,7 +30,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-input class="form-common-column-input" v-model:value={value.value} on-update:value={fetchUpdate} onKeydown={fetchSubmit}>
+            <n-input class="form-common-column-input" v-model:value={value.value} onUpdate:value={fetchUpdate} onKeydown={fetchSubmit}>
                 {{
                     prefix: fetchWherer(isNotEmpty(slots.prefix) || isNotEmpty(props.prefix), () => {
                         return slots.prefix ? slots.prefix() : h(props.prefix as VNode)

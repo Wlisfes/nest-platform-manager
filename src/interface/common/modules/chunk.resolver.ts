@@ -12,6 +12,10 @@ export interface ChunkColumnOptions extends Omix {
 }
 /**通用下拉字典**/
 export const COMMON_CHUNK_OPTIONS = {
+    CHUNK_WINDOWS_ACCOUNT_STATUS: {
+        value: 'CHUNK_WINDOWS_ACCOUNT_STATUS',
+        name: '账号状态'
+    },
     CHUNK_WINDOWS_SHEET_CHECK: {
         value: 'CHUNK_WINDOWS_SHEET_CHECK',
         name: '菜单显示状态'

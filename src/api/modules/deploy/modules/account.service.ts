@@ -1,5 +1,14 @@
 import { request } from '@/utils'
 
+/**添加账号**/
+export function httpBaseSystemCreateAccount(data: Omix) {
+    return request({
+        url: `/api/windows/system/account/create`,
+        method: 'POST',
+        data
+    })
+}
+
 /**账号列表**/
 export function httpBaseSystemColumnAccount(data: Omix) {
     return request({

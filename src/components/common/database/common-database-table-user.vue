@@ -15,7 +15,11 @@ export default defineComponent({
             if (['text'].includes(props.element) && isNotEmpty(props.data?.name) && isNotEmpty(props.data?.number)) {
                 return <span>{`${props.data.name} ${props.data.number}`}</span>
             } else if (['avatar'].includes(props.element) && isNotEmpty(props.data?.avatar)) {
-                return <n-image width="100" src={props.data.avatar} />
+                return (
+                    <div class="flex items-center justify-center">
+                        <n-image class="b-rd-2 h-32 w-32" object-fit="cover" width="32" src={props.data.avatar} />
+                    </div>
+                )
             }
             return <span>-</span>
         }

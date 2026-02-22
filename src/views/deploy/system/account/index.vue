@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, h } from 'vue'
-import { useColumnService, useSelectService } from '@/hooks'
+import { useColumnService, useSelectService, useChunkService } from '@/hooks'
 import { SendFilled } from '@vicons/carbon'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
@@ -8,6 +8,8 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemAccount',
     setup(props, ctx) {
+        /**通用字典枚举**/
+        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_ACCOUNT_STATUS'] })
         /**部门树结构**/
         const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
             options: { pattern: undefined, selectedKeys: [], expandedKeys: [] },
@@ -19,18 +21,20 @@ export default defineComponent({
             keyName: 'chatbok:deploy:system:account',
             immediate: false,
             formState: {
-                pid: undefined, //父级ID
-                name: undefined //部门名称
+                name: undefined, //名称工号
+                phone: undefined, //手机号
+                email: undefined, //邮箱
+                status: undefined //状态
             },
             columns: [
-                { title: '名称', key: 'name', width: 120, disabled: true },
-                { title: '工号', key: 'number', width: 120, disabled: true },
-                { title: '头像', key: 'avatar', width: 100, align: 'center', check: true },
-                { title: '邮箱', key: 'email', minWidth: 200, check: true },
-                { title: '手机号', key: 'phone', minWidth: 150, check: true },
-                { title: '归属部门', key: 'depts', minWidth: 150, check: true },
-                { title: '已关联角色', key: 'roles', minWidth: 150, check: true },
-                { title: '状态', key: 'statusChunk', width: 100, align: 'center', check: true },
+                { title: '头像', key: 'avatar', width: 100, align: 'center', disabled: true },
+                { title: '名称', key: 'name', width: 100, disabled: true },
+                { title: '工号', key: 'number', width: 100, disabled: true },
+                { title: '状态', key: 'status', width: 100, align: 'center', check: true },
+                { title: '手机号', key: 'phone', width: 160, check: true },
+                { title: '邮箱', key: 'email', width: 220, check: true },
+                { title: '归属部门', key: 'depts', minWidth: 160, check: true },
+                { title: '已关联角色', key: 'roles', minWidth: 160, check: true },
                 { title: '入职时间', key: 'createTime', width: 160, check: true }
             ]
         })
@@ -61,25 +65,13 @@ export default defineComponent({
             })
         }
 
-        /**新增部门**/
-        async function fetchDeployDepartmentCreate() {
-            return await feedback.fetchDeploySystemDepartment({
-                title: '新增部门',
+        /**新增账号**/
+        async function fetchDeployAccountCreate() {
+            return await feedback.fetchDeploySystemAccount({
+                title: '新增账号',
                 command: 'CREATE',
                 async onSubmit() {
-                    return await Promise.all([deptOptions.fetchRequest(), fetchRefresh()])
-                }
-            })
-        }
-
-        /**编辑部门**/
-        async function fetchDeployDepartmentUpdate() {
-            return await feedback.fetchDeploySystemDepartment({
-                title: '编辑部门',
-                command: 'UPDATE',
-                node: state.select[0],
-                async onSubmit() {
-                    return await Promise.all([deptOptions.fetchRequest(), fetchRefresh()])
+                    return await fetchRefresh()
                 }
             })
         }
@@ -134,28 +126,48 @@ export default defineComponent({
                             on-submit={fetchRequest}
                         >
                             <common-database-search-function abstract class="flex gap-col-10">
-                                <common-element-button type="primary" onClick={fetchDeployDepartmentCreate}>
-                                    新增
+                                <common-element-button type="primary" onClick={fetchDeployAccountCreate}>
+                                    添加
                                 </common-element-button>
-                                <common-element-button
-                                    dashed
-                                    type="primary"
-                                    disabled={instState.value.isUpdate}
-                                    onClick={fetchDeployDepartmentUpdate}
-                                >
+                                <common-element-button dashed type="primary" disabled={instState.value.isUpdate}>
                                     编辑
                                 </common-element-button>
                                 <common-element-button dashed type="error" disabled={instState.value.isDelete}>
                                     删除
                                 </common-element-button>
                             </common-database-search-function>
-                            <common-database-search-column disabled prop="name" label="部门名称">
+                            <common-database-search-column disabled prop="name" label="名称/工号">
                                 <form-common-column-input
                                     clearable
-                                    placeholder="请输入部门名称"
+                                    placeholder="请输入名称或工号"
                                     v-model:value={formState.value.name}
                                     on-submit={fetchRefresh}
-                                />
+                                ></form-common-column-input>
+                            </common-database-search-column>
+                            <common-database-search-column prop="phone" label="手机号">
+                                <form-common-column-input
+                                    clearable
+                                    placeholder="请输入手机号"
+                                    v-model:value={formState.value.phone}
+                                    on-submit={fetchRefresh}
+                                ></form-common-column-input>
+                            </common-database-search-column>
+                            <common-database-search-column prop="email" label="邮箱">
+                                <form-common-column-input
+                                    clearable
+                                    placeholder="请输入邮箱"
+                                    v-model:value={formState.value.email}
+                                    on-submit={fetchRefresh}
+                                ></form-common-column-input>
+                            </common-database-search-column>
+                            <common-database-search-column prop="status" label="状态">
+                                <form-common-column-select
+                                    clearable
+                                    placeholder="请选择状态"
+                                    options={chunkOptions.CHUNK_WINDOWS_ACCOUNT_STATUS.value}
+                                    v-model:value={formState.value.status}
+                                    on-change:value={fetchRefresh}
+                                ></form-common-column-select>
                             </common-database-search-column>
                         </common-database-search>
                     </n-layout-header>
@@ -179,11 +191,15 @@ export default defineComponent({
                             on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                         >
                             {{
-                                col_createBy: (data: Omix) => (
-                                    <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
-                                ),
-                                col_modifyBy: (data: Omix) => (
-                                    <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                                col_avatar: (data: Omix) => {
+                                    return <common-database-table-user element="avatar" data={data}></common-database-table-user>
+                                },
+                                col_status: (data: Omix) => (
+                                    <common-database-table-chunk
+                                        element="chunk"
+                                        value={data.status}
+                                        options={chunkOptions.CHUNK_WINDOWS_ACCOUNT_STATUS.value}
+                                    ></common-database-table-chunk>
                                 )
                             }}
                         </common-database-table>

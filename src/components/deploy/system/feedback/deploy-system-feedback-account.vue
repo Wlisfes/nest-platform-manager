@@ -52,7 +52,11 @@ export default defineComponent({
                 }
                 try {
                     return await Service.httpBaseSystemAccountResolver({ uid: props.node.uid }).then(async ({ data }) => {
-                        return await setForm(fetchReste(data)).then(async () => {
+                        const formOptions: Omix = fetchReste({
+                            ...data,
+                            depts: data.depts.map((item: Omix) => item.keyId)
+                        })
+                        return await setForm(formOptions).then(async () => {
                             return await setState({ initialize: false })
                         })
                     })

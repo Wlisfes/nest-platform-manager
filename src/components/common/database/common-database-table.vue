@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, nextTick, PropType } from 'vue'
-import { fetchWherer, isNotEmpty, isEmpty, isObject, fetchPlusNumber } from '@/utils'
+import { fetchWherer, isNotEmpty, isEmpty, isObject, isArray, fetchPlusNumber } from '@/utils'
 import { DataTableColumn, PaginationInfo } from 'naive-ui'
 import { useVModels } from '@vueuse/core'
 import { useState } from '@/hooks'
@@ -170,9 +170,16 @@ export default defineComponent({
                 return <span>-</span>
             }
             try {
+                if (['performant-ellipsis'].includes(base.ellipsisComponent ?? 'ellipsis')) {
+                    return (
+                        <n-performant-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '640px', maxHeight: '640px' } }}>
+                            {isObject(value) || isArray(value) ? JSON.stringify(value) : value}
+                        </n-performant-ellipsis>
+                    )
+                }
                 return (
-                    <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '540px', maxHeight: '540px' } }}>
-                        {isObject(value) ? JSON.stringify(value) : value}
+                    <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '640px', maxHeight: '640px' } }}>
+                        {isObject(value) || isArray(value) ? JSON.stringify(value) : value}
                     </n-ellipsis>
                 )
             } catch (err) {

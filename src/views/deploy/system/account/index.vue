@@ -47,6 +47,17 @@ export default defineComponent({
                 }
             })
         }
+        /**编辑账号**/
+        async function fetchDeployAccountUpdate() {
+            return await feedback.fetchDeploySystemAccount({
+                title: '编辑账号',
+                command: 'UPDATE',
+                node: state.select[0],
+                async onSubmit() {
+                    return await fetchRefresh()
+                }
+            })
+        }
 
         return () => (
             <layout-common-container initialize={state.initialize}>
@@ -67,7 +78,7 @@ export default defineComponent({
                         <common-element-button type="primary" onClick={fetchDeployAccountCreate}>
                             新增
                         </common-element-button>
-                        <common-element-button dashed type="primary" disabled={instState.value.isUpdate}>
+                        <common-element-button dashed type="primary" disabled={instState.value.isUpdate} onClick={fetchDeployAccountUpdate}>
                             编辑
                         </common-element-button>
                         <common-element-button dashed type="error" disabled={instState.value.isDelete}>
@@ -86,9 +97,7 @@ export default defineComponent({
                         <form-common-column-cascader
                             multiple
                             clearable
-                            placeholder="请选择上级部门"
-                            expand-trigger="click"
-                            max-tag-count="responsive"
+                            placeholder="请选择归属部门"
                             v-model:value={formState.value.depts}
                             options={deptOptions.dataSource.value}
                         ></form-common-column-cascader>

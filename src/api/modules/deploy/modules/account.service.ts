@@ -18,6 +18,15 @@ export function httpBaseSystemColumnAccount(data: Omix) {
     })
 }
 
+/**编辑账号**/
+export function httpBaseSystemUpdateAccount(data: Omix) {
+    return request({
+        url: `/api/windows/system/account/update`,
+        method: 'POST',
+        data
+    })
+}
+
 /**账号详情**/
 export function httpBaseSystemAccountResolver(data: Omix) {
     return request({

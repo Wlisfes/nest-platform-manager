@@ -17,6 +17,16 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
+        /**通用字典枚举**/
+        const chunkOptions = useChunkService({
+            immediate: false,
+            type: ['CHUNK_WINDOWS_ROLE_MODEL', 'CHUNK_WINDOWS_ROLE_CHUNK']
+        })
+        /**部门树结构（仅部门角色需要）**/
+        const deptOptions = useSelectService(() => httpBaseSystemDepartmentTreeStructure(), {
+            immediate: false
+        })
+        /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemRoleResolver,
             formState: {
@@ -31,34 +41,23 @@ export default defineComponent({
                 sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' }
             }
         })
-        /**通用字典枚举**/
-        const chunkOptions = useChunkService({
-            immediate: false,
-            type: ['CHUNK_WINDOWS_ROLE_MODEL', 'CHUNK_WINDOWS_ROLE_CHUNK']
-        })
-        /**部门树结构（仅部门角色需要）**/
-        const deptOptions = useSelectService(() => httpBaseSystemDepartmentTreeStructure(), {
-            immediate: false
-        })
         /**角色详情**/
         async function fetchBaseSystemRoleResolver() {
             return await Promise.all([deptOptions.fetchRequest(), chunkOptions.fetchRequest()]).then(async () => {
                 if (['CREATE'].includes(props.command)) {
                     return await setState({ initialize: false })
                 }
-                return await setState({ initialize: true }).then(async () => {
-                    try {
-                        return await Service.httpBaseSystemRoleResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
-                            return await setForm(fetchReste(data)).then(async () => {
-                                return await setState({ initialize: false })
-                            })
+                try {
+                    return await Service.httpBaseSystemRoleResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
+                        return await setForm(fetchReste(data)).then(async () => {
+                            return await setState({ initialize: false })
                         })
-                    } catch (err) {
-                        return await setState({ initialize: false }).then(async () => {
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        })
-                    }
-                })
+                    })
+                } catch (err) {
+                    return await setState({ initialize: false }).then(async () => {
+                        return await fetchNotifyService({ type: 'error', title: err.message })
+                    })
+                }
             })
         }
         /**确定提交表单**/

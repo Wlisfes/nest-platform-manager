@@ -16,6 +16,11 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
+        /**部门树结构**/
+        const deptOptions = useSelectService(() => Service.httpBaseSystemDepartmentTreeStructure(), {
+            immediate: false
+        })
+        /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemDeptResolver,
             formState: {
@@ -27,18 +32,14 @@ export default defineComponent({
                 name: { required: true, message: '请输入部门名称', trigger: 'blur' }
             }
         })
-        /**部门树结构**/
-        const deptTreeOptions = useSelectService(() => Service.httpBaseSystemDepartmentTreeStructure(), {
-            immediate: ['CREATE'].includes(props.command)
-        })
+
         /**部门详情**/
         async function fetchBaseSystemDeptResolver() {
-            if (['CREATE'].includes(props.command)) {
-                return await setState({ initialize: false })
-            }
-            return await setState({ initialize: true }).then(async () => {
+            return await Promise.all([deptOptions.fetchRequest()]).then(async () => {
+                if (['CREATE'].includes(props.command)) {
+                    return await setState({ initialize: false })
+                }
                 try {
-                    await deptTreeOptions.fetchRequest()
                     return await Service.httpBaseSystemDepartmentResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
                         return await setForm(fetchReste(data)).then(async () => {
                             return await setState({ initialize: false })
@@ -99,7 +100,7 @@ export default defineComponent({
                             v-model:value={formState.value.pid}
                             placeholder="请选择上级部门"
                             expand-trigger="click"
-                            options={deptTreeOptions.dataSource.value}
+                            options={deptOptions.dataSource.value}
                         ></form-common-column-cascader>
                     </form-common-column>
                     <form-common-column label="部门名称" path="name">

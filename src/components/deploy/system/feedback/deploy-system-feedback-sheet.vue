@@ -25,6 +25,7 @@ export default defineComponent({
             type: ['CHUNK_WINDOWS_SHEET_CHECK', 'CHUNK_WINDOWS_SHEET_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'],
             immediate: false
         })
+        /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemSheetResolver,
             formState: {
@@ -57,19 +58,17 @@ export default defineComponent({
                 if (['CREATE'].includes(props.command)) {
                     return await setState({ initialize: false })
                 }
-                return await setState({ initialize: true }).then(async () => {
-                    try {
-                        return await Service.httpBaseSystemSheetResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
-                            return await setForm(fetchReste(data)).then(async () => {
-                                return await setState({ initialize: false })
-                            })
+                try {
+                    return await Service.httpBaseSystemSheetResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
+                        return await setForm(fetchReste(data)).then(async () => {
+                            return await setState({ initialize: false })
                         })
-                    } catch (err) {
-                        return await setState({ initialize: false }).then(async () => {
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        })
-                    }
-                })
+                    })
+                } catch (err) {
+                    return await setState({ initialize: false }).then(async () => {
+                        return await fetchNotifyService({ type: 'error', title: err.message })
+                    })
+                }
             })
         }
         /**确定提交表单**/

@@ -123,8 +123,14 @@ export default defineComponent({
                         )}
                         {props.function.length + functions.length > 0 && (
                             <n-element class={`flex flex-wrap gap-10 ${props.functionClass}`}>
-                                {functions.length > 0 && <Fragment>{functions}</Fragment>}
-                                {props.function.includes('abstract') && <n-divider vertical class="h-[var(--height-medium)]! m-0!" />}
+                                {functions.length > 0 && (
+                                    <Fragment>
+                                        {functions}
+                                        {props.function.includes('abstract') && (
+                                            <n-divider vertical class="h-[var(--height-medium)]! m-0!" />
+                                        )}
+                                    </Fragment>
+                                )}
                                 {props.function.includes('search') && (
                                     <common-element-button
                                         class="min-w-80"

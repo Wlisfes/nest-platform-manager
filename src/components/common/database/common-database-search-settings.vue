@@ -22,6 +22,8 @@ export default defineComponent({
     setup(props, { emit }) {
         const { database, faseWhen } = useVModels(props, emit)
         const { state, setState } = useState({ visible: false, checked: true, click: false, columns: [] as Array<Omix> })
+        /**原始列顺序**/
+        let originalColumns: Array<Omix> = []
         /**是否全选**/
         const checkedAll = computed(() => state.columns.every(item => item.check))
         /**是否半选**/
@@ -51,6 +53,9 @@ export default defineComponent({
             } else {
                 columns = allColumns
             }
+            if (originalColumns.length === 0) {
+                originalColumns = cloneDeep(columns)
+            }
             return await setState({ columns: cloneDeep(columns) }).then(() => {
                 return (database.value = state.columns)
             })
@@ -74,13 +79,7 @@ export default defineComponent({
         }
         /**重置排版规则**/
         async function fetchReset() {
-            const columns = (props.columns ?? []).map(item => ({
-                uid: item.uid ?? item.component.uid,
-                prop: item.prop ?? item.props.prop,
-                label: item.label ?? item.props.label,
-                disabled: item.disabled ?? item.props.disabled ?? false,
-                check: true
-            }))
+            const columns = originalColumns.map(item => ({ ...item, check: true }))
             return await setState({ columns: cloneDeep(columns), checked: true }).then(fetchSyncDatabase)
         }
         /**拖动排序变更后实时生效**/

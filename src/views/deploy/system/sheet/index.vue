@@ -110,7 +110,7 @@ export default defineComponent({
         return () => (
             <n-layout has-sider class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
                 <n-layout-sider
-                    width={320}
+                    width={280}
                     collapsed-width={0}
                     show-collapsed-content={false}
                     class="flex flex-col bg-transparent"

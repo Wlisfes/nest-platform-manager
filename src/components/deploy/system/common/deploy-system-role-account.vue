@@ -14,12 +14,10 @@ export default defineComponent({
     setup(props, ctx) {
         /**表格实例**/
         const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
-            request: (base, payload) => Service.httpBaseSystemColumnAccountRole(payload),
+            request: (base, payload) => Service.httpBaseSystemColumnAccountRole({ ...payload, roleId: props.roleId }),
             keyName: 'chatbok:deploy:system:role:account',
             immediate: true,
-            formState: {
-                roleId: props.roleId //角色ID
-            },
+            formState: {},
             columns: [
                 { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
                 { title: '别名简称', key: 'alias', width: 120, check: true },
@@ -32,10 +30,26 @@ export default defineComponent({
 
         return () => (
             <n-element class="deploy-system-role-account h-full flex flex-col overflow-hidden">
+                <common-database-search
+                    class="p-0!"
+                    bordered={false}
+                    function-class="justify-end"
+                    function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
+                    ref={formRef}
+                    limit={state.limit}
+                    v-model:loading={state.loading}
+                    v-model:when={state.when}
+                    v-model:database={state.database}
+                    v-model:formState={formState.value}
+                    on-update:database={instOptions.fetchUpdateDatabase}
+                    on-restore={fetchRestore}
+                    on-submit={fetchRequest}
+                ></common-database-search>
                 <common-database-table
                     class="p-0!"
                     show-select
                     show-settings
+                    bordered={false}
                     limit={state.limit}
                     total={state.total}
                     columns={state.columns}

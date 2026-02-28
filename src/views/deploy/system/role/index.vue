@@ -38,7 +38,6 @@ export default defineComponent({
         /**新增、编辑岗位角色**/
         async function fetchDeployUpdateSystemRole(event: MouseEvent, node: Omix = {}) {
             return await stop(event).then(async () => {
-                console.log(node)
                 if (isEmpty(node.keyId)) {
                     return await feedback.fetchDeploySystemRole({
                         title: '新增岗位角色',
@@ -117,7 +116,7 @@ export default defineComponent({
                                         <n-tree
                                             block-line
                                             cancelable={false}
-                                            key-field="keyId"
+                                            key-field="nodeId"
                                             label-field="name"
                                             children-field="children"
                                             selected-keys={faseState.selectedKeys}
@@ -143,7 +142,7 @@ export default defineComponent({
                                 class="chunk-wrapper h-full overflow-hidden"
                                 v-model:value={faseState.active}
                             >
-                                <n-tab-pane name="account" tab="关联账号" display-directive="if">
+                                <n-tab-pane name="account" tab="关联账号" display-directive="show">
                                     {!faseState.initialize && faseState.selectedKeys.length > 0 && (
                                         <deploy-system-role-account
                                             active={faseState.active}

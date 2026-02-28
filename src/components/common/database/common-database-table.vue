@@ -192,7 +192,11 @@ export default defineComponent({
                 class="common-database-container flex flex-col flex-1 overflow-hidden"
                 style={{ [`--common-limit-width`]: `${props.limit}px`, padding: 'var(--common-limit-width)' }}
             >
-                <n-card class="flex flex-col flex-1 overflow-hidden" content-class="flex flex-col flex-1 overflow-hidden p-0!">
+                <n-card
+                    class="flex flex-col flex-1 overflow-hidden"
+                    content-class="flex flex-col flex-1 overflow-hidden p-0!"
+                    bordered={props.bordered}
+                >
                     <n-element class="common-database-table flex flex-col flex-1 overflow-hidden">
                         {slots.default && (
                             <n-element ref={headerRef} class="flex flex-col line-height-22 overflow-hidden">
@@ -211,13 +215,13 @@ export default defineComponent({
                             )}
                             <n-data-table
                                 remote
+                                bordered
                                 flex-height
                                 size="small"
                                 style={{ flex: 1, '--n-opacity-loading': initialize.value ? 0 : 0.5 }}
                                 row-key={(e: Omix) => e.keyId}
                                 loading={loading.value}
                                 scroll-x={width.value}
-                                bordered={props.bordered}
                                 single-line={false}
                                 data={data.value}
                                 columns={faseColumns.value}

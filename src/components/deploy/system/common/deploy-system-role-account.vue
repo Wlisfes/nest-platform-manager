@@ -52,7 +52,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-element class="deploy-system-role-account h-full flex flex-col overflow-hidden">
+            <n-element class="deploy-system-role-account h-full flex flex-col gap-14 overflow-hidden">
                 <common-database-search
                     class="p-0!"
                     bordered={false}

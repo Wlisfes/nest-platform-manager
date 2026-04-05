@@ -48,7 +48,7 @@ export function httpBaseSystemColumnAccountRole(data: Omix) {
 /**角色关联用户**/
 export function httpBaseSystemCreateAccountRole(data: Omix) {
     return request({
-        url: `/api/windows/system/role/account/join`,
+        url: `/api/windows/system/role/account/create`,
         method: 'POST',
         data
     })

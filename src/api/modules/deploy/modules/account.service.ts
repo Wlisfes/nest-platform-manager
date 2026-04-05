@@ -39,7 +39,7 @@ export function httpBaseSystemAccountResolver(data: Omix) {
 /**编辑账号状态**/
 export function httpBaseSystemUpdateSwitchAccount(data: Omix) {
     return request({
-        url: `/api/windows/system/account/update/switch`,
+        url: `/api/windows/system/account/switch/update`,
         method: 'POST',
         data
     })
@@ -51,5 +51,13 @@ export function httpBaseSystemDeleteAccount(data: Omix) {
         url: `/api/windows/system/account/delete`,
         method: 'POST',
         data
+    })
+}
+
+/**账号下拉列表**/
+export function httpBaseSystemSelectAccount() {
+    return request({
+        url: `/api/windows/system/account/select`,
+        method: 'POST'
     })
 }

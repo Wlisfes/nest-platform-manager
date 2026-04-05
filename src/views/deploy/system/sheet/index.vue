@@ -6,6 +6,7 @@ import { SendFilled } from '@vicons/carbon'
 import { isEmpty, fetchHandler } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
+import * as SheetService from '@/api/modules/deploy/modules/sheet.service'
 
 export default defineComponent({
     name: 'DeploySystemSheet',
@@ -107,6 +108,18 @@ export default defineComponent({
             })
         }
 
+        /**删除菜单/按钮**/
+        async function fetchDeploySheetDelete() {
+            const node = state.select[0]
+            await feedback.fetchNotifyDialog({
+                message: `确认删除菜单【${node.name}】吗？删除后将同时删除子菜单/按钮，且无法恢复！`,
+                onPositive: async () => {
+                    await SheetService.httpBaseSystemDeleteSheet({ keyId: node.keyId })
+                    await Promise.all([sheetOptions.fetchRequest(), fetchRefresh()])
+                }
+            })
+        }
+
         return () => (
             <n-layout has-sider class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
                 <n-layout-sider
@@ -176,7 +189,7 @@ export default defineComponent({
                                 >
                                     克隆
                                 </common-element-button>
-                                <common-element-button dashed type="error" disabled={instState.value.isDelete}>
+                                <common-element-button dashed type="error" disabled={instState.value.isDelete} onClick={fetchDeploySheetDelete}>
                                     删除
                                 </common-element-button>
                             </common-database-search-function>

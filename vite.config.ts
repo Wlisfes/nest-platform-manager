@@ -52,8 +52,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
             port: 4680,
             host: '0.0.0.0',
             proxy: {
-                [`/api`]: {
-                    target: `http://localhost:5000`,
+                [`/api/windows`]: {
+                    target: `http://localhost:5100`,
                     ws: true,
                     changeOrigin: true
                 }

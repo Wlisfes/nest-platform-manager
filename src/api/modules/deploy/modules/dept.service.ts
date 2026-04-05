@@ -43,3 +43,12 @@ export function httpBaseSystemColumnDepartment(data: Omix) {
         data
     })
 }
+
+/**删除部门**/
+export function httpBaseSystemDeleteDepartment(data: Omix) {
+    return request({
+        url: `/api/windows/system/dept/delete`,
+        method: 'POST',
+        data
+    })
+}

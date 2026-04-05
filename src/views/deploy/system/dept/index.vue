@@ -5,6 +5,7 @@ import { SendFilled } from '@vicons/carbon'
 import { TreeOption } from 'naive-ui'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
+import * as DeptService from '@/api/modules/deploy/modules/dept.service'
 
 export default defineComponent({
     name: 'DeploySystemDepartment',
@@ -83,6 +84,18 @@ export default defineComponent({
             })
         }
 
+        /**删除部门**/
+        async function fetchDeployDepartmentDelete() {
+            const node = state.select[0]
+            await feedback.fetchNotifyDialog({
+                message: `确认删除部门【${node.name}】吗？删除后将同时删除子部门，且无法恢复！`,
+                onPositive: async () => {
+                    await DeptService.httpBaseSystemDeleteDepartment({ keyId: node.keyId })
+                    await Promise.all([deptOptions.fetchRequest(), fetchRefresh()])
+                }
+            })
+        }
+
         return () => (
             <n-layout has-sider position="absolute" class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
                 <n-layout-sider
@@ -144,7 +157,7 @@ export default defineComponent({
                                 >
                                     编辑
                                 </common-element-button>
-                                <common-element-button dashed type="error" disabled={instState.value.isDelete}>
+                                <common-element-button dashed type="error" disabled={instState.value.isDelete} onClick={fetchDeployDepartmentDelete}>
                                     删除
                                 </common-element-button>
                             </common-database-search-function>

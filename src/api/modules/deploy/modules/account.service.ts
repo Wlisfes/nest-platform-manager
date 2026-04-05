@@ -35,3 +35,21 @@ export function httpBaseSystemAccountResolver(data: Omix) {
         data
     })
 }
+
+/**编辑账号状态**/
+export function httpBaseSystemUpdateSwitchAccount(data: Omix) {
+    return request({
+        url: `/api/windows/system/account/update/switch`,
+        method: 'POST',
+        data
+    })
+}
+
+/**删除账号**/
+export function httpBaseSystemDeleteAccount(data: Omix) {
+    return request({
+        url: `/api/windows/system/account/delete`,
+        method: 'POST',
+        data
+    })
+}

@@ -1,12 +1,14 @@
 <script lang="tsx">
 import { defineComponent, PropType, watch } from 'vue'
 import { useColumnService } from '@/hooks'
+import { stop } from '@/utils'
+import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
     name: 'DeploySystemRoleAccount',
     props: {
-        /****/
+        /**激活标识**/
         active: { type: String, required: true },
         /**角色ID**/
         roleId: { type: Number as PropType<number> }
@@ -19,14 +21,35 @@ export default defineComponent({
             immediate: true,
             formState: {},
             columns: [
-                { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
-                { title: '别名简称', key: 'alias', width: 120, check: true },
+                { title: '姓名', key: 'name', minWidth: 120, disabled: true },
+                { title: '工号', key: 'number', width: 100, check: true },
+                { title: '手机号', key: 'phone', width: 140, check: true },
+                { title: '邮箱', key: 'email', width: 200, check: true },
                 { title: '创建人', key: 'createBy', width: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新人', key: 'modifyBy', width: 120, check: true },
-                { title: '更新时间', key: 'modifyTime', width: 160, check: true }
+                { title: '更新时间', key: 'modifyTime', width: 160, check: true },
+                { title: '操作', key: 'action', width: 80, align: 'center' }
             ]
         })
+
+        /**添加关联用户弹窗**/
+        async function fetchDeployRoleAccount(event: MouseEvent) {
+            return await feedback.fetchDeploySystemRoleAccount({
+                title: '添加关联用户',
+                roleId: props.roleId,
+                onSubmit: fetchRefresh
+            })
+        }
+
+        /**移除关联用户**/
+        async function fetchDeleteAccountRole(event: MouseEvent, uids: Array<string>) {
+            return await stop(event).then(async () => {
+                return await Service.httpBaseSystemDeleteAccountRole({ roleId: props.roleId, uids }).then(() => {
+                    return fetchRefresh({ page: 1 })
+                })
+            })
+        }
 
         return () => (
             <n-element class="deploy-system-role-account h-full flex flex-col overflow-hidden">
@@ -44,7 +67,13 @@ export default defineComponent({
                     on-update:database={instOptions.fetchUpdateDatabase}
                     on-restore={fetchRestore}
                     on-submit={fetchRequest}
-                ></common-database-search>
+                >
+                    <common-database-search-function abstract class="flex gap-col-10">
+                        <common-element-button dashed type="primary" onClick={fetchDeployRoleAccount}>
+                            关联员工
+                        </common-element-button>
+                    </common-database-search-function>
+                </common-database-search>
                 <common-database-table
                     class="p-0!"
                     show-select
@@ -70,6 +99,12 @@ export default defineComponent({
                         ),
                         col_modifyBy: (data: Omix) => (
                             <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                        ),
+                        col_action: (data: Omix) => (
+                            <common-element-button
+                                {...{ text: true, iconSize: 14, icon: 'nest-delete', type: 'error' }}
+                                onClick={(e: MouseEvent) => fetchDeleteAccountRole(e, [data.uid])}
+                            ></common-element-button>
                         )
                     }}
                 </common-database-table>

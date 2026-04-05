@@ -1,8 +1,9 @@
 <script lang="tsx">
 import { defineComponent, h } from 'vue'
-import { useState, useSelectService, useBaseService } from '@/hooks'
+import { useBaseService } from '@/hooks'
+import { stop, isEmpty } from '@/utils'
+import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import { SendFilled, Grid } from '@vicons/carbon'
-import { stop, isEmpty, isNotEmpty } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -53,6 +54,28 @@ export default defineComponent({
                 })
             })
         }
+        /**删除岗位角色**/
+        async function fetchDeployDeleteSystemRole(event: MouseEvent, node: Omix) {
+            return await stop(event).then(async () => {
+                return await fetchDialogService({
+                    title: '提示',
+                    type: 'warning',
+                    content: <common-content-text depth={1}>确认删除角色【{node.name}】吗？删除后无法恢复！</common-content-text>,
+                    async onSubmit(done: Function) {
+                        return await done({ loading: true }).then(async () => {
+                            try {
+                                await Service.httpBaseSystemDeleteRole({ keyId: node.keyId })
+                                await fetchRefresh()
+                                return await done({ visible: false })
+                            } catch (err) {
+                                await done({ loading: false })
+                                return await fetchNotifyService({ type: 'error', title: err.message })
+                            }
+                        })
+                    }
+                })
+            })
+        }
 
         return () => (
             <n-layout has-sider position="absolute" class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
@@ -71,7 +94,8 @@ export default defineComponent({
                                         <div class="flex items-center justify-between p-block-14 overflow-hidden">
                                             <n-h4 class="line-height-21 m-0">岗位角色</n-h4>
                                             <common-element-button
-                                                {...{ text: true, type: 'primary' }}
+                                                text
+                                                type="primary"
                                                 onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
                                             >
                                                 新增角色
@@ -101,8 +125,19 @@ export default defineComponent({
                                                             </div>
                                                             <div class="flex items-center p-inline-7 overflow-hidden" title="编辑角色">
                                                                 <common-element-button
-                                                                    {...{ text: true, iconSize: 16, icon: 'nest-settings' }}
+                                                                    text
+                                                                    icon-size={16}
+                                                                    icon="nest-settings"
                                                                     onClick={(e: MouseEvent) => fetchDeployUpdateSystemRole(e, item)}
+                                                                ></common-element-button>
+                                                            </div>
+                                                            <div class="flex items-center p-inline-7 overflow-hidden" title="删除角色">
+                                                                <common-element-button
+                                                                    text
+                                                                    icon-size={16}
+                                                                    type="error"
+                                                                    icon="nest-delete"
+                                                                    onClick={(e: MouseEvent) => fetchDeployDeleteSystemRole(e, item)}
                                                                 ></common-element-button>
                                                             </div>
                                                         </n-radio>
@@ -151,10 +186,20 @@ export default defineComponent({
                                     )}
                                 </n-tab-pane>
                                 <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
-                                    Hey Jude
+                                    {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                        <deploy-system-role-sheet
+                                            active={faseState.active}
+                                            role-id={faseState.selectedKeys[0]}
+                                        ></deploy-system-role-sheet>
+                                    )}
                                 </n-tab-pane>
                                 <n-tab-pane name="model" tab="数据权限" display-directive="show:lazy">
-                                    七里香
+                                    {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                        <deploy-system-role-model
+                                            active={faseState.active}
+                                            role-id={faseState.selectedKeys[0]}
+                                        ></deploy-system-role-model>
+                                    )}
                                 </n-tab-pane>
                             </n-tabs>
                         </common-element-spiner>

@@ -4,6 +4,7 @@ import { useColumnService, useSelectService, useChunkService } from '@/hooks'
 import { SendFilled } from '@vicons/carbon'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
+import * as AccountService from '@/api/modules/deploy/modules/account.service'
 
 export default defineComponent({
     name: 'DeploySystemAccount',
@@ -58,6 +59,17 @@ export default defineComponent({
                 }
             })
         }
+        /**删除账号**/
+        async function fetchDeployAccountDelete() {
+            const node = state.select[0]
+            await feedback.fetchNotifyDialog({
+                message: `确认删除账号【${node.name}】吗？删除后无法恢复！`,
+                onPositive: async () => {
+                    await AccountService.httpBaseSystemDeleteAccount({ uid: node.uid })
+                    await fetchRefresh()
+                }
+            })
+        }
 
         return () => (
             <layout-common-container initialize={state.initialize}>
@@ -81,7 +93,7 @@ export default defineComponent({
                         <common-element-button dashed type="primary" disabled={instState.value.isUpdate} onClick={fetchDeployAccountUpdate}>
                             编辑
                         </common-element-button>
-                        <common-element-button dashed type="error" disabled={instState.value.isDelete}>
+                        <common-element-button dashed type="error" disabled={instState.value.isDelete} onClick={fetchDeployAccountDelete}>
                             删除
                         </common-element-button>
                     </common-database-search-function>

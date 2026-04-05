@@ -61,3 +61,12 @@ export function httpBaseSystemUpdateSheetAuthorize(data: Omix) {
         data
     })
 }
+
+/**删除菜单/按钮**/
+export function httpBaseSystemDeleteSheet(data: Omix) {
+    return request({
+        url: `/api/windows/system/sheet/delete`,
+        method: 'POST',
+        data
+    })
+}

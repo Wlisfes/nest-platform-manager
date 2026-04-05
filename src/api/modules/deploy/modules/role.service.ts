@@ -71,3 +71,30 @@ export function httpBaseSystemColumnRoleSheet(data: Omix) {
         data
     })
 }
+
+/**更新角色菜单权限**/
+export function httpBaseSystemUpdateRoleSheet(data: Omix) {
+    return request({
+        url: `/api/windows/system/role/sheet/update`,
+        method: 'POST',
+        data
+    })
+}
+
+/**更新角色数据权限**/
+export function httpBaseSystemUpdateRoleModel(data: Omix) {
+    return request({
+        url: `/api/windows/system/role/model/update`,
+        method: 'POST',
+        data
+    })
+}
+
+/**删除岗位角色**/
+export function httpBaseSystemDeleteRole(data: Omix) {
+    return request({
+        url: `/api/windows/system/role/delete`,
+        method: 'POST',
+        data
+    })
+}

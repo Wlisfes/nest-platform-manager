@@ -20,3 +20,17 @@ body,
         flex: 1;
     }
 }
+
+/**tabs组件二次封装**/
+.common-element-tabser.n-tabs.n-tabs--line-type {
+    position: relative;
+    > .n-tabs-pane-wrapper {
+        position: relative;
+        flex: 1;
+        > .n-tab-pane {
+            position: absolute;
+            inset: 0;
+            padding: 0;
+        }
+    }
+}

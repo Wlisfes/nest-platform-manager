@@ -14,7 +14,7 @@ export default [
     {
         path: '/deploy/system/account',
         name: 'DeploySystemAccount',
-        meta: { title: '员工管理', AUTH: 'AUTH' },
+        meta: { title: '账号管理', AUTH: 'AUTH' },
         component: () => import('@/views/deploy/system/account/index.vue')
     },
     {

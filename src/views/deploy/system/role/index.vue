@@ -174,7 +174,9 @@ export default defineComponent({
                                 animated
                                 type="line"
                                 default-value="account"
-                                class="chunk-wrapper h-full overflow-hidden"
+                                tab-class="p-block-14!"
+                                tabs-padding={14}
+                                class="common-element-tabser h-full overflow-hidden "
                                 v-model:value={faseState.active}
                             >
                                 <n-tab-pane name="account" tab="关联账号" display-directive="show">
@@ -212,26 +214,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chunk-wrapper.n-tabs {
-    --n-tab-padding: 14px 0;
-    --n-tab-gap: 24px;
-    position: relative;
-    :deep(.n-tabs-wrapper) {
-        padding-inline-start: 14px;
-        padding-inline-end: 14px;
-    }
-    :deep(.n-tabs-pane-wrapper) {
-        position: relative;
-        overflow: hidden;
-        flex: 1;
-    }
-    :deep(.n-tab-pane) {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        padding: 0;
-    }
-}
 .chunk-block.n-radio-group {
     --chunk-block-height: 36px;
     --chunk-block-line-height: 30px;

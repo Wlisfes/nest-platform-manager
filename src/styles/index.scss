@@ -24,6 +24,13 @@ body,
 /**tabs组件二次封装**/
 .common-element-tabser.n-tabs.n-tabs--line-type {
     position: relative;
+    > .n-tabs-nav--line-type {
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        background-color: var(--card-color);
+        transition:
+            border-color 0.3s var(--n-bezier),
+            background-color 0.3s var(--n-bezier);
+    }
     > .n-tabs-pane-wrapper {
         position: relative;
         flex: 1;

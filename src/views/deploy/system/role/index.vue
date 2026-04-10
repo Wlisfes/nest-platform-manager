@@ -120,9 +120,9 @@ export default defineComponent({
                                                                     <Grid />
                                                                 </n-icon>
                                                             </div>
-                                                            <div title={item.name} class="flex-1 overflow-hidden">
-                                                                {item.name}
-                                                            </div>
+                                                            <n-ellipsis tooltip={false} class="flex-1 overflow-hidden">
+                                                                <n-text>{item.name}</n-text>
+                                                            </n-ellipsis>
                                                             <div class="flex items-center p-inline-7 overflow-hidden" title="编辑角色">
                                                                 <common-element-button
                                                                     text
@@ -168,44 +168,42 @@ export default defineComponent({
                     </n-card>
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 overflow-hidden">
-                    <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-0! overflow-hidden">
-                        <common-element-spiner opacity={0} loading={faseState.initialize}>
-                            <n-tabs
-                                animated
-                                type="line"
-                                default-value="account"
-                                tab-class="p-block-14!"
-                                tabs-padding={14}
-                                class="common-element-tabser h-full overflow-hidden "
-                                v-model:value={faseState.active}
-                            >
-                                <n-tab-pane name="account" tab="关联账号" display-directive="show">
-                                    {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                        <deploy-system-role-account
-                                            active={faseState.active}
-                                            role-id={faseState.selectedKeys[0]}
-                                        ></deploy-system-role-account>
-                                    )}
-                                </n-tab-pane>
-                                <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
-                                    {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                        <deploy-system-role-sheet
-                                            active={faseState.active}
-                                            role-id={faseState.selectedKeys[0]}
-                                        ></deploy-system-role-sheet>
-                                    )}
-                                </n-tab-pane>
-                                <n-tab-pane name="model" tab="数据权限" display-directive="show:lazy">
-                                    {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                        <deploy-system-role-model
-                                            active={faseState.active}
-                                            role-id={faseState.selectedKeys[0]}
-                                        ></deploy-system-role-model>
-                                    )}
-                                </n-tab-pane>
-                            </n-tabs>
-                        </common-element-spiner>
-                    </n-card>
+                    <common-element-spiner opacity={0} loading={faseState.initialize}>
+                        <n-tabs
+                            animated
+                            type="line"
+                            default-value="account"
+                            tab-class="p-block-14!"
+                            tabs-padding={14}
+                            class="common-element-tabser h-full overflow-hidden "
+                            v-model:value={faseState.active}
+                        >
+                            <n-tab-pane name="account" tab="关联账号" display-directive="show">
+                                {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                    <deploy-system-role-account
+                                        active={faseState.active}
+                                        role-id={faseState.selectedKeys[0]}
+                                    ></deploy-system-role-account>
+                                )}
+                            </n-tab-pane>
+                            <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
+                                {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                    <deploy-system-role-sheet
+                                        active={faseState.active}
+                                        role-id={faseState.selectedKeys[0]}
+                                    ></deploy-system-role-sheet>
+                                )}
+                            </n-tab-pane>
+                            <n-tab-pane name="model" tab="数据权限" display-directive="show:lazy">
+                                {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                    <deploy-system-role-model
+                                        active={faseState.active}
+                                        role-id={faseState.selectedKeys[0]}
+                                    ></deploy-system-role-model>
+                                )}
+                            </n-tab-pane>
+                        </n-tabs>
+                    </common-element-spiner>
                 </n-layout>
             </n-layout>
         )

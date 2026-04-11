@@ -1,10 +1,9 @@
 <script lang="tsx">
-import { defineComponent, h } from 'vue'
+import { defineComponent } from 'vue'
 import { useColumnService, useSelectService, useChunkService } from '@/hooks'
-import { SendFilled } from '@vicons/carbon'
+import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
-import * as AccountService from '@/api/modules/deploy/modules/account.service'
 
 export default defineComponent({
     name: 'DeploySystemAccount',
@@ -27,13 +26,12 @@ export default defineComponent({
                 depts: [] //归属部门
             },
             columns: [
-                { title: '头像', key: 'avatar', width: 100, align: 'center', disabled: true },
-                { title: '名称', key: 'name', width: 100, disabled: true },
-                { title: '工号', key: 'number', width: 100, disabled: true },
+                { title: '头像', key: 'avatar', width: 60, align: 'center', disabled: true },
+                { title: '名称', key: 'name', width: 120, disabled: true },
                 { title: '状态', key: 'status', width: 100, align: 'center', check: true },
                 { title: '手机号', key: 'phone', width: 160, check: true },
                 { title: '邮箱', key: 'email', width: 220, check: true },
-                { title: '归属部门', key: 'depts', minWidth: 160, check: true },
+                { title: '归属部门', key: 'depts', minWidth: 200, check: true },
                 { title: '已关联角色', key: 'roles', minWidth: 160, check: true },
                 { title: '入职时间', key: 'createTime', width: 160, check: true }
             ]
@@ -62,11 +60,21 @@ export default defineComponent({
         /**删除账号**/
         async function fetchDeployAccountDelete() {
             const node = state.select[0]
-            await feedback.fetchNotifyDialog({
-                message: `确认删除账号【${node.name}】吗？删除后无法恢复！`,
-                onPositive: async () => {
-                    await AccountService.httpBaseSystemDeleteAccount({ uid: node.uid })
-                    await fetchRefresh()
+            return await fetchDialogService({
+                title: '提示',
+                type: 'warning',
+                content: <common-content-text depth={1}>确认删除账号【{node.name}】吗？删除后无法恢复！</common-content-text>,
+                async onSubmit(done: Function) {
+                    return await done({ loading: true }).then(async () => {
+                        try {
+                            await Service.httpBaseSystemDeleteAccount({ uid: node.uid })
+                            await fetchRefresh()
+                            return await done({ visible: false })
+                        } catch (err) {
+                            await done({ loading: false })
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        }
+                    })
                 }
             })
         }
@@ -158,8 +166,18 @@ export default defineComponent({
                     on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                 >
                     {{
+                        col_name: (data: Omix) => {
+                            return <common-database-table-user element="text" data={data}></common-database-table-user>
+                        },
                         col_avatar: (data: Omix) => {
                             return <common-database-table-user element="avatar" data={data}></common-database-table-user>
+                        },
+                        col_depts: (data: Omix) => {
+                            return (
+                                <common-database-table-content
+                                    value={(data.depts ?? []).map((item: Omix) => item.name)}
+                                ></common-database-table-content>
+                            )
                         },
                         col_status: (data: Omix) => (
                             <common-database-table-chunk

@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, PropType, Fragment } from 'vue'
 import { isEmpty, isNotEmpty, fetchCurrent } from '@/utils'
 
 export default defineComponent({
@@ -18,7 +18,7 @@ export default defineComponent({
 
         return () => {
             if (isEmpty(itemNode.value)) {
-                return <span>{props.value ?? '-'}</span>
+                return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
             } else if (['chunk'].includes(props.element)) {
                 if (isNotEmpty(itemNode.value.name) && isNotEmpty(itemNode.value.json)) {
                     return slots.default ? (
@@ -29,7 +29,7 @@ export default defineComponent({
                         </n-tag>
                     )
                 }
-                return <span>{props.value ?? '-'}</span>
+                return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
             } else if (['text'].includes(props.element)) {
                 if (isNotEmpty(itemNode.value.name) && isNotEmpty(itemNode.value.json)) {
                     return slots.default ? (
@@ -38,9 +38,9 @@ export default defineComponent({
                         <n-text type={itemNode.value.json.type}>{itemNode.value.name}</n-text>
                     )
                 }
-                return <span>{props.value ?? '-'}</span>
+                return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
             }
-            return <span>{props.value ?? '-'}</span>
+            return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
         }
     }
 })

@@ -41,3 +41,10 @@ export async function fetchDeploySystemAccount(props: PropsState<Omix>) {
         return createComponent(component.default, props)
     })
 }
+
+/**新增、编辑职位**/
+export async function fetchDeploySystemPosition(props: PropsState<Omix>) {
+    return await import('@/components/deploy/system/feedback/deploy-system-feedback-position.vue').then(component => {
+        return createComponent(component.default, props)
+    })
+}

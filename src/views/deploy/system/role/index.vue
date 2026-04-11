@@ -10,12 +10,18 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemRole',
     setup(props, ctx) {
+        /**菜单树数据**/
+        const treeOptions = useBaseService({
+            request: () => Service.httpBaseSystemSheetTreeStructure(),
+            immediate: true
+        })
         /**角色列表**/
-        const { faseNode, faseState, setState, fetchRefresh } = useBaseService(() => Service.httpBaseSystemColumnRole(), {
+        const { faseNode, faseState, observer, setState, fetchRefresh } = useBaseService({
+            request: () => Service.httpBaseSystemColumnRole(),
             callback: fetchReadyCallback,
             immediate: true,
             options: {
-                active: 'account',
+                tabName: 'account',
                 selectedKeys: [] as Array<number>,
                 expandedKeys: [] as Array<number>
             }
@@ -23,9 +29,11 @@ export default defineComponent({
         /**初始化回调**/
         async function fetchReadyCallback(data: Omix) {
             if (data.list.length === 0 || faseState.selectedKeys.length > 0) {
-                return false
+                return observer.value.emit('finish', {})
             }
-            return await setState({ expandedKeys: [], selectedKeys: [data.list[0].keyId] })
+            return await setState({ expandedKeys: [], selectedKeys: [data.list[0].keyId] }).then(async state => {
+                return observer.value.emit('refresh', { roleId: state.selectedKeys[0] })
+            })
         }
         /**左侧树展开变更回调**/
         async function fetchUpdateExpanded(keys: Array<number>) {
@@ -33,7 +41,9 @@ export default defineComponent({
         }
         /**左侧树选中变更回调**/
         async function fetchUpdateSelected(keys: Array<number>) {
-            return await setState({ selectedKeys: keys })
+            return await setState({ selectedKeys: keys }).then(async state => {
+                return observer.value.emit('refresh', { roleId: state.selectedKeys[0] })
+            })
         }
 
         /**新增、编辑岗位角色**/
@@ -173,23 +183,20 @@ export default defineComponent({
                         tab-class="p-block-14!"
                         tabs-padding={14}
                         class="common-element-tabser h-full overflow-hidden "
-                        v-model:value={faseState.active}
+                        v-model:value={faseState.tabName}
                     >
                         <n-tab-pane name="account" tab="关联账号" display-directive="show">
-                            {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                <deploy-system-role-account
-                                    active={faseState.active}
-                                    role-id={faseState.selectedKeys[0]}
-                                ></deploy-system-role-account>
-                            )}
+                            <deploy-system-role-account
+                                observer={observer.value}
+                                role-id={faseState.selectedKeys[0]}
+                            ></deploy-system-role-account>
                         </n-tab-pane>
                         <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
-                            {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                <deploy-system-role-sheet
-                                    active={faseState.active}
-                                    role-id={faseState.selectedKeys[0]}
-                                ></deploy-system-role-sheet>
-                            )}
+                            <deploy-system-role-sheet
+                                observer={observer.value}
+                                fase-node={treeOptions.faseNode.value}
+                                role-id={faseState.selectedKeys[0]}
+                            ></deploy-system-role-sheet>
                         </n-tab-pane>
                     </n-tabs>
                 </n-layout>

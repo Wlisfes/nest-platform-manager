@@ -1,24 +1,24 @@
 <script lang="tsx">
-import { defineComponent, PropType, watch } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useColumnService } from '@/hooks'
-import { stop } from '@/utils'
+import { stop, EventType } from '@/utils'
 import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
     name: 'DeploySystemRoleAccount',
     props: {
-        /**激活标识**/
-        active: { type: String, required: true },
+        /**通讯实例**/
+        observer: { type: Object as PropType<EventType>, required: true },
         /**角色ID**/
         roleId: { type: Number as PropType<number> }
     },
     setup(props, ctx) {
         /**表格实例**/
-        const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, instState, instOptions, setState, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnAccountRole({ ...payload, roleId: props.roleId }),
             keyName: 'chatbok:deploy:system:role:account',
-            immediate: true,
+            immediate: false,
             formState: { vague: undefined, phone: undefined, email: undefined },
             columns: [
                 { title: '姓名', key: 'name', width: 120, disabled: true },
@@ -31,6 +31,17 @@ export default defineComponent({
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true },
                 { title: '操作', key: 'action', width: 80, align: 'center' }
             ]
+        })
+
+        /**监听结束事件**/
+        props.observer.on('finish', async () => {
+            return await setState({ loading: false, initialize: false })
+        })
+        /**监听刷新事件**/
+        props.observer.on('refresh', async () => {
+            return await fetchRestore().then(async () => {
+                return await fetchRefresh({ page: 1, size: 50 })
+            })
         })
 
         /**添加关联用户弹窗**/

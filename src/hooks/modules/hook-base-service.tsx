@@ -1,6 +1,8 @@
 import { ref, toRefs, Ref } from 'vue'
 import { useState } from '@/hooks/modules/hook-state'
 import { ResultResolver } from '@/interface/instance.resolver'
+import { Observer } from '@/utils'
+
 interface BaseServiceState extends Omix {
     /**初始化状态**/
     initialize: boolean
@@ -9,25 +11,23 @@ interface BaseServiceState extends Omix {
     /**错误描述**/
     message: string
 }
-interface BaseServiceOptions<T, U> extends Partial<BaseServiceState> {
+interface BaseServiceOptions<T, R> extends Partial<BaseServiceState> {
     /**立即执行**/
     immediate?: boolean
     /**额外配置**/
-    options?: Omix<U>
+    options?: Omix<R>
     /**字段转换**/
     transform?: (data: T) => Omix | Promise<Omix>
     /**回调函数**/
-    callback?: (data: T, base: BaseServiceState & Omix<U>) => void | any | Promise<any>
+    callback?: (data: T, base: BaseServiceState & Omix<R>) => void | any | Promise<any>
     /**请求接口**/
-    request: (data: T, base: BaseServiceState & Omix<U>, opt: Omix) => Promise<ResultResolver<T>>
+    request: (data: T, base: BaseServiceState & Omix<R>, opt: Omix) => Promise<ResultResolver<T>>
 }
 
 /**详情包装hook**/
-export function useBaseService<T extends Omix, U extends Omix>(
-    request: BaseServiceOptions<T, U>['request'],
-    options: Omit<BaseServiceOptions<T, U>, 'request'> = {}
-) {
+export function useBaseService<T extends Omix, R extends Omix>(options: BaseServiceOptions<T, R>) {
     const faseNode = ref<T>({} as T) as Ref<T>
+    const observer = ref(Observer<Record<string, Omix>>())
     const { state: faseState, setState } = useState({
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,
@@ -62,7 +62,7 @@ export function useBaseService<T extends Omix, U extends Omix>(
     async function fetchRequest(opt: Omix = {}) {
         return await setState({ loading: true } as never).then(async () => {
             try {
-                const { data } = await request(faseNode.value, faseState as never, opt)
+                const { data } = await options.request(faseNode.value, faseState as never, opt)
                 return await fetchUpdate(data ?? {}).then(async () => {
                     return await setState({ initialize: false, loading: false, message: '' } as never)
                 })
@@ -74,5 +74,5 @@ export function useBaseService<T extends Omix, U extends Omix>(
         })
     }
 
-    return { faseNode, faseState, ...toRefs(faseState), setState, fetchUpdate, fetchInitialize, fetchRequest, fetchRefresh }
+    return { faseNode, faseState, observer, ...toRefs(faseState), setState, fetchUpdate, fetchInitialize, fetchRequest, fetchRefresh }
 }

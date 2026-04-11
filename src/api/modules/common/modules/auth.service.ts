@@ -32,3 +32,11 @@ export function httpAuthAccountTokenResource() {
         method: 'GET'
     })
 }
+
+/**登录账户按钮权限**/
+export function httpAuthAccountTokenSheet() {
+    return request({
+        url: `/api/windows/auth/token/sheet`,
+        method: 'GET'
+    })
+}

@@ -3,14 +3,15 @@ import { defineStore } from 'pinia'
 import { useStore, useConfiger } from '@/store'
 import { useState } from '@/hooks'
 import { fetchDestroy } from '@/utils'
-import { omit } from 'lodash-es'
 import * as Service from '@/api/instance.service'
 
 export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
     const faseUser = ref<Omix>({})
     const { state, setState } = useState({
         /**登录权限菜单**/
-        menuOptions: []
+        menuOptions: [],
+        /**登录权限按钮**/
+        sheetOptions: []
     })
 
     /**退出登录时重置store数据**/
@@ -23,7 +24,7 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
 
     /**初始化**/
     async function fetchBaseInitialize() {
-        return await Promise.all([fetchAuthAccountTokenResolver(), fetchAuthAccountTokenResource()])
+        return await Promise.all([fetchAuthAccountTokenResolver(), fetchAuthAccountTokenResource(), fetchAuthAccountTokenSheet()])
     }
 
     /**登录账户**/
@@ -49,6 +50,13 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         })
     }
 
+    /**登录账户按钮权限**/
+    async function fetchAuthAccountTokenSheet() {
+        return await Service.httpAuthAccountTokenSheet().then(async ({ data }) => {
+            return await setState({ sheetOptions: data.list ?? [] })
+        })
+    }
+
     return {
         ...toRefs(state),
         faseUser,
@@ -57,6 +65,7 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         fetchBaseInitialize,
         fetchAuthAccountToken,
         fetchAuthAccountTokenResolver,
-        fetchAuthAccountTokenResource
+        fetchAuthAccountTokenResource,
+        fetchAuthAccountTokenSheet
     }
 })

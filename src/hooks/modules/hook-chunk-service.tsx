@@ -2,12 +2,12 @@ import { toRefs } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { useState } from '@/hooks'
 import { pick } from '@/utils'
-import { COMMON_CHUNK_OPTIONS, ChunkName, ChunkCommonOptions, ChunkColumnOptions } from '@/interface/instance.resolver'
+import { COMMON_CHUNK_OPTIONS, ChunkName, ChunkColumnOptions } from '@/interface/instance.resolver'
 import * as Service from '@/api/instance.service'
 
 /**枚举数枚举通用hooks配置**/
-interface ChunkServiceOptions extends Partial<ChunkCommonOptions<boolean>> {
-    type?: Array<ChunkName>
+interface ChunkServiceOptions<T extends Array<ChunkName>> {
+    type?: T
     /**立即执行**/
     immediate?: boolean
     /**初始化状态**/
@@ -20,22 +20,25 @@ interface ChunkServiceOptions extends Partial<ChunkCommonOptions<boolean>> {
     transform?: (data: Record<keyof typeof COMMON_CHUNK_OPTIONS, Array<ChunkColumnOptions>>) => Omix<typeof data>
 }
 
+/**初始化字段对象**/
+export interface ChunkBaseState<T extends Array<ChunkName>> extends Pick<ChunkServiceOptions<T>, 'loading' | 'initialize'> {
+    type: ChunkName[]
+}
+
 /**初始化字段**/
-function fetchInitState(options: ChunkServiceOptions) {
-    const obs = Array.from(new Set([...(options.type ?? []), ...Object.keys(pick(options, Object.keys(COMMON_CHUNK_OPTIONS)))])).reduce(
-        (o: Omix, key: string) => ({ ...o, [key]: [] }),
-        {}
-    )
+function fetchInitState<T extends ChunkName[]>(options: ChunkServiceOptions<T>) {
+    const keys = Array.from(new Set([...(options.type ?? []), ...Object.keys(pick(options, Object.keys(COMMON_CHUNK_OPTIONS)))]))
+    const keysObject = keys.reduce((o: Omix, key: string) => ({ ...o, [key]: [] }), {})
     return useState({
-        ...obs,
-        type: Array.from(new Set([...(options.type ?? []), ...Object.keys(obs)])),
+        ...keysObject,
+        type: Array.from(new Set([...(options.type ?? []), ...Object.keys(keysObject)])) as Array<ChunkName>,
         loading: options.loading ?? options.immediate ?? false,
         initialize: options.initialize ?? options.immediate ?? false
-    } as Required<Pick<ChunkServiceOptions, 'loading' | 'initialize' | 'type'> & ChunkCommonOptions<Array<ChunkColumnOptions>>>)
+    } as ChunkBaseState<T> & { [K in T[number]]: Array<ChunkColumnOptions> })
 }
 
 /**枚举数枚举通用hooks**/
-export function useChunkService(options: ChunkServiceOptions) {
+export function useChunkService<T extends ChunkName[]>(options: ChunkServiceOptions<T>) {
     const { state, setState } = fetchInitState(options)
 
     if (options.immediate ?? true) {
@@ -43,15 +46,15 @@ export function useChunkService(options: ChunkServiceOptions) {
     }
 
     async function fetchRequest() {
-        return await setState({ loading: true }).then(async () => {
+        return await (setState as Function)({ loading: true }).then(async () => {
             try {
-                const { data } = await Service.httpBaseChunkSelect({ type: state.type })
+                const { data } = await Service.httpBaseChunkSelect({ type: (state as ChunkBaseState<T>).type })
                 const s = options.transform ? (options.transform(cloneDeep(data.data)) ?? {}) : data
-                return await setState({ ...s, loading: false, initialize: false }).then(async () => {
+                return await (setState as Function)({ ...s, loading: false, initialize: false }).then(async () => {
                     return options.callback?.(state)
                 })
             } catch (err) {
-                return await setState({ loading: false, initialize: false }).then(async () => {
+                return await (setState as Function)({ loading: false, initialize: false }).then(async () => {
                     return options.callback?.(state)
                 })
             }

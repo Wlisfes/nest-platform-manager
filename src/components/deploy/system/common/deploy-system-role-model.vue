@@ -20,7 +20,7 @@ export default defineComponent({
         /**通用字典枚举**/
         const chunkOptions = useChunkService({
             immediate: true,
-            type: ['COMMON_SYSTEM_ROLE_MODEL']
+            type: ['CHUNK_WINDOWS_ROLE_MODEL']
         })
 
         /**获取角色详情**/

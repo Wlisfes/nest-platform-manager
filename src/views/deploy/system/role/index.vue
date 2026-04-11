@@ -87,123 +87,111 @@ export default defineComponent({
                     content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
                     <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-0! overflow-hidden">
-                        <common-element-spiner opacity={0} loading={faseState.initialize}>
-                            <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
-                                <n-element class="flex flex-col gap-10 overflow-hidden">
-                                    <div class="flex flex-col p-inline-14 overflow-hidden">
-                                        <div class="flex items-center justify-between p-block-14 overflow-hidden">
-                                            <n-h4 class="line-height-21 m-0">岗位角色</n-h4>
-                                            <common-element-button
-                                                text
-                                                type="primary"
-                                                onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
-                                            >
-                                                新增角色
-                                            </common-element-button>
-                                        </div>
-                                        {(faseNode.value.list ?? []).length > 0 && (
-                                            <n-radio-group
-                                                class="chunk-block flex flex-col overflow-hidden"
-                                                value={faseState.selectedKeys[0]}
-                                                on-update:value={(keyId: number) => fetchUpdateSelected([keyId])}
-                                            >
-                                                <common-element-draggable
-                                                    class="flex flex-col overflow-hidden"
-                                                    handle=".cursor-move"
-                                                    animation={200}
-                                                    v-model={faseNode.value.list}
-                                                >
-                                                    {(faseNode.value.list ?? []).map((item: Omix) => (
-                                                        <n-radio class="chunk-block-element" key={item.keyId} value={item.keyId}>
-                                                            <div class="flex items-center p-inline-7 cursor-move overflow-hidden">
-                                                                <n-icon size={16} color="var(--primary-color)">
-                                                                    <Grid />
-                                                                </n-icon>
-                                                            </div>
-                                                            <n-ellipsis tooltip={false} class="flex-1 overflow-hidden">
-                                                                <n-text>{item.name}</n-text>
-                                                            </n-ellipsis>
-                                                            <div class="flex items-center p-inline-7 overflow-hidden" title="编辑角色">
-                                                                <common-element-button
-                                                                    text
-                                                                    icon-size={16}
-                                                                    icon="nest-settings"
-                                                                    onClick={(e: MouseEvent) => fetchDeployUpdateSystemRole(e, item)}
-                                                                ></common-element-button>
-                                                            </div>
-                                                            <div class="flex items-center p-inline-7 overflow-hidden" title="删除角色">
-                                                                <common-element-button
-                                                                    text
-                                                                    icon-size={16}
-                                                                    type="error"
-                                                                    icon="nest-delete"
-                                                                    onClick={(e: MouseEvent) => fetchDeployDeleteSystemRole(e, item)}
-                                                                ></common-element-button>
-                                                            </div>
-                                                        </n-radio>
-                                                    ))}
-                                                </common-element-draggable>
-                                            </n-radio-group>
-                                        )}
+                        <common-element-spiner scrollbar opacity={0} loading={faseState.initialize}>
+                            <n-element class="flex flex-col gap-10 overflow-hidden">
+                                <div class="flex flex-col p-inline-14 overflow-hidden">
+                                    <div class="flex items-center justify-between p-block-14 overflow-hidden">
+                                        <n-h4 class="line-height-21 m-0">岗位角色</n-h4>
+                                        <common-element-button
+                                            text
+                                            type="primary"
+                                            onClick={(event: MouseEvent) => fetchDeployUpdateSystemRole(event)}
+                                        >
+                                            新增角色
+                                        </common-element-button>
                                     </div>
-                                    <div class="flex flex-col p-inline-14 overflow-hidden">
-                                        <n-h4 class="line-height-21 m-0 p-block-14">部门角色</n-h4>
-                                        <n-tree
-                                            block-line
-                                            cancelable={false}
-                                            key-field="nodeId"
-                                            label-field="name"
-                                            children-field="children"
-                                            selected-keys={faseState.selectedKeys}
-                                            expanded-keys={faseState.expandedKeys}
-                                            data={faseNode.value.dept ?? []}
-                                            render-switcher-icon={() => h(SendFilled)}
-                                            on-update:selected-keys={fetchUpdateSelected}
-                                            on-update:expanded-keys={fetchUpdateExpanded}
-                                        />
-                                    </div>
-                                </n-element>
-                            </n-scrollbar>
+                                    {(faseNode.value.list ?? []).length > 0 && (
+                                        <n-radio-group
+                                            class="chunk-block flex flex-col overflow-hidden"
+                                            value={faseState.selectedKeys[0]}
+                                            on-update:value={(keyId: number) => fetchUpdateSelected([keyId])}
+                                        >
+                                            <common-element-draggable
+                                                class="flex flex-col overflow-hidden"
+                                                handle=".cursor-move"
+                                                animation={200}
+                                                v-model={faseNode.value.list}
+                                            >
+                                                {(faseNode.value.list ?? []).map((item: Omix) => (
+                                                    <n-radio class="chunk-block-element" key={item.keyId} value={item.keyId}>
+                                                        <div class="flex items-center p-inline-7 cursor-move overflow-hidden">
+                                                            <n-icon size={16} color="var(--primary-color)">
+                                                                <Grid />
+                                                            </n-icon>
+                                                        </div>
+                                                        <n-ellipsis tooltip={false} class="flex-1 overflow-hidden">
+                                                            <n-text>{item.name}</n-text>
+                                                        </n-ellipsis>
+                                                        <div class="flex items-center p-inline-7 overflow-hidden" title="编辑角色">
+                                                            <common-element-button
+                                                                text
+                                                                icon-size={16}
+                                                                icon="nest-settings"
+                                                                onClick={(e: MouseEvent) => fetchDeployUpdateSystemRole(e, item)}
+                                                            ></common-element-button>
+                                                        </div>
+                                                        <div class="flex items-center p-inline-7 overflow-hidden" title="删除角色">
+                                                            <common-element-button
+                                                                text
+                                                                icon-size={16}
+                                                                type="error"
+                                                                icon="nest-delete"
+                                                                onClick={(e: MouseEvent) => fetchDeployDeleteSystemRole(e, item)}
+                                                            ></common-element-button>
+                                                        </div>
+                                                    </n-radio>
+                                                ))}
+                                            </common-element-draggable>
+                                        </n-radio-group>
+                                    )}
+                                </div>
+                                <div class="flex flex-col p-inline-14 overflow-hidden">
+                                    <n-h4 class="line-height-21 m-0 p-block-14">部门角色</n-h4>
+                                    <n-tree
+                                        block-line
+                                        cancelable={false}
+                                        key-field="nodeId"
+                                        label-field="name"
+                                        children-field="children"
+                                        selected-keys={faseState.selectedKeys}
+                                        expanded-keys={faseState.expandedKeys}
+                                        data={faseNode.value.dept ?? []}
+                                        render-switcher-icon={() => h(SendFilled)}
+                                        on-update:selected-keys={fetchUpdateSelected}
+                                        on-update:expanded-keys={fetchUpdateExpanded}
+                                    />
+                                </div>
+                            </n-element>
                         </common-element-spiner>
                     </n-card>
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 overflow-hidden">
-                    <common-element-spiner opacity={0} loading={faseState.initialize}>
-                        <n-tabs
-                            animated
-                            type="line"
-                            default-value="account"
-                            tab-class="p-block-14!"
-                            tabs-padding={14}
-                            class="common-element-tabser h-full overflow-hidden "
-                            v-model:value={faseState.active}
-                        >
-                            <n-tab-pane name="account" tab="关联账号" display-directive="show">
-                                {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                    <deploy-system-role-account
-                                        active={faseState.active}
-                                        role-id={faseState.selectedKeys[0]}
-                                    ></deploy-system-role-account>
-                                )}
-                            </n-tab-pane>
-                            <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
-                                {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                    <deploy-system-role-sheet
-                                        active={faseState.active}
-                                        role-id={faseState.selectedKeys[0]}
-                                    ></deploy-system-role-sheet>
-                                )}
-                            </n-tab-pane>
-                            <n-tab-pane name="model" tab="数据权限" display-directive="show:lazy">
-                                {!faseState.initialize && faseState.selectedKeys.length > 0 && (
-                                    <deploy-system-role-model
-                                        active={faseState.active}
-                                        role-id={faseState.selectedKeys[0]}
-                                    ></deploy-system-role-model>
-                                )}
-                            </n-tab-pane>
-                        </n-tabs>
-                    </common-element-spiner>
+                    <n-tabs
+                        animated
+                        type="line"
+                        default-value="account"
+                        tab-class="p-block-14!"
+                        tabs-padding={14}
+                        class="common-element-tabser h-full overflow-hidden "
+                        v-model:value={faseState.active}
+                    >
+                        <n-tab-pane name="account" tab="关联账号" display-directive="show">
+                            {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                <deploy-system-role-account
+                                    active={faseState.active}
+                                    role-id={faseState.selectedKeys[0]}
+                                ></deploy-system-role-account>
+                            )}
+                        </n-tab-pane>
+                        <n-tab-pane name="sheet" tab="关联权限" display-directive="show:lazy">
+                            {!faseState.initialize && faseState.selectedKeys.length > 0 && (
+                                <deploy-system-role-sheet
+                                    active={faseState.active}
+                                    role-id={faseState.selectedKeys[0]}
+                                ></deploy-system-role-sheet>
+                            )}
+                        </n-tab-pane>
+                    </n-tabs>
                 </n-layout>
             </n-layout>
         )

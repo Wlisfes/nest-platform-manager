@@ -11,7 +11,11 @@ export default defineComponent({
         /**加载大小**/
         size: { type: [String, Number], default: 48 },
         /**透明度**/
-        opacity: { type: Number, default: 0.5 }
+        opacity: { type: Number, default: 0.5 },
+        /**是否使用滚动容器**/
+        scrollbar: { type: Boolean, default: false },
+        /**滚动容器样式**/
+        scrollbarProps: { type: Object, default: () => ({}) }
     },
     setup(props, { slots }) {
         return () => (
@@ -22,7 +26,13 @@ export default defineComponent({
                 size={props.size}
                 show={props.loading}
             >
-                {slots.default && slots.default()}
+                {props.scrollbar ? (
+                    <n-scrollbar trigger="none" class="flex-1 overflow-hidden" {...props.scrollbarProps}>
+                        {slots.default && slots.default()}
+                    </n-scrollbar>
+                ) : (
+                    slots.default && slots.default()
+                )}
             </n-spin>
         )
     }

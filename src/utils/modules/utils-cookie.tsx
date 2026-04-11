@@ -6,10 +6,10 @@ export enum APP_NEST {
 }
 
 export enum APP_COOKIE {
-    APP_TOKEN = 'APP_NEST_TOKEN',
-    APP_TOKEN_SECRET = 'APP_NEST_TOKEN_SECRET',
-    APP_TOKEN_EXPIRES = 'APP_NEST_TOKEN_EXPIRES',
-    APP_LANGUAGE = 'APP_NEST_LANGUAGE'
+    APP_TOKEN = 'APP_TOKEN',
+    APP_TOKEN_EXPIRES = 'APP_TOKEN_EXPIRES',
+    APP_TOKEN_CREATED_EXPIRES = 'APP_TOKEN_CREATED_EXPIRES',
+    APP_LANGUAGE = 'APP_LANGUAGE'
 }
 
 export async function setCookie(key: keyof typeof APP_COOKIE, data: any, expires: number = 0) {
@@ -41,23 +41,21 @@ export async function setToken(token: string, expires: number) {
 }
 
 export function getToken(defaultValue?: string) {
-    return JsCookie.get(APP_COOKIE.APP_TOKEN) ?? defaultValue
+    return (JsCookie.get(APP_COOKIE.APP_TOKEN) ?? defaultValue) as string
 }
 
 export function delToken() {
     return JsCookie.remove(APP_COOKIE.APP_TOKEN)
 }
 
-export async function fetchCompose(data: Omix<{ token: string; secret: string; expires: number }>) {
-    await setCookie('APP_TOKEN_SECRET', data.secret, data.expires)
-    return await setCookie('APP_TOKEN_EXPIRES', data.expires, data.expires).then(async () => {
-        return await setToken(data.token, data.expires)
-    })
+export async function fetchCompose(data: Omix<{ token: string; expires: number }>) {
+    await setCookie(APP_COOKIE.APP_TOKEN_EXPIRES, data.expires, data.expires)
+    await setCookie(APP_COOKIE.APP_TOKEN_CREATED_EXPIRES, Date.now(), data.expires)
+    return await setToken(data.token, data.expires)
 }
 
 export async function fetchDestroy() {
-    await delCookie('APP_TOKEN_SECRET')
-    return await delCookie('APP_TOKEN_EXPIRES').then(async () => {
-        return await delToken()
-    })
+    await delCookie(APP_COOKIE.APP_TOKEN_EXPIRES)
+    await delCookie(APP_COOKIE.APP_TOKEN_CREATED_EXPIRES)
+    return await delToken()
 }

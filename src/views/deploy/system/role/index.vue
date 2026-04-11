@@ -45,7 +45,19 @@ export default defineComponent({
                 return observer.value.emit('refresh', { roleId: state.selectedKeys[0] })
             })
         }
-
+        /**拖拽排序更新**/
+        async function fetchUpdateRoleSort() {
+            try {
+                const list = (faseNode.value.list ?? []).map((item: Omix, index: number) => ({
+                    keyId: item.keyId,
+                    sort: (index + 1) * 10
+                }))
+                await Service.httpBaseSystemUpdateRoleSort({ list })
+                return await fetchNotifyService({ title: '操作成功' })
+            } catch (err) {
+                return await fetchNotifyService({ type: 'error', title: err.message })
+            }
+        }
         /**新增、编辑岗位角色**/
         async function fetchDeployUpdateSystemRole(event: MouseEvent, node: Omix = {}) {
             return await stop(event).then(async () => {
@@ -85,14 +97,6 @@ export default defineComponent({
                     }
                 })
             })
-        }
-        /**拖拽排序更新**/
-        async function fetchUpdateRoleSort() {
-            const list = (faseNode.value.list ?? []).map((item: Omix, index: number) => ({
-                keyId: item.keyId,
-                sort: (index + 1) * 10
-            }))
-            return await Service.httpBaseSystemUpdateRoleSort({ list })
         }
 
         return () => (

@@ -86,6 +86,14 @@ export default defineComponent({
                 })
             })
         }
+        /**拖拽排序更新**/
+        async function fetchUpdateRoleSort() {
+            const list = (faseNode.value.list ?? []).map((item: Omix, index: number) => ({
+                keyId: item.keyId,
+                sort: (index + 1) * 10
+            }))
+            return await Service.httpBaseSystemUpdateRoleSort({ list })
+        }
 
         return () => (
             <n-layout has-sider position="absolute" class="flex flex-col bg-transparent" content-class="flex-1 overflow-hidden">
@@ -121,6 +129,7 @@ export default defineComponent({
                                                 handle=".cursor-move"
                                                 animation={200}
                                                 v-model={faseNode.value.list}
+                                                onUpdate={fetchUpdateRoleSort}
                                             >
                                                 {(faseNode.value.list ?? []).map((item: Omix) => (
                                                     <n-radio class="chunk-block-element" key={item.keyId} value={item.keyId}>

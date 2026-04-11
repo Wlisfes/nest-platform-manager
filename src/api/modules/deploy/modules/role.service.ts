@@ -98,3 +98,12 @@ export function httpBaseSystemDeleteRole(data: Omix) {
         data
     })
 }
+
+/**批量更新角色排序**/
+export function httpBaseSystemUpdateRoleSort(data: Omix) {
+    return request({
+        url: `/api/windows/system/role/sort/update`,
+        method: 'POST',
+        data
+    })
+}

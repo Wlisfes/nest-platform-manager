@@ -103,3 +103,26 @@ export function fetchScreenResize(
     }
     return { device: 'MOBILE', collapsed: true }
 }
+
+/**收集所有非叶子节点keyId**/
+export function fetchParentKeyIds(nodes: Array<Omix>, result: Set<number> = new Set()): Set<number> {
+    for (const node of nodes) {
+        if (node.children && node.children.length > 0) {
+            result.add(node.keyId)
+            fetchParentKeyIds(node.children, result)
+        }
+    }
+    return result
+}
+
+/**收集所有叶子节点keyId**/
+export function fetchLeafKeyIds(nodes: Array<Omix>, result: Set<number> = new Set()): Set<number> {
+    for (const node of nodes) {
+        if (!node.children || node.children.length === 0) {
+            result.add(node.keyId)
+        } else {
+            fetchLeafKeyIds(node.children, result)
+        }
+    }
+    return result
+}

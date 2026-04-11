@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, PropType, h } from 'vue'
 import { useBaseService } from '@/hooks'
-import { EventType } from '@/utils'
+import { EventType, fetchParentKeyIds } from '@/utils'
 import { SendFilled } from '@vicons/carbon'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
@@ -22,7 +22,11 @@ export default defineComponent({
             request: () => Service.httpBaseSystemColumnRoleSheet({ roleId: props.roleId }),
             callback: fetchSheetCallback,
             immediate: true,
-            options: { checkedKeys: [] as Array<number>, expandedKeys: [] as Array<number> }
+            options: {
+                checkedKeys: [] as Array<number>,
+                indeterminateKeys: [] as Array<number>,
+                expandedKeys: [] as Array<number>
+            }
         })
         /**监听结束事件**/
         props.observer.on('finish', async () => {
@@ -35,10 +39,11 @@ export default defineComponent({
             })
         })
 
-        /**角色关联菜单回调**/
+        /**角色关联菜单回调：过滤非叶子节点，仅设置叶子节点为checked**/
         async function fetchSheetCallback(data: Omix) {
-            console.log(faseNode.value)
-            return await setState({ checkedKeys: data.list ?? [] })
+            const parentIds = fetchParentKeyIds(props.faseNode.list ?? [])
+            const checkedKeys = (data.list ?? []).filter((id: number) => !parentIds.has(id))
+            return await setState({ checkedKeys })
         }
 
         /**保存角色菜单权限**/
@@ -47,7 +52,7 @@ export default defineComponent({
                 try {
                     await Service.httpBaseSystemUpdateRoleSheet({
                         roleId: props.roleId,
-                        sheetIds: faseState.checkedKeys
+                        sheetIds: [...faseState.checkedKeys, ...faseState.indeterminateKeys]
                     })
                     return await setState({ loading: false }).then(async () => {
                         await fetchNotifyService({ title: '操作成功' })
@@ -79,6 +84,7 @@ export default defineComponent({
                             show-line
                             block-line
                             expand-on-click
+                            selectable={false}
                             key-field="keyId"
                             label-field="name"
                             children-field="children"
@@ -87,6 +93,7 @@ export default defineComponent({
                             data={props.faseNode.list ?? []}
                             render-switcher-icon={() => h(SendFilled)}
                             on-update:checked-keys={(checkedKeys: Array<number>) => setState({ checkedKeys })}
+                            on-update:indeterminate-keys={(indeterminateKeys: Array<number>) => setState({ indeterminateKeys })}
                             on-update:expanded-keys={(expandedKeys: Array<number>) => setState({ expandedKeys })}
                         />
                     </common-element-spiner>
@@ -101,7 +108,7 @@ export default defineComponent({
                     >
                         保存
                     </common-element-button>
-                    <common-element-button class="min-w-80" type="warning" secondary>
+                    <common-element-button class="min-w-80" type="warning" secondary onClick={() => fetchSheetCallback(faseNode.value)}>
                         重置
                     </common-element-button>
                 </common-element>

@@ -79,15 +79,17 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix>
     /**初始化**/
     onMounted(fetchInitialize)
     async function fetchInitialize() {
-        const tasks: Array<any> = []
-        if (isNotEmpty(options.keyName)) {
-            tasks.push(fetchBaseColumnChunkCustomize(String(options.keyName)))
-        }
-        if (options.immediate ?? true) {
-            tasks.push(fetchRequest())
-        }
-        return await Promise.all(tasks).then(() => {
-            return options.callback?.(formState.value, state as never)
+        return await setState({ visible: true } as never).then(async () => {
+            const tasks: Array<any> = []
+            if (isNotEmpty(options.keyName)) {
+                tasks.push(fetchBaseColumnChunkCustomize(String(options.keyName)))
+            }
+            if (options.immediate ?? true) {
+                tasks.push(fetchRequest())
+            }
+            return await Promise.all(tasks).then(() => {
+                return options.callback?.(formState.value, state as never)
+            })
         })
     }
 

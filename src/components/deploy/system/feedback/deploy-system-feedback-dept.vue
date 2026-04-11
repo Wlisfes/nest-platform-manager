@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref, computed } from 'vue'
 import { useFormService, useSelectService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
@@ -19,6 +19,21 @@ export default defineComponent({
         /**部门树结构**/
         const deptOptions = useSelectService(() => Service.httpBaseSystemDepartmentTreeStructure(), {
             immediate: false
+        })
+        /**部门成员列表**/
+        const memberOptions = ref<Array<Omix>>([])
+        /**管理员**/
+        const adminUid = ref<string | undefined>(undefined)
+        /**子管理员**/
+        const subAdminUids = ref<string[]>([])
+        /**成员选项（排除已选管理员和子管理员的交叉选择）**/
+        const adminOptions = computed(() => {
+            return memberOptions.value.map(m => ({ name: m.number ? `${m.name} ${m.number}` : m.name, value: m.uid }))
+        })
+        const subAdminOptions = computed(() => {
+            return memberOptions.value
+                .filter(m => m.uid !== adminUid.value)
+                .map(m => ({ name: m.number ? `${m.name} ${m.number}` : m.name, value: m.uid }))
         })
         /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
@@ -40,10 +55,18 @@ export default defineComponent({
                     return await setState({ initialize: false })
                 }
                 try {
-                    return await Service.httpBaseSystemDepartmentResolver({ keyId: props.node.keyId }).then(async ({ data }) => {
-                        return await setForm(fetchReste(data)).then(async () => {
-                            return await setState({ initialize: false })
-                        })
+                    const [deptRes, memberRes] = await Promise.all([
+                        Service.httpBaseSystemDepartmentResolver({ keyId: props.node.keyId }),
+                        Service.httpBaseSystemDeptMemberOptions({ keyId: props.node.keyId })
+                    ])
+                    /**设置成员列表和管理员/子管理员**/
+                    memberOptions.value = memberRes.data.list ?? []
+                    const admin = memberOptions.value.find(m => m.chunk === 'admin')
+                    const subAdmins = memberOptions.value.filter(m => m.chunk === 'sub_admin')
+                    adminUid.value = admin?.uid ?? undefined
+                    subAdminUids.value = subAdmins.map(m => m.uid)
+                    return await setForm(fetchReste(deptRes.data)).then(async () => {
+                        return await setState({ initialize: false })
                     })
                 } catch (err) {
                     return await setState({ initialize: false }).then(async () => {
@@ -52,6 +75,32 @@ export default defineComponent({
                 }
             })
         }
+
+        /**保存管理员/子管理员设置**/
+        async function fetchSaveMemberRoles() {
+            const tasks: Promise<any>[] = []
+            for (const member of memberOptions.value) {
+                let targetChunk = 'member'
+                if (member.uid === adminUid.value) {
+                    targetChunk = 'admin'
+                } else if (subAdminUids.value.includes(member.uid)) {
+                    targetChunk = 'sub_admin'
+                }
+                if (member.chunk !== targetChunk) {
+                    tasks.push(
+                        Service.httpBaseSystemUpdateDeptMember({
+                            deptId: props.node.keyId,
+                            uid: member.uid,
+                            chunk: targetChunk
+                        })
+                    )
+                }
+            }
+            if (tasks.length > 0) {
+                await Promise.all(tasks)
+            }
+        }
+
         /**确定提交表单**/
         async function fetchSubmit() {
             return await fetchValidater().then(async error => {
@@ -63,6 +112,7 @@ export default defineComponent({
                         await Service.httpBaseSystemCreateDepartment(formState.value)
                     } else if (['UPDATE'].includes(props.command)) {
                         await Service.httpBaseSystemUpdateDepartment({ ...formState.value, keyId: props.node.keyId })
+                        await fetchSaveMemberRoles()
                     }
                     return await setState({ visible: false }).then(async () => {
                         await emit('submit', { done: setState })
@@ -117,6 +167,33 @@ export default defineComponent({
                             v-model:value={formState.value.alias}
                         ></form-common-column-input>
                     </form-common-column>
+                    {['UPDATE'].includes(props.command) && memberOptions.value.length > 0 && (
+                        <form-common-column label="管理员">
+                            <form-common-column-select
+                                clearable
+                                filterable
+                                placeholder="请选择管理员"
+                                options={adminOptions.value}
+                                v-model:value={adminUid.value}
+                                on-update:value={(val: string | null) => {
+                                    adminUid.value = val ?? undefined
+                                    subAdminUids.value = subAdminUids.value.filter(uid => uid !== val)
+                                }}
+                            ></form-common-column-select>
+                        </form-common-column>
+                    )}
+                    {['UPDATE'].includes(props.command) && memberOptions.value.length > 0 && (
+                        <form-common-column label="子管理员">
+                            <form-common-column-select
+                                multiple
+                                clearable
+                                filterable
+                                placeholder="请选择子管理员"
+                                options={subAdminOptions.value}
+                                v-model:value={subAdminUids.value}
+                            ></form-common-column-select>
+                        </form-common-column>
+                    )}
                 </form-common-container>
             </common-dialog-provider>
         )

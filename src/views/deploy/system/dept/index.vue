@@ -27,6 +27,9 @@ export default defineComponent({
             columns: [
                 { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
                 { title: '别名简称', key: 'alias', width: 120, check: true },
+                { title: '关联账号', key: 'accountCount', align: 'center', width: 100, check: true },
+                { title: '管理员', key: 'admin', width: 120, check: true },
+                { title: '子管理员', key: 'subAdmins', width: 160, check: true },
                 { title: '创建人', key: 'createBy', width: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新人', key: 'modifyBy', width: 120, check: true },
@@ -59,7 +62,13 @@ export default defineComponent({
                 return fetchRefresh({ page: 1, size: state.size })
             })
         }
-
+        /**部门关联账号列表**/
+        async function fetchDeploySystemDeptAccount(data: Omix) {
+            return await feedback.fetchDeploySystemDeptAccount({
+                title: `${data.name} - 关联账号`,
+                node: data
+            })
+        }
         /**新增部门**/
         async function fetchDeployDepartmentCreate() {
             return await feedback.fetchDeploySystemDepartment({
@@ -215,6 +224,19 @@ export default defineComponent({
                             on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                         >
                             {{
+                                col_accountCount: (data: Omix) => (
+                                    <n-text underline type="info" class="cursor-pointer" onClick={() => fetchDeploySystemDeptAccount(data)}>
+                                        {data.accountCount ?? 0}
+                                    </n-text>
+                                ),
+                                col_admin: (data: Omix) => (
+                                    <common-database-table-user element="text" data={data.admin}></common-database-table-user>
+                                ),
+                                col_subAdmins: (data: Omix) => (
+                                    <common-database-table-content
+                                        value={(data.subAdmins ?? []).map((item: Omix) => `${item.name} ${item.number}`)}
+                                    ></common-database-table-content>
+                                ),
                                 col_createBy: (data: Omix) => (
                                     <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
                                 ),

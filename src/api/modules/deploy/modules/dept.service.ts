@@ -35,6 +35,15 @@ export function httpBaseSystemDepartmentTreeStructure() {
     })
 }
 
+/**部门成员列表**/
+export function httpBaseSystemDeptMemberOptions(data: Omix) {
+    return request({
+        url: `/api/windows/system/dept/member/options`,
+        method: 'POST',
+        data
+    })
+}
+
 /**部门分页列表查询**/
 export function httpBaseSystemColumnDepartment(data: Omix) {
     return request({
@@ -48,6 +57,15 @@ export function httpBaseSystemColumnDepartment(data: Omix) {
 export function httpBaseSystemDeleteDepartment(data: Omix) {
     return request({
         url: `/api/windows/system/dept/delete`,
+        method: 'POST',
+        data
+    })
+}
+
+/**设置部门成员角色**/
+export function httpBaseSystemUpdateDeptMember(data: Omix) {
+    return request({
+        url: `/api/windows/system/dept/member/update`,
         method: 'POST',
         data
     })

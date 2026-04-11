@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, PropType, Fragment } from 'vue'
+import { defineComponent, PropType, Fragment, computed } from 'vue'
 import { isArray, isEmpty } from '@/utils'
 
 export default defineComponent({
@@ -13,37 +13,29 @@ export default defineComponent({
         bit: { type: String, default: '、' }
     },
     setup(props, { slots }) {
+        /**计算显示内容**/
+        const displayValue = computed(() => {
+            if (isEmpty(props.value) || (isArray(props.value) && props.value.length === 0)) {
+                return '-'
+            }
+            return isArray(props.value) ? props.value.join(props.bit) : props.value
+        })
+
         return () => {
             if (['performant-ellipsis'].includes(props.element)) {
                 return (
                     <n-performant-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '640px', maxHeight: '640px' } }}>
-                        {slots.default ? (
-                            slots.default()
-                        ) : (
-                            <Fragment>
-                                {isEmpty(props.value) ? '-' : isArray(props.value) ? props.value.join(props.bit) : props.value}
-                            </Fragment>
-                        )}
+                        {slots.default ? slots.default() : <Fragment>{displayValue.value}</Fragment>}
                     </n-performant-ellipsis>
                 )
             } else if (['ellipsis'].includes(props.element)) {
                 return (
                     <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '640px', maxHeight: '640px' } }}>
-                        {slots.default ? (
-                            slots.default()
-                        ) : (
-                            <Fragment>
-                                {isEmpty(props.value) ? '-' : isArray(props.value) ? props.value.join(props.bit) : props.value}
-                            </Fragment>
-                        )}
+                        {slots.default ? slots.default() : <Fragment>{displayValue.value}</Fragment>}
                     </n-ellipsis>
                 )
             }
-            return slots.default ? (
-                slots.default()
-            ) : (
-                <span>{isEmpty(props.value) ? '-' : isArray(props.value) ? props.value.join(props.bit) : props.value}</span>
-            )
+            return slots.default ? slots.default() : <span>{displayValue.value}</span>
         }
     }
 })

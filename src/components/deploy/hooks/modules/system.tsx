@@ -21,6 +21,13 @@ export async function fetchDeploySystemDepartment(props: PropsState<Omix>) {
     })
 }
 
+/**部门关联账号列表**/
+export async function fetchDeploySystemDeptAccount(props: PropsState<Omix>) {
+    return await import('@/components/deploy/system/feedback/deploy-system-feedback-dept-account.vue').then(component => {
+        return createComponent(component.default, props)
+    })
+}
+
 /**角色关联用户**/
 export async function fetchDeploySystemRoleAccount(props: PropsState<Omix>) {
     return await import('@/components/deploy/system/feedback/deploy-system-feedback-role-account.vue').then(component => {

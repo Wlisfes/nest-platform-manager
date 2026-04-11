@@ -19,12 +19,12 @@ export default defineComponent({
             request: (base, payload) => Service.httpBaseSystemColumnAccountRole({ ...payload, roleId: props.roleId }),
             keyName: 'chatbok:deploy:system:role:account',
             immediate: true,
-            formState: {},
+            formState: { vague: undefined, phone: undefined, email: undefined },
             columns: [
-                { title: '姓名', key: 'name', minWidth: 120, disabled: true },
+                { title: '姓名', key: 'name', width: 120, disabled: true },
                 { title: '工号', key: 'number', width: 100, check: true },
-                { title: '手机号', key: 'phone', width: 140, check: true },
-                { title: '邮箱', key: 'email', width: 200, check: true },
+                { title: '手机号', key: 'phone', minWidth: 140, check: true },
+                { title: '邮箱', key: 'email', minWidth: 200, check: true },
                 { title: '创建人', key: 'createBy', width: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新人', key: 'modifyBy', width: 120, check: true },
@@ -57,7 +57,7 @@ export default defineComponent({
                     class="p-0!"
                     bordered={false}
                     function-class="justify-end"
-                    function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
+                    function={['search', 'restore', 'collapse', 'abstract']}
                     ref={formRef}
                     limit={state.limit}
                     v-model:loading={state.loading}
@@ -73,6 +73,30 @@ export default defineComponent({
                             关联员工
                         </common-element-button>
                     </common-database-search-function>
+                    <common-database-search-column prop="vague" label="姓名/工号">
+                        <form-common-column-input
+                            clearable
+                            placeholder="请输入姓名/工号"
+                            v-model:value={formState.value.vague}
+                            on-submit={fetchRefresh}
+                        ></form-common-column-input>
+                    </common-database-search-column>
+                    <common-database-search-column prop="phone" label="手机号">
+                        <form-common-column-input
+                            clearable
+                            placeholder="请输入手机号"
+                            v-model:value={formState.value.phone}
+                            on-submit={fetchRefresh}
+                        ></form-common-column-input>
+                    </common-database-search-column>
+                    <common-database-search-column prop="email" label="邮箱">
+                        <form-common-column-input
+                            clearable
+                            placeholder="请输入邮箱"
+                            v-model:value={formState.value.email}
+                            on-submit={fetchRefresh}
+                        ></form-common-column-input>
+                    </common-database-search-column>
                 </common-database-search>
                 <common-database-table
                     class="p-0!"

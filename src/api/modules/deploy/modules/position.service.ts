@@ -52,3 +52,11 @@ export function httpBaseSystemSelectPosition() {
         method: 'POST'
     })
 }
+
+/**职级下拉列表**/
+export function httpBaseSystemSelectRank() {
+    return request({
+        url: `/api/windows/system/position/rank/select`,
+        method: 'POST'
+    })
+}

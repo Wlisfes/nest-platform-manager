@@ -26,12 +26,17 @@ export default defineComponent({
         const positionOptions = useSelectService(e => Service.httpBaseSystemSelectPosition(), {
             immediate: false
         })
+        /**职级下拉列表**/
+        const rankOptions = useSelectService(e => Service.httpBaseSystemSelectRank(), {
+            immediate: false
+        })
         /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemAccountResolver,
             formState: {
                 depts: [], //归属部门
                 positions: [], //关联职位
+                ranks: [], //关联职级
                 name: undefined, //姓名
                 number: undefined, //工号
                 phone: undefined, //手机号
@@ -51,7 +56,7 @@ export default defineComponent({
         })
         /**部门详情**/
         async function fetchBaseSystemAccountResolver() {
-            return await Promise.all([deptOptions.fetchRequest(), positionOptions.fetchRequest(), chunkOptions.fetchRequest()]).then(
+            return await Promise.all([deptOptions.fetchRequest(), positionOptions.fetchRequest(), rankOptions.fetchRequest(), chunkOptions.fetchRequest()]).then(
                 async () => {
                     if (['CREATE'].includes(props.command)) {
                         return await setState({ initialize: false })
@@ -61,7 +66,8 @@ export default defineComponent({
                             const formOptions: Omix = fetchReste({
                                 ...data,
                                 depts: data.depts.map((item: Omix) => item.keyId),
-                                positions: (data.positions ?? []).map((item: Omix) => item.keyId)
+                                positions: (data.positions ?? []).map((item: Omix) => item.keyId),
+                                ranks: (data.ranks ?? []).map((item: Omix) => item.keyId)
                             })
                             return await setForm(formOptions).then(async () => {
                                 return await setState({ initialize: false })
@@ -138,6 +144,16 @@ export default defineComponent({
                             placeholder="请选择职位"
                             options={positionOptions.dataSource.value}
                             v-model:value={formState.value.positions}
+                        ></form-common-column-select>
+                    </form-common-column>
+                    <form-common-column label="职级" path="ranks">
+                        <form-common-column-select
+                            multiple
+                            clearable
+                            filterable
+                            placeholder="请选择职级"
+                            options={rankOptions.dataSource.value}
+                            v-model:value={formState.value.ranks}
                         ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="姓名" path="name">

@@ -31,6 +31,7 @@ export default defineComponent({
                 { title: '状态', key: 'status', width: 100, align: 'center', check: true },
                 { title: '手机号', key: 'phone', width: 160, check: true },
                 { title: '邮箱', key: 'email', width: 220, check: true },
+                { title: '职级', key: 'ranks', width: 100, check: true },
                 { title: '职位', key: 'positions', width: 160, check: true },
                 { title: '归属部门', key: 'depts', minWidth: 200, check: true },
                 { title: '关联角色', key: 'roles', minWidth: 160, check: true },
@@ -184,6 +185,13 @@ export default defineComponent({
                             return (
                                 <common-database-table-content
                                     value={(data.positions ?? []).map((item: Omix) => item.name)}
+                                ></common-database-table-content>
+                            )
+                        },
+                        col_ranks: (data: Omix) => {
+                            return (
+                                <common-database-table-content
+                                    value={(data.ranks ?? []).map((item: Omix) => item.name)}
                                 ></common-database-table-content>
                             )
                         },

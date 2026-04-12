@@ -25,7 +25,7 @@ export default defineComponent({
             },
             rules: {
                 name: { required: true, message: '请输入职位名称', trigger: 'blur' },
-                sort: { required: true, message: '请输入排序号', trigger: 'blur' }
+                sort: { required: true, type: 'number', message: '请输入排序号', trigger: 'blur' }
             }
         })
 

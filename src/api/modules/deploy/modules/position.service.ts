@@ -44,3 +44,11 @@ export function httpBaseSystemDeletePosition(data: Omix) {
         data
     })
 }
+
+/**职位下拉列表**/
+export function httpBaseSystemSelectPosition() {
+    return request({
+        url: `/api/windows/system/position/select`,
+        method: 'POST'
+    })
+}

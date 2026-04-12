@@ -22,11 +22,16 @@ export default defineComponent({
         const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
             immediate: false
         })
+        /**职位下拉列表**/
+        const positionOptions = useSelectService(e => Service.httpBaseSystemSelectPosition(), {
+            immediate: false
+        })
         /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemAccountResolver,
             formState: {
                 depts: [], //归属部门
+                positions: [], //关联职位
                 name: undefined, //姓名
                 number: undefined, //工号
                 phone: undefined, //手机号
@@ -46,26 +51,29 @@ export default defineComponent({
         })
         /**部门详情**/
         async function fetchBaseSystemAccountResolver() {
-            return await Promise.all([deptOptions.fetchRequest(), chunkOptions.fetchRequest()]).then(async () => {
-                if (['CREATE'].includes(props.command)) {
-                    return await setState({ initialize: false })
-                }
-                try {
-                    return await Service.httpBaseSystemAccountResolver({ uid: props.node.uid }).then(async ({ data }) => {
-                        const formOptions: Omix = fetchReste({
-                            ...data,
-                            depts: data.depts.map((item: Omix) => item.keyId)
+            return await Promise.all([deptOptions.fetchRequest(), positionOptions.fetchRequest(), chunkOptions.fetchRequest()]).then(
+                async () => {
+                    if (['CREATE'].includes(props.command)) {
+                        return await setState({ initialize: false })
+                    }
+                    try {
+                        return await Service.httpBaseSystemAccountResolver({ uid: props.node.uid }).then(async ({ data }) => {
+                            const formOptions: Omix = fetchReste({
+                                ...data,
+                                depts: data.depts.map((item: Omix) => item.keyId),
+                                positions: (data.positions ?? []).map((item: Omix) => item.keyId)
+                            })
+                            return await setForm(formOptions).then(async () => {
+                                return await setState({ initialize: false })
+                            })
                         })
-                        return await setForm(formOptions).then(async () => {
-                            return await setState({ initialize: false })
+                    } catch (err) {
+                        return await setState({ initialize: false }).then(async () => {
+                            return await fetchNotifyService({ type: 'error', title: err.message })
                         })
-                    })
-                } catch (err) {
-                    return await setState({ initialize: false }).then(async () => {
-                        return await fetchNotifyService({ type: 'error', title: err.message })
-                    })
+                    }
                 }
-            })
+            )
         }
 
         /**确定提交表单**/
@@ -121,6 +129,16 @@ export default defineComponent({
                             v-model:value={formState.value.depts}
                             options={deptOptions.dataSource.value}
                         ></form-common-column-cascader>
+                    </form-common-column>
+                    <form-common-column label="职位" path="positions">
+                        <form-common-column-select
+                            multiple
+                            clearable
+                            filterable
+                            placeholder="请选择职位"
+                            options={positionOptions.dataSource.value}
+                            v-model:value={formState.value.positions}
+                        ></form-common-column-select>
                     </form-common-column>
                     <form-common-column label="姓名" path="name">
                         <form-common-column-input

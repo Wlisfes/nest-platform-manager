@@ -23,7 +23,7 @@ export default defineComponent({
 
         return () => (
             <n-menu
-                style={{ '--n-item-height': '40px' }}
+                style={{ '--n-item-height': '36px' }}
                 label-field="name"
                 key-field="router"
                 accordion

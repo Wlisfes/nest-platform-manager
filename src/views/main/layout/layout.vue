@@ -1,10 +1,12 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
-import { useConfiger, useStore } from '@/store'
+import { defineComponent, KeepAlive } from 'vue'
+import { RouterView } from 'vue-router'
+import { useConfiger, useGlobal, useStore } from '@/store'
 
 export default defineComponent({
     name: 'BaseLayout',
     setup(props, ctx) {
+        const { keepTabNemas } = useStore(useGlobal)
         const { collapsed, device, setState } = useStore(useConfiger)
 
         return () => (
@@ -36,7 +38,13 @@ export default defineComponent({
                             scrollbar-props={{ size: 100, trigger: 'none' }}
                         >
                             <n-element class="flex flex-col flex-1 relative transition-background-color transition-duration-300 bg-[var(--common-body-bg-color)]">
-                                <router-view></router-view>
+                                <RouterView>
+                                    {{
+                                        default: ({ Component }: Omix) => {
+                                            return <KeepAlive include={keepTabNemas.value}>{Component}</KeepAlive>
+                                        }
+                                    }}
+                                </RouterView>
                             </n-element>
                         </n-layout-content>
                     </n-layout>

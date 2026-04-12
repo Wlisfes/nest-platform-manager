@@ -1,13 +1,14 @@
 <script lang="tsx">
 import { defineComponent, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useConfiger, useStore } from '@/store'
+import { useConfiger, useGlobal, useStore } from '@/store'
 import { BScroll } from '@/plugins'
 
 export default defineComponent({
     name: 'LayoutCommonStore',
     setup(props, ctx) {
-        const { menuOptions } = useStore(useConfiger)
+        const { tabOptions } = useStore(useGlobal)
+        const global = useGlobal()
         const router = useRouter()
         const element = ref<HTMLElement>()
 
@@ -15,6 +16,11 @@ export default defineComponent({
             if (data.fullPath !== router.currentRoute.value.fullPath) {
                 return await router.push({ path: data.fullPath })
             }
+        }
+
+        async function fetchCloseTab(e: Event, data: Omix) {
+            e.stopPropagation()
+            return await global.fetchRemoveRouter(data, router)
         }
 
         onMounted(fetchInitScrollbar)
@@ -34,15 +40,25 @@ export default defineComponent({
             <n-layout-header class="layout-common-store flex gap-10 overflow-hidden p-inline-12 p-be-8">
                 <div ref={element} class="flex-1 whitespace-nowrap overflow-hidden relative  cursor-pointer">
                     <div class="inline-flex gap-10 element-bscrollbar">
-                        {menuOptions.value.map(item => (
+                        {tabOptions.value.map(item => (
                             <div key={item.fullPath} class="select-none inline-flex element-block">
                                 <common-element-button
+                                    class={{ 'p-ie-2': item.meta.showClose ?? true }}
                                     secondary
                                     size="small"
                                     type={item.fullPath === router.currentRoute.value.fullPath ? 'primary' : undefined}
                                     onClick={() => fetchJumpRouter(item)}
                                 >
-                                    {item.meta.title}
+                                    <span class="flex items-center overflow-hidden">
+                                        {item.meta.title}
+                                        {(item.meta.showClose ?? true) && (
+                                            <div class="flex items-center p-7" onClick={(e: Event) => fetchCloseTab(e, item)}>
+                                                <n-icon size={14}>
+                                                    <common-element-icon size={14} name="nest-close"></common-element-icon>
+                                                </n-icon>
+                                            </div>
+                                        )}
+                                    </span>
                                 </common-element-button>
                             </div>
                         ))}

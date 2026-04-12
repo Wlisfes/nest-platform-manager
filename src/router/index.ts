@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, Router } from 'vue-router'
-import { getToken, fetchDestroy, isEmpty, fetchWherer, fetchHandler } from '@/utils'
+import { cloneDeep, getToken, fetchDestroy, isEmpty, fetchWherer, fetchHandler, fetchCurrent } from '@/utils'
 import { useGlobal, useConfiger, useStore } from '@/store'
 import { fetchSetupRouter } from '@/router/modules'
 import { App } from 'vue'
@@ -24,6 +24,13 @@ export const router = createRouter({
     ]
 })
 
+/**默认标签页**/
+export function fetchMetaDefault() {
+    return Object.assign(cloneDeep(fetchCurrent(fetchSetupRouter(), e => ['/manager'].includes(e.path))), {
+        fullPath: '/manager'
+    })
+}
+
 export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boolean }>) {
     app.use(router)
     if (option.interceptor) {
@@ -33,7 +40,8 @@ export function setupRouter(app: App<Element>, option: Omix<{ interceptor: boole
 
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
-    const { setState, fetchUpdateRouter } = useStore(useConfiger)
+    const { setState } = useStore(useConfiger)
+    const { fetchUpdateRouter } = useStore(useGlobal)
     const { faseUser, fetchReset, fetchBaseInitialize } = useStore(useGlobal)
     router.beforeEach(async (to, from, next) => {
         window.$loadingBar.start()

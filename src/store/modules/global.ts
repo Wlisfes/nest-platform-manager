@@ -1,24 +1,36 @@
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useStore, useConfiger } from '@/store'
+import { fetchMetaDefault } from '@/router'
+import { omit, fetchDestroy } from '@/utils'
 import { useState } from '@/hooks'
-import { fetchDestroy } from '@/utils'
 import * as Service from '@/api/instance.service'
 
 export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
     const faseUser = ref<Omix>({})
+    const faseMeta = ref<Omix>(fetchMetaDefault())
     const { state, setState } = useState({
         /**登录权限菜单**/
         menuOptions: [],
         /**登录权限按钮**/
-        sheetOptions: []
+        sheetOptions: [],
+        /**标签页缓存**/
+        tabOptions: [faseMeta.value]
+    })
+
+    /**keepAlive组件名称列表**/
+    const keepTabNemas = computed<Array<string>>(() => {
+        const items = state.tabOptions.filter(item => item.meta?.keepAlive)
+        return items.map(item => item.name).filter(Boolean)
     })
 
     /**退出登录时重置store数据**/
     async function fetchReset() {
         return await fetchDestroy().then(async () => {
             await useStore(useConfiger).fetchReset()
-            return (faseUser.value = {})
+            return await setState({ tabOptions: [faseMeta.value] }).then(() => {
+                return (faseUser.value = {})
+            })
         })
     }
 
@@ -57,6 +69,32 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         })
     }
 
+    /**缓存标签页**/
+    async function fetchUpdateRouter(data: Omix) {
+        const index = state.tabOptions.findIndex(item => item.fullPath === data.fullPath)
+        if (index === -1) {
+            return state.tabOptions.push(omit(data, ['matched']))
+        } else {
+            state.tabOptions[index].meta = data.meta
+        }
+        return state.tabOptions
+    }
+
+    /**删除标签页**/
+    async function fetchRemoveRouter(data: Omix, router: any) {
+        const index = state.tabOptions.findIndex(item => item.fullPath === data.fullPath)
+        if (index === -1) return
+        state.tabOptions.splice(index, 1)
+        if (data.fullPath === router.currentRoute.value.fullPath) {
+            const next = state.tabOptions[index] || state.tabOptions[index - 1]
+            if (next) {
+                await router.push({ path: next.fullPath })
+            } else {
+                await router.push({ path: '/manager' })
+            }
+        }
+    }
+
     return {
         ...toRefs(state),
         faseUser,
@@ -66,6 +104,9 @@ export const useGlobal = defineStore('APP_STORE_GLOBAL', () => {
         fetchAuthAccountToken,
         fetchAuthAccountTokenResolver,
         fetchAuthAccountTokenResource,
-        fetchAuthAccountTokenSheet
+        fetchAuthAccountTokenSheet,
+        fetchUpdateRouter,
+        fetchRemoveRouter,
+        keepTabNemas
     }
 })

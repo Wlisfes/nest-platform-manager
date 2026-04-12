@@ -1,7 +1,6 @@
 import { toRefs, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useState } from '@/hooks'
-import * as utils from '@/utils'
 
 /**基础缓存配置实例**/
 export const useConfiger = defineStore(
@@ -22,15 +21,13 @@ export const useConfiger = defineStore(
             device: 'PC',
             /**菜单收缩**/
             collapsed: false,
-            /**缓存菜单**/
-            menuOptions: [] as Array<Omix>,
             /**组件尺寸**/
             elementSize: 'medium'
         })
 
         /**重载配置**/
         async function fetchReset() {
-            return await setState({ device: 'PC', collapsed: false, router: '/manager', menuOptions: [] })
+            return await setState({ device: 'PC', collapsed: false, router: '/manager' })
         }
 
         /**主题切换**/
@@ -38,20 +35,11 @@ export const useConfiger = defineStore(
             return await setState({ theme: theme ?? state.theme === 'light' ? 'dark' : 'light' })
         }
 
-        /**缓存菜单**/
-        async function fetchUpdateRouter(data: Omix) {
-            if (!state.menuOptions.some(item => item.fullPath === data.fullPath)) {
-                return state.menuOptions.push(utils.omit(data, ['matched']))
-            }
-            return state.menuOptions
-        }
-
         return {
             ...toRefs(state),
             setState,
             fetchReset,
             fetchThemeUpdate,
-            fetchUpdateRouter,
             inverted: computed(() => state.theme === 'dark')
         }
     },

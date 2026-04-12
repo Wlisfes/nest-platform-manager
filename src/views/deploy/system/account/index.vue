@@ -181,20 +181,16 @@ export default defineComponent({
                                 ></common-database-table-content>
                             )
                         },
-                        col_positions: (data: Omix) => {
-                            return (
-                                <common-database-table-content
-                                    value={(data.positions ?? []).map((item: Omix) => item.name)}
-                                ></common-database-table-content>
-                            )
-                        },
-                        col_ranks: (data: Omix) => {
-                            return (
-                                <common-database-table-content
-                                    value={(data.ranks ?? []).map((item: Omix) => item.name)}
-                                ></common-database-table-content>
-                            )
-                        },
+                        col_positions: (data: Omix) => (
+                            <common-database-table-content
+                                value={(data.positions ?? []).map((item: Omix) => item.name)}
+                            ></common-database-table-content>
+                        ),
+                        col_ranks: (data: Omix) => (
+                            <common-database-table-content
+                                value={(data.ranks ?? []).map((item: Omix) => item.name)}
+                            ></common-database-table-content>
+                        ),
                         col_roles: (data: Omix) => {
                             return (
                                 <common-database-table-content

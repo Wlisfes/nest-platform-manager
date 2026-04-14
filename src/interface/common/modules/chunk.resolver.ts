@@ -47,5 +47,9 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_WINDOWS_ROLE_MODEL: {
         value: 'CHUNK_WINDOWS_ROLE_MODEL',
         name: '角色数据权限'
+    },
+    CHUNK_WINDOWS_BRAND_STATUS: {
+        value: 'CHUNK_WINDOWS_BRAND_STATUS',
+        name: '品牌状态'
     }
 }

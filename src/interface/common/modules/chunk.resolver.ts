@@ -28,14 +28,6 @@ export const COMMON_CHUNK_OPTIONS = {
         value: 'CHUNK_WINDOWS_SHEET_STATUS',
         name: '菜单状态'
     },
-    CHUNK_WINDOWS_RESOUREC_STATUS: {
-        value: 'CHUNK_WINDOWS_RESOUREC_STATUS',
-        name: '菜单状态'
-    },
-    CHUNK_WINDOWS_RESOUREC_CHECK: {
-        value: 'CHUNK_WINDOWS_RESOUREC_STATUS',
-        name: '菜单显示状态'
-    },
     COMMON_WINDOWS_RESOUREC_SHEET: {
         value: 'COMMON_WINDOWS_RESOUREC_SHEET',
         name: '按钮状态'

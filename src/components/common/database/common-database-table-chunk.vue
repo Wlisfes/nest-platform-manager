@@ -17,6 +17,7 @@ export default defineComponent({
         const itemNode = computed(() => fetchCurrent(props.options, e => e.value == props.value))
 
         return () => {
+            console.log(itemNode.value, props.options)
             if (isEmpty(itemNode.value)) {
                 return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
             } else if (['chunk'].includes(props.element)) {

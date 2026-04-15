@@ -11,7 +11,7 @@ export default defineComponent({
     name: 'DeploySystemSheet',
     setup(props, ctx) {
         /**通用字典枚举**/
-        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_RESOUREC_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'] })
+        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_SHEET_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'] })
         /**菜单树结构**/
         const sheetOptions = useSelectService(e => Service.httpBaseSystemSheetTreeStructure(), {
             options: { selectedKeys: [] as Array<string>, expandedKeys: [] as Array<string> },
@@ -32,7 +32,7 @@ export default defineComponent({
             columns: [
                 { title: '菜单名称', key: 'name', width: 150, disabled: true },
                 { title: '图标', key: 'iconName', width: 100, align: 'center', className: 'p-block-0!', check: true },
-                { title: '类型', key: 'chunk', width: 100, align: 'center', check: true },
+                { title: '类型', key: 'chunk', width: 100, check: true },
                 { title: '权限标识', key: 'keyName', minWidth: 200, check: true },
                 { title: '路由地址', key: 'router', minWidth: 200, check: true },
                 { title: '版本号', key: 'version', width: 100, align: 'center', check: true },
@@ -290,7 +290,7 @@ export default defineComponent({
                                     <common-database-table-chunk
                                         element="chunk"
                                         value={data.status}
-                                        options={chunkOptions.CHUNK_WINDOWS_RESOUREC_STATUS.value}
+                                        options={chunkOptions.CHUNK_WINDOWS_SHEET_STATUS.value}
                                     ></common-database-table-chunk>
                                 )
                             }}

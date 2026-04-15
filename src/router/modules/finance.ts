@@ -4,5 +4,11 @@ export default [
         name: 'FinanceDeployBrand',
         meta: { title: '品牌管理', AUTH: 'AUTH', keepAlive: true },
         component: () => import('@/views/finance/deploy/brand/index.vue')
+    },
+    {
+        path: '/finance/deploy/currency',
+        name: 'FinanceDeployCurrency',
+        meta: { title: '币种管理', AUTH: 'AUTH', keepAlive: true },
+        component: () => import('@/views/finance/deploy/currency/index.vue')
     }
 ]

@@ -43,5 +43,9 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_WINDOWS_BRAND_STATUS: {
         value: 'CHUNK_WINDOWS_BRAND_STATUS',
         name: '品牌状态'
+    },
+    CHUNK_WINDOWS_CURRENCY_STATUS: {
+        value: 'CHUNK_WINDOWS_CURRENCY_STATUS',
+        name: '币种状态'
     }
 }

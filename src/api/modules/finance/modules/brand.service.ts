@@ -35,3 +35,11 @@ export function httpBaseFinanceUpdateBrandStatus(data: Omix) {
         data
     })
 }
+
+/**品牌下拉列表**/
+export function httpBaseFinanceSelectBrand() {
+    return request({
+        url: `/api/windows/finance/brand/select`,
+        method: 'POST'
+    })
+}

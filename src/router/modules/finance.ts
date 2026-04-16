@@ -10,5 +10,11 @@ export default [
         name: 'FinanceDeployCurrency',
         meta: { title: '币种管理', AUTH: 'AUTH', keepAlive: true },
         component: () => import('@/views/finance/deploy/currency/index.vue')
+    },
+    {
+        path: '/finance/account/consumer',
+        name: 'FinanceAccountConsumer',
+        meta: { title: '消费用户', AUTH: 'AUTH', keepAlive: true },
+        component: () => import('@/views/finance/account/consumer/index.vue')
     }
 ]

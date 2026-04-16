@@ -47,5 +47,21 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_WINDOWS_CURRENCY_STATUS: {
         value: 'CHUNK_WINDOWS_CURRENCY_STATUS',
         name: '币种状态'
+    },
+    CHUNK_WINDOWS_CLIENT_STATUS: {
+        value: 'CHUNK_WINDOWS_CLIENT_STATUS',
+        name: '客户状态'
+    },
+    CHUNK_WINDOWS_CLIENT_PAY_MODE: {
+        value: 'CHUNK_WINDOWS_CLIENT_PAY_MODE',
+        name: '付款模式'
+    },
+    CHUNK_WINDOWS_CLIENT_AUTH_STATUS: {
+        value: 'CHUNK_WINDOWS_CLIENT_AUTH_STATUS',
+        name: '认证状态'
+    },
+    CHUNK_WINDOWS_CLIENT_SOURCE: {
+        value: 'CHUNK_WINDOWS_CLIENT_SOURCE',
+        name: '注册来源'
     }
 }

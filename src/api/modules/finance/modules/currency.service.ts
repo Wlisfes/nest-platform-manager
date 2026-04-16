@@ -17,3 +17,11 @@ export function httpBaseFinanceUpdateCurrencyStatus(data: Omix) {
         data
     })
 }
+
+/**币种下拉列表**/
+export function httpBaseFinanceSelectCurrency() {
+    return request({
+        url: `/api/windows/finance/currency/select`,
+        method: 'POST'
+    })
+}

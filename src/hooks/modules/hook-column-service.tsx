@@ -4,7 +4,7 @@ import { cloneDeep, pick } from 'lodash-es'
 import { useChunkService, useState } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
-import { ResultResolver, ResultColumn, ChunkName } from '@/interface/instance.resolver'
+import { ResultResolver, ResultColumn, ChunkName, ChunkColumnOptions } from '@/interface/instance.resolver'
 import * as Service from '@/api/instance.service'
 
 /**列表缓存对象**/
@@ -37,9 +37,9 @@ interface BaseServiceState<T> extends Omix {
     database: Array<Omix>
 }
 /**列表包装配置**/
-interface BaseServiceOptions<T, U, R, K> extends Partial<BaseServiceState<T>> {
-    /**枚举下拉查询**/
-    typeName?: K
+interface BaseServiceOptions<T, U, R, C extends Partial<Record<ChunkName, true>> = {}> extends Partial<BaseServiceState<T>> {
+    /**枚举开启配置**/
+    chunkNames?: C
     /**权限标识**/
     keyName?: string
     /**立即执行**/
@@ -57,13 +57,13 @@ interface BaseServiceOptions<T, U, R, K> extends Partial<BaseServiceState<T>> {
 }
 
 /**列表包装hook**/
-export function useColumnService<T extends Omix, U extends Omix, R extends Omix, K extends ChunkName[]>(
-    options: BaseServiceOptions<T, U, R, K>
+export function useColumnService<T extends Omix, U extends Omix, R extends Omix, C extends Partial<Record<ChunkName, true>> = {}>(
+    options: BaseServiceOptions<T, U, R, C>
 ) {
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
     const formState = ref<typeof options.formState>(cloneDeep(options.formState))
     const observer = ref(Observer<Record<string, Omix>>())
-    const chunkOptions = useChunkService({ type: options.typeName })
+    const chunkOptions = useChunkService({ type: Object.keys(options.chunkNames ?? {}) as Array<Extract<keyof C, ChunkName>> })
     const { state, setState } = useState({
         when: options.when ?? true,
         limit: options.limit ?? 14,
@@ -218,7 +218,7 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix,
         instState,
         instOptions,
         chunkOptions,
-        chunkState: chunkOptions.chunkState,
+        chunkState: chunkOptions.chunkState, // as unknown as Record<EnabledChunks, Array<ChunkColumnOptions>>,
         ...instOptions,
         ...toRefs(state)
     }

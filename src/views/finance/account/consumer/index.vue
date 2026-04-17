@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useColumnService, useChunkService } from '@/hooks'
+import { useColumnService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
@@ -12,12 +12,12 @@ export default defineComponent({
         const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseFinanceColumnClient(payload),
             keyName: 'chatbok:finance:account:consumer',
-            typeName: [
-                'CHUNK_WINDOWS_CLIENT_PAY_MODE',
-                'CHUNK_WINDOWS_CLIENT_AUTH_STATUS',
-                'CHUNK_WINDOWS_CLIENT_SOURCE',
-                'CHUNK_WINDOWS_CLIENT_STATUS'
-            ],
+            chunkNames: {
+                CHUNK_WINDOWS_CLIENT_PAY_MODE: true,
+                CHUNK_WINDOWS_CLIENT_AUTH_STATUS: true,
+                CHUNK_WINDOWS_CLIENT_SOURCE: true,
+                CHUNK_WINDOWS_CLIENT_STATUS: true
+            },
             formState: {
                 name: undefined,
                 status: undefined,

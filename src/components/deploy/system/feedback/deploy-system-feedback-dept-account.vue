@@ -15,7 +15,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         /**通用字典枚举**/
-        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_ACCOUNT_STATUS'] })
+        const chunkOptions = useChunkService({ type: ['CHUNK_ACCOUNT_STATUS'] })
         /**表格实例**/
         const { state, instOptions, setState, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnAccount(payload),
@@ -81,7 +81,7 @@ export default defineComponent({
                                 <common-database-table-chunk
                                     element="chunk"
                                     value={data.status}
-                                    options={chunkOptions.CHUNK_WINDOWS_ACCOUNT_STATUS.value}
+                                    options={chunkOptions.CHUNK_ACCOUNT_STATUS.value}
                                 ></common-database-table-chunk>
                             )
                         }}

@@ -17,7 +17,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         /**通用字典枚举**/
-        const chunkOptions = useChunkService({ immediate: false, type: ['CHUNK_WINDOWS_BRAND_STATUS'] })
+        const chunkOptions = useChunkService({ immediate: false, type: ['CHUNK_BRAND_STATUS'] })
         /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseFinanceBrandResolver,
@@ -115,7 +115,7 @@ export default defineComponent({
                         <form-common-column label="状态" path="status">
                             <form-common-column-select
                                 placeholder="请选择状态"
-                                options={chunkOptions.CHUNK_WINDOWS_BRAND_STATUS.value}
+                                options={chunkOptions.CHUNK_BRAND_STATUS.value}
                                 v-model:value={formState.value.status}
                             ></form-common-column-select>
                         </form-common-column>

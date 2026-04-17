@@ -12,56 +12,56 @@ export interface ChunkColumnOptions extends Omix {
 }
 /**通用下拉字典**/
 export const COMMON_CHUNK_OPTIONS = {
-    CHUNK_WINDOWS_ACCOUNT_STATUS: {
-        value: 'CHUNK_WINDOWS_ACCOUNT_STATUS',
+    CHUNK_ACCOUNT_STATUS: {
+        value: 'CHUNK_ACCOUNT_STATUS',
         name: '账号状态'
     },
-    CHUNK_WINDOWS_SHEET_CHECK: {
-        value: 'CHUNK_WINDOWS_SHEET_CHECK',
+    CHUNK_SHEET_CHECK: {
+        value: 'CHUNK_SHEET_CHECK',
         name: '菜单显示状态'
     },
-    CHUNK_WINDOWS_SHEET_CHUNK: {
-        value: 'CHUNK_WINDOWS_SHEET_CHUNK',
+    CHUNK_SHEET_CHUNK: {
+        value: 'CHUNK_SHEET_CHUNK',
         name: '菜单类型'
     },
-    CHUNK_WINDOWS_SHEET_STATUS: {
-        value: 'CHUNK_WINDOWS_SHEET_STATUS',
+    CHUNK_SHEET_STATUS: {
+        value: 'CHUNK_SHEET_STATUS',
         name: '菜单状态'
     },
     COMMON_WINDOWS_RESOUREC_SHEET: {
         value: 'COMMON_WINDOWS_RESOUREC_SHEET',
         name: '按钮状态'
     },
-    CHUNK_WINDOWS_ROLE_CHUNK: {
-        value: 'CHUNK_WINDOWS_ROLE_CHUNK',
+    CHUNK_ROLE_CHUNK: {
+        value: 'CHUNK_ROLE_CHUNK',
         name: '角色类型'
     },
-    CHUNK_WINDOWS_ROLE_MODEL: {
-        value: 'CHUNK_WINDOWS_ROLE_MODEL',
+    CHUNK_ROLE_MODEL: {
+        value: 'CHUNK_ROLE_MODEL',
         name: '角色数据权限'
     },
-    CHUNK_WINDOWS_BRAND_STATUS: {
-        value: 'CHUNK_WINDOWS_BRAND_STATUS',
+    CHUNK_BRAND_STATUS: {
+        value: 'CHUNK_BRAND_STATUS',
         name: '品牌状态'
     },
-    CHUNK_WINDOWS_CURRENCY_STATUS: {
-        value: 'CHUNK_WINDOWS_CURRENCY_STATUS',
+    CHUNK_CURRENCY_STATUS: {
+        value: 'CHUNK_CURRENCY_STATUS',
         name: '币种状态'
     },
-    CHUNK_WINDOWS_CLIENT_STATUS: {
-        value: 'CHUNK_WINDOWS_CLIENT_STATUS',
+    CHUNK_CLIENT_STATUS: {
+        value: 'CHUNK_CLIENT_STATUS',
         name: '客户状态'
     },
-    CHUNK_WINDOWS_CLIENT_PAY_MODE: {
-        value: 'CHUNK_WINDOWS_CLIENT_PAY_MODE',
+    CHUNK_CLIENT_PAY_MODE: {
+        value: 'CHUNK_CLIENT_PAY_MODE',
         name: '付款模式'
     },
-    CHUNK_WINDOWS_CLIENT_AUTH_STATUS: {
-        value: 'CHUNK_WINDOWS_CLIENT_AUTH_STATUS',
+    CHUNK_CLIENT_AUTH_STATUS: {
+        value: 'CHUNK_CLIENT_AUTH_STATUS',
         name: '认证状态'
     },
-    CHUNK_WINDOWS_CLIENT_SOURCE: {
-        value: 'CHUNK_WINDOWS_CLIENT_SOURCE',
+    CHUNK_CLIENT_SOURCE: {
+        value: 'CHUNK_CLIENT_SOURCE',
         name: '注册来源'
     }
 }

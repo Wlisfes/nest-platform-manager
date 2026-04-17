@@ -11,7 +11,7 @@ export default defineComponent({
     name: 'DeploySystemSheet',
     setup(props, ctx) {
         /**通用字典枚举**/
-        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_SHEET_STATUS', 'CHUNK_WINDOWS_SHEET_CHUNK'] })
+        const chunkOptions = useChunkService({ type: ['CHUNK_SHEET_STATUS', 'CHUNK_SHEET_CHUNK'] })
         /**菜单树结构**/
         const sheetOptions = useSelectService(e => Service.httpBaseSystemSheetTreeStructure(), {
             options: { selectedKeys: [] as Array<string>, expandedKeys: [] as Array<string> },
@@ -283,14 +283,14 @@ export default defineComponent({
                                     <common-database-table-chunk
                                         element="chunk"
                                         value={data.chunk}
-                                        options={chunkOptions.CHUNK_WINDOWS_SHEET_CHUNK.value}
+                                        options={chunkOptions.CHUNK_SHEET_CHUNK.value}
                                     ></common-database-table-chunk>
                                 ),
                                 col_status: (data: Omix) => (
                                     <common-database-table-chunk
                                         element="chunk"
                                         value={data.status}
-                                        options={chunkOptions.CHUNK_WINDOWS_SHEET_STATUS.value}
+                                        options={chunkOptions.CHUNK_SHEET_STATUS.value}
                                     ></common-database-table-chunk>
                                 )
                             }}

@@ -19,7 +19,7 @@ export default defineComponent({
         /**通用字典枚举**/
         const chunkOptions = useChunkService({
             immediate: false,
-            type: ['CHUNK_WINDOWS_CLIENT_PAY_MODE', 'CHUNK_WINDOWS_CLIENT_AUTH_STATUS', 'CHUNK_WINDOWS_CLIENT_SOURCE']
+            type: ['CHUNK_CLIENT_PAY_MODE', 'CHUNK_CLIENT_AUTH_STATUS', 'CHUNK_CLIENT_SOURCE']
         })
         /**品牌下拉列表**/
         const brandOptions = useSelectService(e => Service.httpBaseFinanceSelectBrand(), {
@@ -160,7 +160,7 @@ export default defineComponent({
                     <form-common-column label="付款模式" path="payMode">
                         <form-common-column-select
                             placeholder="请选择付款模式"
-                            options={chunkOptions.CHUNK_WINDOWS_CLIENT_PAY_MODE.value}
+                            options={chunkOptions.CHUNK_CLIENT_PAY_MODE.value}
                             v-model:value={formState.value.payMode}
                         ></form-common-column-select>
                     </form-common-column>

@@ -17,7 +17,7 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         /**通用字典枚举**/
-        const chunkOptions = useChunkService({ type: ['CHUNK_WINDOWS_ACCOUNT_STATUS'], immediate: false })
+        const chunkOptions = useChunkService({ type: ['CHUNK_ACCOUNT_STATUS'], immediate: false })
         /**部门树结构**/
         const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
             immediate: false
@@ -197,7 +197,7 @@ export default defineComponent({
                     <form-common-column label="状态" path="status">
                         <form-common-column-select
                             placeholder="请选择状态"
-                            options={chunkOptions.CHUNK_WINDOWS_ACCOUNT_STATUS.value}
+                            options={chunkOptions.CHUNK_ACCOUNT_STATUS.value}
                             v-model:value={formState.value.status}
                         ></form-common-column-select>
                     </form-common-column>

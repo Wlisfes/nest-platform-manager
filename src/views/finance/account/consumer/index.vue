@@ -13,10 +13,10 @@ export default defineComponent({
             request: (base, payload) => Service.httpBaseFinanceColumnClient(payload),
             keyName: 'chatbok:finance:account:consumer',
             chunkNames: {
-                CHUNK_WINDOWS_CLIENT_PAY_MODE: true,
-                CHUNK_WINDOWS_CLIENT_AUTH_STATUS: true,
-                CHUNK_WINDOWS_CLIENT_SOURCE: true,
-                CHUNK_WINDOWS_CLIENT_STATUS: true
+                CHUNK_CLIENT_PAY_MODE: true,
+                CHUNK_CLIENT_AUTH_STATUS: true,
+                CHUNK_CLIENT_SOURCE: true,
+                CHUNK_CLIENT_STATUS: true
             },
             formState: {
                 name: undefined,
@@ -210,14 +210,14 @@ export default defineComponent({
                             <common-database-table-chunk
                                 element="chunk"
                                 value={data.status}
-                                options={chunkState.CHUNK_WINDOWS_CLIENT_STATUS}
+                                options={chunkState.CHUNK_CLIENT_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_payMode: (data: Omix) => (
                             <common-database-table-chunk
                                 element="chunk"
                                 value={data.payMode}
-                                options={chunkState.CHUNK_WINDOWS_CLIENT_PAY_MODE}
+                                options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             ></common-database-table-chunk>
                         ),
                         col_authStatus: (data: Omix) => {

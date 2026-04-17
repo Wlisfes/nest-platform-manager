@@ -20,7 +20,7 @@ export default defineComponent({
         /**通用字典枚举**/
         const chunkOptions = useChunkService({
             immediate: false,
-            type: ['CHUNK_WINDOWS_ROLE_MODEL', 'CHUNK_WINDOWS_ROLE_CHUNK']
+            type: ['CHUNK_ROLE_MODEL', 'CHUNK_ROLE_CHUNK']
         })
         /**部门树结构（仅部门角色需要）**/
         const deptOptions = useSelectService(() => httpBaseSystemDepartmentTreeStructure(), {
@@ -116,7 +116,7 @@ export default defineComponent({
                     <form-common-column label="数据权限" path="model">
                         <form-common-column-select
                             placeholder="请选择数据权限"
-                            options={chunkOptions.CHUNK_WINDOWS_ROLE_MODEL.value}
+                            options={chunkOptions.CHUNK_ROLE_MODEL.value}
                             v-model:value={formState.value.model}
                         ></form-common-column-select>
                     </form-common-column>

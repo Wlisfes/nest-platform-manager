@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useColumnService } from '@/hooks'
+import { useColumnService, useChunkService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
@@ -9,9 +9,15 @@ export default defineComponent({
     name: 'FinanceAccountConsumer',
     setup(props, ctx) {
         /**表格实例**/
-        const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseFinanceColumnClient(payload),
             keyName: 'chatbok:finance:account:consumer',
+            typeName: [
+                'CHUNK_WINDOWS_CLIENT_PAY_MODE',
+                'CHUNK_WINDOWS_CLIENT_AUTH_STATUS',
+                'CHUNK_WINDOWS_CLIENT_SOURCE',
+                'CHUNK_WINDOWS_CLIENT_STATUS'
+            ],
             formState: {
                 name: undefined,
                 status: undefined,
@@ -99,17 +105,27 @@ export default defineComponent({
                     v-model:database={state.database}
                     v-model:formState={formState.value}
                     on-update:database={instOptions.fetchUpdateDatabase}
-                    on-restore={fetchRestore}
-                    on-submit={fetchRequest}
+                    on-restore={instOptions.fetchRestore}
+                    on-submit={instOptions.fetchRequest}
                 >
                     <common-database-search-function abstract class="flex gap-col-10">
                         <common-element-button type="primary" onClick={fetchAccountConsumerCreate}>
                             新增
                         </common-element-button>
-                        <common-element-button dashed type="primary" disabled={instState.value.isUpdate} onClick={fetchAccountConsumerUpdate}>
+                        <common-element-button
+                            dashed
+                            type="primary"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchAccountConsumerUpdate}
+                        >
                             编辑
                         </common-element-button>
-                        <common-element-button dashed type="warning" disabled={instState.value.isUpdate} onClick={fetchAccountConsumerStatus}>
+                        <common-element-button
+                            dashed
+                            type="warning"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchAccountConsumerStatus}
+                        >
                             切换状态
                         </common-element-button>
                     </common-database-search-function>
@@ -191,24 +207,44 @@ export default defineComponent({
                 >
                     {{
                         col_status: (data: Omix) => (
-                            <n-tag type={data.status === 'enable' ? 'success' : 'error'} size="small">
-                                {data.status === 'enable' ? '启用' : '禁用'}
-                            </n-tag>
+                            <common-database-table-chunk
+                                element="chunk"
+                                value={data.status}
+                                options={chunkState.CHUNK_WINDOWS_CLIENT_STATUS}
+                            ></common-database-table-chunk>
                         ),
                         col_payMode: (data: Omix) => (
-                            <n-tag type={data.payMode === 'prepaid' ? 'info' : 'warning'} size="small">
-                                {data.payMode === 'prepaid' ? '预付' : '后付'}
-                            </n-tag>
+                            <common-database-table-chunk
+                                element="chunk"
+                                value={data.payMode}
+                                options={chunkState.CHUNK_WINDOWS_CLIENT_PAY_MODE}
+                            ></common-database-table-chunk>
                         ),
                         col_authStatus: (data: Omix) => {
-                            const map: Omix = { unverified: { type: 'default', label: '未认证' }, pending: { type: 'warning', label: '认证中' }, verified: { type: 'success', label: '已认证' }, rejected: { type: 'error', label: '认证失败' } }
+                            const map: Omix = {
+                                unverified: { type: 'default', label: '未认证' },
+                                pending: { type: 'warning', label: '认证中' },
+                                verified: { type: 'success', label: '已认证' },
+                                rejected: { type: 'error', label: '认证失败' }
+                            }
                             const item = map[data.authStatus] ?? { type: 'default', label: data.authStatus }
-                            return <n-tag type={item.type} size="small">{item.label}</n-tag>
+                            return (
+                                <n-tag type={item.type} size="small">
+                                    {item.label}
+                                </n-tag>
+                            )
                         },
                         col_source: (data: Omix) => {
-                            const map: Omix = { platform: { type: 'info', label: '平台注册' }, manual: { type: 'success', label: '手动创建' } }
+                            const map: Omix = {
+                                platform: { type: 'info', label: '平台注册' },
+                                manual: { type: 'success', label: '手动创建' }
+                            }
                             const item = map[data.source] ?? { type: 'default', label: data.source }
-                            return <n-tag type={item.type} size="small">{item.label}</n-tag>
+                            return (
+                                <n-tag type={item.type} size="small">
+                                    {item.label}
+                                </n-tag>
+                            )
                         }
                     }}
                 </common-database-table>

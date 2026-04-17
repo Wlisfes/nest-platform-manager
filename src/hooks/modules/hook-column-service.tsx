@@ -89,8 +89,11 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix,
             if (isNotEmpty(options.keyName)) {
                 tasks.push(fetchBaseColumnChunkCustomize(String(options.keyName)))
             }
+            if (Object.keys(options.chunkNames ?? {}).length > 0) {
+                tasks.push(chunkOptions.fetchRequest())
+            }
             if (options.immediate ?? true) {
-                tasks.push(fetchRequest(), chunkOptions.fetchRequest())
+                tasks.push(fetchRequest())
             }
             return await Promise.all(tasks).then(() => {
                 return options.callback?.(formState.value, state as never)

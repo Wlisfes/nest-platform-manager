@@ -1,9 +1,11 @@
 import { ref, Ref, toRefs, onMounted } from 'vue'
 import { FormInst, FormRules, FormItemRule } from 'naive-ui'
-import { useState } from '@/hooks/modules/hook-state'
-import { isEmpty, fetchHandler } from '@/utils'
+import { useState, useChunkService } from '@/hooks'
+import { isEmpty, fetchHandler, Observer } from '@/utils'
 import { useRouter, useRoute } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
+import { ChunkName } from '@/interface/instance.resolver'
+
 interface FormServiceState extends Omix {
     /**初始化状态**/
     initialize: boolean
@@ -14,11 +16,13 @@ interface FormServiceState extends Omix {
     /**弹出控制**/
     visible: boolean
 }
-interface FormServiceOptions<T, R, U> extends Partial<FormServiceState> {
+interface FormServiceOptions<T, R, U, C extends Partial<Record<ChunkName, true>> = {}> extends Partial<FormServiceState> {
     /**表单对象**/
     formState: Omix<T>
     /**表单校验对象**/
     rules?: R
+    /**枚举开启配置**/
+    chunkNames?: C
     /**初始化完毕执行**/
     mounted?: boolean
     /**额外配置**/
@@ -28,11 +32,18 @@ interface FormServiceOptions<T, R, U> extends Partial<FormServiceState> {
 }
 
 /**自定义表单Hooks**/
-export function useFormService<T extends Omix, R extends FormRules, U extends Omix>(options: FormServiceOptions<T, R, U>) {
+export function useFormService<T extends Omix, R extends FormRules, U extends Omix, C extends Partial<Record<ChunkName, true>> = {}>(
+    options: FormServiceOptions<T, R, U, C>
+) {
     const route = useRoute()
     const router = useRouter()
     const formRef = ref<FormInst>() as Ref<FormInst & Omix<{ $el: HTMLFormElement }>>
+    const observer = ref(Observer<Record<string, Omix>>())
     const formState = ref<typeof options.formState>(options.formState)
+    const chunkOptions = useChunkService({
+        immediate: false,
+        type: Object.keys(options.chunkNames ?? {}) as Array<Extract<keyof C, ChunkName>>
+    })
     const { state, setState } = useState({
         initialize: options.initialize ?? true,
         disabled: options.disabled ?? false,
@@ -44,8 +55,14 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
 
     onMounted(async () => {
         return await fetchHandler(Boolean(options.mounted ?? true), async () => {
-            return await setState({ visible: true } as never).then(() => {
-                return options.callback?.()
+            return await setState({ visible: true } as never).then(async () => {
+                const tasks: Array<any> = []
+                if (Object.keys(options.chunkNames ?? {}).length > 0) {
+                    tasks.push(chunkOptions.fetchRequest())
+                }
+                return await Promise.all(tasks).then(() => {
+                    return options.callback?.(formState.value, state)
+                })
             })
         })
     })
@@ -105,6 +122,8 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
         router,
         formRef,
         formState,
+        chunkOptions,
+        chunkState: chunkOptions.chunkState,
         ...toRefs(state),
         setState,
         setForm,

@@ -27,8 +27,6 @@ export default defineComponent({
             immediate: false
         })
 
-        // chunkOptions
-
         /**表单实例**/
         const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseSystemRoleResolver,

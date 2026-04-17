@@ -1,7 +1,7 @@
-import { ref, toRefs, Ref } from 'vue'
-import { useState } from '@/hooks/modules/hook-state'
-import { ResultResolver } from '@/interface/instance.resolver'
-import { Observer } from '@/utils'
+import { ref, toRefs, Ref, onMounted } from 'vue'
+import { Observer, fetchHandler } from '@/utils'
+import { useState, useChunkService } from '@/hooks'
+import { ResultResolver, ChunkName } from '@/interface/instance.resolver'
 
 interface BaseServiceState extends Omix {
     /**初始化状态**/
@@ -11,11 +11,13 @@ interface BaseServiceState extends Omix {
     /**错误描述**/
     message: string
 }
-interface BaseServiceOptions<T, R> extends Partial<BaseServiceState> {
+interface BaseServiceOptions<T, R, C extends Partial<Record<ChunkName, true>> = {}> extends Partial<BaseServiceState> {
     /**立即执行**/
     immediate?: boolean
     /**额外配置**/
     options?: Omix<R>
+    /**枚举开启配置**/
+    chunkNames?: C
     /**字段转换**/
     transform?: (data: T) => Omix | Promise<Omix>
     /**回调函数**/
@@ -25,9 +27,15 @@ interface BaseServiceOptions<T, R> extends Partial<BaseServiceState> {
 }
 
 /**详情包装hook**/
-export function useBaseService<T extends Omix, R extends Omix>(options: BaseServiceOptions<T, R>) {
+export function useBaseService<T extends Omix, R extends Omix, C extends Partial<Record<ChunkName, true>> = {}>(
+    options: BaseServiceOptions<T, R, C>
+) {
     const faseNode = ref<T>({} as T) as Ref<T>
     const observer = ref(Observer<Record<string, Omix>>())
+    const chunkOptions = useChunkService({
+        immediate: false,
+        type: Object.keys(options.chunkNames ?? {}) as Array<Extract<keyof C, ChunkName>>
+    })
     const { state: faseState, setState } = useState({
         initialize: options.initialize ?? true,
         loading: options.loading ?? true,
@@ -35,9 +43,19 @@ export function useBaseService<T extends Omix, R extends Omix>(options: BaseServ
         ...(options.options ?? {})
     } as BaseServiceState & typeof options.options)
 
-    if (options.immediate) {
-        fetchInitialize()
-    }
+    onMounted(async () => {
+        return await fetchHandler(Boolean(options.immediate), async () => {
+            return await setState({ visible: true } as never).then(async () => {
+                const tasks: Array<any> = []
+                if (Object.keys(options.chunkNames ?? {}).length > 0) {
+                    tasks.push(chunkOptions.fetchRequest())
+                }
+                return await Promise.all(tasks).then(() => {
+                    return options.callback?.(faseNode.value, faseState as never)
+                })
+            })
+        })
+    })
 
     /**初始化**/
     async function fetchInitialize() {
@@ -74,5 +92,17 @@ export function useBaseService<T extends Omix, R extends Omix>(options: BaseServ
         })
     }
 
-    return { faseNode, faseState, observer, ...toRefs(faseState), setState, fetchUpdate, fetchInitialize, fetchRequest, fetchRefresh }
+    return {
+        faseNode,
+        faseState,
+        observer,
+        chunkOptions,
+        chunkState: chunkOptions.chunkState,
+        ...toRefs(faseState),
+        setState,
+        fetchUpdate,
+        fetchInitialize,
+        fetchRequest,
+        fetchRefresh
+    }
 }

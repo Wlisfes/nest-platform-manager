@@ -47,10 +47,12 @@ export default defineComponent({
         })
 
         return () => (
-            <n-element class="crm-client-common-consumer h-full flex flex-col overflow-hidden">
+            <n-element class="crm-client-common-consumer h-full flex flex-col gap-14 overflow-hidden">
                 <common-database-search
+                    class="p-0!"
                     function-class="justify-end"
-                    function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
+                    function={['search', 'restore', 'collapse', 'abstract']}
+                    square={['l-t', 'r-t']}
                     ref={formRef}
                     limit={state.limit}
                     v-model:loading={state.loading}
@@ -71,6 +73,7 @@ export default defineComponent({
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
+                    class="p-0! overflow-hidden"
                     show-select
                     show-settings
                     limit={state.limit}

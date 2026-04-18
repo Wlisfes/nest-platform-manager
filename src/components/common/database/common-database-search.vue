@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, computed, nextTick, Fragment, PropType } from 'vue'
+import { defineComponent, ref, computed, nextTick, Fragment, PropType, CSSProperties } from 'vue'
 import { useVModels, useCurrentElement, useElementSize } from '@vueuse/core'
 import { Search, DownToBottom, UpToTop } from '@vicons/carbon'
 import { fetchWherer, isObject } from '@/utils'
@@ -24,6 +24,8 @@ export default defineComponent({
         function: { type: Array as PropType<Array<'search' | 'restore' | 'collapse' | 'deploy' | 'abstract'>>, default: () => [] },
         /**操作功能根节点样式**/
         functionClass: { type: String, default: '' },
+        /**移除对边圆角**/
+        square: { type: Array as PropType<Array<'l-t' | 'l-b' | 'r-t' | 'r-b'>>, default: () => [] },
         /**收缩最小显示行**/
         line: { type: Number, default: 0 },
         /**边距值**/
@@ -55,6 +57,16 @@ export default defineComponent({
             'p-be-12': when.value || (database.value.length > 0 && database.value.some(item => item.check)),
             'formstate-collapse': width.value < 674
         }))
+        /**圆角样式**/
+        const cardStyle = computed<CSSProperties>(() => {
+            const leftTopRadius = props.square.includes('l-t') ? '0px' : 'var(--n-border-radius)'
+            const leftBottomRadius = props.square.includes('l-b') ? '0px' : 'var(--n-border-radius)'
+            const rightTopRadius = props.square.includes('r-t') ? '0px' : 'var(--n-border-radius)'
+            const rightBottomRadius = props.square.includes('r-b') ? '0px' : 'var(--n-border-radius)'
+            return {
+                borderRadius: `${leftTopRadius} ${rightTopRadius} ${rightBottomRadius} ${leftBottomRadius}`
+            }
+        })
         /**展开、收起**/
         async function fetchClickUpdate() {
             return await nextTick(() => (when.value = !when.value))
@@ -105,6 +117,7 @@ export default defineComponent({
                 <div class="common-database-search flex flex-col overflow-hidden" style={{ [`--common-limit-width`]: `${props.limit}px` }}>
                     <n-card
                         class="flex flex-col overflow-hidden"
+                        style={cardStyle.value}
                         content-style={{ padding: `var(--common-limit-width)` }}
                         bordered={props.bordered}
                     >

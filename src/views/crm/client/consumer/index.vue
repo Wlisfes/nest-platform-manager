@@ -12,7 +12,7 @@ export default defineComponent({
         const { state, setState } = useState({ tabName: 'common', observer: Observer<Record<string, Omix>>() })
 
         return () => (
-            <layout-common-container>
+            <layout-common-container class-name="p-14">
                 <n-tabs
                     animated
                     type="line"
@@ -29,6 +29,24 @@ export default defineComponent({
                         <crm-client-conspire-consumer observer={state.observer}></crm-client-conspire-consumer>
                     </n-tab-pane>
                 </n-tabs>
+                {/* <common-element class="flex flex-col p-14 flex-1 overflow-hidden">
+                    <n-tabs
+                        animated
+                        type="line"
+                        default-value="account"
+                        tab-class="p-block-14!"
+                        tabs-padding={14}
+                        class="common-element-tabser flex-1 overflow-hidden "
+                        v-model:value={state.tabName}
+                    >
+                        <n-tab-pane name="common" tab="普通客户" display-directive="show">
+                            <crm-client-common-consumer observer={state.observer}></crm-client-common-consumer>
+                        </n-tab-pane>
+                        <n-tab-pane name="conspire" tab="推广客户" display-directive="show">
+                            <crm-client-conspire-consumer observer={state.observer}></crm-client-conspire-consumer>
+                        </n-tab-pane>
+                    </n-tabs>
+                </common-element> */}
             </layout-common-container>
         )
     }

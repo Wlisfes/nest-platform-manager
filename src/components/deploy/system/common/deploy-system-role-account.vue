@@ -66,9 +66,9 @@ export default defineComponent({
             <n-element class="deploy-system-role-account h-full flex flex-col gap-14 overflow-hidden">
                 <common-database-search
                     class="p-0!"
-                    bordered={false}
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'abstract']}
+                    square={['l-t', 'r-t']}
                     ref={formRef}
                     limit={state.limit}
                     v-model:loading={state.loading}

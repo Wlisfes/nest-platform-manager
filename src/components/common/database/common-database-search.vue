@@ -145,7 +145,7 @@ export default defineComponent({
                                     </common-element-button>
                                 )}
                                 {props.function.includes('restore') && columns.length > 0 && (
-                                    <common-element-button class="min-w-80" onClick={() => emit('-restore', formState.value)}>
+                                    <common-element-button class="min-w-80" onClick={() => emit('-restore')}>
                                         重置
                                     </common-element-button>
                                 )}

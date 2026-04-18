@@ -144,13 +144,11 @@ export function useColumnService<T extends Omix, U extends Omix, R extends Omix,
     /**重置表单对象数据**/
     async function fetchRestore(data: Omix = {}) {
         const clone = cloneDeep(options.formState ?? {})
-        await setForm(
+        return await setForm(
             Object.keys(options.formState).reduce((node, key: string) => {
                 return { ...node, [key]: data[key] ?? clone[key] ?? null }
             }, {})
         )
-
-        console.log(data)
     }
 
     /**刷新**/

@@ -1,10 +1,11 @@
 import { concat } from '@/utils'
+import crm from '@/router/modules/crm'
 import deploy from '@/router/modules/deploy'
 import finance from '@/router/modules/finance'
 
 /**路由列表配置**/
 export function fetchSetupRouter() {
-    return concat(deploy, finance, [
+    return concat(crm, finance, deploy, [
         {
             path: '/manager',
             name: 'Manager',

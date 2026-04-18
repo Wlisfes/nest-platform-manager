@@ -1,12 +1,16 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useColumnService } from '@/hooks'
-import { fetchDialogService, fetchNotifyService } from '@/plugins'
-import * as feedback from '@/components/finance/hooks'
+import { stop, EventType } from '@/utils'
+import * as feedback from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'FinanceAccountConsumer',
+    name: 'CrmClientCommonConsumer',
+    props: {
+        /**通讯实例**/
+        observer: { type: Object as PropType<EventType>, required: true }
+    },
     setup(props, ctx) {
         /**表格实例**/
         const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
@@ -42,59 +46,8 @@ export default defineComponent({
             ]
         })
 
-        /**新增客户**/
-        async function fetchAccountConsumerCreate() {
-            return await feedback.fetchFinanceAccountConsumer({
-                title: '新增客户',
-                command: 'CREATE',
-                async onSubmit() {
-                    return await fetchRefresh()
-                }
-            })
-        }
-
-        /**编辑客户**/
-        async function fetchAccountConsumerUpdate() {
-            return await feedback.fetchFinanceAccountConsumer({
-                title: '编辑客户',
-                command: 'UPDATE',
-                node: state.select[0],
-                async onSubmit() {
-                    return await fetchRefresh()
-                }
-            })
-        }
-
-        /**切换状态**/
-        async function fetchAccountConsumerStatus() {
-            const node = state.select[0]
-            const nextStatus = node.status === 'enable' ? 'disable' : 'enable'
-            const nextLabel = nextStatus === 'enable' ? '启用' : '禁用'
-            return await fetchDialogService({
-                title: '提示',
-                type: 'warning',
-                content: (
-                    <common-content-text depth={1}>
-                        确认将客户【{node.name}】状态变更为【{nextLabel}】吗？
-                    </common-content-text>
-                ),
-                async onSubmit(done: Function) {
-                    return await done({ loading: true }).then(async () => {
-                        try {
-                            await Service.httpBaseFinanceUpdateClientStatus({ keyId: node.keyId, status: nextStatus })
-                            await fetchRefresh()
-                            return await done({ visible: false })
-                        } catch (err) {
-                            await done({ loading: false })
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        }
-                    })
-                }
-            })
-        }
-
         return () => (
-            <layout-common-container initialize={state.initialize}>
+            <n-element class="crm-client-common-consumer h-full flex flex-col overflow-hidden">
                 <common-database-search
                     function-class="justify-end"
                     function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
@@ -108,27 +61,6 @@ export default defineComponent({
                     on-restore={instOptions.fetchRestore}
                     on-submit={instOptions.fetchRequest}
                 >
-                    <common-database-search-function abstract class="flex gap-col-10">
-                        <common-element-button type="primary" onClick={fetchAccountConsumerCreate}>
-                            新增
-                        </common-element-button>
-                        <common-element-button
-                            dashed
-                            type="primary"
-                            disabled={instState.value.isUpdate}
-                            onClick={fetchAccountConsumerUpdate}
-                        >
-                            编辑
-                        </common-element-button>
-                        <common-element-button
-                            dashed
-                            type="warning"
-                            disabled={instState.value.isUpdate}
-                            onClick={fetchAccountConsumerStatus}
-                        >
-                            切换状态
-                        </common-element-button>
-                    </common-database-search-function>
                     <common-database-search-column disabled prop="name" label="客户名称">
                         <form-common-column-input
                             clearable
@@ -136,38 +68,6 @@ export default defineComponent({
                             v-model:value={formState.value.name}
                             on-submit={fetchRefresh}
                         ></form-common-column-input>
-                    </common-database-search-column>
-                    <common-database-search-column prop="status" label="状态">
-                        <form-common-column-select
-                            clearable
-                            placeholder="请选择状态"
-                            options={chunkState.CHUNK_CLIENT_STATUS}
-                            v-model:value={formState.value.status}
-                        ></form-common-column-select>
-                    </common-database-search-column>
-                    <common-database-search-column prop="payMode" label="付款模式">
-                        <form-common-column-select
-                            clearable
-                            placeholder="请选择付款模式"
-                            options={chunkState.CHUNK_CLIENT_PAY_MODE}
-                            v-model:value={formState.value.payMode}
-                        ></form-common-column-select>
-                    </common-database-search-column>
-                    <common-database-search-column prop="authStatus" label="认证状态">
-                        <form-common-column-select
-                            clearable
-                            placeholder="请选择认证状态"
-                            options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
-                            v-model:value={formState.value.authStatus}
-                        ></form-common-column-select>
-                    </common-database-search-column>
-                    <common-database-search-column prop="source" label="注册来源">
-                        <form-common-column-select
-                            clearable
-                            placeholder="请选择注册来源"
-                            options={chunkState.CHUNK_CLIENT_SOURCE}
-                            v-model:value={formState.value.source}
-                        ></form-common-column-select>
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
@@ -214,7 +114,7 @@ export default defineComponent({
                         )
                     }}
                 </common-database-table>
-            </layout-common-container>
+            </n-element>
         )
     }
 })

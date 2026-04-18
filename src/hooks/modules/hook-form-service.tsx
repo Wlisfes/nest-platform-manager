@@ -24,7 +24,7 @@ interface FormServiceOptions<T, R, U, C extends Partial<Record<ChunkName, true>>
     /**枚举开启配置**/
     chunkNames?: C
     /**初始化完毕执行**/
-    mounted?: boolean
+    immediate?: boolean
     /**额外配置**/
     options?: Omix<U>
     /**回调函数**/
@@ -54,7 +54,7 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
     } as FormServiceState & typeof options.options)
 
     onMounted(async () => {
-        return await fetchHandler(Boolean(options.mounted ?? true), async () => {
+        return await fetchHandler(Boolean(options.immediate ?? true), async () => {
             return await setState({ visible: true } as never).then(async () => {
                 const tasks: Array<any> = []
                 if (Object.keys(options.chunkNames ?? {}).length > 0) {
@@ -72,7 +72,7 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
     }
 
     /**重置表单对象数据**/
-    function fetchReste(data: Omix = {}) {
+    function fetchReste(data: Partial<Record<keyof T, any>> & Record<string, any> = {}) {
         const clone = cloneDeep(options.formState ?? {})
         return Object.keys(options.formState).reduce((node, key: string) => {
             return { ...node, [key]: data[key] ?? clone[key] }

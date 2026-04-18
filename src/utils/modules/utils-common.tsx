@@ -1,8 +1,10 @@
 import { VNode } from 'vue'
+import { zh_CN, Faker } from '@faker-js/faker'
 import { cloneDeep, concat, omit, pick } from 'lodash-es'
 import { isNotEmpty, isEmpty, isArray, isEmail, isString, isObject, isBoolean } from 'class-validator'
 import tree from 'tree-tool'
 import dayjs from 'dayjs'
+
 export { tree, cloneDeep, concat, omit, pick, isNotEmpty, isEmpty, isArray, isEmail, isString, isObject, isBoolean }
 
 /**图标示例对象**/
@@ -11,6 +13,9 @@ export const iconNames = Object.keys(modules).reduce((icons: typeof modules, nex
     icons[next.match(/([^/]+)\.svg$/)?.[1] as string] = modules[next] as never as VNode
     return icons
 }, {})
+
+/**虚拟数据实例**/
+export const faker = new Faker({ locale: zh_CN })
 
 /**dayjs实例**/
 export const moment = dayjs

@@ -40,7 +40,7 @@ export function useSelectService<T extends Omix, U extends Omix>(
         ...(options.options ?? {})
     } as BaseServiceState & typeof options.options)
 
-    if (options.immediate ?? true) {
+    if (options.immediate) {
         fetchRequest()
     }
 

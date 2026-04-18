@@ -10,6 +10,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@faker-js/faker": "^8.4.1",
         "@better-scroll/core": "^2.5.1",
         "@better-scroll/mouse-wheel": "^2.5.1",
         "@better-scroll/observe-dom": "^2.5.1",

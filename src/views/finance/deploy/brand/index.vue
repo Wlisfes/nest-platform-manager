@@ -9,9 +9,10 @@ export default defineComponent({
     name: 'FinanceDeployBrand',
     setup(props, ctx) {
         /**表格实例**/
-        const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseFinanceColumnBrand(payload),
             keyName: 'chatbok:finance:deploy:brand',
+            chunkNames: { CHUNK_BRAND_STATUS: true },
             formState: {
                 name: undefined, //品牌名称
                 status: undefined //状态
@@ -90,8 +91,8 @@ export default defineComponent({
                     v-model:database={state.database}
                     v-model:formState={formState.value}
                     on-update:database={instOptions.fetchUpdateDatabase}
-                    on-restore={fetchRestore}
-                    on-submit={fetchRequest}
+                    on-restore={instOptions.fetchRestore}
+                    on-submit={instOptions.fetchRequest}
                 >
                     <common-database-search-function abstract class="flex gap-col-10">
                         <common-element-button type="primary" onClick={fetchDeployBrandCreate}>
@@ -113,16 +114,11 @@ export default defineComponent({
                         ></form-common-column-input>
                     </common-database-search-column>
                     <common-database-search-column prop="status" label="状态">
-                        <n-select
-                            clearable
-                            placeholder="请选择状态"
+                        <form-common-column-select
+                            placeholder="请选择付款模式"
+                            options={chunkState.CHUNK_BRAND_STATUS}
                             v-model:value={formState.value.status}
-                            options={[
-                                { label: '启用', value: 'enable' },
-                                { label: '禁用', value: 'disable' }
-                            ]}
-                            on-update:value={() => fetchRefresh()}
-                        />
+                        ></form-common-column-select>
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table

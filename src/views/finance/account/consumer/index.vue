@@ -138,54 +138,36 @@ export default defineComponent({
                         ></form-common-column-input>
                     </common-database-search-column>
                     <common-database-search-column prop="status" label="状态">
-                        <n-select
+                        <form-common-column-select
                             clearable
                             placeholder="请选择状态"
+                            options={chunkState.CHUNK_CLIENT_STATUS}
                             v-model:value={formState.value.status}
-                            options={[
-                                { label: '启用', value: 'enable' },
-                                { label: '禁用', value: 'disable' }
-                            ]}
-                            on-update:value={() => fetchRefresh()}
-                        />
+                        ></form-common-column-select>
                     </common-database-search-column>
                     <common-database-search-column prop="payMode" label="付款模式">
-                        <n-select
+                        <form-common-column-select
                             clearable
                             placeholder="请选择付款模式"
+                            options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             v-model:value={formState.value.payMode}
-                            options={[
-                                { label: '预付', value: 'prepaid' },
-                                { label: '后付', value: 'postpaid' }
-                            ]}
-                            on-update:value={() => fetchRefresh()}
-                        />
+                        ></form-common-column-select>
                     </common-database-search-column>
                     <common-database-search-column prop="authStatus" label="认证状态">
-                        <n-select
+                        <form-common-column-select
                             clearable
                             placeholder="请选择认证状态"
+                            options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
                             v-model:value={formState.value.authStatus}
-                            options={[
-                                { label: '未认证', value: 'unverified' },
-                                { label: '认证中', value: 'pending' },
-                                { label: '已认证', value: 'verified' },
-                                { label: '认证失败', value: 'rejected' }
-                            ]}
-                            on-update:value={() => fetchRefresh()}
-                        />
+                        ></form-common-column-select>
                     </common-database-search-column>
                     <common-database-search-column prop="source" label="注册来源">
-                        <n-select
+                        <form-common-column-select
                             clearable
                             placeholder="请选择注册来源"
+                            options={chunkState.CHUNK_CLIENT_SOURCE}
                             v-model:value={formState.value.source}
-                            options={[
-                                { label: '平台注册', value: 'platform' },
-                                { label: '手动创建', value: 'manual' }
-                            ]}
-                            on-update:value={() => fetchRefresh()}
-                        />
+                        ></form-common-column-select>
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
@@ -208,44 +190,28 @@ export default defineComponent({
                     {{
                         col_status: (data: Omix) => (
                             <common-database-table-chunk
-                                element="chunk"
                                 value={data.status}
                                 options={chunkState.CHUNK_CLIENT_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_payMode: (data: Omix) => (
                             <common-database-table-chunk
-                                element="chunk"
                                 value={data.payMode}
                                 options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             ></common-database-table-chunk>
                         ),
-                        col_authStatus: (data: Omix) => {
-                            const map: Omix = {
-                                unverified: { type: 'default', label: '未认证' },
-                                pending: { type: 'warning', label: '认证中' },
-                                verified: { type: 'success', label: '已认证' },
-                                rejected: { type: 'error', label: '认证失败' }
-                            }
-                            const item = map[data.authStatus] ?? { type: 'default', label: data.authStatus }
-                            return (
-                                <n-tag type={item.type} size="small">
-                                    {item.label}
-                                </n-tag>
-                            )
-                        },
-                        col_source: (data: Omix) => {
-                            const map: Omix = {
-                                platform: { type: 'info', label: '平台注册' },
-                                manual: { type: 'success', label: '手动创建' }
-                            }
-                            const item = map[data.source] ?? { type: 'default', label: data.source }
-                            return (
-                                <n-tag type={item.type} size="small">
-                                    {item.label}
-                                </n-tag>
-                            )
-                        }
+                        col_authStatus: (data: Omix) => (
+                            <common-database-table-chunk
+                                value={data.authStatus}
+                                options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
+                            ></common-database-table-chunk>
+                        ),
+                        col_source: (data: Omix) => (
+                            <common-database-table-chunk
+                                value={data.source}
+                                options={chunkState.CHUNK_CLIENT_SOURCE}
+                            ></common-database-table-chunk>
+                        )
                     }}
                 </common-database-table>
             </layout-common-container>

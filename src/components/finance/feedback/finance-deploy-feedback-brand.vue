@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useFormService, useChunkService } from '@/hooks'
+import { useFormService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import * as Service from '@/api/instance.service'
 
@@ -16,11 +16,10 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        /**通用字典枚举**/
-        const chunkOptions = useChunkService({ immediate: false, type: ['CHUNK_BRAND_STATUS'] })
         /**表单实例**/
-        const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
+        const { formState, formRef, state, chunkState, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseFinanceBrandResolver,
+            chunkNames: { CHUNK_BRAND_STATUS: true },
             formState: {
                 name: props.node.name, //品牌名称
                 document: props.node.document, //品牌描述
@@ -35,20 +34,18 @@ export default defineComponent({
 
         /**品牌详情**/
         async function fetchBaseFinanceBrandResolver() {
-            return await chunkOptions.fetchRequest().then(async () => {
+            try {
                 if (['CREATE'].includes(props.command)) {
                     return await setState({ initialize: false })
                 }
-                try {
-                    return await setForm(fetchReste(props.node)).then(async () => {
-                        return await setState({ initialize: false })
-                    })
-                } catch (err) {
-                    return await setState({ initialize: false }).then(async () => {
-                        return await fetchNotifyService({ type: 'error', title: err.message })
-                    })
-                }
-            })
+                return await setForm(fetchReste(props.node)).then(async () => {
+                    return await setState({ initialize: false })
+                })
+            } catch (err) {
+                return await setState({ initialize: false }).then(async () => {
+                    return await fetchNotifyService({ type: 'error', title: err.message })
+                })
+            }
         }
 
         /**确定提交表单**/
@@ -101,6 +98,13 @@ export default defineComponent({
                             v-model:value={formState.value.name}
                         ></form-common-column-input>
                     </form-common-column>
+                    <form-common-column label="状态" path="status">
+                        <form-common-column-select
+                            placeholder="请选择状态"
+                            options={chunkState.CHUNK_BRAND_STATUS}
+                            v-model:value={formState.value.status}
+                        ></form-common-column-select>
+                    </form-common-column>
                     <form-common-column label="品牌描述" path="document">
                         <n-input
                             type="textarea"
@@ -111,15 +115,6 @@ export default defineComponent({
                             autosize={{ minRows: 3, maxRows: 6 }}
                         />
                     </form-common-column>
-                    {['CREATE'].includes(props.command) && (
-                        <form-common-column label="状态" path="status">
-                            <form-common-column-select
-                                placeholder="请选择状态"
-                                options={chunkOptions.CHUNK_BRAND_STATUS.value}
-                                v-model:value={formState.value.status}
-                            ></form-common-column-select>
-                        </form-common-column>
-                    )}
                 </form-common-container>
             </common-dialog-provider>
         )

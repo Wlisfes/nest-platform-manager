@@ -122,6 +122,7 @@ export function useFormService<T extends Omix, R extends FormRules, U extends Om
         router,
         formRef,
         formState,
+        observer,
         chunkOptions,
         chunkState: chunkOptions.chunkState,
         ...toRefs(state),

@@ -8,9 +8,10 @@ export default defineComponent({
     name: 'FinanceDeployCurrency',
     setup(props, ctx) {
         /**表格实例**/
-        const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseFinanceColumnCurrency(payload),
             keyName: 'chatbok:finance:deploy:currency',
+            chunkNames: { CHUNK_CURRENCY_STATUS: true },
             formState: {
                 name: undefined, //币种名称
                 status: undefined //状态
@@ -65,11 +66,16 @@ export default defineComponent({
                     v-model:database={state.database}
                     v-model:formState={formState.value}
                     on-update:database={instOptions.fetchUpdateDatabase}
-                    on-restore={fetchRestore}
-                    on-submit={fetchRequest}
+                    on-restore={instOptions.fetchRestore}
+                    on-submit={instOptions.fetchRequest}
                 >
                     <common-database-search-function abstract class="flex gap-col-10">
-                        <common-element-button dashed type="warning" disabled={instState.value.isUpdate} onClick={fetchDeployCurrencyStatus}>
+                        <common-element-button
+                            dashed
+                            type="warning"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchDeployCurrencyStatus}
+                        >
                             切换状态
                         </common-element-button>
                     </common-database-search-function>
@@ -82,16 +88,11 @@ export default defineComponent({
                         ></form-common-column-input>
                     </common-database-search-column>
                     <common-database-search-column prop="status" label="状态">
-                        <n-select
-                            clearable
-                            placeholder="请选择状态"
+                        <form-common-column-select
+                            placeholder="请选择付款模式"
+                            options={chunkState.CHUNK_CURRENCY_STATUS}
                             v-model:value={formState.value.status}
-                            options={[
-                                { label: '启用', value: 'enable' },
-                                { label: '禁用', value: 'disable' }
-                            ]}
-                            on-update:value={() => fetchRefresh()}
-                        />
+                        ></form-common-column-select>
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table

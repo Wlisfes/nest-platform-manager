@@ -16,11 +16,6 @@ export default defineComponent({
         node: { type: Object as PropType<Omix>, default: () => ({}) }
     },
     setup(props, { emit }) {
-        /**通用字典枚举**/
-        const chunkOptions = useChunkService({
-            immediate: false,
-            type: ['CHUNK_CLIENT_PAY_MODE', 'CHUNK_CLIENT_AUTH_STATUS', 'CHUNK_CLIENT_SOURCE']
-        })
         /**品牌下拉列表**/
         const brandOptions = useSelectService(e => Service.httpBaseFinanceSelectBrand(), {
             immediate: false
@@ -30,8 +25,13 @@ export default defineComponent({
             immediate: false
         })
         /**表单实例**/
-        const { formState, formRef, state, setState, setForm, fetchReste, fetchValidater } = useFormService({
+        const { formState, formRef, state, chunkState, setState, setForm, fetchReste, fetchValidater } = useFormService({
             callback: fetchBaseFinanceClientResolver,
+            chunkNames: {
+                CHUNK_CLIENT_PAY_MODE: true,
+                CHUNK_CLIENT_AUTH_STATUS: true,
+                CHUNK_CLIENT_SOURCE: true
+            },
             formState: {
                 name: props.node.name,
                 brandId: props.node.brandId,
@@ -56,22 +56,20 @@ export default defineComponent({
 
         /**详情初始化**/
         async function fetchBaseFinanceClientResolver() {
-            return await Promise.all([chunkOptions.fetchRequest(), brandOptions.fetchRequest(), currencyOptions.fetchRequest()]).then(
-                async () => {
-                    try {
-                        if (['CREATE'].includes(props.command)) {
-                            return await setState({ initialize: false })
-                        }
-                        return await setForm(fetchReste(props.node)).then(async () => {
-                            return await setState({ initialize: false })
-                        })
-                    } catch (err) {
-                        return await setState({ initialize: false }).then(async () => {
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        })
+            return await Promise.all([brandOptions.fetchRequest(), currencyOptions.fetchRequest()]).then(async () => {
+                try {
+                    if (['CREATE'].includes(props.command)) {
+                        return await setState({ initialize: false })
                     }
+                    return await setForm(fetchReste(props.node)).then(async () => {
+                        return await setState({ initialize: false })
+                    })
+                } catch (err) {
+                    return await setState({ initialize: false }).then(async () => {
+                        return await fetchNotifyService({ type: 'error', title: err.message })
+                    })
                 }
-            )
+            })
         }
 
         /**确定提交表单**/
@@ -160,7 +158,7 @@ export default defineComponent({
                     <form-common-column label="付款模式" path="payMode">
                         <form-common-column-select
                             placeholder="请选择付款模式"
-                            options={chunkOptions.CHUNK_CLIENT_PAY_MODE.value}
+                            options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             v-model:value={formState.value.payMode}
                         ></form-common-column-select>
                     </form-common-column>

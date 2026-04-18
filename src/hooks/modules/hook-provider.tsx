@@ -35,6 +35,7 @@ export function useProvider() {
 
     const lightThemeOverrides = computed<GlobalThemeOverrides & { common: Partial<CustomThemeCommonVars> }>(() => ({
         common: {
+            fontWeightStrong: '600',
             primaryColor: primaryColor.value,
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,
@@ -47,6 +48,7 @@ export function useProvider() {
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides & { common: Partial<CustomThemeCommonVars> }>(() => ({
         common: {
+            fontWeightStrong: '600',
             primaryColor: primaryColor.value,
             primaryColorHover: lightenStr.value,
             primaryColorPressed: lightenStr.value,

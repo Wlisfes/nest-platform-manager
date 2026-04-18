@@ -30,13 +30,13 @@ export default defineComponent({
                 { title: '客户别名', key: 'alias', minWidth: 120, check: true },
                 { title: '邮箱', key: 'email', minWidth: 180, ellipsis: { tooltip: true }, check: true },
                 { title: '电话号码', key: 'phone', width: 140, check: true },
-                { title: '币种', key: 'currency', width: 100, check: true },
-                { title: '状态', key: 'status', width: 100, check: true },
-                { title: '付款模式', key: 'payMode', width: 100, check: true },
-                { title: '余额', key: 'balance', width: 120, check: true },
-                { title: '信用额度', key: 'credit', width: 120, check: true },
                 { title: '认证状态', key: 'authStatus', width: 100, check: true },
                 { title: '注册来源', key: 'source', width: 100, check: true },
+                { title: '状态', key: 'status', width: 100, check: true },
+                { title: '付款模式', key: 'payMode', width: 100, check: true },
+                { title: '币种', key: 'currency', width: 100, check: true },
+                { title: '余额', key: 'balance', width: 140, check: true, render: (row: Omix) => Number(row.balance ?? 0).toFixed(6) },
+                { title: '信用额度', key: 'credit', width: 140, check: true, render: (row: Omix) => Number(row.credit ?? 0).toFixed(6) },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]

@@ -17,7 +17,7 @@ export default defineComponent({
         })
         /**角色列表**/
         const { faseNode, faseState, observer, setState, fetchRefresh } = useBaseService({
-            request: () => Service.httpBaseSystemColumnRole(),
+            request: Service.httpBaseSystemColumnRole,
             callback: fetchReadyCallback,
             immediate: true,
             options: {
@@ -28,7 +28,7 @@ export default defineComponent({
         })
         /**初始化回调**/
         async function fetchReadyCallback(data: Omix) {
-            if (data.list.length === 0 || faseState.selectedKeys.length > 0) {
+            if ((data.list ?? []).length === 0 || faseState.selectedKeys.length > 0) {
                 return observer.value.emit('finish', {})
             }
             return await setState({ expandedKeys: [], selectedKeys: [data.list[0].keyId] }).then(async state => {

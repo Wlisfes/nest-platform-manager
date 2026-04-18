@@ -46,7 +46,7 @@ export function useBaseService<T extends Omix, R extends Omix, C extends Partial
     onMounted(async () => {
         return await fetchHandler(Boolean(options.immediate), async () => {
             return await setState({ visible: true } as never).then(async () => {
-                const tasks: Array<any> = []
+                const tasks: Array<any> = [fetchRequest()]
                 if (Object.keys(options.chunkNames ?? {}).length > 0) {
                     tasks.push(chunkOptions.fetchRequest())
                 }

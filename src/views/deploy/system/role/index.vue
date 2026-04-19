@@ -112,7 +112,7 @@ export default defineComponent({
                         <common-element-spiner scrollbar opacity={0} loading={faseState.initialize}>
                             <n-element class="flex flex-col gap-10 overflow-hidden">
                                 <div class="flex flex-col p-inline-14 overflow-hidden">
-                                    <div class="flex items-center justify-between p-block-14 overflow-hidden">
+                                    <div class="flex items-center justify-between p-block-12 overflow-hidden">
                                         <n-h4 class="line-height-21 m-0">岗位角色</n-h4>
                                         <common-element-button
                                             text
@@ -193,7 +193,7 @@ export default defineComponent({
                         animated
                         type="line"
                         default-value="account"
-                        tab-class="p-block-14!"
+                        tab-class="p-block-12!"
                         tabs-padding={14}
                         class="common-element-tabser h-full overflow-hidden "
                         v-model:value={faseState.tabName}

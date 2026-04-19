@@ -17,7 +17,7 @@ export default defineComponent({
                     animated
                     type="line"
                     default-value="account"
-                    tab-class="p-block-14!"
+                    tab-class="p-block-12!"
                     tabs-padding={14}
                     class="common-element-tabser flex-1 overflow-hidden "
                     v-model:value={state.tabName}

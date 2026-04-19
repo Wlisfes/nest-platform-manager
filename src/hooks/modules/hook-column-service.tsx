@@ -4,7 +4,7 @@ import { cloneDeep, pick } from 'lodash-es'
 import { useChunkService, useState } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import { Observer, fetchExclude, fetchHandler, isNotEmpty } from '@/utils'
-import { ResultResolver, ResultColumn, ChunkName, ChunkColumnOptions } from '@/interface/instance.resolver'
+import { ResultResolver, ResultColumn, ChunkName } from '@/interface/instance.resolver'
 import * as Service from '@/api/instance.service'
 
 /**列表缓存对象**/

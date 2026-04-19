@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, h } from 'vue'
-import { useChunkService, useColumnService, useSelectService } from '@/hooks'
+import { useColumnService, useSelectService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
 import { SendFilled } from '@vicons/carbon'
 import { isEmpty } from '@/utils'

@@ -28,10 +28,6 @@ export const COMMON_CHUNK_OPTIONS = {
         value: 'CHUNK_SHEET_STATUS',
         name: '菜单状态'
     },
-    COMMON_WINDOWS_RESOUREC_SHEET: {
-        value: 'COMMON_WINDOWS_RESOUREC_SHEET',
-        name: '按钮状态'
-    },
     CHUNK_ROLE_CHUNK: {
         value: 'CHUNK_ROLE_CHUNK',
         name: '角色类型'
@@ -63,5 +59,13 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_CLIENT_SOURCE: {
         value: 'CHUNK_CLIENT_SOURCE',
         name: '注册来源'
+    },
+    CHUNK_CLIENT_CLASS: {
+        value: 'CHUNK_CLIENT_CLASS',
+        name: '客户类型'
+    },
+    CHUNK_CLIENT_STAGE: {
+        value: 'CHUNK_CLIENT_STAGE',
+        name: '客户阶段'
     }
 }

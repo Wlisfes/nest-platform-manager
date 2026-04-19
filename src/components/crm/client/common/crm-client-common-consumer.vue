@@ -15,12 +15,14 @@ export default defineComponent({
         /**表格实例**/
         const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseCrmClientCommonConsumer(payload),
-            keyName: 'chatbok:finance:account:consumer',
+            keyName: 'chatbok:crm:client:common:consumer',
             chunkNames: {
                 CHUNK_CLIENT_PAY_MODE: true,
                 CHUNK_CLIENT_AUTH_STATUS: true,
                 CHUNK_CLIENT_SOURCE: true,
-                CHUNK_CLIENT_STATUS: true
+                CHUNK_CLIENT_STATUS: true,
+                CHUNK_CLIENT_CLASS: true,
+                CHUNK_CLIENT_STAGE: true
             },
             formState: {
                 name: undefined,
@@ -30,19 +32,24 @@ export default defineComponent({
                 source: undefined
             },
             columns: [
-                { title: '客户名称', key: 'name', width: 240, disabled: true },
-                { title: '客户别名', key: 'alias', width: 180, check: true },
-                { title: '邮箱', key: 'email', minWidth: 180, check: true },
-                { title: '电话号码', key: 'phone', width: 140, check: true },
-                { title: '认证状态', key: 'authStatus', align: 'center', width: 100, check: true },
-                { title: '注册来源', key: 'source', align: 'center', width: 100, check: true },
-                { title: '状态', key: 'status', align: 'center', width: 100, check: true },
-                { title: '付款模式', key: 'payMode', align: 'center', width: 100, check: true },
-                // { title: '币种', key: 'currency', width: 100, check: true },
-                // { title: '余额', key: 'balance', width: 140, check: true, render: (row: Omix) => Number(row.balance ?? 0).toFixed(6) },
-                { title: '信用额度', key: 'credit', width: 140, check: true, render: (row: Omix) => Number(row.credit ?? 0).toFixed(6) },
+                { title: '客户名称', key: 'name', minWidth: 200, disabled: true },
+                { title: '客户别名', key: 'alias', minWidth: 180, check: true },
+                { title: '邮箱', key: 'email', width: 180, check: true },
+                { title: '电话号码', key: 'phone', width: 120, check: true },
+                { title: '归属人', key: 'user', width: 120, check: true },
+                { title: '归属部门', key: 'depts', width: 120, check: true },
+                { title: '品牌', key: 'brand', width: 100, check: true },
+                { title: '客户类型', key: 'classType', width: 100, check: true },
+                { title: '等级', key: 'level', width: 100, check: true },
+                { title: '阶段', key: 'stage', width: 100, check: true },
+                { title: '币种', key: 'currency', width: 100, check: true },
+                { title: '认证状态', key: 'authStatus', width: 100, check: true },
+                { title: '注册来源', key: 'source', width: 100, check: true },
+                { title: '状态', key: 'status', width: 100, check: true },
+                { title: '付款模式', key: 'payMode', width: 100, check: true },
+                { title: '信用额度', key: 'credit', width: 100, check: true },
+                { title: '标签', key: 'tags', minWidth: 200, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true }
-                // { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]
         })
 
@@ -91,26 +98,60 @@ export default defineComponent({
                     on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                 >
                     {{
+                        col_user: (data: Omix) => {
+                            return <common-database-table-user element="text" data={data.user}></common-database-table-user>
+                        },
+                        col_brand: (data: Omix) => {
+                            return <common-database-table-content value={data.brand?.name}></common-database-table-content>
+                        },
+                        col_depts: (data: Omix) => (
+                            <common-database-table-content
+                                value={(data.depts ?? []).map((item: Omix) => item.deptName)}
+                            ></common-database-table-content>
+                        ),
+                        col_classType: (data: Omix) => (
+                            <common-database-table-chunk
+                                element="text"
+                                value={data.classType}
+                                options={chunkState.CHUNK_CLIENT_CLASS}
+                            ></common-database-table-chunk>
+                        ),
+                        col_stage: (data: Omix) => (
+                            <common-database-table-chunk
+                                element="text"
+                                value={data.stage}
+                                options={chunkState.CHUNK_CLIENT_STAGE}
+                            ></common-database-table-chunk>
+                        ),
+                        col_tags: (data: Omix) => (
+                            <common-database-table-content
+                                value={(data.tags ?? []).map((item: Omix) => item.tagName)}
+                            ></common-database-table-content>
+                        ),
                         col_status: (data: Omix) => (
                             <common-database-table-chunk
+                                element="text"
                                 value={data.status}
                                 options={chunkState.CHUNK_CLIENT_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_payMode: (data: Omix) => (
                             <common-database-table-chunk
+                                element="text"
                                 value={data.payMode}
                                 options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             ></common-database-table-chunk>
                         ),
                         col_authStatus: (data: Omix) => (
                             <common-database-table-chunk
+                                element="text"
                                 value={data.authStatus}
                                 options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_source: (data: Omix) => (
                             <common-database-table-chunk
+                                element="text"
                                 value={data.source}
                                 options={chunkState.CHUNK_CLIENT_SOURCE}
                             ></common-database-table-chunk>

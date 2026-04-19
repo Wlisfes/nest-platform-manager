@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, ref, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { useFormService, useSelectService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
 import { faker, fetchCloneByte } from '@/utils'
@@ -48,51 +48,23 @@ export default defineComponent({
                 status: { required: true, message: '请选择状态', trigger: 'blur' }
             }
         })
-
-        const items = ref<Array<Omix>>([])
-        const base = {
-            deptId: 77,
-            postId: 26,
-            rankId: 1002
-        }
         /**填充默认数据**/
         async function fetchInstState() {
-            const surnames = `王李张刘陈杨赵黄周吴徐孙胡朱高林何郭马罗梁宋郑谢韩唐冯于董萧程曹袁邓许傅沈曾彭吕苏卢蒋蔡贾丁魏薛叶阎`
-            items.value = await Promise.all(
-                Array.from({ length: 9 }, async () => ({
-                    depts: [base.deptId],
-                    positions: [base.postId],
-                    ranks: [base.rankId],
-                    name: faker.person.fullName({
-                        lastName: faker.helpers.arrayElement(surnames.split(''))
-                    }),
-                    number: faker.string.numeric(4),
-                    phone: `1${faker.helpers.arrayElement([3, 5, 7, 8, 9])}${faker.string.numeric(9)}`,
-                    email: faker.internet.email({ provider: 'nqmo.com' }),
-                    password: `123456`,
-                    status: 'online',
-                    avatar: await fetch(`https://picsum.photos/500`).then(e => e.url)
-                }))
-            )
-
-            console.log(items.value)
-
-            return items.value[0]
-
-            // return fetchReste({
-            //     depts: [114],
-            //     positions: [39],
-            //     ranks: [1003],
-            //     name: faker.person.fullName({
-            //         lastName: faker.helpers.arrayElement(surnames.split(''))
-            //     }),
-            //     number: faker.string.numeric(4),
-            //     phone: `1${faker.helpers.arrayElement([3, 5, 7, 8, 9])}${faker.string.numeric(9)}`,
-            //     email: faker.internet.email({ provider: 'nqmo.com' }),
-            //     password: `123456`,
-            //     status: 'online', //faker.helpers.arrayElement(chunkState.CHUNK_ACCOUNT_STATUS.map(item => item.value)),
-            //     avatar: await fetch(`https://picsum.photos/500`).then(e => e.url)
-            // })
+            const charst = `王李张刘陈杨赵黄周吴徐孙胡朱高林何郭马罗梁宋郑谢韩唐冯于董萧程曹袁邓许傅沈曾彭吕苏卢蒋蔡贾丁魏薛叶阎`
+            return fetchReste({
+                depts: [114],
+                positions: [39],
+                ranks: [1003],
+                name: faker.person.fullName({
+                    lastName: faker.helpers.arrayElement(charst.split(''))
+                }),
+                number: faker.string.numeric(4),
+                phone: `1${faker.helpers.arrayElement([3, 5, 7, 8, 9])}${faker.string.numeric(9)}`,
+                email: faker.internet.email({ provider: 'nqmo.com' }),
+                password: `123456`,
+                status: 'online',
+                avatar: await fetch(`https://picsum.photos/500`).then(e => e.url)
+            })
         }
         /**部门详情**/
         async function fetchBaseSystemAccountResolver() {
@@ -136,10 +108,7 @@ export default defineComponent({
                         password: window.btoa(encodeURIComponent(formState.value.password))
                     })
                     if (['CREATE'].includes(props.command)) {
-                        for (let index = 0; index < items.value.length; index++) {
-                            await Service.httpBaseSystemCreateAccount(items.value[index])
-                        }
-                        // await Service.httpBaseSystemCreateAccount(formOptions)
+                        await Service.httpBaseSystemCreateAccount(formOptions)
                     } else if (['UPDATE'].includes(props.command)) {
                         await Service.httpBaseSystemUpdateAccount({ ...formOptions, uid: props.node.uid })
                     }

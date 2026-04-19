@@ -14,7 +14,7 @@ export default defineComponent({
     setup(props, ctx) {
         /**表格实例**/
         const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
-            request: (base, payload) => Service.httpBaseFinanceColumnClient(payload),
+            request: (base, payload) => Service.httpBaseCrmClientCommonConsumer(payload),
             keyName: 'chatbok:finance:account:consumer',
             chunkNames: {
                 CHUNK_CLIENT_PAY_MODE: true,
@@ -30,19 +30,19 @@ export default defineComponent({
                 source: undefined
             },
             columns: [
-                { title: '客户名称', key: 'name', minWidth: 160, disabled: true },
-                { title: '客户别名', key: 'alias', minWidth: 120, check: true },
-                { title: '邮箱', key: 'email', minWidth: 180, ellipsis: { tooltip: true }, check: true },
+                { title: '客户名称', key: 'name', width: 240, disabled: true },
+                { title: '客户别名', key: 'alias', width: 180, check: true },
+                { title: '邮箱', key: 'email', minWidth: 180, check: true },
                 { title: '电话号码', key: 'phone', width: 140, check: true },
                 { title: '认证状态', key: 'authStatus', align: 'center', width: 100, check: true },
                 { title: '注册来源', key: 'source', align: 'center', width: 100, check: true },
                 { title: '状态', key: 'status', align: 'center', width: 100, check: true },
                 { title: '付款模式', key: 'payMode', align: 'center', width: 100, check: true },
-                { title: '币种', key: 'currency', width: 100, check: true },
-                { title: '余额', key: 'balance', width: 140, check: true, render: (row: Omix) => Number(row.balance ?? 0).toFixed(6) },
+                // { title: '币种', key: 'currency', width: 100, check: true },
+                // { title: '余额', key: 'balance', width: 140, check: true, render: (row: Omix) => Number(row.balance ?? 0).toFixed(6) },
                 { title: '信用额度', key: 'credit', width: 140, check: true, render: (row: Omix) => Number(row.credit ?? 0).toFixed(6) },
-                { title: '创建时间', key: 'createTime', width: 160, check: true },
-                { title: '更新时间', key: 'modifyTime', width: 160, check: true }
+                { title: '创建时间', key: 'createTime', width: 160, check: true }
+                // { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]
         })
 

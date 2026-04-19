@@ -3,7 +3,7 @@ import { request } from '@/utils'
 /**新增部门**/
 export function httpBaseSystemCreateDepartment(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/create`,
+        url: `/api/windows/deploy/dept/create`,
         method: 'POST',
         data
     })
@@ -12,7 +12,7 @@ export function httpBaseSystemCreateDepartment(data: Omix) {
 /**编辑部门**/
 export function httpBaseSystemUpdateDepartment(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/update`,
+        url: `/api/windows/deploy/dept/update`,
         method: 'POST',
         data
     })
@@ -21,7 +21,7 @@ export function httpBaseSystemUpdateDepartment(data: Omix) {
 /**部门详情**/
 export function httpBaseSystemDepartmentResolver(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/resolver`,
+        url: `/api/windows/deploy/dept/resolver`,
         method: 'POST',
         data
     })
@@ -30,7 +30,7 @@ export function httpBaseSystemDepartmentResolver(data: Omix) {
 /**部门树结构**/
 export function httpBaseSystemDepartmentTreeStructure() {
     return request({
-        url: `/api/windows/system/dept/tree/structure`,
+        url: `/api/windows/deploy/dept/tree/structure`,
         method: 'POST'
     })
 }
@@ -38,7 +38,7 @@ export function httpBaseSystemDepartmentTreeStructure() {
 /**部门成员列表**/
 export function httpBaseSystemDeptMemberOptions(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/member/options`,
+        url: `/api/windows/deploy/dept/member/options`,
         method: 'POST',
         data
     })
@@ -47,7 +47,7 @@ export function httpBaseSystemDeptMemberOptions(data: Omix) {
 /**部门分页列表查询**/
 export function httpBaseSystemColumnDepartment(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/column`,
+        url: `/api/windows/deploy/dept/column`,
         method: 'POST',
         data
     })
@@ -56,7 +56,7 @@ export function httpBaseSystemColumnDepartment(data: Omix) {
 /**删除部门**/
 export function httpBaseSystemDeleteDepartment(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/delete`,
+        url: `/api/windows/deploy/dept/delete`,
         method: 'POST',
         data
     })
@@ -65,7 +65,7 @@ export function httpBaseSystemDeleteDepartment(data: Omix) {
 /**设置部门成员角色**/
 export function httpBaseSystemUpdateDeptMember(data: Omix) {
     return request({
-        url: `/api/windows/system/dept/member/update`,
+        url: `/api/windows/deploy/dept/member/update`,
         method: 'POST',
         data
     })

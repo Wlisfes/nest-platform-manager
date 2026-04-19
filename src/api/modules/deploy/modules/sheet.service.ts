@@ -3,7 +3,7 @@ import { request } from '@/utils'
 /**新增菜单**/
 export function httpBaseSystemCreateSheetResource(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/create/resource`,
+        url: `/api/windows/deploy/sheet/create/resource`,
         method: 'POST',
         data
     })
@@ -12,7 +12,7 @@ export function httpBaseSystemCreateSheetResource(data: Omix) {
 /**编辑菜单**/
 export function httpBaseSystemUpdateSheetResource(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/update/resource`,
+        url: `/api/windows/deploy/sheet/update/resource`,
         method: 'POST',
         data
     })
@@ -21,7 +21,7 @@ export function httpBaseSystemUpdateSheetResource(data: Omix) {
 /**分页列表查询**/
 export function httpBaseSystemColumnSheet(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/column`,
+        url: `/api/windows/deploy/sheet/column`,
         method: 'POST',
         data
     })
@@ -30,7 +30,7 @@ export function httpBaseSystemColumnSheet(data: Omix) {
 /**菜单树结构**/
 export function httpBaseSystemSheetTreeStructure() {
     return request({
-        url: `/api/windows/system/sheet/tree/structure`,
+        url: `/api/windows/deploy/sheet/tree/structure`,
         method: 'POST'
     })
 }
@@ -38,7 +38,7 @@ export function httpBaseSystemSheetTreeStructure() {
 /**菜单、按钮详情**/
 export function httpBaseSystemSheetResolver(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/resolver`,
+        url: `/api/windows/deploy/sheet/resolver`,
         method: 'POST',
         data
     })
@@ -47,7 +47,7 @@ export function httpBaseSystemSheetResolver(data: Omix) {
 /**新增权限按钮**/
 export function httpBaseSystemCreateSheetAuthorize(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/create/authorize`,
+        url: `/api/windows/deploy/sheet/create/authorize`,
         method: 'POST',
         data
     })
@@ -56,7 +56,7 @@ export function httpBaseSystemCreateSheetAuthorize(data: Omix) {
 /**编辑权限按钮**/
 export function httpBaseSystemUpdateSheetAuthorize(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/update/authorize`,
+        url: `/api/windows/deploy/sheet/update/authorize`,
         method: 'POST',
         data
     })
@@ -65,7 +65,7 @@ export function httpBaseSystemUpdateSheetAuthorize(data: Omix) {
 /**删除菜单/按钮**/
 export function httpBaseSystemDeleteSheet(data: Omix) {
     return request({
-        url: `/api/windows/system/sheet/delete`,
+        url: `/api/windows/deploy/sheet/delete`,
         method: 'POST',
         data
     })

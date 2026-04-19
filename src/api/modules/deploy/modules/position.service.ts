@@ -3,7 +3,7 @@ import { request } from '@/utils'
 /**新增职位**/
 export function httpBaseSystemCreatePosition(data: Omix) {
     return request({
-        url: `/api/windows/system/position/create`,
+        url: `/api/windows/deploy/position/create`,
         method: 'POST',
         data
     })
@@ -12,7 +12,7 @@ export function httpBaseSystemCreatePosition(data: Omix) {
 /**编辑职位**/
 export function httpBaseSystemUpdatePosition(data: Omix) {
     return request({
-        url: `/api/windows/system/position/update`,
+        url: `/api/windows/deploy/position/update`,
         method: 'POST',
         data
     })
@@ -21,7 +21,7 @@ export function httpBaseSystemUpdatePosition(data: Omix) {
 /**职位详情**/
 export function httpBaseSystemPositionResolver(data: Omix) {
     return request({
-        url: `/api/windows/system/position/resolver`,
+        url: `/api/windows/deploy/position/resolver`,
         method: 'POST',
         data
     })
@@ -30,7 +30,7 @@ export function httpBaseSystemPositionResolver(data: Omix) {
 /**职位分页列表查询**/
 export function httpBaseSystemColumnPosition(data: Omix) {
     return request({
-        url: `/api/windows/system/position/column`,
+        url: `/api/windows/deploy/position/column`,
         method: 'POST',
         data
     })
@@ -39,7 +39,7 @@ export function httpBaseSystemColumnPosition(data: Omix) {
 /**删除职位**/
 export function httpBaseSystemDeletePosition(data: Omix) {
     return request({
-        url: `/api/windows/system/position/delete`,
+        url: `/api/windows/deploy/position/delete`,
         method: 'POST',
         data
     })
@@ -48,7 +48,7 @@ export function httpBaseSystemDeletePosition(data: Omix) {
 /**职位下拉列表**/
 export function httpBaseSystemSelectPosition() {
     return request({
-        url: `/api/windows/system/position/select`,
+        url: `/api/windows/deploy/position/select`,
         method: 'POST'
     })
 }
@@ -56,7 +56,7 @@ export function httpBaseSystemSelectPosition() {
 /**职级下拉列表**/
 export function httpBaseSystemSelectRank() {
     return request({
-        url: `/api/windows/system/position/rank/select`,
+        url: `/api/windows/deploy/position/rank/select`,
         method: 'POST'
     })
 }

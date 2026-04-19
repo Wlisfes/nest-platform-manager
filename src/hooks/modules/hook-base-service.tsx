@@ -48,7 +48,7 @@ export function useBaseService<T extends Omix, R extends Omix, C extends Partial
             return await setState({ visible: true } as never).then(async () => {
                 const tasks: Array<any> = [fetchRequest()]
                 if (Object.keys(options.chunkNames ?? {}).length > 0) {
-                    tasks.push(chunkOptions.fetchRequest())
+                    // tasks.push(chunkOptions.fetchRequest())
                 }
                 return await Promise.all(tasks).then(() => {
                     return options.callback?.(faseNode.value, faseState as never)

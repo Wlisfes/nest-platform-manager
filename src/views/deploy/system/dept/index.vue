@@ -11,6 +11,7 @@ export default defineComponent({
     setup(props, ctx) {
         /**部门树结构**/
         const deptOptions = useSelectService(e => Service.httpBaseSystemDepartmentTreeStructure(), {
+            immediate: true,
             options: { pattern: undefined, selectedKeys: [], expandedKeys: [] },
             callback: fetchReadyCallback
         })
@@ -25,6 +26,7 @@ export default defineComponent({
                 alias: undefined //别名简称
             },
             columns: [
+                { title: '部门ID', key: 'keyId', width: 120, check: true },
                 { title: '部门名称', key: 'name', minWidth: 240, disabled: true },
                 { title: '别名简称', key: 'alias', width: 120, check: true },
                 { title: '关联账号', key: 'accountCount', align: 'center', width: 100, check: true },

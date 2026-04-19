@@ -10,18 +10,24 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'DeploySystemSheet',
     setup(props, ctx) {
-        /**通用字典枚举**/
-        const chunkOptions = useChunkService({ type: ['CHUNK_SHEET_STATUS', 'CHUNK_SHEET_CHUNK'] })
         /**菜单树结构**/
         const sheetOptions = useSelectService(e => Service.httpBaseSystemSheetTreeStructure(), {
-            options: { selectedKeys: [] as Array<string>, expandedKeys: [] as Array<string> },
-            callback: fetchReadyCallback
+            callback: fetchReadyCallback,
+            immediate: true,
+            options: {
+                selectedKeys: [] as Array<string>,
+                expandedKeys: [] as Array<string>
+            }
         })
         /**表格实例**/
-        const { formRef, formState, state, instState, instOptions, setForm, fetchRequest, fetchRestore, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, chunkState, instState, instOptions, setForm, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseSystemColumnSheet(payload),
             keyName: 'chatbok:deploy:system:sheet',
             immediate: false,
+            chunkNames: {
+                CHUNK_SHEET_STATUS: true,
+                CHUNK_SHEET_CHUNK: true
+            },
             formState: {
                 pid: undefined, //父级ID
                 name: undefined, //菜单名称
@@ -54,7 +60,7 @@ export default defineComponent({
             const selecteds = expandeds.filter((e: Omix, index: number) => [0].includes(index))
             return await sheetOptions.setState({ selectedKeys: selecteds, expandedKeys: expandeds }).then(async (event: Omix) => {
                 return await setForm({ pid: selecteds[0] ?? undefined }).then(async () => {
-                    return await fetchRequest()
+                    return await instOptions.fetchRequest()
                 })
             })
         }
@@ -66,9 +72,10 @@ export default defineComponent({
 
         /**左侧树选中变更回调**/
         async function fetchUpdateSelected(keys: Array<string>) {
-            await sheetOptions.setState({ selectedKeys: keys })
-            return await setForm({ pid: keys[0] as never }).then(() => {
-                return fetchRefresh({ page: 1, size: state.size })
+            return await sheetOptions.setState({ selectedKeys: keys }).then(async () => {
+                return await setForm({ pid: keys[0] as never }).then(() => {
+                    return fetchRefresh({ page: 1, size: state.size })
+                })
             })
         }
 
@@ -179,8 +186,8 @@ export default defineComponent({
                             v-model:database={state.database}
                             v-model:formState={formState.value}
                             on-update:database={instOptions.fetchUpdateDatabase}
-                            on-restore={fetchRestore}
-                            on-submit={fetchRequest}
+                            on-restore={instOptions.fetchRestore}
+                            on-submit={instOptions.fetchRequest}
                         >
                             <common-database-search-function abstract class="flex gap-col-10">
                                 <common-element-button type="primary" onClick={fetchDeploySheetCreate}>
@@ -283,14 +290,14 @@ export default defineComponent({
                                     <common-database-table-chunk
                                         element="chunk"
                                         value={data.chunk}
-                                        options={chunkOptions.CHUNK_SHEET_CHUNK.value}
+                                        options={chunkState.CHUNK_SHEET_CHUNK}
                                     ></common-database-table-chunk>
                                 ),
                                 col_status: (data: Omix) => (
                                     <common-database-table-chunk
                                         element="chunk"
                                         value={data.status}
-                                        options={chunkOptions.CHUNK_SHEET_STATUS.value}
+                                        options={chunkState.CHUNK_SHEET_STATUS}
                                     ></common-database-table-chunk>
                                 )
                             }}

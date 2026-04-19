@@ -52,9 +52,6 @@ export default defineComponent({
         async function fetchInstState() {
             const charst = `王李张刘陈杨赵黄周吴徐孙胡朱高林何郭马罗梁宋郑谢韩唐冯于董萧程曹袁邓许傅沈曾彭吕苏卢蒋蔡贾丁魏薛叶阎`
             return fetchReste({
-                depts: [114],
-                positions: [39],
-                ranks: [1003],
                 name: faker.person.fullName({
                     lastName: faker.helpers.arrayElement(charst.split(''))
                 }),

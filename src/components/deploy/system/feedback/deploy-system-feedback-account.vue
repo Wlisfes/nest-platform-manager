@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 import { useFormService, useSelectService } from '@/hooks'
 import { fetchNotifyService } from '@/plugins'
-import { faker } from '@/utils'
+import { faker, fetchCloneByte } from '@/utils'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -28,9 +28,9 @@ export default defineComponent({
             callback: fetchBaseSystemAccountResolver,
             chunkNames: { CHUNK_ACCOUNT_STATUS: true },
             formState: {
-                depts: props.node.depts ?? [], //归属部门
-                positions: props.node.positions ?? [], //关联职位
-                ranks: props.node.ranks ?? [], //关联职级
+                depts: (props.node.depts ?? []).map((item: Omix) => item.keyId), //归属部门
+                positions: (props.node.positions ?? []).map((item: Omix) => item.keyId), //关联职位
+                ranks: (props.node.ranks ?? []).map((item: Omix) => item.keyId), //关联职级
                 name: props.node.name, //姓名
                 number: props.node.number, //工号
                 phone: props.node.phone, //手机号
@@ -40,7 +40,7 @@ export default defineComponent({
                 status: props.node.status //状态
             },
             rules: {
-                depts: { required: true, type: 'array', message: '请选择归属部门', trigger: 'change' },
+                depts: { required: true, type: 'array', message: '请选择归属部门', trigger: 'blur' },
                 name: { required: true, message: '请输入姓名', trigger: 'blur' },
                 number: { required: true, message: '请输入工号', trigger: 'blur' },
                 phone: { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -52,6 +52,9 @@ export default defineComponent({
         async function fetchInstState() {
             const surnames = `王李张刘陈杨赵黄周吴徐孙胡朱高林何郭马罗梁宋郑谢韩唐冯于董萧程曹袁邓许傅沈曾彭吕苏卢蒋蔡贾丁魏薛叶阎`
             return fetchReste({
+                // depts: [49],
+                // positions: [44],
+                // ranks: [1002],
                 name: faker.person.fullName({
                     lastName: faker.helpers.arrayElement(surnames.split(''))
                 }),
@@ -101,10 +104,13 @@ export default defineComponent({
                     return await setState({ loading: false, disabled: false })
                 }
                 try {
+                    const formOptions = fetchCloneByte(formState.value, {
+                        password: window.btoa(encodeURIComponent(formState.value.password))
+                    })
                     if (['CREATE'].includes(props.command)) {
-                        await Service.httpBaseSystemCreateAccount(formState.value)
+                        await Service.httpBaseSystemCreateAccount(formOptions)
                     } else if (['UPDATE'].includes(props.command)) {
-                        await Service.httpBaseSystemUpdateAccount({ ...formState.value, uid: props.node.uid })
+                        await Service.httpBaseSystemUpdateAccount({ ...formOptions, uid: props.node.uid })
                     }
                     return await setState({ visible: false }).then(async () => {
                         await emit('submit', { done: setState })

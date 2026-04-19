@@ -46,6 +46,11 @@ export function fetchWherer<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T
 }
 
+/**深度克隆组合**/
+export function fetchCloneByte<T extends Omix, M extends Omix = {}>(data: T, mergeData: M = {} as M): T & M {
+    return Object.assign(cloneDeep(data), mergeData)
+}
+
 /**对象查找**/
 export function fetchCurrent<T>(data: Array<T>, callback: (e: T) => boolean) {
     return (data.find(item => callback(item)) ?? {}) as T

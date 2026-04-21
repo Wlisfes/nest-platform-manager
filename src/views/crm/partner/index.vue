@@ -7,7 +7,7 @@ import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'CrmClientConsumer',
+    name: 'CrmClientPartner',
     setup(props, ctx) {
         const { state, setState } = useState({ tabName: 'common', observer: Observer<Record<string, Omix>>() })
 

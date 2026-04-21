@@ -7,7 +7,7 @@ import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'CemClientContextConsumer',
+    name: 'CrmClientDecomposer',
     setup(props, ctx) {
         return () => (
             <layout-common-container class-name="p-14">

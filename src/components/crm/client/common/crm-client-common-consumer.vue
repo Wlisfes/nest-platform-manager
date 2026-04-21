@@ -32,9 +32,9 @@ export default defineComponent({
                 source: undefined
             },
             columns: [
-                { title: '客户名称', key: 'name', minWidth: 200, disabled: true },
-                { title: '客户别名', key: 'alias', minWidth: 180, check: true },
-                { title: '邮箱', key: 'email', width: 180, check: true },
+                { title: '客户名称', key: 'name', minWidth: 180, disabled: true },
+                { title: '客户别名', key: 'alias', minWidth: 160, check: true },
+                { title: '邮箱', key: 'email', width: 160, check: true },
                 { title: '电话号码', key: 'phone', width: 120, check: true },
                 { title: '归属人', key: 'user', width: 120, check: true },
                 { title: '归属部门', key: 'depts', width: 120, check: true },

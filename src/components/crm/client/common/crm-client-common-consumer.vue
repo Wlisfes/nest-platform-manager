@@ -98,6 +98,13 @@ export default defineComponent({
                     on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                 >
                     {{
+                        col_name: (data: Omix) => (
+                            <router-link title={data.name} to={`/crm/client/context/${data.keyId}`}>
+                                <n-text underline type="info">
+                                    {data.name}
+                                </n-text>
+                            </router-link>
+                        ),
                         col_user: (data: Omix) => {
                             return <common-database-table-user element="text" data={data.user}></common-database-table-user>
                         },

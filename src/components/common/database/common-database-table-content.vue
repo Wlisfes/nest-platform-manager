@@ -29,7 +29,6 @@ export default defineComponent({
                     </n-performant-ellipsis>
                 )
             } else if (['ellipsis'].includes(props.element)) {
-                console.log(displayValue.value, props.value)
                 return (
                     <n-ellipsis tooltip={{ scrollable: true, style: { maxWidth: '640px', maxHeight: '640px' } }}>
                         {slots.default ? slots.default() : <Fragment>{displayValue.value}</Fragment>}

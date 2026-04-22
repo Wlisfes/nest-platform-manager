@@ -13,8 +13,8 @@ export default [
     },
     {
         path: '/crm/client/context/:keyId',
-        name: 'CrmClientDecomposer',
+        name: 'CrmClientContextDecomposer',
         meta: { title: '客户详情', AUTH: 'AUTH' },
-        component: () => import('@/views/crm/context/client/index.vue')
+        component: () => import('@/components/crm/client/context/crm-client-context-decomposer.vue')
     }
 ]

@@ -99,10 +99,8 @@ export default defineComponent({
                 >
                     {{
                         col_name: (data: Omix) => (
-                            <router-link title={data.name} to={`/crm/client/context/${data.keyId}`}>
-                                <n-text underline type="info">
-                                    {data.name}
-                                </n-text>
+                            <router-link title={data.name} to={`/crm/client/context/${data.keyId}`} class="decoration-none">
+                                <n-text type="info">{data.name}</n-text>
                             </router-link>
                         ),
                         col_user: (data: Omix) => {
@@ -118,14 +116,14 @@ export default defineComponent({
                         ),
                         col_classType: (data: Omix) => (
                             <common-database-table-chunk
-                                element="text"
+                                element="content"
                                 value={data.classType}
                                 options={chunkState.CHUNK_CLIENT_CLASS}
                             ></common-database-table-chunk>
                         ),
                         col_stage: (data: Omix) => (
                             <common-database-table-chunk
-                                element="text"
+                                element="content"
                                 value={data.stage}
                                 options={chunkState.CHUNK_CLIENT_STAGE}
                             ></common-database-table-chunk>
@@ -137,28 +135,28 @@ export default defineComponent({
                         ),
                         col_status: (data: Omix) => (
                             <common-database-table-chunk
-                                element="text"
+                                element="content"
                                 value={data.status}
                                 options={chunkState.CHUNK_CLIENT_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_payMode: (data: Omix) => (
                             <common-database-table-chunk
-                                element="text"
+                                element="content"
                                 value={data.payMode}
                                 options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             ></common-database-table-chunk>
                         ),
                         col_authStatus: (data: Omix) => (
                             <common-database-table-chunk
-                                element="text"
+                                element="content"
                                 value={data.authStatus}
                                 options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_source: (data: Omix) => (
                             <common-database-table-chunk
-                                element="text"
+                                element="content"
                                 value={data.source}
                                 options={chunkState.CHUNK_CLIENT_SOURCE}
                             ></common-database-table-chunk>

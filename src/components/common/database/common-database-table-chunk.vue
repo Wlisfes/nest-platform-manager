@@ -6,7 +6,7 @@ export default defineComponent({
     name: 'CommonDatabaseTableChunk',
     props: {
         /**渲染类型**/
-        element: { type: String as PropType<'chunk' | 'text'>, default: 'chunk' },
+        element: { type: String as PropType<'chunk' | 'text' | 'content'>, default: 'chunk' },
         /**回显列表**/
         options: { type: Array as PropType<Array<Omix>>, default: () => [] },
         /**文本内容**/
@@ -29,7 +29,6 @@ export default defineComponent({
                         </n-tag>
                     )
                 }
-                return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
             } else if (['text'].includes(props.element)) {
                 if (isNotEmpty(itemNode.value.name) && isNotEmpty(itemNode.value.json)) {
                     return slots.default ? (
@@ -38,7 +37,10 @@ export default defineComponent({
                         <n-text type={itemNode.value.json.type}>{itemNode.value.name}</n-text>
                     )
                 }
-                return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
+            } else if (['content'].includes(props.element)) {
+                if (isNotEmpty(itemNode.value.name)) {
+                    return slots.default ? slots.default(itemNode.value) : <span>{itemNode.value.name}</span>
+                }
             }
             return <span>{isNotEmpty(props.value) ? props.value : <Fragment>{slots.default ? slots.default() : '-'}</Fragment>}</span>
         }

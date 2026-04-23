@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { Observer } from '@/utils'
 import { useColumnService, useState } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
@@ -9,20 +9,41 @@ import * as Service from '@/api/instance.service'
 export default defineComponent({
     name: 'CrmClientContextWrapper',
     setup(props, ctx) {
+        const tags = ref([
+            { label: '你没见过不等于没有', value: 'hello world 1' },
+            {
+                label: '不要给自己设限',
+                value: 'hello world 2'
+            },
+            {
+                label: '不要说连升两级',
+                value: 'hello world 3'
+            },
+            {
+                label: '直接升到 CEO 都是有可能的',
+                value: 'hello world 4'
+            }
+        ])
+
         return () => (
-            <n-card class="crm-client-context-wrapper flex flex-col" content-class="p-16!">
-                <div class="flex justify-between">
+            <n-card class="crm-client-context-wrapper flex flex-col" content-class="p-16! flex flex-col gap-10">
+                <div class="flex justify-between gap-20 overflow-hidden">
                     <div class="flex flex-col overflow-hidden">
-                        <div class="text-12 line-height-16 flex overflow-hidden">
+                        <div class="flex gap-20 text-12 line-height-16 overflow-hidden">
                             <n-text depth="3">创建时间：2022-05-25 15:03:43</n-text>
                         </div>
-                        <div class="flex items-center p-block-5 overflow-hidden">
+                        <div class="flex items-center p-bs-8 gap-10 overflow-hidden">
                             <n-h1 class="m-0 text-20 font-500 line-height-24">测试客户名称 (100054170)</n-h1>
+                            <n-dynamic-tags v-model:value={tags.value}></n-dynamic-tags>
                         </div>
                     </div>
                     <div class="flex items-center m-be-auto">
                         <n-button>刷新</n-button>
                     </div>
+                </div>
+                <div class="flex gap-20 text-12 line-height-16 overflow-hidden">
+                    <n-text depth="3">归属人：李逸飞</n-text>
+                    <n-text depth="3">共享人：郭国荣、丁振东、马梓诚、郭国荣、阎梓浩、萧若汐、杨浩辰</n-text>
                 </div>
             </n-card>
         )

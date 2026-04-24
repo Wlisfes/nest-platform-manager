@@ -128,7 +128,7 @@ export default defineComponent({
                     content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
                     <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-inline-0! p-block-14! overflow-hidden">
-                        <common-element-spiner opacity={0} loading={deptOptions.state.loading}>
+                        <common-element-wrapper opacity={0} loading={deptOptions.state.loading}>
                             <n-scrollbar trigger="none" class="flex-1 overflow-hidden">
                                 <n-element class="p-inline-14">
                                     <n-tree
@@ -148,7 +148,7 @@ export default defineComponent({
                                     />
                                 </n-element>
                             </n-scrollbar>
-                        </common-element-spiner>
+                        </common-element-wrapper>
                     </n-card>
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 gap-14 overflow-hidden">

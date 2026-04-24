@@ -72,7 +72,7 @@ export default defineComponent({
                 style={{ 'border-radius': '0 0 var(--border-radius) var(--border-radius)' }}
             >
                 <common-element is-white class="flex flex-col flex-1 p-block-14 overflow-hidden">
-                    <common-element-spiner
+                    <common-element-wrapper
                         scrollbar
                         opacity={0}
                         loading={faseState.initialize}
@@ -96,7 +96,7 @@ export default defineComponent({
                             on-update:indeterminate-keys={(indeterminateKeys: Array<number>) => setState({ indeterminateKeys })}
                             on-update:expanded-keys={(expandedKeys: Array<number>) => setState({ expandedKeys })}
                         />
-                    </common-element-spiner>
+                    </common-element-wrapper>
                 </common-element>
                 <common-element is-white class="b-rd-[var(--border-radius)] p-14 flex gap-12 overflow-hidden">
                     <common-element-button

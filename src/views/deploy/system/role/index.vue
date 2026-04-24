@@ -109,7 +109,7 @@ export default defineComponent({
                     content-class="flex flex-col flex-1 overflow-hidden! p-block-14 p-is-14"
                 >
                     <n-card class="flex-1 overflow-hidden" content-class="flex flex-col flex-1 p-0! overflow-hidden">
-                        <common-element-spiner scrollbar opacity={0} loading={faseState.initialize}>
+                        <common-element-wrapper scrollbar opacity={0} loading={faseState.initialize}>
                             <n-element class="flex flex-col gap-10 overflow-hidden">
                                 <div class="flex flex-col p-inline-14 overflow-hidden">
                                     <div class="flex items-center justify-between p-block-12 overflow-hidden">
@@ -185,7 +185,7 @@ export default defineComponent({
                                     />
                                 </div>
                             </n-element>
-                        </common-element-spiner>
+                        </common-element-wrapper>
                     </n-card>
                 </n-layout-sider>
                 <n-layout class="bg-transparent" content-class="flex flex-col flex-1 p-14 overflow-hidden">

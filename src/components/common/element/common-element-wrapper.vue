@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'CommonElementSpiner',
+    name: 'CommonElementWrapper',
     props: {
         /**容器样式**/
         className: { type: String, default: 'flex flex-col flex-1 overflow-hidden' },
@@ -20,7 +20,7 @@ export default defineComponent({
     setup(props, { slots }) {
         return () => (
             <n-spin
-                class={`common-element-spiner ${props.className}`}
+                class={`common-element-wrapper ${props.className}`}
                 style={{ '--n-opacity-spinning': props.opacity }}
                 content-class="flex flex-col flex-1 overflow-hidden"
                 size={props.size}

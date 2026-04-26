@@ -62,11 +62,4 @@ export function httpBaseSystemDeleteDepartment(data: Omix) {
     })
 }
 
-/**设置部门成员角色**/
-export function httpBaseSystemUpdateDeptMember(data: Omix) {
-    return request({
-        url: `/api/windows/deploy/dept/member/update`,
-        method: 'POST',
-        data
-    })
 }

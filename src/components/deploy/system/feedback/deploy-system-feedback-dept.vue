@@ -76,31 +76,6 @@ export default defineComponent({
             })
         }
 
-        /**保存管理员/子管理员设置**/
-        async function fetchSaveMemberRoles() {
-            const tasks: Promise<any>[] = []
-            for (const member of memberOptions.value) {
-                let targetChunk = 'member'
-                if (member.uid === adminUid.value) {
-                    targetChunk = 'admin'
-                } else if (subAdminUids.value.includes(member.uid)) {
-                    targetChunk = 'sub_admin'
-                }
-                if (member.chunk !== targetChunk) {
-                    tasks.push(
-                        Service.httpBaseSystemUpdateDeptMember({
-                            deptId: props.node.keyId,
-                            uid: member.uid,
-                            chunk: targetChunk
-                        })
-                    )
-                }
-            }
-            if (tasks.length > 0) {
-                await Promise.all(tasks)
-            }
-        }
-
         /**确定提交表单**/
         async function fetchSubmit() {
             return await fetchValidater().then(async error => {
@@ -111,8 +86,12 @@ export default defineComponent({
                     if (['CREATE'].includes(props.command)) {
                         await Service.httpBaseSystemCreateDepartment(formState.value)
                     } else if (['UPDATE'].includes(props.command)) {
-                        await Service.httpBaseSystemUpdateDepartment({ ...formState.value, keyId: props.node.keyId })
-                        await fetchSaveMemberRoles()
+                        await Service.httpBaseSystemUpdateDepartment({
+                            ...formState.value,
+                            keyId: props.node.keyId,
+                            adminUid: adminUid.value ?? null,
+                            subAdminUids: subAdminUids.value
+                        })
                     }
                     return await setState({ visible: false }).then(async () => {
                         await emit('submit', { done: setState })

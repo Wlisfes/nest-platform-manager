@@ -13,9 +13,13 @@ export default defineComponent({
     },
     setup(props, ctx) {
         /**品牌下拉列表**/
-        const brandOptions = useSelectService(e => Service.httpBaseFinanceSelectBrand())
+        const brandOptions = useSelectService(e => Service.httpBaseFinanceSelectBrand(), {
+            immediate: true
+        })
         /**币种下拉列表**/
-        const currencyOptions = useSelectService(e => Service.httpBaseFinanceSelectCurrency())
+        const currencyOptions = useSelectService(e => Service.httpBaseFinanceSelectCurrency(), {
+            immediate: true
+        })
         /**表格实例**/
         const { formRef, formState, state, chunkState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseCrmClientCommonConsumer(payload),

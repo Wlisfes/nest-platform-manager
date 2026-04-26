@@ -1,3 +1,4 @@
+import ConfigProvider from '@/components/main/layout/common/layout-common-provider.vue'
 import { createApp, createVNode, nextTick, App } from 'vue'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
@@ -25,7 +26,7 @@ export async function createComponent<T extends Omix>(
     opts: OptsComponent = {}
 ): Promise<RestComponent> {
     const element = document.createElement('div')
-    const app = createApp(<layout-common-provider>{createVNode(Component, { ...props, onSubmit, onClose })}</layout-common-provider>)
+    const app = createApp(<ConfigProvider>{createVNode(Component, { ...props, onSubmit, onClose })}</ConfigProvider>)
 
     /**组件挂载**/
     async function mounte(): Promise<Omix> {

@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
 import { useColumnService } from '@/hooks'
-import { stop, EventType } from '@/utils'
+import { EventType } from '@/utils'
 import * as feedback from '@/components/crm/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -13,7 +13,7 @@ export default defineComponent({
     },
     setup(props, ctx) {
         /**表格实例**/
-        const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
+        const { formRef, formState, state, chunkState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseCrmClientCommonConsumer(payload),
             keyName: 'chatbok:crm:client:common:consumer',
             chunkNames: {
@@ -32,8 +32,9 @@ export default defineComponent({
                 source: undefined
             },
             columns: [
-                { title: '客户名称', key: 'name', minWidth: 180, disabled: true },
-                { title: '客户别名', key: 'alias', minWidth: 160, check: true },
+                { title: '客户ID', key: 'keyId', width: 90, disabled: true },
+                { title: '客户名称', key: 'name', minWidth: 200, disabled: true },
+                { title: '客户别名', key: 'alias', width: 150, check: true },
                 { title: '邮箱', key: 'email', width: 160, check: true },
                 { title: '电话号码', key: 'phone', width: 120, check: true },
                 { title: '归属人', key: 'user', width: 120, check: true },
@@ -58,20 +59,7 @@ export default defineComponent({
             return await feedback.fetchCrmClientcommonFeedbackConsumer({
                 title: '新增客户',
                 command: 'CREATE',
-                node: {
-                    name: '青萍科技股份有限公司',
-                    brandId: 1007,
-                    currency: 'USD',
-                    email: 'limvcfast@gmail.com',
-                    phone: '18676361342',
-                    status: 'enable',
-                    payMode: 'prepaid',
-                    authStatus: 'unverified',
-                    source: 'manual'
-                },
-                async onSubmit() {
-                    return await fetchRefresh()
-                }
+                onSubmit: fetchRefresh
             })
         }
 
@@ -126,9 +114,11 @@ export default defineComponent({
                 >
                     {{
                         col_name: (data: Omix) => (
-                            <router-link title={data.name} to={`/crm/client/context/${data.keyId}`} class="decoration-none">
-                                <n-text type="info">{data.name}</n-text>
-                            </router-link>
+                            <n-ellipsis title={data.name} tooltip={false}>
+                                <router-link to={`/crm/client/context/${data.keyId}`} class="decoration-none">
+                                    <n-text type="info">{data.name}</n-text>
+                                </router-link>
+                            </n-ellipsis>
                         ),
                         col_user: (data: Omix) => {
                             return <common-database-table-user element="text" data={data.user}></common-database-table-user>

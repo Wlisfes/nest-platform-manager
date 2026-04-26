@@ -1,7 +1,8 @@
 import { VNode } from 'vue'
-import { zh_CN, Faker } from '@faker-js/faker'
+import { Faker, zh_CN, en } from '@faker-js/faker'
 import { cloneDeep, concat, omit, pick } from 'lodash-es'
 import { isNotEmpty, isEmpty, isArray, isEmail, isString, isObject, isBoolean } from 'class-validator'
+import chineseLorem from '@easonliu1995/chinese-lorem'
 import tree from 'tree-tool'
 import dayjs from 'dayjs'
 
@@ -15,7 +16,10 @@ export const iconNames = Object.keys(modules).reduce((icons: typeof modules, nex
 }, {})
 
 /**虚拟数据实例**/
-export const faker = new Faker({ locale: zh_CN })
+export const faker = new Faker({ locale: [zh_CN, en] })
+faker.lorem.paragraph = (count?: number) => {
+    return Array.from({ length: count ?? 3 }, () => chineseLorem({ min: 10, max: 25, usePunctuation: true, useSimplified: true })).join('')
+}
 
 /**dayjs实例**/
 export const moment = dayjs

@@ -67,5 +67,13 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_CLIENT_STAGE: {
         value: 'CHUNK_CLIENT_STAGE',
         name: '客户阶段'
+    },
+    CHUNK_CLIENT_SMS_STATUS: {
+        value: 'CHUNK_CLIENT_SMS_STATUS',
+        name: '短信应用状态'
+    },
+    CHUNK_CLIENT_SMS_TYPE: {
+        value: 'CHUNK_CLIENT_SMS_TYPE',
+        name: '短信应用类型'
     }
 }

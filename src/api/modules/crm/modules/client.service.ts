@@ -8,3 +8,12 @@ export function httpBaseCrmClientCommonConsumer(data: Omix) {
         data
     })
 }
+
+/**销售管理-客户列表-客户详情**/
+export function httpBaseCrmClientResolver(data: Omix) {
+    return request({
+        url: `/api/windows/crm/client/resolver`,
+        method: 'POST',
+        data
+    })
+}

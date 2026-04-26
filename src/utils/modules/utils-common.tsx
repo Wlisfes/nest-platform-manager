@@ -41,6 +41,16 @@ export function enter(e: KeyboardEvent, handler?: Function) {
     }
 }
 
+/**金额、单位组合**/
+export function fetchNumCurrency(num: string | number, currency?: string) {
+    if (isNotEmpty(num) && isNotEmpty(currency)) {
+        return `${num} ${currency}`
+    } else if (isNotEmpty(num)) {
+        return num
+    }
+    return '-'
+}
+
 /**根据条件返回不同参数**/
 export function fetchWherer<T>(where: boolean, value: T, defaultValue?: T): T {
     return (where ? value : defaultValue) as T

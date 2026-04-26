@@ -15,6 +15,7 @@ export default [
         path: '/crm/client/context/:keyId',
         name: 'CrmClientContextDecomposer',
         meta: { title: '客户详情', AUTH: 'AUTH' },
+        props: (route: Omix) => route.params,
         component: () => import('@/components/crm/client/context/crm-client-context-decomposer.vue')
     }
 ]

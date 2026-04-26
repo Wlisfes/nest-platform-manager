@@ -195,7 +195,7 @@ export default defineComponent({
                         default-value="account"
                         tab-class="p-block-12!"
                         tabs-padding={14}
-                        class="common-element-tabser h-full overflow-hidden "
+                        class="common-element-tabser inset-absolute h-full overflow-hidden "
                         v-model:value={faseState.tabName}
                     >
                         <n-tab-pane name="account" tab="关联账号" display-directive="show">

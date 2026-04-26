@@ -47,6 +47,17 @@ export default defineComponent({
             return await feedback.fetchFinanceAccountConsumer({
                 title: '新增客户',
                 command: 'CREATE',
+                node: {
+                    name: '青萍科技股份有限公司',
+                    brandId: 1007,
+                    currency: 'USD',
+                    email: 'limvcfast@gmail.com',
+                    phone: '18676361342',
+                    status: 'enable',
+                    payMode: 'prepaid',
+                    authStatus: 'unverified',
+                    source: 'manual'
+                },
                 async onSubmit() {
                     return await fetchRefresh()
                 }

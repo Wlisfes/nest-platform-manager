@@ -31,13 +31,17 @@ body,
             border-color 0.3s var(--n-bezier),
             background-color 0.3s var(--n-bezier);
     }
-    > .n-tabs-pane-wrapper {
+    > .n-tabs-pane-wrapper,
+    > .n-tabs-pane-wrapper > .n-tab-pane {
         position: relative;
+        flex-direction: column;
+        display: flex;
         flex: 1;
-        > .n-tab-pane {
-            position: absolute;
-            inset: 0;
-            padding: 0;
-        }
+        padding: 0;
+    }
+    &.inset-absolute > .n-tabs-pane-wrapper > .n-tab-pane {
+        position: absolute;
+        inset: 0;
+        padding: 0;
     }
 }

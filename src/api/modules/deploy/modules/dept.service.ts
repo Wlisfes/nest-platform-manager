@@ -62,4 +62,3 @@ export function httpBaseSystemDeleteDepartment(data: Omix) {
     })
 }
 
-}

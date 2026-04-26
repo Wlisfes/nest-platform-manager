@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 import { useColumnService } from '@/hooks'
 import { stop, EventType } from '@/utils'
-import * as feedback from '@/components/deploy/hooks'
+import * as feedback from '@/components/crm/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -53,12 +53,34 @@ export default defineComponent({
             ]
         })
 
+        /**新增客户**/
+        async function fetchUseCrmClientcommonFeedbackConsumer() {
+            return await feedback.fetchCrmClientcommonFeedbackConsumer({
+                title: '新增客户',
+                command: 'CREATE',
+                node: {
+                    name: '青萍科技股份有限公司',
+                    brandId: 1007,
+                    currency: 'USD',
+                    email: 'limvcfast@gmail.com',
+                    phone: '18676361342',
+                    status: 'enable',
+                    payMode: 'prepaid',
+                    authStatus: 'unverified',
+                    source: 'manual'
+                },
+                async onSubmit() {
+                    return await fetchRefresh()
+                }
+            })
+        }
+
         return () => (
             <n-element class="crm-client-common-consumer h-full flex flex-col gap-14 overflow-hidden">
                 <common-database-search
                     class="p-0!"
                     function-class="justify-end"
-                    function={['search', 'restore', 'collapse', 'abstract']}
+                    function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
                     square={['l-t', 'r-t']}
                     ref={formRef}
                     limit={state.limit}
@@ -70,6 +92,11 @@ export default defineComponent({
                     on-restore={instOptions.fetchRestore}
                     on-submit={instOptions.fetchRequest}
                 >
+                    <common-database-search-function abstract class="flex gap-col-10">
+                        <common-element-button type="primary" onClick={fetchUseCrmClientcommonFeedbackConsumer}>
+                            新增
+                        </common-element-button>
+                    </common-database-search-function>
                     <common-database-search-column disabled prop="name" label="客户名称">
                         <form-common-column-input
                             clearable

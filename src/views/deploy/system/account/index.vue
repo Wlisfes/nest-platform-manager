@@ -80,6 +80,28 @@ export default defineComponent({
                 }
             })
         }
+        /**重置密码**/
+        async function fetchDeployAccountResetPassword() {
+            const node = state.select[0]
+            return await fetchDialogService({
+                title: '提示',
+                type: 'warning',
+                content: `确认将账号【${node.name}】的密码重置为默认密码吗？`,
+                async onSubmit(done: Function) {
+                    return await done({ loading: true }).then(async () => {
+                        try {
+                            await Service.httpBaseSystemResetPasswordAccount({ uid: node.uid })
+                            return await done({ visible: false }).then(async () => {
+                                return await fetchNotifyService({ title: '密码重置成功' })
+                            })
+                        } catch (err) {
+                            await done({ loading: false })
+                            return await fetchNotifyService({ type: 'error', title: err.message })
+                        }
+                    })
+                }
+            })
+        }
 
         return () => (
             <layout-common-container initialize={state.initialize}>
@@ -105,6 +127,14 @@ export default defineComponent({
                         </common-element-button>
                         <common-element-button dashed type="error" disabled={instState.value.isDelete} onClick={fetchDeployAccountDelete}>
                             删除
+                        </common-element-button>
+                        <common-element-button
+                            dashed
+                            type="warning"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchDeployAccountResetPassword}
+                        >
+                            重置密码
                         </common-element-button>
                     </common-database-search-function>
                     <common-database-search-column disabled prop="name" label="名称/工号">

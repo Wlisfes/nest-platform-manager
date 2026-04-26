@@ -58,7 +58,7 @@ export default defineComponent({
                 number: faker.string.numeric(4),
                 phone: `1${faker.helpers.arrayElement([3, 5, 7, 8, 9])}${faker.string.numeric(9)}`,
                 email: faker.internet.email({ provider: 'nqmo.com' }),
-                password: `123456`,
+                password: window.btoa('123456'),
                 status: 'online',
                 avatar: await fetch(`https://picsum.photos/500`).then(e => e.url)
             })

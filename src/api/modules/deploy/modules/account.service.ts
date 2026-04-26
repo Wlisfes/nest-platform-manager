@@ -54,6 +54,15 @@ export function httpBaseSystemDeleteAccount(data: Omix) {
     })
 }
 
+/**重置密码**/
+export function httpBaseSystemResetPasswordAccount(data: Omix) {
+    return request({
+        url: `/api/windows/deploy/account/reset/password`,
+        method: 'POST',
+        data
+    })
+}
+
 /**账号下拉列表**/
 export function httpBaseSystemSelectAccount() {
     return request({

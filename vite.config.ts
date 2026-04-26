@@ -33,7 +33,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
                 dts: true,
                 deep: true,
                 extensions: ['vue'],
-                include: [/\.vue$/, /\.vue\?vue/],
+                include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/],
                 dirs: ['src/components'],
                 resolvers: [NaiveUiResolver(), IconsResolver({ prefix: false, enabledCollections: ['local'] })]
             }),

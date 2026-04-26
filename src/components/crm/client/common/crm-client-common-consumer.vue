@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, PropType } from 'vue'
-import { useColumnService } from '@/hooks'
+import { useColumnService, useSelectService } from '@/hooks'
 import { EventType } from '@/utils'
 import * as feedback from '@/components/crm/hooks'
 import * as Service from '@/api/instance.service'
@@ -12,6 +12,10 @@ export default defineComponent({
         observer: { type: Object as PropType<EventType>, required: true }
     },
     setup(props, ctx) {
+        /**品牌下拉列表**/
+        const brandOptions = useSelectService(e => Service.httpBaseFinanceSelectBrand())
+        /**币种下拉列表**/
+        const currencyOptions = useSelectService(e => Service.httpBaseFinanceSelectCurrency())
         /**表格实例**/
         const { formRef, formState, state, chunkState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseCrmClientCommonConsumer(payload),
@@ -27,6 +31,8 @@ export default defineComponent({
             formState: {
                 name: undefined,
                 status: undefined,
+                brandId: undefined,
+                currency: undefined,
                 payMode: undefined,
                 authStatus: undefined,
                 source: undefined
@@ -71,6 +77,7 @@ export default defineComponent({
                     function={['search', 'restore', 'collapse', 'deploy', 'abstract']}
                     square={['l-t', 'r-t']}
                     ref={formRef}
+                    label-width={90}
                     limit={state.limit}
                     v-model:loading={state.loading}
                     v-model:when={state.when}
@@ -85,13 +92,66 @@ export default defineComponent({
                             新增
                         </common-element-button>
                     </common-database-search-function>
-                    <common-database-search-column disabled prop="name" label="客户名称">
+                    <common-database-search-column disabled prop="name" label="客户名称/ID">
                         <form-common-column-input
                             clearable
-                            placeholder="请输入客户名称"
+                            placeholder="请输入客户名称/ID"
                             v-model:value={formState.value.name}
                             on-submit={fetchRefresh}
                         ></form-common-column-input>
+                    </common-database-search-column>
+                    <common-database-search-column prop="status" label="状态">
+                        <form-common-column-select
+                            clearable
+                            placeholder="请选择状态"
+                            options={chunkState.CHUNK_CLIENT_STATUS}
+                            v-model:value={formState.value.status}
+                        ></form-common-column-select>
+                    </common-database-search-column>
+                    <common-database-search-column prop="brandId" label="品牌">
+                        <form-common-column-select
+                            clearable
+                            filterable
+                            placeholder="请选择品牌"
+                            value-field="keyId"
+                            options={brandOptions.dataSource.value}
+                            v-model:value={formState.value.brandId}
+                        ></form-common-column-select>
+                    </common-database-search-column>
+                    <common-database-search-column prop="currency" label="币种">
+                        <form-common-column-select
+                            clearable
+                            filterable
+                            placeholder="请选择币种"
+                            value-field="currency"
+                            label-field="currency"
+                            options={currencyOptions.dataSource.value}
+                            v-model:value={formState.value.currency}
+                        ></form-common-column-select>
+                    </common-database-search-column>
+                    <common-database-search-column prop="payMode" label="付款模式">
+                        <form-common-column-select
+                            clearable
+                            placeholder="请选择付款模式"
+                            options={chunkState.CHUNK_CLIENT_PAY_MODE}
+                            v-model:value={formState.value.payMode}
+                        ></form-common-column-select>
+                    </common-database-search-column>
+                    <common-database-search-column prop="authStatus" label="认证状态">
+                        <form-common-column-select
+                            clearable
+                            placeholder="请选择认证状态"
+                            options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
+                            v-model:value={formState.value.authStatus}
+                        ></form-common-column-select>
+                    </common-database-search-column>
+                    <common-database-search-column prop="source" label="注册来源">
+                        <form-common-column-select
+                            clearable
+                            placeholder="请选择注册来源"
+                            options={chunkState.CHUNK_CLIENT_SOURCE}
+                            v-model:value={formState.value.source}
+                        ></form-common-column-select>
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table

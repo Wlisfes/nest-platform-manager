@@ -35,23 +35,23 @@ export default defineComponent({
                         <n-tab-pane name="basic" tab="详情信息" display-directive="show">
                             <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
                         </n-tab-pane>
-                        <n-tab-pane name="conspire" tab="短信应用" display-directive="show">
-                            <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
+                        <n-tab-pane name="sms" tab="短信应用" display-directive="show">
+                            <crm-client-context-sms-wrapper></crm-client-context-sms-wrapper>
                         </n-tab-pane>
-                        <n-tab-pane name="conspire" tab="邮件应用" display-directive="show">
-                            <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
+                        <n-tab-pane name="mail" tab="邮件应用" display-directive="show">
+                            <crm-client-context-mail-wrapper></crm-client-context-mail-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="whatsapp" tab="社媒应用" display-directive="show">
-                            <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
+                            <crm-client-context-whatsapp-wrapper></crm-client-context-whatsapp-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="deploy" tab="配置" display-directive="show">
                             <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="attachment" tab="附件" display-directive="show">
-                            <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
+                            <crm-client-context-attachment-wrapper></crm-client-context-attachment-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="daily" tab="日志" display-directive="show">
-                            <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
+                            <crm-client-context-daily-wrapper></crm-client-context-daily-wrapper>
                         </n-tab-pane>
                     </n-tabs>
                 </common-element>

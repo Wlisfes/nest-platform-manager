@@ -2,13 +2,13 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'CrmClientContextBasicWrapper',
+    name: 'CrmClientContextMailWrapper',
     props: {},
     setup(props, { slots }) {
         return () => (
-            <common-element is-white class="crm-client-context-basic-wrapper">
+            <common-element is-white class="crm-client-context-mail-wrapper">
                 {Array.from({ length: 50 }, () => (
-                    <n-h2>crm-client-context-basic-wrapper</n-h2>
+                    <n-h2>crm-client-context-mail-wrapper</n-h2>
                 ))}
             </common-element>
         )

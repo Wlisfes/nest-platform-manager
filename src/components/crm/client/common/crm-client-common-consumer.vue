@@ -47,9 +47,9 @@ export default defineComponent({
                 { title: '客户别名', key: 'alias', width: 150, check: true },
                 { title: '邮箱', key: 'email', width: 160, check: true },
                 { title: '电话号码', key: 'phone', width: 120, check: true },
-                { title: '归属人', key: 'user', width: 120, check: true },
-                { title: '归属部门', key: 'depts', width: 120, check: true },
-                { title: '品牌', key: 'brand', width: 100, check: true },
+                { title: '归属人', key: 'accountOptions', width: 120, check: true },
+                { title: '归属部门', key: 'deptOptions', width: 120, check: true },
+                { title: '品牌', key: 'brandOptions', width: 100, check: true },
                 { title: '客户类型', key: 'classType', width: 100, check: true },
                 { title: '等级', key: 'level', width: 100, check: true },
                 { title: '阶段', key: 'stage', width: 100, check: true },
@@ -184,15 +184,15 @@ export default defineComponent({
                                 </router-link>
                             </n-ellipsis>
                         ),
-                        col_user: (data: Omix) => {
-                            return <common-database-table-user element="text" data={data.user}></common-database-table-user>
+                        col_accountOptions: (data: Omix) => {
+                            return <common-database-table-user element="text" data={data.accountOptions}></common-database-table-user>
                         },
-                        col_brand: (data: Omix) => {
-                            return <common-database-table-content value={data.brand?.name}></common-database-table-content>
+                        col_brandOptions: (data: Omix) => {
+                            return <common-database-table-content value={data.brandOptions.name}></common-database-table-content>
                         },
-                        col_depts: (data: Omix) => (
+                        col_deptOptions: (data: Omix) => (
                             <common-database-table-content
-                                value={(data.depts ?? []).map((item: Omix) => item.deptName)}
+                                value={(data.deptOptions ?? []).map((item: Omix) => item.deptName)}
                             ></common-database-table-content>
                         ),
                         col_classType: (data: Omix) => (

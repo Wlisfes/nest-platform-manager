@@ -16,14 +16,21 @@ export default defineComponent({
         const { faseNode, faseState, chunkState, setState } = useBaseService({
             request: () => Service.httpBaseCrmClientResolver({ keyId: props.keyId }),
             immediate: true,
-            chunkNames: { CHUNK_CLIENT_STAGE: true },
+            chunkNames: {
+                CHUNK_CLIENT_PAY_MODE: true,
+                CHUNK_CLIENT_AUTH_STATUS: true,
+                CHUNK_CLIENT_SOURCE: true,
+                CHUNK_CLIENT_STATUS: true,
+                CHUNK_CLIENT_CLASS: true,
+                CHUNK_CLIENT_STAGE: true
+            },
             options: { tabName: 'basic' }
         })
 
         return () => (
             <crm-client-context-skeleton initialize={faseState.initialize}>
                 <common-element class="flex flex-col flex-1 gap-14 p-inline-14 p-block-14">
-                    <crm-client-context-wrapper fase-node={faseNode.value} chunk-state={chunkState}></crm-client-context-wrapper>
+                    <crm-client-context-wrapper chunk-state={chunkState} v-model:faseNode={faseNode.value}></crm-client-context-wrapper>
                     <n-tabs
                         animated
                         type="line"
@@ -33,7 +40,10 @@ export default defineComponent({
                         v-model:value={faseState.tabName}
                     >
                         <n-tab-pane name="basic" tab="详情信息" display-directive="show">
-                            <crm-client-context-basic-wrapper></crm-client-context-basic-wrapper>
+                            <crm-client-context-basic-wrapper
+                                chunk-state={chunkState}
+                                v-model:faseNode={faseNode.value}
+                            ></crm-client-context-basic-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="sms" tab="短信应用" display-directive="show">
                             <crm-client-context-sms-wrapper></crm-client-context-sms-wrapper>

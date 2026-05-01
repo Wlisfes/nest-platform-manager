@@ -58,6 +58,7 @@ export default defineComponent({
                 { title: '注册来源', key: 'source', width: 100, check: true },
                 { title: '状态', key: 'status', width: 100, check: true },
                 { title: '付款模式', key: 'payMode', width: 100, check: true },
+                { title: '余额', key: 'balance', width: 100, check: true },
                 { title: '信用额度', key: 'credit', width: 100, check: true },
                 { title: '标签', key: 'tags', minWidth: 200, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true }

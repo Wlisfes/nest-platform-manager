@@ -1,3 +1,4 @@
 export * from '@/api/modules/finance/modules/brand.service'
 export * from '@/api/modules/finance/modules/currency.service'
+export * from '@/api/modules/finance/modules/country.service'
 export * from '@/api/modules/finance/modules/client.service'

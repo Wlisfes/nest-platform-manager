@@ -12,6 +12,12 @@ export default [
         component: () => import('@/views/finance/deploy/currency/index.vue')
     },
     {
+        path: '/finance/deploy/country',
+        name: 'FinanceDeployCountry',
+        meta: { title: '国家/地区管理', AUTH: 'AUTH', keepAlive: true },
+        component: () => import('@/views/finance/deploy/country/index.vue')
+    },
+    {
         path: '/finance/account/consumer',
         name: 'FinanceAccountConsumer',
         meta: { title: '消费用户', AUTH: 'AUTH', keepAlive: true },

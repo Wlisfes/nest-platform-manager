@@ -44,6 +44,10 @@ export const COMMON_CHUNK_OPTIONS = {
         value: 'CHUNK_CURRENCY_STATUS',
         name: '币种状态'
     },
+    CHUNK_COUNTRY_STATUS: {
+        value: 'CHUNK_COUNTRY_STATUS',
+        name: '国家/地区状态'
+    },
     CHUNK_CLIENT_STATUS: {
         value: 'CHUNK_CLIENT_STATUS',
         name: '客户状态'

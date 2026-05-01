@@ -31,8 +31,8 @@ export default defineComponent({
                 { title: '邮箱', key: 'email', minWidth: 180, ellipsis: { tooltip: true }, check: true },
                 { title: '电话号码', key: 'phone', width: 140, check: true },
                 { title: '认证状态', key: 'authStatus', align: 'center', width: 100, check: true },
-                { title: '注册来源', key: 'source', align: 'center', width: 100, check: true },
                 { title: '状态', key: 'status', align: 'center', width: 100, check: true },
+                { title: '注册来源', key: 'source', align: 'center', width: 100, check: true },
                 { title: '付款模式', key: 'payMode', align: 'center', width: 100, check: true },
                 { title: '币种', key: 'currency', width: 100, check: true },
                 { title: '余额', key: 'balance', width: 140, check: true, render: (row: Omix) => Number(row.balance ?? 0).toFixed(6) },
@@ -201,24 +201,28 @@ export default defineComponent({
                     {{
                         col_status: (data: Omix) => (
                             <common-database-table-chunk
+                                element="chunk"
                                 value={data.status}
                                 options={chunkState.CHUNK_CLIENT_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_payMode: (data: Omix) => (
                             <common-database-table-chunk
+                                element="text"
                                 value={data.payMode}
                                 options={chunkState.CHUNK_CLIENT_PAY_MODE}
                             ></common-database-table-chunk>
                         ),
                         col_authStatus: (data: Omix) => (
                             <common-database-table-chunk
+                                element="chunk"
                                 value={data.authStatus}
                                 options={chunkState.CHUNK_CLIENT_AUTH_STATUS}
                             ></common-database-table-chunk>
                         ),
                         col_source: (data: Omix) => (
                             <common-database-table-chunk
+                                element="text"
                                 value={data.source}
                                 options={chunkState.CHUNK_CLIENT_SOURCE}
                             ></common-database-table-chunk>

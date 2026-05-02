@@ -140,15 +140,17 @@ export default defineComponent({
                 >
                     {{
                         col_status: (data: Omix) => (
-                            <n-tag type={data.status === 'enable' ? 'success' : 'error'} size="small">
-                                {data.status === 'enable' ? '启用' : '禁用'}
-                            </n-tag>
+                            <common-database-table-chunk
+                                element="chunk"
+                                value={data.status}
+                                options={chunkState.CHUNK_BRAND_STATUS}
+                            ></common-database-table-chunk>
                         ),
                         col_createBy: (data: Omix) => (
-                            <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
+                            <common-database-table-user element="text" data={data.createByOptions}></common-database-table-user>
                         ),
                         col_modifyBy: (data: Omix) => (
-                            <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                            <common-database-table-user element="text" data={data.modifyByOptions}></common-database-table-user>
                         )
                     }}
                 </common-database-table>

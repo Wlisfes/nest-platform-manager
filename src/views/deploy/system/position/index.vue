@@ -90,7 +90,12 @@ export default defineComponent({
                         <common-element-button type="primary" onClick={fetchDeployPositionCreate}>
                             新增
                         </common-element-button>
-                        <common-element-button dashed type="primary" disabled={instState.value.isUpdate} onClick={fetchDeployPositionUpdate}>
+                        <common-element-button
+                            dashed
+                            type="primary"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchDeployPositionUpdate}
+                        >
                             编辑
                         </common-element-button>
                         <common-element-button dashed type="error" disabled={instState.value.isDelete} onClick={fetchDeployPositionDelete}>
@@ -125,10 +130,10 @@ export default defineComponent({
                 >
                     {{
                         col_createBy: (data: Omix) => (
-                            <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
+                            <common-database-table-user element="text" data={data.createByOptions}></common-database-table-user>
                         ),
                         col_modifyBy: (data: Omix) => (
-                            <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                            <common-database-table-user element="text" data={data.modifyByOptions}></common-database-table-user>
                         )
                     }}
                 </common-database-table>

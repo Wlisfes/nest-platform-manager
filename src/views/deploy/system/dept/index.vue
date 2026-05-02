@@ -240,10 +240,10 @@ export default defineComponent({
                                     ></common-database-table-content>
                                 ),
                                 col_createBy: (data: Omix) => (
-                                    <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
+                                    <common-database-table-user element="text" data={data.createByOptions}></common-database-table-user>
                                 ),
                                 col_modifyBy: (data: Omix) => (
-                                    <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                                    <common-database-table-user element="text" data={data.modifyByOptions}></common-database-table-user>
                                 )
                             }}
                         </common-database-table>

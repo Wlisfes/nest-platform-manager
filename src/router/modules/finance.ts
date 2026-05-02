@@ -22,5 +22,11 @@ export default [
         name: 'FinanceAccountConsumer',
         meta: { title: '消费用户', AUTH: 'AUTH', keepAlive: true },
         component: () => import('@/views/finance/account/consumer/index.vue')
+    },
+    {
+        path: '/finance/deploy/rates/sms',
+        name: 'FinanceDeployRatesSms',
+        meta: { title: '短信基础价格', AUTH: 'AUTH', keepAlive: true },
+        component: () => import('@/views/finance/deploy/rates/sms/index.vue')
     }
 ]

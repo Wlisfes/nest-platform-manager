@@ -6,21 +6,25 @@ import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'FinanceDeployBrand',
+    name: 'FinanceDeployRatesSms',
     setup(props, ctx) {
         /**表格实例**/
         const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
-            request: (base, payload) => Service.httpBaseFinanceColumnBrand(payload),
-            keyName: 'chatbok:finance:deploy:brand',
+            request: (base, payload) => Service.httpBaseFinanceColumnBasicSmsRate(payload),
+            keyName: 'chatbok:finance:deploy:rates:sms',
             chunkNames: { CHUNK_BRAND_STATUS: true },
             formState: {
-                name: undefined, //品牌名称
-                status: undefined //状态
+                code: undefined,
+                mcc: undefined,
+                status: undefined
             },
             columns: [
-                { title: '品牌名称', key: 'name', minWidth: 200, disabled: true },
-                { title: '品牌描述', key: 'document', minWidth: 200, ellipsis: { tooltip: true }, check: true },
-                { title: '状态', key: 'status', minWidth: 120, check: true },
+                { title: '国家/地区编码', key: 'code', minWidth: 120, check: true },
+                { title: '移动国家代码 (MCC)', key: 'mcc', minWidth: 140, check: true },
+                { title: '上行短信价格 (USD)', key: 'upUsd', minWidth: 160, check: true },
+                { title: '下行短信价格 (USD)', key: 'downUsd', minWidth: 160, check: true },
+                { title: '备注', key: 'remark', minWidth: 150, ellipsis: { tooltip: true }, check: true },
+                { title: '状态', key: 'status', minWidth: 100, check: true },
                 { title: '创建人', key: 'createBy', minWidth: 120, check: true },
                 { title: '更新人', key: 'modifyBy', minWidth: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
@@ -28,10 +32,10 @@ export default defineComponent({
             ]
         })
 
-        /**新增品牌**/
-        async function fetchDeployBrandCreate() {
-            return await feedback.fetchFinanceDeployBrand({
-                title: '新增品牌',
+        /**新增**/
+        async function fetchDeployRatesSmsCreate() {
+            return await feedback.fetchFinanceDeployRatesSms({
+                title: '新增基础价格',
                 command: 'CREATE',
                 async onSubmit() {
                     return await fetchRefresh()
@@ -39,10 +43,10 @@ export default defineComponent({
             })
         }
 
-        /**编辑品牌**/
-        async function fetchDeployBrandUpdate() {
-            return await feedback.fetchFinanceDeployBrand({
-                title: '编辑品牌',
+        /**编辑**/
+        async function fetchDeployRatesSmsUpdate() {
+            return await feedback.fetchFinanceDeployRatesSms({
+                title: '编辑基础价格',
                 command: 'UPDATE',
                 node: state.select[0],
                 async onSubmit() {
@@ -52,22 +56,18 @@ export default defineComponent({
         }
 
         /**切换状态**/
-        async function fetchDeployBrandStatus() {
+        async function fetchDeployRatesSmsStatus() {
             const node = state.select[0]
             const nextStatus = node.status === 'enable' ? 'disable' : 'enable'
             const nextLabel = nextStatus === 'enable' ? '启用' : '禁用'
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
-                content: (
-                    <common-content-text depth={1}>
-                        确认将品牌【{node.name}】状态变更为【{nextLabel}】吗？
-                    </common-content-text>
-                ),
+                content: <common-content-text depth={1}>确认将配置项状态变更为【{nextLabel}】吗？</common-content-text>,
                 async onSubmit(done: Function) {
                     return await done({ loading: true }).then(async () => {
                         try {
-                            await Service.httpBaseFinanceUpdateBrandStatus({ keyId: node.keyId, status: nextStatus })
+                            await Service.httpBaseFinanceUpdateBasicSmsRateStatus({ keyId: node.keyId, status: nextStatus })
                             await fetchRefresh()
                             return await done({ visible: false })
                         } catch (err) {
@@ -95,27 +95,45 @@ export default defineComponent({
                     on-submit={instOptions.fetchRequest}
                 >
                     <common-database-search-function abstract class="flex gap-col-10">
-                        <common-element-button type="primary" onClick={fetchDeployBrandCreate}>
+                        <common-element-button type="primary" onClick={fetchDeployRatesSmsCreate}>
                             新增
                         </common-element-button>
-                        <common-element-button dashed type="primary" disabled={instState.value.isUpdate} onClick={fetchDeployBrandUpdate}>
+                        <common-element-button
+                            dashed
+                            type="primary"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchDeployRatesSmsUpdate}
+                        >
                             编辑
                         </common-element-button>
-                        <common-element-button dashed type="warning" disabled={instState.value.isUpdate} onClick={fetchDeployBrandStatus}>
+                        <common-element-button
+                            dashed
+                            type="warning"
+                            disabled={instState.value.isUpdate}
+                            onClick={fetchDeployRatesSmsStatus}
+                        >
                             切换状态
                         </common-element-button>
                     </common-database-search-function>
-                    <common-database-search-column disabled prop="name" label="品牌名称">
+                    <common-database-search-column prop="code" label="编码">
                         <form-common-column-input
                             clearable
-                            placeholder="请输入品牌名称"
-                            v-model:value={formState.value.name}
+                            placeholder="请输入国家/地区编码"
+                            v-model:value={formState.value.code}
+                            on-submit={fetchRefresh}
+                        ></form-common-column-input>
+                    </common-database-search-column>
+                    <common-database-search-column prop="mcc" label="MCC">
+                        <form-common-column-input
+                            clearable
+                            placeholder="请输入MCC"
+                            v-model:value={formState.value.mcc}
                             on-submit={fetchRefresh}
                         ></form-common-column-input>
                     </common-database-search-column>
                     <common-database-search-column prop="status" label="状态">
                         <form-common-column-select
-                            placeholder="请选择付款模式"
+                            placeholder="请选择状态"
                             options={chunkState.CHUNK_BRAND_STATUS}
                             v-model:value={formState.value.status}
                         ></form-common-column-select>
@@ -139,6 +157,10 @@ export default defineComponent({
                     on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                 >
                     {{
+                        col_upUsd: (data: Omix) => <n-text>{data.upUsd !== undefined ? (data.upUsd / 1000000).toFixed(6) : '--'}</n-text>,
+                        col_downUsd: (data: Omix) => (
+                            <n-text>{data.downUsd !== undefined ? (data.downUsd / 1000000).toFixed(6) : '--'}</n-text>
+                        ),
                         col_status: (data: Omix) => (
                             <n-tag type={data.status === 'enable' ? 'success' : 'error'} size="small">
                                 {data.status === 'enable' ? '启用' : '禁用'}

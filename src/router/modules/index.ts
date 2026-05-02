@@ -9,7 +9,7 @@ export function fetchSetupRouter() {
         {
             path: '/manager',
             name: 'Manager',
-            meta: { title: '工作台', AUTH: 'AUTH', showClose: false, keepAlive: true } as Omix,
+            meta: { title: '工作台', AUTH: 'AUTH', keepAlive: true } as any,
             component: () => import('@/views/main/manager/manager.vue')
         }
     ])

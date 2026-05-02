@@ -13,3 +13,10 @@ export async function fetchFinanceAccountConsumer(props: PropsState<Omix>) {
         return createComponent(component.default, props)
     })
 }
+
+/**新增、编辑短信基础价格**/
+export async function fetchFinanceDeployRatesSms(props: PropsState<Omix>) {
+    return await import('@/components/finance/feedback/finance-deploy-feedback-rates-sms.vue').then(component => {
+        return createComponent(component.default, props)
+    })
+}

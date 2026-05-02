@@ -18,13 +18,15 @@ export default defineComponent({
                 mcc: undefined
             },
             columns: [
-                { title: '国家/地区编码', key: 'code', minWidth: 120, check: true },
-                { title: '移动国家代码 (MCC)', key: 'mcc', minWidth: 140, check: true },
-                { title: '上行短信价格 (USD)', key: 'upUsd', minWidth: 160, check: true },
-                { title: '下行短信价格 (USD)', key: 'downUsd', minWidth: 160, check: true },
-                { title: '备注', key: 'remark', minWidth: 150, ellipsis: { tooltip: true }, check: true },
-                { title: '创建人', key: 'createBy', minWidth: 120, check: true },
-                { title: '更新人', key: 'modifyBy', minWidth: 120, check: true },
+                { title: '国家/地区编码', key: 'code', width: 120, check: true },
+                { title: '中文名称', key: 'cnName', width: 160, disabled: true },
+                { title: '英文名称', key: 'enName', width: 160, check: true },
+                { title: 'MCC', key: 'mcc', width: 120, check: true },
+                { title: '上行费率(USD)', key: 'upUsd', width: 120, check: true },
+                { title: '下行费率(USD)', key: 'downUsd', width: 120, check: true },
+                { title: '备注', key: 'remark', minWidth: 200, ellipsis: { tooltip: true }, check: true },
+                { title: '创建人', key: 'createBy', width: 120, check: true },
+                { title: '更新人', key: 'modifyBy', width: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]
@@ -52,7 +54,6 @@ export default defineComponent({
                 }
             })
         }
-
 
         return () => (
             <layout-common-container initialize={state.initialize}>
@@ -117,15 +118,17 @@ export default defineComponent({
                     on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
                 >
                     {{
-                        col_upUsd: (data: Omix) => <n-text>{data.upUsd !== undefined ? (data.upUsd / 1000000).toFixed(6) : '--'}</n-text>,
-                        col_downUsd: (data: Omix) => (
-                            <n-text>{data.downUsd !== undefined ? (data.downUsd / 1000000).toFixed(6) : '--'}</n-text>
+                        col_cnName: (data: Omix) => (
+                            <common-database-table-content value={data.countryOptions.cnName}></common-database-table-content>
+                        ),
+                        col_enName: (data: Omix) => (
+                            <common-database-table-content value={data.countryOptions.enName}></common-database-table-content>
                         ),
                         col_createBy: (data: Omix) => (
-                            <common-database-table-user element="text" data={data.createBy}></common-database-table-user>
+                            <common-database-table-user element="text" data={data.createByOptions}></common-database-table-user>
                         ),
                         col_modifyBy: (data: Omix) => (
-                            <common-database-table-user element="text" data={data.modifyBy}></common-database-table-user>
+                            <common-database-table-user element="text" data={data.modifyByOptions}></common-database-table-user>
                         )
                     }}
                 </common-database-table>

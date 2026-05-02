@@ -15,8 +15,7 @@ export default defineComponent({
             chunkNames: { CHUNK_BRAND_STATUS: true },
             formState: {
                 code: undefined,
-                mcc: undefined,
-                status: undefined
+                mcc: undefined
             },
             columns: [
                 { title: '国家/地区编码', key: 'code', minWidth: 120, check: true },
@@ -24,7 +23,6 @@ export default defineComponent({
                 { title: '上行短信价格 (USD)', key: 'upUsd', minWidth: 160, check: true },
                 { title: '下行短信价格 (USD)', key: 'downUsd', minWidth: 160, check: true },
                 { title: '备注', key: 'remark', minWidth: 150, ellipsis: { tooltip: true }, check: true },
-                { title: '状态', key: 'status', minWidth: 100, check: true },
                 { title: '创建人', key: 'createBy', minWidth: 120, check: true },
                 { title: '更新人', key: 'modifyBy', minWidth: 120, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
@@ -55,29 +53,6 @@ export default defineComponent({
             })
         }
 
-        /**切换状态**/
-        async function fetchDeployRatesSmsStatus() {
-            const node = state.select[0]
-            const nextStatus = node.status === 'enable' ? 'disable' : 'enable'
-            const nextLabel = nextStatus === 'enable' ? '启用' : '禁用'
-            return await fetchDialogService({
-                title: '提示',
-                type: 'warning',
-                content: <common-content-text depth={1}>确认将配置项状态变更为【{nextLabel}】吗？</common-content-text>,
-                async onSubmit(done: Function) {
-                    return await done({ loading: true }).then(async () => {
-                        try {
-                            await Service.httpBaseFinanceUpdateBasicSmsRateStatus({ keyId: node.keyId, status: nextStatus })
-                            await fetchRefresh()
-                            return await done({ visible: false })
-                        } catch (err) {
-                            await done({ loading: false })
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        }
-                    })
-                }
-            })
-        }
 
         return () => (
             <layout-common-container initialize={state.initialize}>
@@ -106,14 +81,6 @@ export default defineComponent({
                         >
                             编辑
                         </common-element-button>
-                        <common-element-button
-                            dashed
-                            type="warning"
-                            disabled={instState.value.isUpdate}
-                            onClick={fetchDeployRatesSmsStatus}
-                        >
-                            切换状态
-                        </common-element-button>
                     </common-database-search-function>
                     <common-database-search-column prop="code" label="编码">
                         <form-common-column-input
@@ -130,13 +97,6 @@ export default defineComponent({
                             v-model:value={formState.value.mcc}
                             on-submit={fetchRefresh}
                         ></form-common-column-input>
-                    </common-database-search-column>
-                    <common-database-search-column prop="status" label="状态">
-                        <form-common-column-select
-                            placeholder="请选择状态"
-                            options={chunkState.CHUNK_BRAND_STATUS}
-                            v-model:value={formState.value.status}
-                        ></form-common-column-select>
                     </common-database-search-column>
                 </common-database-search>
                 <common-database-table
@@ -160,11 +120,6 @@ export default defineComponent({
                         col_upUsd: (data: Omix) => <n-text>{data.upUsd !== undefined ? (data.upUsd / 1000000).toFixed(6) : '--'}</n-text>,
                         col_downUsd: (data: Omix) => (
                             <n-text>{data.downUsd !== undefined ? (data.downUsd / 1000000).toFixed(6) : '--'}</n-text>
-                        ),
-                        col_status: (data: Omix) => (
-                            <n-tag type={data.status === 'enable' ? 'success' : 'error'} size="small">
-                                {data.status === 'enable' ? '启用' : '禁用'}
-                            </n-tag>
                         ),
                         col_createBy: (data: Omix) => (
                             <common-database-table-user element="text" data={data.createBy}></common-database-table-user>

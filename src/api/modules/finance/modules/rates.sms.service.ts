@@ -9,10 +9,6 @@ export const httpBaseFinanceUpdateBasicSmsRate = (data: Omix) => {
     return request({ url: '/api/windows/finance/rates/sms/update', method: 'POST', data })
 }
 
-export const httpBaseFinanceUpdateBasicSmsRateStatus = (data: Omix) => {
-    return request({ url: '/api/windows/finance/rates/sms/update/status', method: 'POST', data })
-}
-
 export const httpBaseFinanceColumnBasicSmsRate = (data: Omix) => {
     return request({ url: '/api/windows/finance/rates/sms/column', method: 'POST', data })
 }

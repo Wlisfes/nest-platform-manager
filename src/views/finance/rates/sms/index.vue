@@ -6,12 +6,12 @@ import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
-    name: 'FinanceDeployRatesSms',
+    name: 'FinanceRatesSms',
     setup(props, ctx) {
         /**表格实例**/
         const { formRef, formState, state, chunkState, instState, instOptions, fetchRefresh } = useColumnService({
             request: (base, payload) => Service.httpBaseFinanceColumnBasicSmsRate(payload),
-            keyName: 'chatbok:finance:deploy:rates:sms',
+            keyName: 'chatbok:finance:rates:sms',
             chunkNames: { CHUNK_BRAND_STATUS: true },
             formState: {
                 code: undefined,

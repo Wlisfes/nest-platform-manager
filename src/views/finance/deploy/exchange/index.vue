@@ -16,9 +16,9 @@ export default defineComponent({
                 date: undefined
             },
             columns: [
-                { title: '币种编码', key: 'currency', width: 120, check: true },
-                { title: '汇率（基于USD）', key: 'rate', width: 160, check: true },
-                { title: '汇率日期', key: 'date', width: 140, check: true },
+                { title: '币种编码', key: 'currency', minWidth: 120, check: true },
+                { title: '汇率(基于USD)', key: 'rate', minWidth: 160, check: true },
+                { title: '汇率日期', key: 'date', minWidth: 160, check: true },
                 { title: '创建时间', key: 'createTime', width: 160, check: true },
                 { title: '更新时间', key: 'modifyTime', width: 160, check: true }
             ]
@@ -71,8 +71,7 @@ export default defineComponent({
                     on-update:customize={instOptions.fetchUpdateCustomize}
                     on-update:page={(page: number) => fetchRefresh({ page })}
                     on-update:size={(size: number) => fetchRefresh({ page: 1, size })}
-                >
-                </common-database-table>
+                ></common-database-table>
             </layout-common-container>
         )
     }

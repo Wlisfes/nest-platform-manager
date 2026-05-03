@@ -25,3 +25,12 @@ export function httpBaseFinanceSelectCurrency() {
         method: 'POST'
     })
 }
+
+/**汇率分页列表**/
+export function httpBaseFinanceColumnCurrencyExchange(data: Omix) {
+    return request({
+        url: `/api/windows/finance/currency/exchange/column`,
+        method: 'POST',
+        data
+    })
+}

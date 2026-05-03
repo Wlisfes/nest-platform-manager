@@ -79,5 +79,17 @@ export const COMMON_CHUNK_OPTIONS = {
     CHUNK_CLIENT_SMS_TYPE: {
         value: 'CHUNK_CLIENT_SMS_TYPE',
         name: '短信应用类型'
+    },
+    CHUNK_DATETASK_TYPE: {
+        value: 'CHUNK_DATETASK_TYPE',
+        name: '任务类型'
+    },
+    CHUNK_DATETASK_STATUS: {
+        value: 'CHUNK_DATETASK_STATUS',
+        name: '任务状态'
+    },
+    CHUNK_DATETASK_LOG_STATUS: {
+        value: 'CHUNK_DATETASK_LOG_STATUS',
+        name: '执行状态'
     }
 }

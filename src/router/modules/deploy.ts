@@ -1,5 +1,11 @@
 export default [
     {
+        path: '/deploy/datetask/system',
+        name: 'DeployDatetaskSystem',
+        meta: { title: '定时任务管理', AUTH: 'AUTH', keepAlive: true },
+        component: () => import('@/views/deploy/datetask/system/index.vue')
+    },
+    {
         path: '/deploy/system/sheet',
         name: 'DeploySystemSheet',
         meta: { title: '菜单管理', AUTH: 'AUTH', keepAlive: true },

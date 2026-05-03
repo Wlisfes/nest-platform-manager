@@ -39,6 +39,8 @@ export default defineComponent({
         loading: { type: Boolean, default: true },
         /**开启分页**/
         pagination: { type: Boolean, default: true },
+        /**分页框样式**/
+        paginationClass: { type: String, default: '' },
         /**开启边框**/
         bordered: { type: Boolean, default: true },
         /**被选中的行的对象列表**/
@@ -233,7 +235,7 @@ export default defineComponent({
                         </div>
                     </n-element>
                     {props.pagination && (
-                        <n-element class="common-database-pagination flex justify-end">
+                        <n-element class={`common-database-pagination flex justify-end ${props.paginationClass}`}>
                             <n-pagination
                                 page={page.value}
                                 item-count={props.total}

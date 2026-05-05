@@ -26,3 +26,21 @@ export function httpBaseCrmClientResolver(data: Omix) {
         data
     })
 }
+
+/**销售管理-客户短信应用-分页列表**/
+export function httpBaseCrmClientSmsColumn(data: Omix) {
+    return request({
+        url: `/api/windows/crm/client/sms/column`,
+        method: 'POST',
+        data
+    })
+}
+
+/**销售管理-客户短信应用-新增**/
+export function httpBaseCrmClientSmsCreate(data: Omix) {
+    return request({
+        url: `/api/windows/crm/client/sms/create`,
+        method: 'POST',
+        data
+    })
+}

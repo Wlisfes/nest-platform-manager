@@ -46,7 +46,10 @@ export default defineComponent({
                             ></crm-client-context-basic-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="sms" tab="短信应用" display-directive="show">
-                            <crm-client-context-sms-wrapper></crm-client-context-sms-wrapper>
+                            <crm-client-context-sms-wrapper
+                                chunk-state={chunkState}
+                                v-model:faseNode={faseNode.value}
+                            ></crm-client-context-sms-wrapper>
                         </n-tab-pane>
                         <n-tab-pane name="mail" tab="邮件应用" display-directive="show">
                             <crm-client-context-mail-wrapper></crm-client-context-mail-wrapper>

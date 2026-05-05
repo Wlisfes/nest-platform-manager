@@ -1,8 +1,8 @@
 <script lang="tsx">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useColumnService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
-import { fetchDeployDatetaskLog } from '@/components/deploy/hooks'
+import { fetchDeployDatetaskCron, fetchDeployDatetaskLog } from '@/components/deploy/hooks'
 import * as Service from '@/api/instance.service'
 
 export default defineComponent({
@@ -38,15 +38,11 @@ export default defineComponent({
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
-                content: (
-                    <common-content-text depth={1}>
-                        确认将任务【{node.taskName}】{nextLabel}吗？
-                    </common-content-text>
-                ),
+                content: `确认将任务【${node.taskName}】${nextLabel}吗？`,
                 async onSubmit(done: Function) {
                     return await done({ loading: true }).then(async () => {
                         try {
-                            await Service.httpBaseSystemUpdateDatetaskStatus({ keyId: node.keyId, status: nextStatus })
+                            await Service.httpBaseSystemUpdateDatetaskStatus({ taskId: node.taskId, status: nextStatus })
                             await fetchRefresh()
                             return await done({ visible: false })
                         } catch (err) {
@@ -61,33 +57,10 @@ export default defineComponent({
         /**修改Cron表达式**/
         async function fetchDatetaskCronUpdate() {
             const node = state.select[0]
-            const cronValue = ref(node.cron)
-            return await fetchDialogService({
+            return await fetchDeployDatetaskCron({
                 title: '修改Cron表达式',
-                type: 'warning',
-                content: (
-                    <div class="flex flex-col gap-10">
-                        <common-content-text depth={1}>
-                            任务：{node.taskName}（{node.handler}）
-                        </common-content-text>
-                        <n-input v-model:value={cronValue.value} placeholder="请输入Cron表达式，例如：0 0 8 * * *" clearable></n-input>
-                    </div>
-                ),
-                async onSubmit(done: Function) {
-                    if (!cronValue.value) {
-                        return await fetchNotifyService({ type: 'warning', title: 'Cron表达式不能为空' })
-                    }
-                    return await done({ loading: true }).then(async () => {
-                        try {
-                            await Service.httpBaseSystemUpdateDatetaskCron({ keyId: node.keyId, cron: cronValue.value })
-                            await fetchRefresh()
-                            return await done({ visible: false })
-                        } catch (err) {
-                            await done({ loading: false })
-                            return await fetchNotifyService({ type: 'error', title: err.message })
-                        }
-                    })
-                }
+                node,
+                onSubmit: () => fetchRefresh()
             })
         }
 
@@ -97,11 +70,11 @@ export default defineComponent({
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
-                content: <common-content-text depth={1}>确认手动触发任务【{node.taskName}】吗？任务将立即执行一次。</common-content-text>,
+                content: `确认手动触发任务【${node.taskName}】吗？任务将立即执行一次。`,
                 async onSubmit(done: Function) {
                     return await done({ loading: true }).then(async () => {
                         try {
-                            await Service.httpBaseSystemTriggerDatetask({ keyId: node.keyId })
+                            await Service.httpBaseSystemTriggerDatetask({ taskId: node.taskId })
                             await done({ visible: false })
                             return await fetchNotifyService({ title: '任务已触发' })
                         } catch (err) {

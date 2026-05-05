@@ -65,7 +65,7 @@ export default defineComponent({
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
-                content: <common-content-text depth={1}>确认删除账号【{node.name}】吗？删除后无法恢复！</common-content-text>,
+                content: `确认删除账号【${node.name}】吗？删除后无法恢复！`,
                 async onSubmit(done: Function) {
                     return await done({ loading: true }).then(async () => {
                         try {

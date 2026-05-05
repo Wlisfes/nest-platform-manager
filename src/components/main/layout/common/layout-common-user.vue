@@ -36,7 +36,7 @@ export default defineComponent({
                 return await fetchDialogService({
                     title: '提示',
                     type: 'warning',
-                    content: <common-content-text depth={1}>确定要退出当前账号吗？</common-content-text>,
+                    content: `确定要退出当前账号吗？`,
                     async onSubmit(done: Function) {
                         return await fetchReset().then(async () => {
                             await done({ visible: false })

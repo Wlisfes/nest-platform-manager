@@ -34,11 +34,7 @@ export default defineComponent({
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
-                content: (
-                    <common-content-text depth={1}>
-                        确认将币种【{node.name}】状态变更为【{nextLabel}】吗？
-                    </common-content-text>
-                ),
+                content: `确认将币种【${node.name}】状态变更为【${nextLabel}】吗？`,
                 async onSubmit(done: Function) {
                     return await done({ loading: true }).then(async () => {
                         try {

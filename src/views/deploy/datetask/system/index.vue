@@ -14,14 +14,14 @@ export default defineComponent({
             keyName: 'chatbok:deploy:datetask:system',
             chunkNames: { CHUNK_DATETASK_TYPE: true, CHUNK_DATETASK_STATUS: true },
             formState: {
-                name: undefined,
+                taskName: undefined,
                 status: undefined
             },
             columns: [
-                { title: '任务标识', key: 'name', width: 180, disabled: true },
-                { title: '处理器标识', key: 'handler', width: 180, disabled: true },
-                { title: '显示名称', key: 'title', width: 180, disabled: true },
-                { title: '任务描述', key: 'description', minWidth: 200, check: true },
+                { title: '任务ID', key: 'taskId', width: 180, disabled: true },
+                { title: '任务名称', key: 'taskName', width: 200, disabled: true },
+                { title: '处理器标识', key: 'handler', width: 240, disabled: true },
+                { title: '任务描述', key: 'comment', minWidth: 200, check: true },
                 { title: 'Cron表达式', key: 'cron', width: 160, check: true },
                 { title: '任务类型', key: 'type', width: 120, check: true },
                 { title: '任务状态', key: 'status', width: 120, check: true },
@@ -33,14 +33,14 @@ export default defineComponent({
         /**启用/停用任务**/
         async function fetchDatetaskStatusToggle() {
             const node = state.select[0]
-            const nextStatus = node.status === 'enable' ? 'disable' : 'enable'
-            const nextLabel = nextStatus === 'enable' ? '启用' : '停用'
+            const nextStatus = node.status === 'running' ? 'stop' : 'running'
+            const nextLabel = nextStatus === 'running' ? '启用' : '停用'
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
                 content: (
                     <common-content-text depth={1}>
-                        确认将任务【{node.title}】{nextLabel}吗？
+                        确认将任务【{node.taskName}】{nextLabel}吗？
                     </common-content-text>
                 ),
                 async onSubmit(done: Function) {
@@ -68,7 +68,7 @@ export default defineComponent({
                 content: (
                     <div class="flex flex-col gap-10">
                         <common-content-text depth={1}>
-                            任务：{node.title}（{node.name}）
+                            任务：{node.taskName}（{node.handler}）
                         </common-content-text>
                         <n-input v-model:value={cronValue.value} placeholder="请输入Cron表达式，例如：0 0 8 * * *" clearable></n-input>
                     </div>
@@ -97,7 +97,7 @@ export default defineComponent({
             return await fetchDialogService({
                 title: '提示',
                 type: 'warning',
-                content: <common-content-text depth={1}>确认手动触发任务【{node.title}】吗？任务将立即执行一次。</common-content-text>,
+                content: <common-content-text depth={1}>确认手动触发任务【{node.taskName}】吗？任务将立即执行一次。</common-content-text>,
                 async onSubmit(done: Function) {
                     return await done({ loading: true }).then(async () => {
                         try {
@@ -117,7 +117,7 @@ export default defineComponent({
         async function fetchDatetaskLog() {
             const node = state.select[0]
             return await fetchDeployDatetaskLog({
-                title: `执行日志 - ${node.title}`,
+                title: `执行日志 - ${node.taskName}`,
                 node
             })
         }
@@ -156,11 +156,11 @@ export default defineComponent({
                             执行日志
                         </common-element-button>
                     </common-database-search-function>
-                    <common-database-search-column disabled prop="name" label="任务标识">
+                    <common-database-search-column disabled prop="taskName" label="任务名称">
                         <form-common-column-input
                             clearable
-                            placeholder="请输入任务标识"
-                            v-model:value={formState.value.name}
+                            placeholder="请输入任务名称"
+                            v-model:value={formState.value.taskName}
                             on-submit={fetchRefresh}
                         ></form-common-column-input>
                     </common-database-search-column>

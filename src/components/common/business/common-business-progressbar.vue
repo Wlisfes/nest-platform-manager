@@ -1,9 +1,13 @@
 <script lang="tsx">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, PropType, Fragment } from 'vue'
 
 export default defineComponent({
     name: 'CommonBusinessProgressbar',
     props: {
+        /**初始化执行中**/
+        initialize: { type: Boolean, default: true },
+        /**骨架屏数量**/
+        count: { type: Number, default: 7 },
         /**当前阶段**/
         stage: { type: String },
         /**全阶段数据**/
@@ -17,11 +21,28 @@ export default defineComponent({
 
         return () => (
             <n-element class="common-business-progressbar grid-cols-7 h-28 flex b-rd-3 select-none overflow-hidden">
-                {props.items.map((item, index) => (
-                    <common-element-button class="common-progressbar" size="small" type="primary" secondary={!(level.value >= index)}>
-                        {item.name}
-                    </common-element-button>
-                ))}
+                {props.initialize ? (
+                    <Fragment>
+                        {Array.from({ length: props.count }, (_, index) => (
+                            <div class="common-progressbar overflow-hidden p-inline-0!">
+                                <n-skeleton height="28px" />
+                            </div>
+                        ))}
+                    </Fragment>
+                ) : (
+                    <Fragment>
+                        {props.items.map((item, index) => (
+                            <common-element-button
+                                class="common-progressbar"
+                                size="small"
+                                type="primary"
+                                secondary={!(level.value >= index)}
+                            >
+                                {item.name}
+                            </common-element-button>
+                        ))}
+                    </Fragment>
+                )}
             </n-element>
         )
     }

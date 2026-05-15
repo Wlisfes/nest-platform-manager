@@ -14,7 +14,7 @@ export default defineComponent({
     },
     setup(props, { slots }) {
         return () => (
-            <div class="common-element-columns-wrapper flex overflow-hidden">
+            <div class="common-element-columns-wrapper flex overflow-hidden line-height-22">
                 {isNotEmpty(props.label) && (
                     <div class={`common-element-columns-wrapper__label box-border ${props.labelClass}`}>{props.label}</div>
                 )}

@@ -2,10 +2,12 @@
 import { defineComponent, Fragment } from 'vue'
 
 export default defineComponent({
-    name: 'CommonElementSkeleton',
+    name: 'CommonSkeletonProvider',
     props: {
         /**骨架屏组件样式**/
         className: { type: String, default: '' },
+        /**开启背景色**/
+        isWhite: { type: Boolean, default: false },
         /**线索骨架屏**/
         loading: { type: Boolean, default: false }
     },
@@ -13,7 +15,9 @@ export default defineComponent({
         return () => (
             <Fragment>
                 {props.loading ? (
-                    <n-element class={`common-element-skeleton ${props.className}`}>{slots.default && slots.default()}</n-element>
+                    <common-element is-white={props.isWhite} class={`common-skeleton-provider ${props.className}`}>
+                        {slots.default && slots.default()}
+                    </common-element>
                 ) : (
                     <Fragment>{slots.render && slots.render()}</Fragment>
                 )}

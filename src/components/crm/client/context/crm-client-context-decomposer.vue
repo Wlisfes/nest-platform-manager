@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { useBaseService } from '@/hooks'
 import { fetchDialogService, fetchNotifyService } from '@/plugins'
+import { fetchDelay } from '@/utils'
 import * as feedback from '@/components/finance/hooks'
 import * as Service from '@/api/instance.service'
 
@@ -14,7 +15,10 @@ export default defineComponent({
     },
     setup(props) {
         const { faseNode, faseState, chunkState, setState } = useBaseService({
-            request: () => Service.httpBaseCrmClientResolver({ keyId: props.keyId }),
+            request: async () => {
+                await fetchDelay(2000)
+                return Service.httpBaseCrmClientResolver({ keyId: props.keyId })
+            },
             immediate: true,
             chunkNames: {
                 CHUNK_CLIENT_PAY_MODE: true,
@@ -30,7 +34,11 @@ export default defineComponent({
         return () => (
             <crm-client-context-skeleton initialize={faseState.initialize}>
                 <common-element class="flex flex-col flex-1 gap-14 p-inline-14 p-block-14">
-                    <crm-client-context-wrapper chunk-state={chunkState} v-model:faseNode={faseNode.value}></crm-client-context-wrapper>
+                    <crm-client-context-wrapper
+                        initialize={faseState.initialize}
+                        chunk-state={chunkState}
+                        v-model:faseNode={faseNode.value}
+                    ></crm-client-context-wrapper>
                     <n-tabs
                         animated
                         type="line"

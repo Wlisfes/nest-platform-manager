@@ -27,11 +27,13 @@ export default defineComponent({
                                             <Chat />
                                         </n-icon>
                                     </common-element-alert-wrapper>
-                                    <div class="flex flex-col flex-1 justify-between overflow-hidden">
+                                    <div class="flex flex-col flex-1 gap-y-2 overflow-hidden">
                                         <n-text class="text-16 line-height-24" depth={1}>
                                             LYNSK1233001OTP
                                         </n-text>
-                                        <n-text depth={3}>应用名称</n-text>
+                                        <n-text class="line-height-22" depth={3}>
+                                            应用名称
+                                        </n-text>
                                     </div>
                                     <div class="m-be-auto flex items-center gap-x-5 overflow-hidden">
                                         <n-tag round bordered={false} type="warning">

@@ -7,6 +7,8 @@ export default defineComponent({
     name: 'CrmClientContextSmsWrapper',
     emits: ['update:faseNode'],
     props: {
+        /**枚举对象**/
+        chunkState: { type: Object as PropType<Omix>, default: () => ({}) },
         /**详情数据**/
         faseNode: { type: Object as PropType<Omix>, default: () => ({}) }
     },

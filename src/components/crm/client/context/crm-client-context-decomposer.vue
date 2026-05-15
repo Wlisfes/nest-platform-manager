@@ -24,7 +24,7 @@ export default defineComponent({
                 CHUNK_CLIENT_CLASS: true,
                 CHUNK_CLIENT_STAGE: true
             },
-            options: { tabName: 'basic' }
+            options: { tabName: 'sms' }
         })
 
         return () => (
@@ -34,7 +34,6 @@ export default defineComponent({
                     <n-tabs
                         animated
                         type="line"
-                        tab-class="p-block-10!"
                         tabs-padding={14}
                         class="common-element-tabser inset-absolute flex-1 overflow-hidden "
                         v-model:value={faseState.tabName}

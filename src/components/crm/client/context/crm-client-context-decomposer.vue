@@ -16,7 +16,7 @@ export default defineComponent({
     setup(props) {
         const { faseNode, faseState, chunkState, setState } = useBaseService({
             request: async () => {
-                await fetchDelay(2000)
+                await fetchDelay(20000)
                 return Service.httpBaseCrmClientResolver({ keyId: props.keyId })
             },
             immediate: true,

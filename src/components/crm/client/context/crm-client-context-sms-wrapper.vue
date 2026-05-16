@@ -19,7 +19,7 @@ export default defineComponent({
             <common-element-scrollbar class="crm-client-context-sms-wrapper">
                 <common-element is-white class="flex flex-col flex-1 overflow-hidden">
                     <common-element-columns-template class="gap-14 p-14" type="auto-fit" number={400}>
-                        {Array.from({ length: 5 }, () => (
+                        {Array.from({ length: 8 }, () => (
                             <n-card content-class="flex flex-col p-0! overflow-hidden">
                                 <div class="flex gap-x-10 p-inline-14 p-block-14 overflow-hidden">
                                     <common-element-alert-wrapper class="p-10" type="info">

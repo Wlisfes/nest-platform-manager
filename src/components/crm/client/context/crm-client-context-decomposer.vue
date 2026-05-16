@@ -15,10 +15,7 @@ export default defineComponent({
     },
     setup(props) {
         const { faseNode, faseState, chunkState, setState } = useBaseService({
-            request: async () => {
-                await fetchDelay(20000)
-                return Service.httpBaseCrmClientResolver({ keyId: props.keyId })
-            },
+            request: () => Service.httpBaseCrmClientResolver({ keyId: props.keyId }),
             immediate: true,
             chunkNames: {
                 CHUNK_CLIENT_PAY_MODE: true,
